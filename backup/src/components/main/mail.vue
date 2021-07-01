@@ -1,0 +1,51 @@
+<template>
+  <div id="mail_tab">
+    <div class="re_mail">
+      <strong desc="받은 메일">{{ language.main.portlet.receive }}</strong>
+      <ul>
+        <li :class="{ new: boo(value) }"
+        v-for="(value, name) in main.data.mailtype.inbox_main.more.data"
+        :key="name"><a href="">{{ value.subject }}</a></li>
+      </ul>
+      <span class="m_more"><a href=""></a></span>
+    </div>
+    <div class="se_mail">
+      <strong desc="보낸 메일">{{ language.main.portlet.send }}</strong>
+      <ul>
+        <li v-for="(value, name) in main.data.mailtype.sent_main.more.data"
+        :key="name"><a href="">{{ value.subject }}</a></li>
+      </ul>
+      <span class="m_more"><a href=""></a></span>
+    </div>
+  </div>
+</template>
+
+<script>
+import { mapState } from "vuex";
+export default {
+  computed: {
+    ...mapState(["language","main"]),
+    
+  },
+  created() {
+    // this.$store.dispatch("GetMail", { mailtype: "receive", category: "more" });
+  },
+  methods: {
+    // 현재 날짜와 문서의 created 시간을 비교, 안 읽은 문서이면 new icon 표시
+    boo(value) {
+        var moment = require("moment");
+        var localTime = moment.utc(value.created).toDate();
+        localTime = parseInt(moment(localTime).format("YYYYMMDD"));
+        var nowTime = parseInt(moment().format("YYYYMMDD"));
+
+        if((nowTime-localTime)===this.main.my.recentdate&&value.unread){
+          return true;
+        }
+        return false;
+    },
+  }
+};
+</script>
+
+<style>
+</style>
