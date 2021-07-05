@@ -1,56 +1,60 @@
 
 export default {
-    disAllCheck(state){
+    changeInfiniteId(state, value) {
+        state[value] += 1;
+
+    },
+    disAllCheck(state) {
         state.mail.checkBtn.allchecked = false;
 
     },
-    allCheck(state,path) {
+    allCheck(state, path) {
         // console.log(state.mail.checkBtn.allchecked)
         // state.mail.checkBtn.allchecked = !state.mail.checkBtn.allchecked;
         state.mail.checkBtn.allchecked = !state.mail.checkBtn.allchecked;
         // console.log(state.mail.checkBtn.allchecked)
         console.log("allcheck")
         if (state.mail.checkBtn.allchecked) {
-          state.mail.checkBtn.checkedNames = [];
-          var data = state.mail.data[path].data.data;
-          for (var i = 0; i < data.length; i++) {
-              var res = {};
-              res.unid = data[i].unid;
-              res.key = i;
-            state.mail.checkBtn.checkedNames.push(res);
-          }
+            state.mail.checkBtn.checkedNames = [];
+            var data = state.mail.data[path].data.data;
+            for (var i = 0; i < data.length; i++) {
+                var res = {};
+                res.unid = data[i].unid;
+                res.key = i;
+                state.mail.checkBtn.checkedNames.push(res);
+            }
         } else {
-          state.mail.checkBtn.checkedNames = [];
+            state.mail.checkBtn.checkedNames = [];
         }
-      },
-      Back(state) {
+    },
+    Back(state) {
         state.mail.checkBtn.editclicked = false;
         state.mail.checkBtn.photoon = true;
         state.mail.checkBtn.checkedNames = [];
         state.mail.checkBtn.allchecked = false;
-      },
-      editClick(state) {
+    },
+    editClick(state) {
         state.mail.checkBtn.editclicked = !state.mail.checkBtn.editclicked;
         state.mail.checkBtn.photoon = !state.mail.checkBtn.photoon;
-      },
-      mailDelete(state,{type}) {
+    },
+    mailDelete(state, { type }) {
         var data = state.mail.data[type].data.data;
         for (var i = 0; i < state.mail.checkBtn.checkedNames.length; i++) {
-          data.splice(state.mail.checkBtn.checkedNames[i].key, 1);
+            data.splice(state.mail.checkBtn.checkedNames[i].key, 1);
         }
         state.mail.checkBtn.checkedNames = [];
-      },
-    MailDetail(state, { res, mailtype }){
-        
-        if(Object.keys(res).length>0){
-            for(var i=0;i<res.data.length;i++){
+    },
+    MailDetail(state, { res, mailtype }) {
+
+        if (Object.keys(res).length > 0) {
+            for (var i = 0; i < res.data.length; i++) {
                 res.data[i].photoerror = true;
             }
         }
         state.mail.data[mailtype].data = res;
     },
     MoreList(state, { list }) {
-        
+
         state.moreList = list;
 
     },
@@ -94,7 +98,7 @@ export default {
 
     },
     DelKeyword(state, { word, index }) {
-        state.recent.splice(index,1)
+        state.recent.splice(index, 1)
 
     },
     Recent(state, { recent }) {
@@ -119,7 +123,11 @@ export default {
 
         var result = {};
         console.log(res)
-        state.sortdata = res;
+        if (res !== undefined) {
+            console.log("sortdata")
+            state.sortdata = res;
+
+        }
 
         if (word !== undefined && page !== undefined) {
 

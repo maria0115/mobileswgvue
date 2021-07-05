@@ -7,15 +7,15 @@
         v-for="(value, name) in main.data.mailtype.inbox_main.more.data"
         :key="name"><a href="">{{ value.subject }}</a></li>
       </ul>
-      <router-link to="/maillist"><span class="m_more"><a href=""></a></span></router-link>
+      <router-link to="/maillist"><span class="m_more"><a></a></span></router-link>
     </div>
     <div class="se_mail">
       <strong desc="보낸 메일">{{ GetMainLanguage.portlet.send }}</strong>
       <ul>
         <li v-for="(value, name) in main.data.mailtype.sent_main.more.data"
-        :key="name"><a href="">{{ value.subject }}</a></li>
+        :key="name"><a>{{ value.subject }}</a></li>
       </ul>
-      <span class="m_more"><a href=""></a></span>
+      <router-link to="/maillist/sent_detail"><span class="m_more"><a></a></span></router-link>
     </div>
   </div>
 </template>

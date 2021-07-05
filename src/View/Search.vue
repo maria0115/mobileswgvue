@@ -31,17 +31,17 @@
         </div>
         <ul class="lst_option">
           <li class="clfix">
-            <span class="active" @click="Datesearch('gte', 'default')">{{ GetSearchLanguage.filter.all }}</span>
-            <span @click="Datesearch('gte', 'now-1d/d')">{{
+            <span class="active" @click="Datesearch('gte', 'default','default')">{{ GetSearchLanguage.filter.all }}</span>
+            <span @click="Datesearch('gte', 'now-1d/d','default')">{{
               GetSearchLanguage.filter.day
             }}</span>
-            <span @click="Datesearch('gte', 'now-7d/d')">{{
+            <span @click="Datesearch('gte', 'now-7d/d','default')">{{
               GetSearchLanguage.filter.week
             }}</span>
-            <span @click="Datesearch('gte', 'now-1M/d')">{{
+            <span @click="Datesearch('gte', 'now-1M/d','default')">{{
               GetSearchLanguage.filter.month_1
             }}</span>
-            <span @click="Datesearch('gte', 'now-6M/d')">{{
+            <span @click="Datesearch('gte', 'now-6M/d','default')">{{
               GetSearchLanguage.filter.month_6
             }}</span>
           </li>

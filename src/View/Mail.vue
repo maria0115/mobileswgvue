@@ -66,7 +66,7 @@
             <em>기본 메일함</em>
             <ul class="list_menu">
               <li>
-                <h3><a>안읽은메일</a></h3>
+                <h3><router-link to="mail_unread" >안읽은메일</router-link></h3>
               </li>
               <li>
                 <h3>
@@ -99,23 +99,23 @@
                 </ul>
               </li>
               <li>
-                <h3><a @click="depthDown($event, $parent)">예약메일</a></h3>
+                <h3><router-link to="mail_reservation"  @click="depthDown($event, $parent)">예약메일</router-link></h3>
                 <ul class="depth02">
                   <li><a></a></li>
                 </ul>
               </li>
               <li>
-                <h3><a @click="depthDown($event, $parent)">내게 쓴 메일</a></h3>
+                <router-link to="mail_my"><h3><a @click="depthDown($event, $parent)">내게 쓴 메일</a></h3></router-link>
                 <ul class="depth02">
                   <li><a></a></li>
                 </ul>
               </li>
               <li>
-                <h3>
+                <router-link to="mail_importance"><h3>
                   <a @click="depthDown($event, $parent)" class="down_more"
                     >중요메일</a
                   >
-                </h3>
+                </h3></router-link>
                 <ul class="depth02">
                   <li><a>내부메일</a></li>
                 </ul>

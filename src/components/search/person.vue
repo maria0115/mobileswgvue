@@ -20,7 +20,7 @@
               </ul>
             </a>
           </li>
-          <infinite-loading @infinite="infiniteHandler" spinner="waveDots">
+          <infinite-loading @infinite="infiniteHandler"  :identifier="searchInfiniteId"  spinner="waveDots">
             <div
               slot="no-more"
               style="
@@ -48,7 +48,7 @@ export default {
     InfiniteLoading,
   },
   computed: {
-    ...mapState(["sortdata", "langa", "data"]),
+    ...mapState(["sortdata", "langa", "data","searchInfiniteId"]),
     ...mapGetters(["GetSearchLanguage"]),
     url() {
       return config.search.category;

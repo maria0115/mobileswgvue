@@ -90,10 +90,11 @@ export default {
         var data = state.mail.data[mailtype];
         data.mailtype = mailtype;
         data.page = 0;
-        // console.log(data, "data")
+        
+        console.log(data.page, "data,data")
         Mail(data)
             .then(response => {
-                // console.log(response.data, "response")
+                console.log(response.data, "response")
                 commit('MailDetail', { res: response.data, mailtype })
             });
     },
@@ -267,14 +268,17 @@ export default {
             data.size = config.search.defaultSize;
         }
 
-        if (typeof kind !== "undefined" ||
-            typeof kind !== undefined ||
-            kind !== undefined ||
-            kind !== null ||
+        if (typeof kind !== "undefined" &&
+            typeof kind !== undefined &&
+            kind !== undefined &&
+            kind !== null &&
             kind !== "") {
-            if (kind === "custom") {
+            // if (kind === "custom") {
                 data.dateType = kind;
-            }
+            // }
+            // else{
+            //     data.dateType = "default";
+            // }
         }
 
         if ((typeof what !== "undefined" ||
@@ -290,6 +294,8 @@ export default {
             data[what] = value;
 
         }
+        
+        commit('changeInfiniteId', "searchInfiniteId");
 
         // if(typeof paging !== "undefined" ||
         // typeof paging !== undefined ||
@@ -304,10 +310,11 @@ export default {
         //         dispatch("GetRecent");
         //     });
         // }else{
-        config.search.defaultPageNum = 1;
+        // config.search.defaultPageNum = 1;
 
-        var pagenum = config.search.defaultPageNum - 1;
+        var pagenum = 0;
         data.pagenum = pagenum;
+        // console.log("여기안오냐")
         // }
         commit('setTime');
         // 통합검색 custom 필터에서 lt를 아직 설정하지 않으면 node에 데이터 요청하지 않음
@@ -317,9 +324,11 @@ export default {
             return;
         }
 
+        // console.log(data,"data")
+
         return Search(data)
             .then(response => {
-                // console.log(response)
+                // console.log(response.data,"responseactuib")
 
                 commit('SearchData', { res: response.data.data, word: word, page: pagenum, what, value });
                 dispatch("GetRecent");
@@ -361,7 +370,7 @@ export default {
     // 환경설정 update
     setConfig({ state, commit }, { menu, value, setting }) {
         // 배포용
-        console.log(menu, value, setting, "dd");
+        // console.log(menu, value, setting, "dd");
         if (process.env.NODE_ENV !== 'development') {
             // 여기!!!!!! 유저마다 환경설정 엘라스틱에 넣어줘야 한다!!!!!!!!!!!!!!!!!!!!!!
             var query = {};

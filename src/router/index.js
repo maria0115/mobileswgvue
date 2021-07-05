@@ -380,7 +380,39 @@ export default new Router({
             store.dispatch("GetMailDetail", { mailtype: "mail_trash" });
             next();
           },
-        }
+        },
+        {
+          path: 'mail_unread',
+          component: InboxDetail,
+          beforeEnter: (to, from, next) => {
+            store.dispatch("GetMailDetail", { mailtype: "mail_unread" });
+            next();
+          },
+        },
+        {
+          path: 'mail_reservation',
+          component: InboxDetail,
+          beforeEnter: (to, from, next) => {
+            store.dispatch("GetMailDetail", { mailtype: "mail_reservation" });
+            next();
+          },
+        },
+        {
+          path: 'mail_my',
+          component: InboxDetail,
+          beforeEnter: (to, from, next) => {
+            store.dispatch("GetMailDetail", { mailtype: "mail_my" });
+            next();
+          },
+        },
+        {
+          path: 'mail_importance',
+          component: InboxDetail,
+          beforeEnter: (to, from, next) => {
+            store.dispatch("GetMailDetail", { mailtype: "mail_importance" });
+            next();
+          },
+        },
       ],
     },
   ]

@@ -57,10 +57,7 @@
           </li>
         </ul>
       </div> -->
-      
 
-
-      <!-- <div class="circle default">하이야</div> -->
       <div v-for="(value, name) in GetConfig.main.portlet" :key="name">
         <div v-if="value.key === 'mail' && value.service">
           <Mail :portlet="GetMainLanguage.portlet"></Mail>
@@ -89,12 +86,8 @@ import Notice from "./my/notice.vue";
 import Approving from "./my/approving.vue";
 import Schedule from "./my/schedule.vue";
 import Recent from "./my/recent.vue";
-import config from "../../config/config.json";
 import $ from "jquery";
-// import { now } from "moment";
-// import "./swipeButton.css";
-import "vue-swipe-actions/dist/vue-swipe-actions.css";
-import { SwipeList, SwipeOut } from "vue-swipe-actions";
+
 export default {
   components: {
     Mail,
@@ -102,12 +95,10 @@ export default {
     Approving,
     Schedule,
     Recent,
-    SwipeOut,
-    SwipeList,
   },
   computed: {
     ...mapState(["main"]),
-    ...mapGetters(["GetMain","GetMyInfo","GetMainLanguage","GetConfig"]),
+    ...mapGetters(["GetMain", "GetMyInfo", "GetMainLanguage", "GetConfig"]),
     style() {
       return { transform: "rotate(" + this.degree + "deg)" };
     },
@@ -142,17 +133,6 @@ export default {
       ],
       copycirarr: [],
       positionxy: [],
-      enabled: true,
-      mockSwipeList: [
-        {
-          id: "a",
-          title: "메일테스트1",
-        },
-        {
-          id: "b",
-          title: "메일테스트2",
-        },
-      ],
     };
   },
   mounted() {
@@ -181,7 +161,6 @@ export default {
       // var nowy = this.centerdoty - y;
 
       this.positionxy.push(increase * (180.0 / Math.PI) * -i);
-
     }
   },
   methods: {
@@ -426,13 +405,6 @@ export default {
   transition: width 0s;
 }
 
-@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css");
-/* app specific styles */
-.swipeout-action {
-  display: flex;
-  align-items: center;
-  padding: 0 3rem;
-  cursor: pointer;
-  left: 0;
-}
+
+
 </style>

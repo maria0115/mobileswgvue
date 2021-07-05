@@ -43,6 +43,26 @@
                 "page": "0",
                 "size": "14",
                 "data": []
+            },
+            "mail_unread": {
+                "page": "0",
+                "size": "14",
+                "data": []
+            },
+            "mail_reservation": {
+                "page": "0",
+                "size": "14",
+                "data": []
+            },
+            "mail_my": {
+                "page": "0",
+                "size": "14",
+                "data": []
+            },
+            "mail_importance": {
+                "page": "0",
+                "size": "14",
+                "data": []
             }
         },
         "checkBtn": {

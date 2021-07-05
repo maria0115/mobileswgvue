@@ -85,6 +85,7 @@ export const store = new VueX.Store({
             created: "", // 현재 시각 보낼때 마다 받아오기
         },
         moreList: false,
+        searchInfiniteId:0
     },
     mutations,
     actions,

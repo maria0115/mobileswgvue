@@ -16,7 +16,7 @@
               </p>
             </a>
           </li>
-          <infinite-loading @infinite="infiniteHandler" :identifier="infiniteId" ref="infiniteLoading" spinner="waveDots">
+          <infinite-loading @infinite="infiniteHandler" :identifier="searchInfiniteId" ref="infiniteLoading" spinner="waveDots">
             <div
               slot="no-more"
               style="
@@ -44,7 +44,7 @@ export default {
     InfiniteLoading,
   },
   computed: {
-    ...mapState(["sortdata", "langa", "data"]),
+    ...mapState(["sortdata", "langa", "data","searchInfiniteId"]),
     ...mapGetters(["GetSearchLanguage"]),
     // image 파일을 가지고 있는 url 반환
     url() {
