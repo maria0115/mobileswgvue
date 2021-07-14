@@ -1,13 +1,28 @@
 
 export default {
+    GreetViewData(state, data) {
+        state.store.greetviewdata = data;
+    },
+    SignViewData(state, data) {
+        state.store.signviewdata = data;
+    },
+    MailCustomFolderTitle(state, title) {
+        state.mailCustomFolderTitle = title;
+    },
+    SignList(state, { res }) {
+        state.mail.data.signature.data = res;
+    },
+    // 스크롤페이징 업데이트
     changeInfiniteId(state, value) {
         state[value] += 1;
 
     },
+    // 모두 체크 해제
     disAllCheck(state) {
         state.mail.checkBtn.allchecked = false;
 
     },
+    // 모두 체크
     allCheck(state, path) {
         // console.log(state.mail.checkBtn.allchecked)
         // state.mail.checkBtn.allchecked = !state.mail.checkBtn.allchecked;
@@ -27,16 +42,19 @@ export default {
             state.mail.checkBtn.checkedNames = [];
         }
     },
+    // 체크모드 해제
     Back(state) {
         state.mail.checkBtn.editclicked = false;
         state.mail.checkBtn.photoon = true;
         state.mail.checkBtn.checkedNames = [];
         state.mail.checkBtn.allchecked = false;
     },
+    // 체크모드 활성화
     editClick(state) {
         state.mail.checkBtn.editclicked = !state.mail.checkBtn.editclicked;
         state.mail.checkBtn.photoon = !state.mail.checkBtn.photoon;
     },
+    // 메일 삭제
     mailDelete(state, { type }) {
         var data = state.mail.data[type].data.data;
         for (var i = 0; i < state.mail.checkBtn.checkedNames.length; i++) {
@@ -44,42 +62,46 @@ export default {
         }
         state.mail.checkBtn.checkedNames = [];
     },
+    // 메일 목록 데이터
     MailDetail(state, { res, mailtype }) {
-
-        if (Object.keys(res).length > 0) {
-            for (var i = 0; i < res.data.length; i++) {
-                res.data[i].photoerror = true;
-            }
-        }
         state.mail.data[mailtype].data = res;
+        // console.log(state.mail.data[mailtype].data)
     },
+    // 목록이 더 있는지 확인
     MoreList(state, { list }) {
 
         state.moreList = list;
 
     },
+    // info data
     MyInfo(state, { res }) {
         // state.myinfo={};
         state.store.myinfo = res;
     },
+    // 검색어 초기화
     WordReset(state) {
         state.data.searchword = "";
         state.data.searchwordarr = [];
 
     },
+    // 메일 데이터
     Mail(state, { res, mailtype, category }) {
         state.main.data.mailtype[mailtype][category].data = res;
     },
+    // 일정 데이터
     Schedule(state, { res, scheduletype, category }) {
         state.main.data.scheduletype[scheduletype][category].data = res;
     },
+    // 게시판 데이터
     Board(state, { res, boardtype, category }) {
         state.main.data.boardtype[boardtype][category].data = res;
     },
+    // 전자결재 데이터
     Approval(state, { res, approvaltype, category }) {
         state.main.data.approvaltype[approvaltype][category].data = res.data;
         state.main.data.approvaltype[approvaltype][category].cnt = res.cnt;
     },
+    // 다국어 데이터
     GetLanguage(state, { res, app }) {
         state.store.language[app] = res;
         // console.log(state.store.language)
@@ -93,18 +115,22 @@ export default {
         state.form = res.form;
 
     },
+    // 모든 최근검색어 삭제
     AllDelKeyword(state) {
         state.recent = [];
 
     },
+    // 선택된 최근검색어 삭제
     DelKeyword(state, { word, index }) {
         state.recent.splice(index, 1)
 
     },
+    // 최근검색어 데이터
     Recent(state, { recent }) {
         state.recent = recent;
 
     },
+    // 입력된 검색어
     setWord(state, { word }) {
         if (word !== undefined) {
 
@@ -119,6 +145,7 @@ export default {
         }
 
     },
+    // 검색 데이터
     SearchData(state, { res, word, page, what, value, paging }) {
 
         var result = {};
@@ -151,25 +178,6 @@ export default {
                 value !== "")) {
             state.data[what] = value;
         }
-        // if(typeof paging !== "undefined" ||
-        // typeof paging !== undefined ||
-        // paging !== undefined ||
-        // paging !== null ||
-        // paging !== ""){        //     
-        //     if(res.person.data.length) {
-        //         state.sortdata.person.data = state.sortdata.person.data.concat(res.person.data)
-        //         paging.loaded()
-        //         state.data.pagenum += 1        //         
-        //         // 끝 지정(No more data) - 데이터가 EACH_LEN개 미만이면 
-        //         if(res.person.data.length / config.defaultSize < 1) {
-        //             paging.complete()
-        //         }
-        //       } else {
-        //         // 끝 지정(No more data)
-        //         paging.complete()
-        //     }
-
-        // }
 
     },
     // 자동완성 검색 결과
@@ -181,18 +189,22 @@ export default {
         }
         state.autoList = Array.from(new Set(result));
     },
+    // local 시간
     setTime(state) {
         // 지금 이 순간
         var moment = require("moment");
         state.data.created = moment().utc().format("YYYYMMDDTHHmmss");
     },
+    // created 일때 환경설정 불러오기
     SettingCreated(state, data) {
         state.store.config = data;
 
     },
+    // display mode
     Color(state, { color }) {        // 
         state.store.systemcolor = color;
     },
+    // 환경설정 바꾸기
     Config(state, { menu, value, setting }) {
         if (menu === "etiquette") {
             if (

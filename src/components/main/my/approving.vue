@@ -77,6 +77,7 @@ export default {
     ...mapState(["main"]),
   },
   mounted() {
+    // 모바일인지 확인
     if ("ontouchstart" in document.documentElement !== true) {
       this.checkEvent = "mouse";
     }
@@ -96,6 +97,7 @@ export default {
   },
   props: ["portlet"],
   methods: {
+    // 현재 결재 대상자
     nowApprover(value) {
       var info = value.approvalinfo;
       for(var i = 0; i <info.length; i++) {
@@ -106,6 +108,7 @@ export default {
       }
       
     },
+    // 툴팁 활성화
     onOpen(e, value) {
       // var attachInfoArr = 
       this.tooltipText =value.attachinfo.attachinfo;
@@ -114,6 +117,7 @@ export default {
       // }
       this.active = true;
     },
+    // 툴팁 비활성화
     onClose(e, value) {
       this.active = false;
     },

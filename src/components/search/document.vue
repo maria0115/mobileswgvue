@@ -2,7 +2,7 @@
   <div>
     <div id="tab03">
       <div class="con02">
-        <h2>{{GetSearchLanguage.menu[this.path]}}</h2>
+        <h2>{{ GetSearchLanguage.menu[this.path] }}</h2>
         <ul v-if="datacheck">
           <li v-for="(value, name) in this.sortdata[path].data" :key="name">
             <a href="">
@@ -16,16 +16,21 @@
               </p>
             </a>
           </li>
-          <infinite-loading @infinite="infiniteHandler" :identifier="searchInfiniteId" ref="infiniteLoading" spinner="waveDots">
-            <div
-              slot="no-more"
-              style="
-                color: rgb(102, 102, 102);
-                font-size: 14px;
-                padding: 10px 0px;
-              "
-            >
+          <infinite-loading
+            @infinite="infiniteHandler"
+            :identifier="searchInfiniteId"
+            ref="infiniteLoading"
+            spinner="waveDots"
+          >
+            <div slot="no-more" style="padding: 10px 0px">
               목록의 끝입니다 :)
+            </div>
+            <div slot="no-results" style="padding: 10px 0px">
+              목록의 끝입니다 :)
+            </div>
+            <div slot="error">
+              Error message, click
+              <router-link to="/maillist">here</router-link> to retry
             </div>
           </infinite-loading>
         </ul>
@@ -35,7 +40,7 @@
 </template>
 
 <script>
-import { mapState,mapGetters } from "vuex";
+import { mapState, mapGetters } from "vuex";
 import { Search } from "../../api/index.js";
 import InfiniteLoading from "vue-infinite-loading";
 import config from "../../config/config.json";
@@ -44,7 +49,7 @@ export default {
     InfiniteLoading,
   },
   computed: {
-    ...mapState(["sortdata", "langa", "data","searchInfiniteId"]),
+    ...mapState(["sortdata", "langa", "data", "searchInfiniteId"]),
     ...mapGetters(["GetSearchLanguage"]),
     // image 파일을 가지고 있는 url 반환
     url() {
@@ -56,7 +61,9 @@ export default {
     },
     // 통합검색의 데이터는 vuex store 하나의 변수로 처리 하게 되는데 router로 이동할 때마다 데이터 값이 제대로 바인딩이 되지 않으면 오류, datacheck
     datacheck() {
-      this.path = this.$route.path.substring(this.$route.path.lastIndexOf("/")+1);
+      this.path = this.$route.path.substring(
+        this.$route.path.lastIndexOf("/") + 1
+      );
       var data = this.sortdata[this.path];
       if (
         typeof data == "undefined" ||
@@ -73,16 +80,14 @@ export default {
   },
   data() {
     return {
-      path:"",
-      infiniteId:0,
+      path: "",
+      infiniteId: 0,
     };
   },
-  created() {
-    
-  },
-  beforeRouteLeave (to, from, next) {
-    // this.$refs.infiniteLoading.$emit('$InfiniteLoading:reset'); 
-    this.infiniteId+=1;
+  created() {},
+  beforeRouteLeave(to, from, next) {
+    // this.$refs.infiniteLoading.$emit('$InfiniteLoading:reset');
+    this.infiniteId += 1;
     next();
   },
   methods: {
@@ -127,9 +132,8 @@ export default {
 
           setTimeout(() => {
             if (data.length) {
-              this.sortdata[this.path].data = this.sortdata[this.path].data.concat(
-                data
-              );
+              this.sortdata[this.path].data =
+                this.sortdata[this.path].data.concat(data);
               $state.loaded();
 
               console.log(

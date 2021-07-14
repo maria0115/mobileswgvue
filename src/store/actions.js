@@ -1,6 +1,7 @@
-import { MailDelete, MyInfo, PSearch, PUdate, Search, Auto, Recent, AllDelKeyword, DelKeyword, getForm, GetLanguage, Schedule, Board, Approval, Mail } from '../api/index.js';
+import { MailAutoSave,MailDelay,GreetAdd,SignAdd, SignSet, SignList, ReadFlag, MailMove, MailDelete, MyInfo, PSearch, PUdate, Search, Auto, Recent, AllDelKeyword, DelKeyword, getForm, GetLanguage, Schedule, Board, Approval, Mail } from '../api/index.js';
 import config from '../config/key.js';
 import $ from "jquery";
+import router from '../router/index';
 //system 모드이면 무슨 light 인지 dark 인지 감지
 const whatcolor = {
     fetch(color) {
@@ -15,19 +16,163 @@ const whatcolor = {
     }
 }
 export default {
+    MailAutoSave({ state, commit }, data) {
+        console.log(data);
+        MailAutoSave(data)
+            .then(response => {
+                if (response.status !== 200) {
+                    console.log("MailAutoSave not working");
+                } else {
+                    console.log("잘들어갔다")
+                    // commit("GreetViewData", data);
+
+                    // router.push({ name: 'MailAutoSave' });
+                }
+            });
+
+    },
+    MailDelay({ state, commit }, data) {
+        console.log(data);
+        MailDelay(data)
+            .then(response => {
+                if (response.status !== 200) {
+                    console.log("MailDelay not working");
+                } else {
+                    console.log("delay잘들어감")
+                    // commit("GreetViewData", data);
+
+                    // router.push({ name: 'MailDelay' });
+                }
+            });
+
+    },
+    GreetAdd({ state, commit }, data) {
+        GreetAdd(data)
+            .then(response => {
+                if (response.status !== 200) {
+                    console.log("GreetAdd not working");
+                } else {
+                    commit("GreetViewData", data);
+
+                    router.push({ name: 'GreetAdd' });
+                }
+            });
+
+    },
+    SignAdd({ state, commit }, data) {
+        SignAdd(data)
+            .then(response => {
+                if (response.status !== 200) {
+                    console.log("SignAdd not working");
+                } else {
+                    commit("SignViewData", data);
+
+                    router.push({ name: 'SeeSign' });
+                }
+            });
+
+    },
+    SignSet(state, { unid }) {
+        var data = {};
+        data.unid = unid;
+        SignSet(data)
+            .then(response => {
+                if (response.status !== 200) {
+                    console.log("서명 설정 안됨");
+                }
+            });
+    },
+    SignList({ state, commit }) {
+        var data = {};
+        data.page = 0;
+        data.size = state.mail.data.signature.size;
+        SignList(data)
+            .then(response => {
+                if (response.status == 200) {
+                    commit('SignList', { res: response.data })
+                } else {
+                    console.log("서명 목록 data error");
+                }
+            });
+    },
+    ReadFlag({ state }, { datas }) {
+        // var datas = state.mail.checkBtn.checkedNames;
+        var datastr = "";
+        for (var i = 0; i < datas.length; i++) {
+            datastr += datas[i].unid + ',';
+        }
+        var data = {};
+        data.unid = datastr;
+        ReadFlag(data)
+            .then(response => {
+                if (response.status == 200) {
+                    router.push(router.history.current.path);
+                    return true;
+                }
+                return false;
+            });
+
+    },
+    MailMove({ state, dispatch }, { viewname, folderId }) {
+        var data = {};
+        var folderstr = "";
+        var checkedNames = state.mail.checkBtn.checkedNames;
+        if (checkedNames.length > 0) {
+            for (var i = 0; i < checkedNames.length; i++) {
+                folderstr += `${checkedNames[i].unid},`;
+                // console.log(checkedNames[i],"checkedNames")
+            }
+            data.ids = folderstr;
+            data.viewname = viewname;
+            data.folderId = folderId;
+            // console.log("이동안됨?",data)
+
+
+            MailMove(data)
+                .then(response => {
+                    // console.log(response, "삭제됨?");
+                    if (response.status == 200) {
+                        router.push(router.history.current.path);
+                        return true;
+                    }
+                    return false;
+                });
+
+        }
+    },
+
+    async tree({ state }, data) {
+        var tree = [],
+            c = {};
+        var item, id, parentId;
+
+        for (var i = 0, length = data.length; i < length; i++) {
+            item = data[i];
+            id = item['mycode'];
+            parentId = item['parentcode'];
+
+            c[id] = c[id] || [];
+            item['children'] = c[id];
+            if (parentId != "") {
+                c[parentId] = c[parentId] || [];
+
+                c[parentId].push(item);
+
+            } else {
+                // console.log("else",item)
+                tree.push(item);
+            }
+            console.log(c)
+        };
+
+        return tree;
+    },
+    // 메일 삭제
     MailDelete({ state, dispatch }, { datas, type }) {
         // data는 //unid,unid string
         var datastr = "";
-        // console.log(datas)
-        // var redata = [];
-        // const alldata = state.mail.data[type].data;
         for (var i = 0; i < datas.length; i++) {
-            datastr += datas[i].unid + ','
-            // for(var j=0; j<alldata.length; j++){
-            //     if(datas[i].unid===alldata[j].unid){
-            //         redata.push(alldata[j])
-            //     }
-            // }
+            datastr += datas[i].unid + ',';
         }
         MailDelete(datastr)
             .then(response => {
@@ -37,8 +182,6 @@ export default {
                 }
                 return false;
             });
-        // console.log(result);
-        // dispatch("GetMailDetail", { mailtype: type })
     },
     // 해당 페이지 이후 데이터가 더 있는지 확인
     GetMoreList({ state, commit }, { data }) {
@@ -83,19 +226,35 @@ export default {
                 commit('Mail', { res: response.data, mailtype, category })
             });
     },
-    // mail data
-    GetMailDetail({ commit, state }, { mailtype }) {
+    // maildetail data
+    GetMailDetail({ commit, state }, { mailtype, folderId }) {
+        // console.log(mailtype,folderId)
         state.mail.data[mailtype].page = 0;
         state.mail.data[mailtype].data = [];
         var data = state.mail.data[mailtype];
         data.mailtype = mailtype;
         data.page = 0;
-        
-        console.log(data.page, "data,data")
+
+        if (mailtype == 'custom') {
+            // console.log(router.history.current.params)
+
+
+            data.FolderId = folderId;
+        }
+        // console.log(data)
+
         Mail(data)
             .then(response => {
-                console.log(response.data, "response")
-                commit('MailDetail', { res: response.data, mailtype })
+                // console.log(response.data, "response")
+                if (response.status == 200) {
+                    commit('MailDetail', { res: response.data, mailtype })
+                    // if(mailtype == 'custom'){
+                    //     router.push('/maillist/custom');
+
+                    // }
+                } else {
+                    console.log("폴더별 메일데이터 에러")
+                }
             });
     },
     // 일정 data
@@ -144,7 +303,7 @@ export default {
                 // console.log("@@@@@@@@@@@@@@@@@@@@@",response.data)
                 commit('GetLanguage', { res: response.data, app })
                 return;
-                
+
             });
     },
     Children({ commit }, { child }) {
@@ -274,7 +433,7 @@ export default {
             kind !== null &&
             kind !== "") {
             // if (kind === "custom") {
-                data.dateType = kind;
+            data.dateType = kind;
             // }
             // else{
             //     data.dateType = "default";
@@ -294,7 +453,7 @@ export default {
             data[what] = value;
 
         }
-        
+
         commit('changeInfiniteId', "searchInfiniteId");
 
         // if(typeof paging !== "undefined" ||

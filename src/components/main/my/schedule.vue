@@ -80,31 +80,6 @@ export default {
       // const date = this.GetMain.scheduletype.recent.my.data;
       var result = {};
       var moment = require("moment");
-      // var now = moment().format("YYYYMMDDTHHmmss");
-      // moment(now).format("YYYYMMDD");
-      // if (date.length > 0) {
-      //   var start = parseInt(moment(date[0].startdate).format("YYYYMMDD"));
-      //   var end = parseInt(moment(date[0].enddate).format("YYYYMMDD"));
-      //   var nowTime = parseInt(moment().format("YYYYMMDD"));
-      //   // 일정이 하루에서 끝나지 않는다면
-      //   if (start !== end) {
-      //     console.log("일정이 하루에서 끝나지 않는다면");
-      //     var starttime = parseInt(moment(start).format("YYYYMMDD"));
-      //     var enddate = parseInt(moment(end).format("YYYYMMDD"));
-      //     // 일정 중간이 오늘이면 오늘 빨간색
-      //     if (starttime <= nowTime || nowTime <= enddate) {
-      //       console.log("일정 중간이 오늘이면 오늘 빨간색");
-      //       result.yearmonth = moment().format("YYYY.MM");
-      //       result.day = moment().format("DD");
-      //     }
-      //   } else {
-      //     // 오늘 날짜와 같다면 startdate 빨간색
-      //     // 오늘 날짜와 다르다면 startdate 빨간색
-      //     console.log("오늘날짜와 같거나 다름")
-      //     result.yearmonth = moment(date[0].startdate).format("YYYY.MM");
-      //     result.day = moment(date[0].startdate).format("DD");
-      //   }
-      // } else {
       result.yearmonth = moment().format("YYYY.MM");
       result.day = moment().format("DD");
       // }

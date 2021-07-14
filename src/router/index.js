@@ -4,7 +4,19 @@ import Vue from 'vue';
 import Preferences from '../View/Preferences.vue';
 import Search from '../View/Search.vue';
 import Main from '../View/Main.vue';
-import Mail from '../View/Mail.vue';
+import MailList from '../View/MailList.vue';
+import MailConfig from '../View/MailConfig.vue';
+import addgreet from '../components/mailconfig/addgreet.vue';
+import addsign from '../components/mailconfig/addsign.vue';
+import autosave from '../components/mailconfig/autosave.vue';
+import delay from '../components/mailconfig/delay.vue';
+import greet from '../components/mailconfig/greet.vue';
+import modifygreet from '../components/mailconfig/modifygreet.vue';
+import modifysign from '../components/mailconfig/modifysign.vue';
+import seegreet from '../components/mailconfig/seegreet.vue';
+import seesign from '../components/mailconfig/seesign.vue';
+import set_config from '../components/mailconfig/set_config.vue';
+import sign from '../components/mailconfig/sign.vue';
 import my from '../components/main/my.vue';
 import mail from '../components/main/mail.vue';
 import approval from '../components/main/approval.vue';
@@ -23,6 +35,8 @@ import AllSearch from '../components/search/allsearch.vue';
 import Document from '../components/search/document.vue';
 import Person from '../components/search/person.vue';
 import InboxDetail from '../components/mail/inbox_detail.vue';
+import ReadMail from '../components/mail/readmail.vue';
+import WriteMail from '../components/mail/writemail.vue';
 
 
 import { store } from '../store/index.js';
@@ -34,87 +48,7 @@ Router.prototype.push = function push(location) {
     })
 }
 
-// import nheader from '../View/nheader.vue';
 Vue.use(Router);
-
-// async function getchildren(form, store) {
-//   var child = [];
-//   var f = {};
-//   for (var i = 0; i < form.length; i++) {
-//     var sto = await import(`../store/index.js`);
-//     var store = await sto.getstore();
-//     // const store = await getstore();
-//     // console.log(store);
-//     // const copystore = store;
-//     var document = form[i].datatype;
-//     var component = await import(`../components/search/${document}.vue`);
-//     // console.log(component);
-//     var name = form[i].name;
-//     f = {
-//       path: name,
-//       component: component.default,
-//       beforeEnter: (to, from, next) => {
-//         store.dispatch("SearchWord", {
-//           category: to.path.substring(to.path.lastIndexOf("/") + 1)
-//         })
-//           .then(() => {
-//             next();
-//           })
-//           .catch(() => new Error("failed to fetch boardlist"));
-//       },
-//     };
-//     child.push(f);
-
-
-//   }
-//   return child;
-// }
-
-// const ch = {
-//   async get(store) {
-//     // var data = config.form;
-//     var config = await import(`../../public/config.json`);
-//     var data = config.form;
-//     // var data = [
-//     //   {
-//     //     "datatype": "allsearch",
-//     //     "name": "allsearch"
-//     //   },
-//     //   {
-//     //     "datatype": "person",
-//     //     "name": "person"
-//     //   },
-//     //   {
-//     //     "datatype": "document",
-//     //     "name": "approval"
-//     //   },
-//     //   {
-//     //     "datatype": "document",
-//     //     "name": "board"
-//     //   },
-//     //   {
-//     //     "datatype": "document",
-//     //     "name": "mail"
-//     //   }
-//     // ]
-//     var result = await getchildren(data, store).then((result) => {
-//       return result;
-//     })
-//     return result;
-
-//   }
-
-// }
-
-
-// export async function router() {
-//   var sto = await import(`../store/index.js`);
-//   var store = await sto.getstore();
-//   // console.log(store.state,"children");
-//   // const child = await ch.get(store);
-//   var data = new Router()
-//   return data;
-// }
 
 export default new Router({
   mode: 'history',
@@ -198,13 +132,6 @@ export default new Router({
       component: Search,
       beforeEnter: (to, from, next) => {
         store.dispatch("GetLanguage", { app: "search" });
-        store.dispatch("SearchWord", {
-          word: store.state.data.searchword,
-          category: store.state.data.class,
-        })
-          .then(() => {
-          })
-          .catch(() => new Error("failed to fetch boardlist"));
         next();
       },
       children: [
@@ -314,7 +241,12 @@ export default new Router({
     },
     {
       path: '/maillist',
-      component: Mail,
+      component: MailList,
+      beforeEnter: (to, from, next) => {
+        store.dispatch("GetLanguage", { app: "mail" });
+        store.dispatch("GetMailDetail", { mailtype: "folderList" });
+        next();
+      },
       redirect: '/maillist/inbox_detail',
       children: [
         {
@@ -413,6 +345,144 @@ export default new Router({
             next();
           },
         },
+        {
+          path: 'mail_followup',
+          component: InboxDetail,
+          beforeEnter: (to, from, next) => {
+            store.dispatch("GetMailDetail", { mailtype: "mail_followup" });
+            next();
+          },
+        },
+        {
+          path: 'custom/:folderId',
+          name:'Custom',
+          component: InboxDetail,
+          beforeEnter: (to, from, next) => {
+            store.dispatch("GetMailDetail", { mailtype: "custom",folderId:to.params.folderId });
+            // store.dispatch("GetMailDetail", { mailtype: "custom",folderId:this.customFolder });
+            next();
+          },
+        },
+        {
+          path: 'read_mail',
+          component: ReadMail,
+          beforeEnter: (to, from, next) => {
+            // store.dispatch("GetMailDetail", { mailtype: "mail_importance" });
+            next();
+          },
+        },
+        {
+          path: 'write_mail',
+          component: WriteMail,
+          beforeEnter: (to, from, next) => {
+            // store.dispatch("GetMailDetail", { mailtype: "mail_importance" });
+            next();
+          },
+        },
+      ],
+    },
+    {
+      path: '/mailconfig',
+      component: MailConfig,
+      beforeEnter: (to, from, next) => {
+        // store.dispatch("GetLanguage", { app: "mail" });
+        // store.dispatch("GetMailDetail", { mailtype: "folderList" });
+        next();
+      },
+      redirect: '/mailconfig/set_config',
+      children: [
+        {
+          path: 'set_config',
+          component: set_config,
+          beforeEnter: (to, from, next) => {
+            // store.dispatch("GetMailDetail", { mailtype: "set_config" });
+            store.dispatch("SignList");
+            next();
+          },
+        },
+        {
+          path: 'addgreet',
+          component: addgreet,
+          beforeEnter: (to, from, next) => {
+            // store.dispatch("GetMailDetail", { mailtype: "set_config" });
+            next();
+          },
+        },
+        {
+          path: 'addsign',
+          component: addsign,
+          beforeEnter: (to, from, next) => {
+            // store.dispatch("GetMailDetail", { mailtype: "set_config" });
+            next();
+          },
+        },
+        {
+          path: 'autosave',
+          component: autosave,
+          beforeEnter: (to, from, next) => {
+            // store.dispatch("GetMailDetail", { mailtype: "set_config" });
+            next();
+          },
+        },
+        {
+          path: 'delay',
+          component: delay,
+          beforeEnter: (to, from, next) => {
+            // store.dispatch("GetMailDetail", { mailtype: "set_config" });
+            next();
+          },
+        },
+        {
+          path: 'greet',
+          component: greet,
+          beforeEnter: (to, from, next) => {
+            // store.dispatch("GetMailDetail", { mailtype: "set_config" });
+            next();
+          },
+        },
+        {
+          path: 'modifygreet',
+          component: modifygreet,
+          beforeEnter: (to, from, next) => {
+            // store.dispatch("GetMailDetail", { mailtype: "set_config" });
+            next();
+          },
+        },
+        {
+          path: 'modifysign',
+          component: modifysign,
+          beforeEnter: (to, from, next) => {
+            // store.dispatch("GetMailDetail", { mailtype: "set_config" });
+            next();
+          },
+        },
+        {
+          path: 'seegreet',
+          name:"GreetAdd",
+          component: seegreet,
+          beforeEnter: (to, from, next) => {
+            // store.dispatch("GetMailDetail", { mailtype: "set_config" });
+            next();
+          },
+        },
+        {
+          path: 'seesign',
+          name:'SeeSign',
+          component: seesign,
+          beforeEnter: (to, from, next) => {
+            // store.dispatch("GetMailDetail", { mailtype: "set_config" });
+            next();
+          },
+        },
+        {
+          path: 'sign',
+          component: sign,
+          beforeEnter: (to, from, next) => {
+            store.dispatch("SignList");
+            next();
+          },
+        },
+
       ],
     },
   ]

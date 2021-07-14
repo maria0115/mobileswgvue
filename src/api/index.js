@@ -1,11 +1,96 @@
 import axios from 'axios';
 
+// 메일 자동저장
+function MailDelay(data) {
+    return axios({
+        method: 'post',
+        url: `/api/mail?type=delay`,
+        data: JSON.stringify(data), //json
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+}
+// 메일 자동저장
+function MailAutoSave(data) {
+    return axios({
+        method: 'post',
+        url: `/api/mail?type=autoSave`,
+        data: JSON.stringify(data), //json
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+}
+// 서명 작성
+function GreetAdd(data) {
+    return axios({
+        method: 'post',
+        url: `/api/mail?type=greetingsAdd`,
+        data: JSON.stringify(data), //json
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+}
+// 서명 작성
+function SignAdd(data) {
+    return axios({
+        method: 'post',
+        url: `/api/mail?type=signatureAdd`,
+        data: JSON.stringify(data), //json
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+}
+// 서명 설정
+function SignSet(data) {
+    return axios({
+        method: 'get',
+        url: `/api/mail?type=signatureSet&unid=${data.unid}`,
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+}
 
+// 서명 list
+function SignList(data) {
+    return axios({
+        method: 'get',
+        url: `/api/mail?type=signature&size=${data.size}&page=${data.page}`,
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+}
 // 사용자 정보
 function MyInfo() {
     return axios({
         method: 'get',
         url: `/api/myinfo`,
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+}
+// 읽음표시
+function ReadFlag(data) {
+    return axios({
+        method: 'get',
+        url: `/api/mail?type=readflag&unid=${data.unid}`,
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+}
+// 메일이동
+function MailMove(data) {
+    return axios({
+        method: 'post',
+        url: `/api/mail?type=moveFolder`,
+        data: JSON.stringify(data), //json
         headers: {
             'Content-Type': 'application/json'
         }
@@ -27,13 +112,13 @@ function MailDelete(data) {
 function Mail(data) {
     return axios({
         method: 'get',
-        url: `/api/mail?type=${data.mailtype}&size=${data.size}&page=${data.page}`,
+        url: `/api/mail?type=${data.mailtype}&size=${data.size}&page=${data.page}&FolderId=${data.FolderId}`,
         headers: {
             'Content-Type': 'application/json'
         }
     })
 }
-
+// 일정
 function Schedule(data) {
     var moment = require("moment");
     data.today = moment().format("YYYY-MM-DD");
@@ -187,4 +272,12 @@ export {
     Mail,
     MyInfo,
     MailDelete,
+    MailMove,
+    ReadFlag,
+    SignList,
+    SignSet,
+    SignAdd,
+    GreetAdd,
+    MailAutoSave,
+    MailDelay,
 }

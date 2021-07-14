@@ -139,21 +139,20 @@ export default {
     }
   },
   methods: {
+    // 전 url 이동
     RouterBack() {
       this.$router.go(-1);
     },
+    // 후 url 이동
     RouterGo() {
       this.$router.go(1);
     },
+    // 새로고침
     RouterRefresh() {
       this.$router.push(this.$route.path);
     },
     RouterLink() {
       console.log("routerlink");
-    },
-    depthDown(e, t) {
-      $(e.currentTarget.parentElement.nextElementSibling).slideToggle();
-      $(e.currentTarget.parentElement).toggleClass("on");
     },
     // menu 변경시 검색
     Categorysearch(cate, category) {

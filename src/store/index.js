@@ -8,7 +8,7 @@ import { dataStore } from './module';
 
 import createPersistedState from 'vuex-persistedstate';
 const dataState = createPersistedState({
-    paths: ['store.config','store.systemcolor','store.language','store.myinfo'],
+    paths: ['store.config','store.systemcolor','store.language','store.myinfo','store.signviewdata','store.greetviewdata','mailconfig'],
     // storage: {
     //     getItem: key => Cookies.get(key),
     //     setItem: (key, value) => Cookies.set(key, value, { expires: 3, secure: true }),
@@ -48,6 +48,9 @@ export const store = new VueX.Store({
         children: [],
         main: config.main,  //main 변수 설정
         mail: config.mail,
+        mailCustomFolderTitle:"",
+        signdefaultindex:0,
+        
         // language: config.language,  //다국어}
         data: {     //통합검색의 검색할 때 변수 설정
             from: 0,
@@ -114,6 +117,9 @@ export const store = new VueX.Store({
         GetSearchLanguage: (state) => {
             return state.store.language.search;
         },
+        GetMailLanguage: (state) => {
+            return state.store.language.mail;
+        },
         GetMain: (state) => {
             return state.main.data;
         },
@@ -126,6 +132,17 @@ export const store = new VueX.Store({
         GetSystemColor: (state) => {
             return state.store.systemcolor;
         },
+        GetSignView:(state) =>{
+            return state.store.signviewdata;
+
+        },
+        GetGreetView:(state) =>{
+            return state.store.greetviewdata;
+        },
+        GetMailConfig:(state) =>{
+            return state.store.mailconfig;
+        }
+
     },
     // }
 })

@@ -190,4 +190,84 @@ $(function () {
         $(this).parent('ul').parent('div').parent('div').parent('li').siblings('li').find('.add_obj').removeClass('active');
         $(this).parent('ul').parent('div').parent('div').siblings('div').find('.add_obj').removeClass('active');
     });
+
+    /*6_29수정 */ 
+    $('body').on('click','.re_more',function(){
+        $(this).toggleClass('active');
+        $('.refer_div').slideToggle();
+        $('.re_refer_div').slideToggle();
+    });
+    
+    $('.add_file li .file_del').on('click',function(){
+        $(this).parent('div').parent('li').removeClass('active');
+    });
+    /* 수정끝*/
+    $('body').on('click','.impor_send',function(){
+        $('.impor_check').toggleClass('active');
+    });
+    $('body').on('click',".time_send",function(){
+        $('.time_check').toggleClass('active');
+        $('.time_modal').addClass('active');
+    });
+    $('body').on('click','.modal_close',function(){
+        $('.time_modal').removeClass('active');
+        $('.time_check').removeClass('active');
+    });
+    $('body').on('click','time_mo_btn',function(){
+        $('.time_modal').removeClass('active');
+    });
+    $('.wm_top textarea').on('click',function(){
+        $(this).parent('li').parent('ul').parent('div').siblings('div.add_search').toggleClass('active');
+    });
+    $('body').on('click','.rd_more',function(){
+        $('.rdmail_icons .more_box').toggleClass('on');
+    });
+    // $('body').on('click','.btn_toggle',function(){
+    //     $(this).parent('a').parent('li').parent('ul').toggleClass('on');
+    // });
+    
+    $('body').on('click','.t_btn',function(){
+        $('.save_time').addClass('on');
+    });
+    $('body').on('click','.move_bg',function(){
+        $(this).parent('div').removeClass('on');
+    });
+    $('body').on('click','.d_btn',function(){
+        $('.save_day').addClass('on');
+    });
+    $('body').on('click','.move_bg',function(){
+        $(this).parent('div').removeClass('on');
+    });
+    $('body').on('click','.sv_radio',function(){
+        $(this).addClass('active');
+        $(this).parent('li').siblings('li').find('span').removeClass('active');
+    });
+    $('.delay > li').on('click',function(){
+        $(this).find('span').addClass('active');
+        $(this).siblings('li').find('span').removeClass('active');
+    });
+    // $('body').on('click','.sig_check',function(){
+    //     $(this).toggleClass('active');
+    // });
+    $('.editmenu ul > li span b').on('click', function() {
+        $(this).toggleClass('on');
+    });
+    $('body').on('click','.organ', function() {
+        $('.organ_modal').addClass('on');
+    });
+    $('.organ_modal .modal_close').on('click',function(){
+        $('.organ_modal').removeClass('on');
+    });
+    $('.organlist > li > div').on('click',function(){
+        $(this).parent('li').find('.o_depth02').slideToggle(); 
+        $(this).toggleClass('on');
+    });
+    $('.o_depth02 > li > div').on('click',function(){
+        $(this).parent('li').find('.o_depth03').slideToggle(); 
+        $(this).toggleClass('on');
+    }); 
+    $('.o_depth03 > li > div').on('click',function(){
+        $(this).parent('li').find('.o_depth04').slideToggle(); 
+        $(this).toggleClass('on');
+    }); 
 });

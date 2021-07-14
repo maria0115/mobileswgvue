@@ -63,6 +63,24 @@
                 "page": "0",
                 "size": "14",
                 "data": []
+            },
+            "folderList": {
+                "data": []
+            },
+            "mail_followup": {
+                "page": "0",
+                "size": "14",
+                "data": []
+            },
+            "custom": {
+                "page": "0",
+                "size": "14",
+                "data": []
+            },
+            "signature": {
+                "page": "0",
+                "size": "10",
+                "data": []
             }
         },
         "checkBtn": {
@@ -112,13 +130,13 @@
                 "approving": {
                     "my": {
                         "page": "0",
-                        "size": "6",
+                        "size": "3",
                         "data": [],
                         "cnt": 0
                     },
                     "more": {
                         "page": "0",
-                        "size": "6",
+                        "size": "3",
                         "data": [],
                         "cnt": 0
                     }
@@ -306,160 +324,6 @@
             "font": "Nanum Gothic"
         },
         "mode": "light"
-    },
-    "language": {
-        "description": "language 변수 초기화",
-        "config": {
-            "login": {
-                "setlogin": "로그인 설정",
-                "autologin": "자동 로그인"
-            },
-            "allim": {
-                "setallim": "알림 설정",
-                "menuallim": "메뉴별 알림 설정",
-                "ettitime": "에티켓 시간 설정",
-                "starttime": "시작시간",
-                "endtime": "종료시간",
-                "menu": {
-                    "today": "Today",
-                    "mail": "메일",
-                    "approval": "전자결재",
-                    "works": "일정",
-                    "board": "게시판"
-                }
-            },
-            "synch": "일정, 연락처 동기화",
-            "display": {
-                "setdisplay": "화면 설정",
-                "maindisplay": "메인 화면 설정",
-                "main": {
-                    "menu": "메뉴형으로 보기",
-                    "portal": "포털형으로 보기"
-                },
-                "list": [
-                    10,
-                    15,
-                    20
-                ],
-                "listcount": "목록 문서 수 설정",
-                "portlet": "포틀릿 배치 설정"
-            },
-            "style": {
-                "setstyle": "스타일 설정",
-                "setsizefont": "글자 크기/글꼴 설정",
-                "setsize": "글자 크기",
-                "setfont": "글꼴 설정",
-                "setdark": "다크모드 설정",
-                "font": {
-                    "Nanum Gothic": "Nanum Gothic",
-                    "Nanum Myeongjo": "Nanum Myeongjo",
-                    "Noto Sans": "Noto Sans",
-                    "Poppins": "Poppins"
-                },
-                "size": {
-                    "small": "작게",
-                    "normal": "보통",
-                    "large": "크게"
-                },
-                "dark": {
-                    "system": "시스템 설정 모드",
-                    "light": "라이트 모드",
-                    "dark": "다크 모드"
-                }
-            }
-        },
-        "search": {
-            "inputbox": "검색어 또는 URL 입력",
-            "delete": "전체삭제",
-            "completion": "완료",
-            "menu": {
-                "allsearch": "통합검색",
-                "approval": "결재",
-                "board": "게시판",
-                "person": "임직원",
-                "mail": "메일"
-            },
-            "person": {
-                "dept": "소속",
-                "position": "직급",
-                "tel": "전화번호",
-                "phone": "휴대폰",
-                "email": "E-mail",
-                "work": "담당업무"
-            },
-            "more": "더보기",
-            "filter": {
-                "all": "전체",
-                "day": "1일",
-                "week": "1주",
-                "month_1": "1개월",
-                "month_6": "6개월",
-                "select": "직접선택"
-            }
-        },
-        "main": {
-            "header": {
-                "inputbox": "검색어 또는 URL 입력",
-                "my": "MY",
-                "mail": "메일",
-                "approval": "전자결재",
-                "schedule": "일정",
-                "board": "게시판",
-                "reservation": "자원예약",
-                "person": "임직원정보"
-            },
-            "myinfo": {
-                "mail": "새 메일",
-                "approval": "결재",
-                "schedule": "일정"
-            },
-            "portlet": {
-                "mail": "메일",
-                "announcement": "공지",
-                "notice": "공지사항",
-                "approval": {
-                    "approving": "결재 중 문서",
-                    "approve": "결재 할 문서",
-                    "draft": "기안",
-                    "agrement": "합의",
-                    "approval": "결재"
-                },
-                "schedule": "일정",
-                "portletposition": {
-                    "approving": "결재중 문서",
-                    "mail": "메일",
-                    "notice": "공지사항",
-                    "recentboard": "최근게시물",
-                    "schedule": "일정"
-                },
-                "board": {
-                    "board": "최근 게시물",
-                    "education": "교육",
-                    "work": "업무"
-                },
-                "receive": "받은 메일",
-                "send": "보낸 메일"
-            },
-            "footer": {
-                "ktop_home": "Ktop 홈",
-                "saerom_home": "새롬 홈페이지",
-                "talk_install": "Talk4 설치",
-                "logout": "로그아웃"
-            },
-            "hamburger": {
-                "menu": {
-                    "menuset": "메뉴관리",
-                    "portlet": "포틀릿 서비스",
-                    "portletposition": "포틀릿 순서변경",
-                    "add": "추가"
-                },
-                "button": {
-                    "edit": "편집",
-                    "reset": "초기화",
-                    "success": "완료"
-                }
-            }
-        }
     }
     
 }

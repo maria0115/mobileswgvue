@@ -137,7 +137,6 @@
 <script>
 import { mapGetters, mapState } from "vuex";
 import Header from "./header.vue";
-import "./swipeButton.css";
 import $ from "jquery";
 export default {
   components: {

@@ -1,0 +1,71 @@
+<template>
+  <div>
+    <h2 class="mail_st_header">
+      <router-link to="sign"> <img src="../../mobile/img/wmail_back.png" alt="" /> </router-link
+      >서명 보기
+      <span><router-link to="modifysign">편집</router-link></span>
+    </h2>
+    <div class="m_contents07">
+      <ul>
+        <li>
+          <span>제목</span>
+          <div>
+            <p>{{GetSignView.subject}}</p>
+          </div>
+        </li>
+        <li>
+          <span>설정</span>
+          <div v-if="GetSignView.default">
+            <p>기본 서명</p>
+          </div>
+        </li>
+        <li>
+          <div v-html="GetSignView.body">
+            ---------------------------------------------------------<br />
+            이정인 책임연구원<br />
+            (주)새롬정보시스템/디자인팀<br />
+            153-704 서울시 금천구 가산디지털1로 219 벽산디지털 밸리 <br />
+            6차 601호 <br />
+            Tel : (02) 2105-2548 H.P: 010-6612-5764<br />
+            E-mail : jeongin@saerom.co.kr<br />
+            http://www.saerom.co.kr<br />
+            ---------------------------------------------------------
+          </div>
+        </li>
+      </ul>
+    </div>
+    <Footer></Footer>
+  </div>
+</template>
+
+<script>
+import Footer from "../mail/footer.vue";
+import { mapState, mapGetters } from "vuex";
+export default {
+  data() {
+    return {
+      // path:this.path,
+      subject: "",
+      default: false,
+      body: "",
+    };
+  },
+  computed: {
+    ...mapGetters(["GetSignView"]),
+  },
+  components: {
+    Footer,
+  },
+  created(){
+    
+  },
+  methods: {
+    Back() {
+      this.$router.go(-1);
+    },
+  },
+};
+</script>
+
+<style>
+</style>

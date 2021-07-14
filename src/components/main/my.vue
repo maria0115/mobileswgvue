@@ -130,6 +130,7 @@ export default {
         { key: 5, value: "hi6" },
         { key: 6, value: "hi7" },
         { key: 7, value: "hi8" },
+        { key: 8, value: "hi9" },
       ],
       copycirarr: [],
       positionxy: [],

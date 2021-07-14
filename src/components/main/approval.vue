@@ -125,14 +125,6 @@ export default {
     ...mapGetters(["GetMain","GetMyInfo","GetMainLanguage"]),
   },
   created() {
-    // this.$store.dispatch("GetApproval", {
-    //   approvaltype: "approve",
-    //   category: "more",
-    // });
-    // this.$store.dispatch("GetApproval", {
-    //   approvaltype: "approving",
-    //   category: "more",
-    // });
   },
   mounted() {
     if ("ontouchstart" in document.documentElement !== true) {
@@ -149,19 +141,23 @@ export default {
     };
   },
   methods: {
+    // 툴팁 활성화 될 list 확인
     tooltipActive(index) {
       if (this.tooltipActiveIndex === index) {
         return true;
       }
       return false;
     },
+    // 툴팁 활성화
     onOpen(e, value, index) {
       this.tooltipText = value.attachinfo.attachinfo;
       this.tooltipActiveIndex = index;
     },
+    // 툴팁 비활성화
     onClose(e, value, index) {
       this.tooltipActiveIndex = -1;
     },
+    // 사진 url
     url(sabun) {
       return config.main.photo.replace(/@/g, sabun);
     },
