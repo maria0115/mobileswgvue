@@ -114,7 +114,7 @@ export default {
   },
   created() {
     // 다국어 처리
-    this.$store.dispatch("GetLanguage", { app: "search" });
+    // this.$store.dispatch("GetLanguage", { app: "search" });
   },
   mounted() {
     // 검색창 외의 다른 곳 찍을 때 검색어 창 닫힐 수있는 이벤트 리스너

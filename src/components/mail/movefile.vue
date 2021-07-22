@@ -3,10 +3,10 @@
     <div class="move_bg"></div>
     <ul class="f_list">
       <li>
-        <a @click="moveFolder('$inbox')">받은 메일</a>
+        <a @click="moveFolder('$inbox','/maillist/inbox_detail')">받은 메일</a>
       </li>
       <li>
-        <a @click="moveFolder('$trash')">휴지통</a>
+        <a @click="moveFolder('$trash','/maillist/mail_trash')">휴지통</a>
       </li>
       <li :class="{ drop_menu: isFolder>0 }">
         <a @click="toggle">기본 폴더</a>
@@ -57,8 +57,9 @@ export default {
     },
   },
   methods: {
-    moveFolder(folderId){
+    moveFolder(folderId,path){
       this.$store.dispatch("MailMove", { folderId});
+      this.$router.push(path);
     },
     toggle: function () {
       if (this.isFolder > 0) {

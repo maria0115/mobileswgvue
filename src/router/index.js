@@ -58,20 +58,27 @@ export default new Router({
       path: '/',
       component: Main,
       beforeEnter: (to, from, next) => {
-        // store.dispatch("GetLanguage", { app: "search" })
+        console.log(Object.keys(store.state.store.language).length)
+        if(Object.keys(store.state.store.language).length<4){
+        store.dispatch("GetLanguage", { app: "search" });
+        store.dispatch("GetLanguage", { app: "mail" });
+        store.dispatch("GetLanguage", { app: "config" });
+        }
+
         store.dispatch("GetLanguage", { app: "main" })
         .then(() => {
-            // console.log("GetLanguage끝낫니")
         store.dispatch("setMode", {
           category: to.path.substring(to.path.lastIndexOf("/") + 1)
         })
 
           .then(() => {
-            // console.log("setmode끝낫니")
              next();
           })
           })
-        //   .catch(() => new Error("failed to fetch boardlist"));
+
+        // }else{
+        //   next();
+        // }
       },
       redirect: '/my',
       children: [
@@ -84,8 +91,10 @@ export default new Router({
             store.dispatch("GetBoard", { boardtype: "recent", category: "my" });
             store.dispatch("GetApproval", { approvaltype: "approving", category: "my" });
             store.dispatch("GetMail", { mailtype: "inbox_main", category: "my" });
-            store.dispatch("GetMyInfo");
-            next();
+            store.dispatch("GetMyInfo")
+             .then(() => {
+             next();
+          })
           },
 
         },
@@ -131,8 +140,10 @@ export default new Router({
       path: '/search',
       component: Search,
       beforeEnter: (to, from, next) => {
-        store.dispatch("GetLanguage", { app: "search" });
+        // store.dispatch("GetLanguage", { app: "search" })
+        // .then(() => {
         next();
+        // })
       },
       children: [
         {
@@ -210,8 +221,10 @@ export default new Router({
       component: Preferences,
       redirect: '/setting/config',
       beforeEnter: (to, from, next) => {
-        store.dispatch("GetLanguage", { app: "config" });
+        // store.dispatch("GetLanguage", { app: "config" })
+        // .then(() => {
         next();
+        // })
       },
       children: [
         {
@@ -243,9 +256,13 @@ export default new Router({
       path: '/maillist',
       component: MailList,
       beforeEnter: (to, from, next) => {
-        store.dispatch("GetLanguage", { app: "mail" });
+
+        
         store.dispatch("GetMailDetail", { mailtype: "folderList" });
+        // store.dispatch("GetLanguage", { app: "mail" })
+        // .then(() => {
         next();
+        // })
       },
       redirect: '/maillist/inbox_detail',
       children: [
@@ -358,6 +375,7 @@ export default new Router({
           name:'Custom',
           component: InboxDetail,
           beforeEnter: (to, from, next) => {
+            // console.log(to.params.folderId)
             store.dispatch("GetMailDetail", { mailtype: "custom",folderId:to.params.folderId });
             // store.dispatch("GetMailDetail", { mailtype: "custom",folderId:this.customFolder });
             next();
@@ -365,9 +383,16 @@ export default new Router({
         },
         {
           path: 'read_mail',
+          name:'ReadMail',
           component: ReadMail,
           beforeEnter: (to, from, next) => {
-            // store.dispatch("GetMailDetail", { mailtype: "mail_importance" });
+            store.dispatch("MailDetail",to.params.unid);
+            // console.log(to.params.unid)
+            if(to.params.unid){
+              console.log("여기들어오지마라")
+              store.commit("MailDetailUnid",to.params.unid);
+            }
+            
             next();
           },
         },

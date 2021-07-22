@@ -3,43 +3,21 @@ import VueX from 'vuex';
 import actions from './actions.js';
 import mutations from './mutations.js';
 import config from '../config/key.js';
-import * as Cookies from "js-cookie";
 import { dataStore } from './module';
 
 import createPersistedState from 'vuex-persistedstate';
 const dataState = createPersistedState({
-    paths: ['store.config','store.systemcolor','store.language','store.myinfo','store.signviewdata','store.greetviewdata','mailconfig'],
-    // storage: {
-    //     getItem: key => Cookies.get(key),
-    //     setItem: (key, value) => Cookies.set(key, value, { expires: 3, secure: true }),
-    //     removeItem: key => Cookies.remove(key)
-    //   }
+    paths: ['store.maildetail','store.mailCustomFolderTitle','store.config','store.systemcolor','store.language','store.myinfo','store.signviewdata','store.greetviewdata','mailconfig'],
         
 })
 Vue.use(VueX)
 
 export const store = new VueX.Store({
-    // const data = {
     modules: {
         store:dataStore
     },
     plugins: [dataState],
-    // plugins: [createPersistedState()],
     state: {
-        // config: config.config,  //사용자가 설정한 환결설정
-        // systemcolor: config.systemcolor,    // 환경설정에서 display를 system mode로 설정 했다면 os에 설정된 색
-        // language: config.store.language,  //다국어
-        // myinfo: {
-        //     info: {
-        //         dept: "",
-        //         name: "",
-        //         position: "",
-        //         photo: ""
-        //     },
-        //     approvalCount: 0,
-        //     mailCount: 0,
-        //     scheduleCount: 0
-        // },
         autoList: {}, // 자동완성 검색 결과,
         recent: {}, //최근검색 결과,
         sortdata: {},   //통합검색 데이터
@@ -47,11 +25,15 @@ export const store = new VueX.Store({
         form: config.search.form,   // search tab menu 변수 설정
         children: [],
         main: config.main,  //main 변수 설정
-        mail: config.mail,
-        mailCustomFolderTitle:"",
+        mail: config.mail,        
+        mailFollowUpData:{
+            use:true,
+            unid:"",
+            body:"",
+            date:"", // "2021-07-22"
+            time:"", // "12:30:00"
+        },
         signdefaultindex:0,
-        
-        // language: config.language,  //다국어}
         data: {     //통합검색의 검색할 때 변수 설정
             from: 0,
             size: config.search.defaultSize, // 게시물 몇 개씩 보여줄건지
@@ -141,16 +123,15 @@ export const store = new VueX.Store({
         },
         GetMailConfig:(state) =>{
             return state.store.mailconfig;
-        }
+        },
+        GetmailCustomFolderTitle:(state) =>{
+            return state.store.mailCustomFolderTitle;
+        },
+        GetMailDetail: (state) => {
+            return state.store.maildetail;
+        },
 
     },
     // }
 })
-
-// export async function getstore() {
-//     // data.state.children = await child.get();
-//     // console.log(data.state)
-//     return new VueX.Store(data);
-// }
-
 

@@ -18,6 +18,18 @@ export const dataStore = {
         },
         signviewdata: {},
         greetviewdata: {},
+        mailCustomFolderTitle: "",
+        maildetail: {
+            attachName: [],
+            attachSize: [],
+            attachUrl: [],
+            author: "",
+            created: "20210714T013657",
+            email: "",
+            subject: "",
+            unid:""
+        },
+
         mailconfig: {
             autosave: {
                 config: {

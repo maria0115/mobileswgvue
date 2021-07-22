@@ -5,7 +5,7 @@
         <div class="rdmail_icons">
             <span class="rd_reply">답장</span>
             <span class="rd_relay">전달</span>
-            <span class="rd_del">삭제</span>
+            <span class="rd_del" @click="mailDelete">삭제</span>
             <span class="rd_more"></span>
             <ul class="more_box">
                 <li class="move">이동</li>
@@ -17,14 +17,14 @@
     <div class="m_contents04">
         <form action="">
             <div class="rd_top">
-                <h2 class="mail_tit">사내업무 및 유지 보수 내역 전달</h2>
+                <h2 class="mail_tit">{{GetMailDetail.subject}}</h2>
                 <div class="clfix">
                     <span class="per_img">
-                        <em class="no_img" style="background:#aea9db;"><b>안</b></em>
+                        <em class="no_img" style="background:#aea9db;"><b>{{ GetMailDetail.author.split("")[0] }}</b></em>
                     </span>
                     <dl>
-                        <dt>안지원 대리  / 전략구매팀</dt>
-                        <dd>2021-05-21 13:21</dd>
+                        <dt>{{GetMailDetail.author}}</dt>
+                        <dd>{{getTime(GetMailDetail.created)}}</dd>
                     </dl>
                     <em class="re_more"></em>
                 </div>
@@ -32,14 +32,19 @@
                     <li class="clfix refer01">
                         <strong>받는사람</strong>
                         <div>
-                            <span>이정인 책임</span>
+                            <span v-for="(value,index) in GetMailDetail.sendTo" :key="index">{{value}} 책임</span>
                         </div>
                     </li>
                     <li class="clfix refer02">
                         <strong>참조</strong>
                         <div>
-                            <span>황선영 팀장</span>
-                            <span>이주성 부장</span>
+                            <span v-for="(value,index) in GetMailDetail.copyTo" :key="index">{{value}} 팀장</span>
+                        </div>
+                    </li>
+                    <li class="clfix refer02" v-if="GetMailDetail.blind.length>0">
+                        <strong>숨은 참조</strong>
+                        <div>
+                            <span v-for="(value,index) in GetMailDetail.blind" :key="index">{{value}} 팀장</span>
                         </div>
                     </li>
                 </ul>
@@ -48,18 +53,11 @@
             <div class="add_file clfix">
                 <strong>첨부파일</strong>
                 <ul>
-                    <li class="active">
+                    <li v-for="(value,index) in GetMailDetail.attachName" :key="index" @click="attachClick(index)" class="active">
                         <span><img src="../../mobile/img/test_img01.png" alt=""></span>
                         <div>
-                            <p>IMG2580.png</p>
-                            <em>(32.52KB)</em>
-                        </div>
-                    </li>
-                    <li class="active">
-                        <span><img src="../../mobile/img/test_img02.png" alt=""></span>
-                        <div>
-                            <p>2021년사내업무 및 유지 보수.pptx</p>
-                            <em>(16.03KB)</em>
+                            <p>{{value}}</p>
+                            <em>({{GetMailDetail.attachSize[index]}})</em>
                         </div>
                     </li>
                 </ul>
@@ -70,76 +68,48 @@
                 2021년 사내업무 및 유지 보수 내역 보내드립니다.
                 감사합니다. 
             </div>
-            <div class="move_file">
-                <div class="move_bg"></div>
-                <ul class="f_list">
-                    <li class="drop_menu">
-                        <a href="#">보낸메일함</a>
-                        <ul class="f_depth02">
-                            <li><a href="#">내부메일</a></li>
-                            <li><a href="#">외부메일</a></li>
-                            <li><a href="#">알림메일</a></li>
-                            <li><a href="#">첨부메일</a></li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="#">내게쓴메일함</a>
-                    </li>
-                    <li>
-                        <a href="#">중요메일</a>
-                    </li>
-                    <li>
-                        <a href="#">스팸함</a>
-                    </li>
-                    <li class="drop_menu">
-                        <a href="#">기본 폴더</a>
-                        <ul class="f_depth02">
-                            <li class="drop_menu">
-                                <a href="#">폴더01</a>
-                                <ul class="f_depth03">
-                                    <li class="drop_menu">
-                                        <a href="#">폴더01-1</a>
-                                        <ul class="f_depth04">
-                                            <li><a href="#">폴더01-2</a></li>
-                                        </ul>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li class="drop_menu">
-                                <a href="#">폴더02</a>
-                                <ul class="f_depth03">
-                                    <li class="drop_menu">
-                                        <a href="#">폴더02-1</a>
-                                        <ul class="f_depth04">
-                                            <li>
-                                                <a href="#">폴더02-2폴더02-2폴더02-2폴더02-2폴더02-2폴더02-2폴더02-2폴더02-2폴더02-2폴더02-2폴더02-2폴더02-2폴더02-2폴더02-2폴더02-2폴더02-2폴더02-2폴더02-2폴더02-2폴더02-2</a>
-                                            </li>
-                                        </ul>
-                                    </li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="#">휴지통</a>
-                    </li>
-                </ul>
-            </div>
         </form>
     </div>
     <Footer></Footer>
+    <MoveFile></MoveFile>
   </div>
 </template>
 
 <script>
 import Footer from "./footer.vue";
+import { mapState, mapGetters } from "vuex";
+import MoveFile from "./movefile.vue";
+
 export default {
   components: {
     Footer,
+    MoveFile,
+  },
+  computed: {
+    ...mapState([]),
+    ...mapGetters(["GetMailDetail"]),
+  },
+  created(){
+      console.log("created",this.GetMailDetail)
+      this.$store.commit("MailDetailUnidPush",this.GetMailDetail.unid);
   },
   methods: {
     Back() {
       this.$router.go(-1);
+    },
+    getTime(date) {
+      var moment = require("moment");
+      var localTime = moment.utc(date).toDate();
+      localTime = moment(localTime).format("YYYY-MM-DD일 HH:mm");
+      return localTime;
+    },
+    attachClick(index){
+        window.open(this.GetMailDetail.attachUrl[index]);
+    },
+    mailDelete(){
+        var data = {};
+        data.unid = this.$route.params.unid;
+        this.$store.dispatch("MailDelete",{datas:data})
     },
   },
 };

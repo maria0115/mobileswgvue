@@ -1,5 +1,26 @@
 import axios from 'axios';
 
+// 메일 디테일
+function MailDetail(data) {
+    return axios({
+        method: 'get',
+        url: `/api/mail?type=detail&unid=${data}`,
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+}
+// 메일 팔로우업 설정
+function FollowupSet(data) {
+    return axios({
+        method: 'post',
+        url: `/api/mail?type=followupSet`,
+        data: JSON.stringify(data), //json
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+}
 // 메일 자동저장
 function MailDelay(data) {
     return axios({
@@ -280,4 +301,6 @@ export {
     GreetAdd,
     MailAutoSave,
     MailDelay,
+    FollowupSet,
+    MailDetail,
 }

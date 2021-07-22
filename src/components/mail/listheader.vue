@@ -44,9 +44,10 @@ import { mapState, mapGetters } from "vuex";
 export default {
 
     computed: {
-    ...mapState(["mail","mailCustomFolderTitle"]),
+    ...mapState(["mail"]),
     ...mapGetters([
       "GetMailLanguage",
+      "GetmailCustomFolderTitle",
       
     ]),
     path() {
@@ -63,7 +64,7 @@ export default {
         return this.GetMailLanguage.title['mail_importance'];
 
       }else if(this.path === "custom"){
-        return this.mailCustomFolderTitle;
+        return this.GetmailCustomFolderTitle;
         }else{
         return this.GetMailLanguage.title[this.path];
 

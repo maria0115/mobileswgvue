@@ -50,7 +50,7 @@
                   :value="{ unid: item.unid, key: index }"
                   v-model="mail.checkBtn.checkedNames"
                 />
-                <router-link to="read_mail"><dl>
+                <dl @click="MailDetail(item.unid)">
                   <dt>
                     {{ item.sender }}
                     <div>
@@ -71,7 +71,7 @@
                     <b :class="[{ impor_icon: item.followup }]"></b
                     >{{ item.subject }}
                   </dd>
-                </dl></router-link>
+                </dl>
                 <div class="impor">
                   <p>
                     {{ transTime(item.created)
@@ -174,7 +174,9 @@ export default {
   },
   created() {
     this.infiniteId += 1;
+    if(this.path === "custom"){
     this.$store.dispatch("GetMailDetail", { mailtype: "custom",folderId:this.$route.params.folderId });
+    }
   },
   mounted() {
     if ("ontouchstart" in document.documentElement !== true) {
@@ -183,6 +185,11 @@ export default {
   },
 
   methods: {
+    MailDetail(unid){
+      // console.log(unid)
+      this.$router.push({name:"ReadMail",params:{unid}});
+
+    },
     mailDelete(item, index) {
       var data = {};
       data.unid = item.unid;
@@ -221,6 +228,7 @@ export default {
           setTimeout(() => {
             if (data) {
               // console.log(this.mail.data[this.path])
+              // console.log(this.mail)
               if (Object.keys(this.mail.data[this.path].data).length > 0) {
                 this.mail.data[this.path].data.data =
                   this.mail.data[this.path].data.data.concat(data);

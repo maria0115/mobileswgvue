@@ -49,8 +49,9 @@ export default {
       if (this.isFolder > 0) {
         this.isOpen = !this.isOpen;
       }else{
-        console.log("여기로 이동해야지",this.item)
         this.$store.dispatch("MailMove", { viewname:this.item.nodetitle.ko,folderId: this.item.mycode});
+        this.$store.commit("MailCustomFolderTitle",this.item.nodetitle.ko);
+        this.$router.replace({ name: 'Custom',params:{folderId:this.item.mycode}});
       }
     },
     makeFolder: function () {

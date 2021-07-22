@@ -42,9 +42,6 @@
                       <a>{{ GetMailLanguage.title.mail_outer }}</a>
                     </li></router-link
                   >
-                  <li>
-                    <a>{{ GetMailLanguage.title.mail_notice }}</a>
-                  </li>
                   <router-link to="/maillist/mail_attach"
                     ><li>
                       <a>{{ GetMailLanguage.title.mail_attach }}</a>

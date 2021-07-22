@@ -370,7 +370,7 @@ export default {
 
 <style>
 /*MAIN CIRCLE*/
-.circle {
+.circle{
   position: relative;
   width: 300px;
   height: 300px;
@@ -389,7 +389,7 @@ export default {
 }
 
 /*LITTLE CIRCLES*/
-.circle li {
+.minicircle {
   position: absolute;
   width: 50px;
   height: 50px;

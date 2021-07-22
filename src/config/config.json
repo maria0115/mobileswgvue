@@ -7,62 +7,98 @@
             "inbox_detail": {
                 "page": "0",
                 "size": "14",
-                "data": []
+                "data": {
+                    "data": [],
+                    "total": 0
+                }
             },
             "mail_inner": {
                 "page": "0",
                 "size": "14",
-                "data": []
+                "data": {
+                    "data": [],
+                    "total": 0
+                }
             },
             "mail_attach": {
                 "page": "0",
                 "size": "14",
-                "data": []
+                "data": {
+                    "data": [],
+                    "total": 0
+                }
             },
             "mail_outer": {
                 "page": "0",
                 "size": "14",
-                "data": []
+                "data": {
+                    "data": [],
+                    "total": 0
+                }
             },
             "sent_detail": {
                 "page": "0",
                 "size": "14",
-                "data": []
+                "data": {
+                    "data": [],
+                    "total": 0
+                }
             },
             "mail_draft": {
                 "page": "0",
                 "size": "14",
-                "data": []
+                "data": {
+                    "data": [],
+                    "total": 0
+                }
             },
             "mail_autoSave": {
                 "page": "0",
                 "size": "14",
-                "data": []
+                "data": {
+                    "data": [],
+                    "total": 0
+                }
             },
             "mail_trash": {
                 "page": "0",
                 "size": "14",
-                "data": []
+                "data": {
+                    "data": [],
+                    "total": 0
+                }
             },
             "mail_unread": {
                 "page": "0",
                 "size": "14",
-                "data": []
+                "data": {
+                    "data": [],
+                    "total": 0
+                }
             },
             "mail_reservation": {
                 "page": "0",
                 "size": "14",
-                "data": []
+                "data": {
+                    "data": [],
+                    "total": 0
+                }
             },
             "mail_my": {
                 "page": "0",
                 "size": "14",
-                "data": []
+                "data": {
+                    "data": [],
+                    "total": 0
+                }
             },
             "mail_importance": {
                 "page": "0",
                 "size": "14",
-                "data": []
+                "data": {
+                    "data": [],
+                    "total": 0
+                }
             },
             "folderList": {
                 "data": []
@@ -70,7 +106,10 @@
             "mail_followup": {
                 "page": "0",
                 "size": "14",
-                "data": []
+                "data": {
+                    "data": [],
+                    "total": 0
+                }
             },
             "custom": {
                 "page": "0",
@@ -325,5 +364,4 @@
         },
         "mode": "light"
     }
-    
 }

@@ -1,5 +1,22 @@
 
 export default {
+    MailDetailUnidPush(state,unid){
+        state.mail.checkBtn.checkedNames = [];
+        var data = {};
+        data.unid = unid;
+        state.mail.checkBtn.checkedNames.push(data);
+        console.log(state.mail.checkBtn.checkedNames);
+    },
+    MailDetailUnid(state,unid){
+        state.store.maildetail.unid = unid;
+        console.log(state.store.maildetail)
+    },
+    MailDetailData(state,data){
+        var unid = state.store.maildetail.unid;
+        state.store.maildetail = data;
+        state.store.maildetail.unid = unid;
+
+    },
     GreetViewData(state, data) {
         state.store.greetviewdata = data;
     },
@@ -7,7 +24,7 @@ export default {
         state.store.signviewdata = data;
     },
     MailCustomFolderTitle(state, title) {
-        state.mailCustomFolderTitle = title;
+        state.store.mailCustomFolderTitle = title;
     },
     SignList(state, { res }) {
         state.mail.data.signature.data = res;
@@ -49,6 +66,10 @@ export default {
         state.mail.checkBtn.checkedNames = [];
         state.mail.checkBtn.allchecked = false;
     },
+    checkedNamesRemove(state){
+        state.mail.checkBtn.checkedNames = [];
+
+    },
     // 체크모드 활성화
     editClick(state) {
         state.mail.checkBtn.editclicked = !state.mail.checkBtn.editclicked;
@@ -64,6 +85,9 @@ export default {
     },
     // 메일 목록 데이터
     MailDetail(state, { res, mailtype }) {
+        if(Object.keys(res).length === 0){
+            res.total = 0;
+        }
         state.mail.data[mailtype].data = res;
         // console.log(state.mail.data[mailtype].data)
     },
@@ -104,7 +128,6 @@ export default {
     // 다국어 데이터
     GetLanguage(state, { res, app }) {
         state.store.language[app] = res;
-        // console.log(state.store.language)
 
     },
     Children(state, { child }) {

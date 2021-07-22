@@ -1,4 +1,4 @@
-import { MailAutoSave,MailDelay,GreetAdd,SignAdd, SignSet, SignList, ReadFlag, MailMove, MailDelete, MyInfo, PSearch, PUdate, Search, Auto, Recent, AllDelKeyword, DelKeyword, getForm, GetLanguage, Schedule, Board, Approval, Mail } from '../api/index.js';
+import { MailDetail,FollowupSet,MailAutoSave,MailDelay,GreetAdd,SignAdd, SignSet, SignList, ReadFlag, MailMove, MailDelete, MyInfo, PSearch, PUdate, Search, Auto, Recent, AllDelKeyword, DelKeyword, getForm, GetLanguage, Schedule, Board, Approval, Mail } from '../api/index.js';
 import config from '../config/key.js';
 import $ from "jquery";
 import router from '../router/index';
@@ -16,14 +16,43 @@ const whatcolor = {
     }
 }
 export default {
+    MailDetail({ state, commit }, data){
+        console.log(data,"action")
+        MailDetail(data)
+        .then(response => {
+            console.log(response,"%%%%%%%%%%%%%%%%%%%%%");
+            if (response.status !== 200) {
+                console.log("MailDetail not working");
+            } else {
+                console.log("MailDetail 잘들어갔다")
+
+                commit("MailDetailData", response.data);
+
+                // router.push({ name: 'MailAutoSave' });
+            }
+        });
+
+    },
+    FollowupSet({ state, commit }, data){
+        FollowupSet(data)
+        .then(response => {
+            if (response.status !== 200) {
+                console.log("FollowupSet not working");
+            } else {
+                console.log("FollowupSet 잘들어갔다")
+                // commit("GreetViewData", data);
+
+                // router.push({ name: 'MailAutoSave' });
+            }
+        });
+    },
     MailAutoSave({ state, commit }, data) {
-        console.log(data);
         MailAutoSave(data)
             .then(response => {
                 if (response.status !== 200) {
                     console.log("MailAutoSave not working");
                 } else {
-                    console.log("잘들어갔다")
+                    console.log("MailAutoSave 잘들어갔다")
                     // commit("GreetViewData", data);
 
                     // router.push({ name: 'MailAutoSave' });
@@ -32,7 +61,6 @@ export default {
 
     },
     MailDelay({ state, commit }, data) {
-        console.log(data);
         MailDelay(data)
             .then(response => {
                 if (response.status !== 200) {
@@ -113,7 +141,7 @@ export default {
             });
 
     },
-    MailMove({ state, dispatch }, { viewname, folderId }) {
+    MailMove({ state, commit }, { viewname, folderId }) {
         var data = {};
         var folderstr = "";
         var checkedNames = state.mail.checkBtn.checkedNames;
@@ -132,7 +160,8 @@ export default {
                 .then(response => {
                     // console.log(response, "삭제됨?");
                     if (response.status == 200) {
-                        router.push(router.history.current.path);
+                        commit("checkedNamesRemove");
+                        // router.push(router.history.current.path);
                         return true;
                     }
                     return false;
@@ -241,7 +270,7 @@ export default {
 
             data.FolderId = folderId;
         }
-        // console.log(data)
+        // console.log(data,"data");
 
         Mail(data)
             .then(response => {
