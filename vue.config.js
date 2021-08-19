@@ -4,6 +4,7 @@ module.exports = {
   configureWebpack: {
     entry: ["babel-polyfill", "./src/main.js"],
   },
+  transpileDependencies: ['tiptap','tiptap-commands','tiptap-utils','vue-swipe-actions'],
   // 개발 서버 설정
   devServer: {
     // 프록시 설정

@@ -25,6 +25,7 @@ export default {
   methods: {
       // 전 url 이동
     RouterBack() {
+      this.$store.commit("Back");
       this.$router.go(-1);
     },
     // 후 url 이동

@@ -1,0 +1,61 @@
+<template>
+  <div>
+    <Header :header="this.GetDisplay.maindisplay" header_desc="메인 화면 설정"></Header>
+    <div class="contents06">
+      <form action="">
+        <ul class="sc_menu">
+          <li>
+            <ul>
+              <li v-for="(value, name) in this.GetDisplay.main" :key="name">
+                <label for="sc01">{{ value }}</label>
+                <input
+                  type="radio"
+                  name="d_radio"
+                  id="sc01"
+                  :value="value"
+                  :checked="boo(name)"
+                  :ref="name"
+                  @click="setConfig(name)"
+                />
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </form>
+    </div>
+  </div>
+</template>
+
+<script>
+import { mapGetters } from "vuex";
+import Header from "./header.vue";
+export default {
+  components: {
+    Header,
+  },
+  computed: {
+    ...mapGetters(["GetConfig", "GetDisplay"]),
+    // 사용자가 설정한 구성 class on
+    boo() {
+      return (display) => {
+        if (this.GetConfig.display === display) {
+          return true;
+        }
+        return false;
+      };
+    },
+  },
+  methods: {
+    // click 시 해당 설정값 db에 입력
+    setConfig(value) {
+      this.$store.dispatch("setConfig", {
+        menu: "display",
+        value: value,
+      });
+    },
+  },
+};
+</script>
+
+<style>
+</style>

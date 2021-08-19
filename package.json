@@ -10,15 +10,17 @@
     "lbuild": "vue-cli-service serve --mode build"
   },
   "dependencies": {
+    "air-datepicker": "^2.2.3",
     "axios": "^0.21.1",
     "babel-polyfill": "^6.26.0",
-    "cookie": "^0.4.1",
     "core-js": "^3.6.5",
+    "es6-promise": "^4.2.8",
+    "http": "0.0.1-security",
     "jquery": "^3.6.0",
-    "js-cookie": "^2.2.1",
     "moment": "^2.29.1",
     "node-sass": "^4.14.0",
     "sass-loader": "^10.1.1",
+    "tiptap": "^1.32.2",
     "v-dragged": "0.0.5",
     "vue": "^2.6.11",
     "vue-infinite-loading": "^2.4.5",
@@ -31,6 +33,7 @@
     "vuex-persistedstate": "^4.0.0-beta.3"
   },
   "devDependencies": {
+    "@babel/preset-env": "^7.15.0",
     "@vue/cli-plugin-babel": "~4.5.0",
     "@vue/cli-plugin-eslint": "~4.5.0",
     "@vue/cli-service": "~4.5.0",

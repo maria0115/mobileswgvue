@@ -6,6 +6,7 @@
 html,body {width:100%;}
 html {/*overflow-y:scroll;*/ overflow-x:hidden; box-sizing:border-box;}
 *, *:before, *:after{box-sizing:inherit;}
+input[type="date"]{background:#fff url(/mobile/img/app_date.png)right 0.43rem center no-repeat !important;background-size:1.06rem 1.06rem !important;}
 /* *{
 -webkit-text-size-adjust:none;
 -webkit-text-size-adjust - auto | none | N% (default auto)

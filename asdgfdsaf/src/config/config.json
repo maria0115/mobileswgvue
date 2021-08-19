@@ -1,0 +1,387 @@
+{
+    "description_systemmode": "system,light,dark",
+    "systemcolor": "light",
+    "timezone": -540,
+    "mail": {
+        "data": {
+            "inbox_detail": {
+                "page": "0",
+                "size": "14",
+                "data": {
+                    "data": [],
+                    "total": 0
+                }
+            },
+            "mail_inner": {
+                "page": "0",
+                "size": "14",
+                "data": {
+                    "data": [],
+                    "total": 0
+                }
+            },
+            "mail_attach": {
+                "page": "0",
+                "size": "14",
+                "data": {
+                    "data": [],
+                    "total": 0
+                }
+            },
+            "mail_outer": {
+                "page": "0",
+                "size": "14",
+                "data": {
+                    "data": [],
+                    "total": 0
+                }
+            },
+            "sent_detail": {
+                "page": "0",
+                "size": "14",
+                "data": {
+                    "data": [],
+                    "total": 0
+                }
+            },
+            "mail_draft": {
+                "page": "0",
+                "size": "14",
+                "data": {
+                    "data": [],
+                    "total": 0
+                }
+            },
+            "mail_autoSave": {
+                "page": "0",
+                "size": "14",
+                "data": {
+                    "data": [],
+                    "total": 0
+                }
+            },
+            "mail_trash": {
+                "page": "0",
+                "size": "14",
+                "data": {
+                    "data": [],
+                    "total": 0
+                }
+            },
+            "mail_unread": {
+                "page": "0",
+                "size": "14",
+                "data": {
+                    "data": [],
+                    "total": 0
+                }
+            },
+            "mail_reservation": {
+                "page": "0",
+                "size": "14",
+                "data": {
+                    "data": [],
+                    "total": 0
+                }
+            },
+            "mail_my": {
+                "page": "0",
+                "size": "14",
+                "data": {
+                    "data": [],
+                    "total": 0
+                }
+            },
+            "mail_importance": {
+                "page": "0",
+                "size": "14",
+                "data": {
+                    "data": [],
+                    "total": 0
+                }
+            },
+            "folderList": {
+                "data": []
+            },
+            "mail_followup": {
+                "page": "0",
+                "size": "14",
+                "data": {
+                    "data": [],
+                    "total": 0
+                }
+            },
+            "custom": {
+                "page": "0",
+                "size": "14",
+                "data": []
+            },
+            "signature": {
+                "page": "0",
+                "size": "50",
+                "data": []
+            },
+            "greetings": {
+                "page": "0",
+                "size": "50",
+                "data": []
+            },
+            "delay": {
+                "delayTime": "10",
+                "use": false
+            },
+            "autoSave": {
+                "saveDay": "60",
+                "saveTime": "10",
+                "use": false
+            },
+            "org": {
+                "init": [],
+                "trans": []
+            },
+            "myinfo":{
+            }
+        },
+        "checkBtn": {
+            "checkedNames": [],
+            "editclicked": false,
+            "photoon": true,
+            "allchecked": false
+        }
+    },
+    "main": {
+        "photo": "http://swg60.saerom.co.kr/dwp/com/portal/userphoto.nsf/photo/@/$FILE/@.jpg",
+        "newcount": 0,
+        "my": {
+            "recentdate": 0,
+            "recentdate_desc": "최근 생성된 게시물 new 아이콘 ex)1=1일전 , 0=오늘",
+            "description_myinfo": "/ my 페이지 변수 초기화"
+        },
+        "data": {
+            "description": "page 부터 size 개 data 변수 초기화",
+            "mailtype": {
+                "inbox_main": {
+                    "my": {
+                        "page": "0",
+                        "size": "4",
+                        "data": []
+                    },
+                    "more": {
+                        "page": "0",
+                        "size": "8",
+                        "data": []
+                    }
+                },
+                "sent_main": {
+                    "my": {
+                        "page": "0",
+                        "size": "4",
+                        "data": []
+                    },
+                    "more": {
+                        "page": "0",
+                        "size": "8",
+                        "data": []
+                    }
+                }
+            },
+            "approvaltype": {
+                "approving": {
+                    "my": {
+                        "page": "0",
+                        "size": "3",
+                        "data": [],
+                        "cnt": 0
+                    },
+                    "more": {
+                        "page": "0",
+                        "size": "3",
+                        "data": [],
+                        "cnt": 0
+                    }
+                },
+                "approve": {
+                    "my": {
+                        "page": "0",
+                        "size": "3",
+                        "data": [],
+                        "cnt": 0
+                    },
+                    "more": {
+                        "page": "0",
+                        "size": "6",
+                        "data": [],
+                        "cnt": 0
+                    }
+                }
+            },
+            "boardtype": {
+                "notice": {
+                    "my": {
+                        "page": "0",
+                        "size": "1",
+                        "data": []
+                    },
+                    "more": {
+                        "page": "0",
+                        "size": "3",
+                        "data": []
+                    }
+                },
+                "recent": {
+                    "my": {
+                        "page": "0",
+                        "size": "4",
+                        "data": []
+                    },
+                    "more": {
+                        "page": "0",
+                        "size": "4",
+                        "data": []
+                    }
+                }
+            },
+            "scheduletype": {
+                "recent": {
+                    "my": {
+                        "data": [],
+                        "size": 2
+                    },
+                    "more": {
+                        "data": []
+                    }
+                }
+            }
+        }
+    },
+    "search": {
+        "defaultSize": 10,
+        "defaultHomeSize": 4,
+        "defaultPageNum": 1,
+        "form_description": "통합검색 category별 component 지정",
+        "form": [
+            {
+                "datatype": "allsearch",
+                "name": "allsearch"
+            },
+            {
+                "datatype": "person",
+                "name": "person"
+            },
+            {
+                "datatype": "document",
+                "name": "approval"
+            },
+            {
+                "datatype": "document",
+                "name": "board"
+            },
+            {
+                "datatype": "document",
+                "name": "mail"
+            }
+        ],
+        "category_description": "category 별 uri 사용",
+        "category": {
+            "allsearch": {
+                "id": "allsearch"
+            },
+            "person": {
+                "id": "person",
+                "url": "http://swg60.saerom.co.kr"
+            },
+            "approval": {
+                "id": "approval",
+                "url": "http://kms.saerom.co.kr"
+            },
+            "board": {
+                "id": "board",
+                "url": "http://ktop.saerom.co.kr"
+            },
+            "mail": {
+                "id": "mail",
+                "url": "http://ktop.saerom.co.kr"
+            }
+        }
+    },
+    "lang": "ko",
+    "description_config": "/setting/config 페이지 변수 초기화",
+    "config": {
+        "login": true,
+        "alarm": {
+            "today": true,
+            "mail": false,
+            "approval": true,
+            "works": false,
+            "board": true
+        },
+        "etiquette": {
+            "use": true,
+            "starttime": "11:00",
+            "endtime": "16:00"
+        },
+        "synchronize": true,
+        "display": "potal",
+        "listcount": "10",
+        "main": {
+            "menuportlet": [
+                {
+                    "key": "mail",
+                    "order": 1
+                },
+                {
+                    "key": "approval",
+                    "order": 2
+                },
+                {
+                    "key": "schedule",
+                    "order": 3
+                },
+                {
+                    "key": "board",
+                    "order": 4
+                },
+                {
+                    "key": "reservation",
+                    "order": 5
+                },
+                {
+                    "key": "person",
+                    "order": 6
+                }
+            ],
+            "portlet": [
+                {
+                    "key": "mail",
+                    "order": 1,
+                    "service": true
+                },
+                {
+                    "key": "notice",
+                    "order": 2,
+                    "service": true
+                },
+                {
+                    "key": "approving",
+                    "order": 3,
+                    "service": true
+                },
+                {
+                    "key": "schedule",
+                    "order": 4,
+                    "service": true
+                },
+                {
+                    "key": "recentboard",
+                    "order": 5,
+                    "service": true
+                }
+            ]
+        },
+        "font": {
+            "size": "normal",
+            "font": "Nanum Gothic"
+        },
+        "mode": "light"
+    }
+}

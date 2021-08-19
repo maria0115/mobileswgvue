@@ -192,7 +192,7 @@ $(function () {
     });
 
     /*6_29수정 */ 
-    $('.re_more').on('click',function(){
+    $('body').on('click','.re_more',function(){
         $(this).toggleClass('active');
         $('.refer_div').slideToggle();
         $('.re_refer_div').slideToggle();
@@ -202,43 +202,43 @@ $(function () {
         $(this).parent('div').parent('li').removeClass('active');
     });
     /* 수정끝*/
-    $('.impor_send').on('click',function(){
-        $('.impor_check').toggleClass('active');
-    });
-    $('.time_send').on('click',function(){
-        $('.time_check').toggleClass('active');
-        $('.time_modal').addClass('active');
-    });
-    $('.modal_close').on('click',function(){
+    // $('body').on('click','.impor_send',function(){
+    //     $('.impor_check').toggleClass('active');
+    // });
+    // $('body').on('click',".time_send",function(){
+    //     $('.time_check').toggleClass('active');
+    //     $('.time_modal').addClass('active');
+    // });
+    // $('body').on('click','.modal_close',function(){
+    //     $('.time_modal').removeClass('active');
+    //     $('.time_check').removeClass('active');
+    // });
+    $('body').on('click','time_mo_btn',function(){
         $('.time_modal').removeClass('active');
-        $('.time_check').removeClass('active');
     });
-    $('.time_mo_btn').on('click',function(){
-        $('.time_modal').removeClass('active');
-    });
-    $('.wm_top textarea').on('click',function(){
-        $(this).parent('li').parent('ul').parent('div').siblings('div.add_search').toggleClass('active');
-    });
-    $('.rd_more').on('click',function(){
+    // $('body').on('click','.wm_top textarea',function(){
+    //     $(this).parent('li').parent('ul').parent('div').siblings('div.add_search').toggleClass('active');
+    // });
+    $('body').on('click','.rd_more',function(){
         $('.rdmail_icons .more_box').toggleClass('on');
     });
-    $('.btn_toggle').on('click',function(){
-        $(this).parent('a').parent('li').parent('ul').toggleClass('on');
-    });
+    // $('body').on('click','.btn_toggle',function(){
+    //     $(this).parent('a').parent('li').parent('ul').toggleClass('on');
+    // });
     
-    $('.t_btn').on('click',function(){
+    $('body').on('click','.t_btn',function(){
         $('.save_time').addClass('on');
     });
-    $('.move_bg').on('click',function(){
+    $('body').on('click','.move_bg',function(){
         $(this).parent('div').removeClass('on');
     });
-    $('.d_btn').on('click',function(){
+    $('body').on('click','.d_btn',function(){
         $('.save_day').addClass('on');
     });
-    $('.move_bg').on('click',function(){
+    $('body').on('click','.move_bg',function(){
         $(this).parent('div').removeClass('on');
     });
-    $('.sv_radio').on('click',function(){
+    $('body').on('click','.sv_radio',function(){
         $(this).addClass('active');
         $(this).parent('li').siblings('li').find('span').removeClass('active');
     });
@@ -246,28 +246,144 @@ $(function () {
         $(this).find('span').addClass('active');
         $(this).siblings('li').find('span').removeClass('active');
     });
-    $('.sig_check').on('click',function(){
-        $(this).toggleClass('active');
+    // $('body').on('click','.sig_check',function(){
+    //     $(this).toggleClass('active');
+    // });
+    // $('.editmenu ul > li span b').on('click', function() {
+    //     $(this).toggleClass('on');
+    // });
+    // $('body').on('click','.organ', function() {
+    //     $('.organ_modal').addClass('on');
+    // });
+    // $('body').on('click','.organ_modal .modal_close',function(){
+    //     $('.organ_modal').removeClass('on');
+    // });
+    // $('.organlist > li > div').on('click',function(){
+    //     $(this).parent('li').find('.o_depth02').slideToggle(); 
+    //     $(this).toggleClass('on');
+    // });
+    // $('.o_depth02 > li > div').on('click',function(){
+    //     $(this).parent('li').find('.o_depth03').slideToggle(); 
+    //     $(this).toggleClass('on');
+    // }); 
+    // $('.o_depth03 > li > div').on('click',function(){
+    //     $(this).parent('li').find('.o_depth04').slideToggle(); 
+    //     $(this).toggleClass('on');
+    // }); 
+    // 7월 9일 추가됨
+    // $('.or_bg').on('click',function(){
+    //     $(this).addClass('active');
+    //     $(this).siblings('li').removeClass('active'); 
+    // }); 
+    // $('.organlist > li > div').on('click',function(){
+    //     $('.or_bg').removeClass('active');
+    // });
+    //
+    // $('.sub_ham').on('click',function(){
+    //     $('.cal_menu').addClass('on');
+    // });
+    // $('.cal_sub_close').on('click',function(){
+    //     $('.cal_menu').removeClass('on');
+    // });
+    $('.cal_type > ul > li > a').on('click',function(){
+        $(this).parent('li').addClass('on');
+        $(this).parent('li').siblings('li').removeClass('on');
     });
-    $('.editmenu ul > li span b').on('click', function() {
-        $(this).toggleClass('on');
+    $('.my_cal strong').on('click',function(){
+        $(this).parent('li').toggleClass('on');
     });
-    $('.organ').on('click', function() {
+    $('.repeat_s span em').on('click',function(){
+        $(this).addClass('click');
+        $(this).parents('span').siblings('span').find('em').removeClass('click')
+    });
+    $('body').on('click','.c_organ', function() {
         $('.organ_modal').addClass('on');
     });
-    $('.organ_modal .modal_close').on('click',function(){
-        $('.organ_modal').removeClass('on');
+    $('.cal_att > strong').on('click', function() {
+        $(this).toggleClass('active');
+        $('.more_cal_att').slideToggle();
     });
-    $('.organlist > li > div').on('click',function(){
-        $(this).parent('li').find('.o_depth02').slideToggle(); 
-        $(this).toggleClass('on');
+    $('body').on('click','.att_del', function() {
+        $(this).parent('li').css('display','none');
     });
-    $('.o_depth02 > li > div').on('click',function(){
-        $(this).parent('li').find('.o_depth03').slideToggle(); 
-        $(this).toggleClass('on');
-    }); 
-    $('.o_depth03 > li > div').on('click',function(){
-        $(this).parent('li').find('.o_depth04').slideToggle(); 
-        $(this).toggleClass('on');
-    }); 
+    $('.a_list > li > h3 > a').on('click',function(){
+        $(this).parent('h3').toggleClass('active'); 
+        $(this).parent('h3').siblings('ul').toggleClass('active'); 
+    });
+    // action 버튼 
+    $('body').on('click','.more_plus', function() {
+        $('.ac_btns ul').toggleClass('active');
+    });
+    $('.line02 li h3 a').on('click', function() {
+        $(this).parent('h3').toggleClass('active');
+        $(this).parent('h3').siblings('div').toggleClass('active');
+    });
+    // 결제중 문서
+    $('body').on('click','.st_more', function() {
+        $(this).addClass('active'); 
+        $(this).parent('li').find('.app_status').addClass('active');
+    });
+    $('body').on('click','.close_btn', function() {
+        $(this).parent('div').removeClass('active')
+        $(this).parent('div').siblings('.s_text').find('.st_more').removeClass('active');
+    });
+    // 
+    $("body").on('change','#add_f',function(){
+        var fileName = $("#add_f").val();
+        $(".load_name").val(fileName);
+    });
+    $('body').on('click','sv_radio',function(){
+        $(this).parent('span').siblings('span').find('.sv_radio').removeClass('active');
+    });
+    $('body').on('click','.app_pointer', function() {
+        $('.a_organ_modal').addClass('on');
+    });
+    $('body').on('click','.a_modal_close', function() {
+        $('.a_organ_modal').removeClass('on');
+    });
+    // $('body').on('click','.impor_con .edit_check', function() {
+    //     $(this).toggleClass('active');
+    // });
+    $('body').on('click','.star', function() {
+        // $(this).parent('p').parent('div').siblings('.impor_mail').addClass('active');
+        $('.impor_mail').addClass('active');
+    });
+    $('body').on('click','.modal_cancel' ,function() {
+        $('.impor_mail').removeClass('active');
+    });
+    $('body').on('click','.impor_mo_btn', function() {
+        $('.impor_mail').removeClass('active');
+    });
+    $('body').on('click','.sc_check', function() {
+        $('.sc_btm').find('.sc_check').removeClass('active');
+        $('.sc_btm').find('.all_sc_check').removeClass('active');
+        
+        $(this).toggleClass('active');
+    });
+    $('body').on('click','all_sc_check', function() {
+        $(this).toggleClass('active');
+        $('.sc_check').removeClass('active');
+        if($('.all_sc_check').hasClass('active')){
+            $('.sc_check').on('click', function() {
+                $('.all_sc_check').removeClass('active');
+            });
+        };
+    });
+    $('body').on('click','.sc_more',function(){
+        console.log("more1")
+        $('.sc_btm').toggleClass('on');
+    });
+    $('body').on('click','.sub_search',function(){
+        $('.search_con').addClass('active');
+    });
+    $('body').on('click','.back_btn',function(){
+        $('.search_con').removeClass('active');
+    });
+    $('body').on('click','.ap_sub_search',function(){
+        $('.search_con').addClass('active');
+    });
+    $('body').on('click','.back_btn',function(){
+        $('.ap_sub_search').removeClass('active');
+    });
+    
 });
