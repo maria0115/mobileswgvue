@@ -1,5 +1,6 @@
 <template>
   <div class="wrap btm_b" :class="{ dark: this.color }">
+    <div class="modal_wrap">
     <div class="se_header">
       <!-- <div class="main_header">
             <span class="ham"><img src="./img/ham_btn.png" alt=""></span>
@@ -72,6 +73,7 @@
     <ul class="btm_btn clfix">
     </ul>
     <Footer></Footer>
+    </div>
   </div>
   
 </template>
@@ -87,12 +89,13 @@ export default {
     Footer
   },
   computed: {
-    ...mapState([
+    ...mapState("searchjs",[
       "data",
       "sortdata",
       "form",
     ]),
-    ...mapGetters(["GetSystemColor","GetConfig","GetSearchLanguage"]),
+    ...mapGetters(["GetSearchLanguage"]),
+    ...mapGetters("configjs",["GetSystemColor","GetConfig"]),
     // 사용자가 설정한 display color
     color() {
       if (this.GetSystemColor === "dark") {
@@ -152,7 +155,7 @@ export default {
     },
     // menu 변경시 검색
     Categorysearch(cate, category) {
-      this.$store.dispatch("SearchWord", { category: category });
+      this.$store.dispatch("searchjs/SearchWord", { category: category });
     },
     // filter 검색
     Datesearch(what, value, kind) {
@@ -166,7 +169,7 @@ export default {
         data.kind = kind;
       }
 
-      this.$store.dispatch("SearchWord", data);
+      this.$store.dispatch("searchjs/SearchWord", data);
     },
 
   },

@@ -28,7 +28,7 @@ export default {
     // child 뽑기 
     if(this.item.kinds =="Department"){
       this.item.menu = "mail";
-      this.children = await this.$store.dispatch("Org", this.item);
+      this.children = await this.$store.dispatch("mailjs/Org", this.item);
     }
   },
   props: {
@@ -44,7 +44,8 @@ export default {
     };
   },
   computed: {
-    ...mapState(["scheduleorg", "autosearchorg"]),
+    ...mapState("calendarjs",["scheduleorg"]),
+    ...mapState(["autosearchorg"]),
     // 다른것들을 끌어왔을때 렝스가 1이상이면
     isFolder: function () {
       if(this.item.kinds =="Department"){
@@ -88,7 +89,7 @@ export default {
       }
     },
     ScheduleOrgData(){
-      this.$store.commit("ScheduleOrgData",this.item);
+      this.$store.commit("calendarjs/ScheduleOrgData",this.item);
       this.$store.commit("SearchOrgInit");
       this.clicked = false;
     },

@@ -26,14 +26,18 @@
               </div>
             </dt>
             <!-- 7월 5일 div태그 추가됨 -->
-            <dd><b :class="{impor_icon:value.importance}"></b>{{ value.subject }}</dd>
+            <dd>
+              <b :class="{ impor_icon: value.importance }"></b
+              >{{ value.subject }}
+            </dd>
             <!-- 7월 05일 중요메일 느낌표 태그 추가됨-->
           </dl>
           <div class="impor">
             <p>
               {{ transTime(value.created)
-              }}<img class="star"
-              @click="followUp(value.unid)"
+              }}<img
+                class="star"
+                @click="followUp(value.unid)"
                 :src="`../mobile/img/star${important(value.followup)}.png`"
                 alt="중요메일"
               />
@@ -100,14 +104,14 @@
         </div>
       </div>
     </div>
-    <router-link to="/maillist"
+    <router-link to="/mail_more"
       ><span class="m_more"><a></a></span
     ></router-link>
   </div>
 </template>
 
 <script>
-import { mapState,mapGetters } from "vuex";
+import { mapState, mapGetters } from "vuex";
 import { Editor, EditorContent } from "tiptap";
 export default {
   props: ["portlet"],
@@ -124,27 +128,25 @@ export default {
     };
   },
   computed: {
-    ...mapState(["main","TimeOption"]),
-    ...mapGetters(["GetMail"]),
+    ...mapState("mainjs", ["main"]),
+    ...mapState("mailjs", ["TimeOption"]),
+    ...mapGetters("mailjs", ["GetMail"]),
   },
   components: {
     EditorContent,
   },
-  created(){
+  created() {
     this.editor = new Editor({
       content: "",
     });
   },
   beforeDestroy() {
-    
     if (this.editor) {
-      
       this.editor.destroy();
     }
   },
   methods: {
     MailDetail(unid) {
-      console.log(unid);
       this.$router.push({ name: "ReadMail", params: { unid } });
     },
     // 현재 날짜와 문서의 created 시간을 비교, 안 읽은 문서이면 new icon 표시
@@ -187,9 +189,8 @@ export default {
     async followUp(unid) {
       this.editor.destroy();
       this.unid = unid;
-      var result = await this.$store.dispatch("FollowUpInfo", unid);
+      var result = await this.$store.dispatch("mailjs/FollowUpInfo", unid);
       if (result) {
-        console.log(this.GetMail.followUpInfo)
         if (this.GetMail.followUpInfo.use) {
           var followUpInfo = this.GetMail.followUpInfo;
           this.STime = followUpInfo.time.split(":")[0];
@@ -206,7 +207,7 @@ export default {
           this.SMin = "50";
           this.use = false;
           var moment = require("moment");
-      this.date = moment().format("YYYY-MM-DD");
+          this.date = moment().format("YYYY-MM-DD");
           this.body = "";
           this.editor = new Editor({
             content: this.body,
@@ -228,7 +229,7 @@ export default {
           data.unid = this.unid;
           data.time = `${this.STime}:${this.SMin}:00`;
           data.body = this.editor.getHTML();
-          await this.$store.dispatch("FollowupSet", data);
+          await this.$store.dispatch("mailjs/FollowupSet", data);
           this.$router.push("/my");
         }
         this.editor.destroy();

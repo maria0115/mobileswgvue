@@ -6,15 +6,34 @@
 html,body {width:100%;}
 html {/*overflow-y:scroll;*/ overflow-x:hidden; box-sizing:border-box;}
 *, *:before, *:after{box-sizing:inherit;}
-input[type="date"]{background:#fff url(/mobile/img/app_date.png)right 0.43rem center no-repeat !important;background-size:1.06rem 1.06rem !important;}
 /* *{
 -webkit-text-size-adjust:none;
 -webkit-text-size-adjust - auto | none | N% (default auto)
 } */
+*::-webkit-scrollbar{display:none; }/*8월 24일 추가됨*/
+*{-ms-overflow-style:none; scrollbar-height: none;}/*8월 24일 추가됨*/
+.m_contents08 table tbody tr td > a::-webkit-scrollbar{display:none; }
+.m_contents08 table tbody tr td > a{-ms-overflow-style:none; scrollbar-height: none;}
+.srl::-webkit-scrollbar{display:none; }
+.srl{-ms-overflow-style:none; scrollbar-height: none;}
 .tab_menu::-webkit-scrollbar{display:none; }
 .tab_menu{-ms-overflow-style:none; scrollbar-height: none;}
 .main_menu::-webkit-scrollbar{display:none; }
 .main_menu{-ms-overflow-style:none; scrollbar-height: none;}
+.organlist::-webkit-scrollbar{display:none; }
+.organlist{-ms-overflow-style:none; scrollbar-height: none;}
+.day_cal_con ul::-webkit-scrollbar{display:none; }
+.day_cal_con ul{-ms-overflow-style:none; scrollbar-height: none;}
+input[type="date"]{background:#fff url(/mobile/img/app_date.png)right 0.43rem center no-repeat;background-size:1.06rem 1.06rem;}
+
+[type="month"]::-webkit-inner-spin-button{display:none;}
+[type="month"]::-webkit-calendar-picker-indicator{opacity:0;}
+[type="date"]::-webkit-inner-spin-button{display:none;}
+[type="date"]::-webkit-calendar-picker-indicator{opacity:0;}
+[type="time"]::-webkit-inner-spin-button{display:none;}
+[type="time"]::-webkit-calendar-picker-indicator{opacity:0;}/*7월 14일 추가됨*/
+textarea{appearance: none;resize:none;outline:none;border:0;}
+input{appearance:none;outline:none;}
 
 body {word-wrap:break-word; word-break:keep-all; }
 body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,textarea,p,blockquote,th,td,input,select,textarea,button {margin:0; padding:0;}
@@ -25,18 +44,20 @@ dl,ul,ol,menu,li {list-style:none;}
 blockquote, q {quotes: none;}
 blockquote:before, blockquote:after,q:before, q:after {content:''; content:none;}
 button {border:0 none; background-color:transparent; cursor:pointer;}
-body {}
 
+h3 a{font-weight:normal;}/* 8월 9일 추가됨 */
 
 a:link,a:active,a:visited{/*color:#7d7d7d;*/ text-decoration:none; border:0px;}
 a:hover,a:focus{ text-decoration:none;-webkit-tap-highlight-color:transparent;}
 
 table {border-collapse:collapse; border-spacing:0;}
 address,caption,cite,code,dfn,em,var {font-style:normal; font-weight:normal;}
-summary, caption, legend{width:0; height:0; font-size: ; line-height: ; overflow: hidden; visibility: hidden; border: none; position:absolute; left:-1000em;}
+summary, caption, legend{width:0; height:0;overflow: hidden; visibility: hidden; border: none; position:absolute; left:-1000em;}
 caption {position:static;}
 
 /* label hidden 처리 */
 .invisible{overflow:hidden; visibility:hidden; width:0; height:0; font-size:0; line-height:0; position:absolute;}
 label.invisible{*position:Absolute;}
 
+/* ================================================================ */
+.dark .infinite-status-prompt div{color:#f2f2f2;}

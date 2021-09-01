@@ -1,0 +1,47 @@
+{
+    "approval":{
+        "data":{
+            "draft":{
+                "page": "0",
+                "data": []
+            },
+            "reject":{
+                "page": "0",
+                "data": []
+            },
+            "success_my":{
+                "page": "0",
+                "data": []
+            },
+            "success_dept":{
+                "page": "0",
+                "data": []
+            },
+            "success_date":{
+                "page": "0",
+                "data": []
+            },
+            "approving":{
+                "page": "0",
+                "data": []
+            },
+            "approve":{
+                "page": "0",
+                "data": []
+            },
+            "formList_all":{
+                "page": "0",
+                "size": "100",
+                "data": []
+            },
+            "formList_recent":{
+                "page": "0",
+                "data": []
+            },
+            "formList_favorite":{
+                "page": "0",
+                "data": []
+            }
+        }
+    }
+}

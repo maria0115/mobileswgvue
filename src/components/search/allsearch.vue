@@ -49,10 +49,11 @@
 
 <script>
 import { mapState,mapGetters } from "vuex";
-import config from "../../config/config.json";
+import config from "../../config/search.json";
 export default {
   computed: {
-    ...mapState(["sortdata", "langa"]),
+    ...mapState([ "langa",]),
+    ...mapState("searchjs",["sortdata"]),
     ...mapGetters(["GetSearchLanguage"]),
     // image 파일을 가지고 있는 url 반환
     url() {

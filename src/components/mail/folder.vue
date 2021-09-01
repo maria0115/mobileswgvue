@@ -22,32 +22,30 @@
           <ul class="list_menu">
             <li>
               <h3>
-                <router-link to="/maillist/mail_unread">{{
+                <router-link to="/mail_more/mail_unread">{{
                   GetMailLanguage.title.mail_unread
                 }}</router-link>
               </h3>
             </li>
             <li>
               <h3>
-                <router-link
-                  to="/maillist/inbox_detail"
-                  >{{
+                <router-link to="/mail_more/inbox_detail">{{
                   GetMailLanguage.title.inbox_detail
                 }}</router-link>
                 <em @click="depthDown($event, $parent)" class="down_m"></em>
               </h3>
               <ul class="depth02">
-                <router-link to="/maillist/mail_inner"
+                <router-link to="/mail_more/mail_inner"
                   ><li>
                     <a>{{ GetMailLanguage.title.mail_inner }}</a>
                   </li></router-link
                 >
-                <router-link to="/maillist/mail_outer"
+                <router-link to="/mail_more/mail_outer"
                   ><li>
                     <a>{{ GetMailLanguage.title.mail_outer }}</a>
                   </li></router-link
                 >
-                <router-link to="/maillist/mail_attach"
+                <router-link to="/mail_more/mail_attach"
                   ><li>
                     <a>{{ GetMailLanguage.title.mail_attach }}</a>
                   </li></router-link
@@ -56,10 +54,9 @@
             </li>
             <li>
               <h3>
-                <router-link
-                  to="/maillist/sent_detail"
-                  >{{ GetMailLanguage.title.sent_detail }}</router-link
-                >
+                <router-link to="/mail_more/sent_detail">{{
+                  GetMailLanguage.title.sent_detail
+                }}</router-link>
               </h3>
               <ul class="depth02">
                 <li><a></a></li>
@@ -67,20 +64,18 @@
             </li>
             <li>
               <h3>
-                <router-link
-                  to="/maillist/mail_draft"
-                  >{{
+                <router-link to="/mail_more/mail_draft">{{
                   GetMailLanguage.title.mail_save
                 }}</router-link>
                 <em @click="depthDown($event, $parent)" class="down_m"></em>
               </h3>
               <ul class="depth02">
-                <router-link to="/maillist/mail_draft"
+                <router-link to="/mail_more/mail_draft"
                   ><li>
                     <a>{{ GetMailLanguage.title.mail_draft }}</a>
                   </li></router-link
                 >
-                <router-link to="/maillist/mail_autoSave"
+                <router-link to="/mail_more/mail_autoSave"
                   ><li>
                     <a>{{ GetMailLanguage.title.mail_autoSave }}</a>
                   </li></router-link
@@ -89,10 +84,9 @@
             </li>
             <li>
               <h3>
-                <router-link
-                  to="/maillist/mail_reservation"
-                  >{{ GetMailLanguage.title.mail_reservation }}</router-link
-                >
+                <router-link to="/mail_more/mail_reservation">{{
+                  GetMailLanguage.title.mail_reservation
+                }}</router-link>
                 <em @click="depthDown($event, $parent)" class="down_m"></em>
               </h3>
               <ul class="depth02">
@@ -101,11 +95,9 @@
               </ul>
             </li>
             <li>
-              <router-link to="/maillist/mail_my"
+              <router-link to="/mail_more/mail_my"
                 ><h3>
-                  <a >{{
-                    GetMailLanguage.title.mail_my
-                  }}</a>
+                  <a>{{ GetMailLanguage.title.mail_my }}</a>
                 </h3></router-link
               >
               <em @click="depthDown($event, $parent)" class="down_m"></em>
@@ -114,21 +106,17 @@
               </ul>
             </li>
             <li>
-              <router-link to="/maillist/mail_followup"
+              <router-link to="/mail_more/mail_followup"
                 ><h3>
-                  <a >{{
-                    GetMailLanguage.title.mail_importance
-                  }}</a>
+                  <a>{{ GetMailLanguage.title.mail_importance }}</a>
                 </h3></router-link
               >
               <em @click="depthDown($event, $parent)" class="down_m"></em>
             </li>
             <li>
-              <router-link to="/maillist/mail_trash"
+              <router-link to="/mail_more/mail_trash"
                 ><h3>
-                  <a >{{
-                    GetMailLanguage.title.mail_trash
-                  }}</a>
+                  <a>{{ GetMailLanguage.title.mail_trash }}</a>
                 </h3></router-link
               ><em @click="depthDown($event, $parent)" class="down_m"></em>
               <ul class="depth02">
@@ -174,14 +162,11 @@ export default {
     TreeItem,
   },
   computed: {
-    ...mapState(["mail"]),
-    ...mapGetters([
-      "GetMail",
-      "GetMyInfo",
-      "GetSystemColor",
-      "GetConfig",
-      "GetMailLanguage",
-    ]),
+    ...mapState("mailjs", ["mail"]),
+    ...mapGetters("mailjs",["GetMail"]),
+    ...mapGetters("mainjs",["GetMyInfo"]),
+    ...mapGetters("configjs",["GetSystemColor", "GetConfig"]),
+    ...mapGetters(["GetMailLanguage"]),
     color() {
       if (this.GetSystemColor === "dark") {
         return true;

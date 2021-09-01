@@ -222,6 +222,9 @@ $(function () {
     $('body').on('click','.rd_more',function(){
         $('.rdmail_icons .more_box').toggleClass('on');
     });
+    $('body').on('click','.more_box',function(){
+        $('.rdmail_icons .more_box').toggleClass('on');
+    });
     // $('body').on('click','.btn_toggle',function(){
     //     $(this).parent('a').parent('li').parent('ul').toggleClass('on');
     // });
@@ -292,10 +295,10 @@ $(function () {
     $('.my_cal strong').on('click',function(){
         $(this).parent('li').toggleClass('on');
     });
-    $('.repeat_s span em').on('click',function(){
-        $(this).addClass('click');
-        $(this).parents('span').siblings('span').find('em').removeClass('click')
-    });
+    // $('.repeat_s span em').on('click',function(){
+    //     $(this).addClass('click');
+    //     $(this).parents('span').siblings('span').find('em').removeClass('click')
+    // });
     // $('body').on('click','.c_organ', function() {
     //     $('.organ_modal').addClass('on');
     // });
@@ -303,9 +306,9 @@ $(function () {
         $(this).toggleClass('active');
         $('.more_cal_att').slideToggle();
     });
-    $('body').on('click','.att_del', function() {
-        $(this).parent('li').css('display','none');
-    });
+    // $('body').on('click','.att_del', function() {
+    //     $(this).parent('li').css('display','none');
+    // });
     // $('.a_list > li > h3 > a').on('click',function(){
     //     $(this).parent('h3').toggleClass('active'); 
     //     $(this).parent('h3').siblings('ul').toggleClass('active'); 
@@ -324,8 +327,8 @@ $(function () {
         $(this).parent('li').find('.app_status').addClass('active');
     });
     $('body').on('click','.close_btn', function() {
-        $(this).parent('div').removeClass('active');
-        $(this).parent('div').siblings('.st_more').removeClass('active');
+        $(this).parent('div').parent('div').removeClass('active');
+        $(this).parent('div').parent('div').siblings('.st_more').removeClass('active');
     });
     // 
     $("body").on('change','#add_f',function(){
@@ -392,86 +395,64 @@ $(function () {
         $('.ap_sub_search').removeClass('active');
     });
     // 게시판 
-    $('.tit_clip').on('click',function(){
-        $('.att_file').toggleClass('active');
-    });
-    $('.re_more').on('click',function(){
+    // $('.tit_clip').on('click',function(){
+    //     $('.att_file').toggleClass('active');
+    // });
+    $('body').on('click','.re_more',function(){
         $('.posting').toggleClass('active');
     });
-    $('.like_btn span').on('click',function(){
-        $(this).toggleClass('active');
-    });
-    $('.com_ic').on('click',function(){
-        $(this).parent('div').siblings('.ccc_com').toggleClass('active');
-    });
-    $('body').on('click','.time_mo_btn',function(){
-        $('.rere_modal').removeClass('active');
-    });/*8월 12일 추가됨 */
-    $('body').on('click','.rereclose',function(){
-        $('.rere_modal').removeClass('active');
-    });
-    $('body').on('click','.rere_btn em',function(){
-        $('.rere_modal').addClass('active');
-    });/*8월 12일 추가됨 */
+    // $('.like_btn span').on('click',function(){
+    //     $(this).toggleClass('active');
+    // });
+    // $('body').on('click','.com_ic',function(){
+    //     $(this).parent('div').siblings('.ccc_com').toggleClass('active');
+    // });
+    // $('body').on('click','.time_mo_btn',function(){
+    //     $('.rere_modal').removeClass('active');
+    // });/*8월 12일 추가됨 */
+    // $('body').on('click','.rereclose',function(){
+    //     $('.rere_modal').removeClass('active');
+    // });
+    // $('body').on('click','.rere_btn em',function(){
+    //     $('.rere_modal').addClass('active');
+    // });/*8월 12일 추가됨 */
      /* 일정 쓰기 반복예약*/
-    $('.m_contents08').on('click','#selectbox',function(){
-        if ($('#selectbox option:selected').val() == "기간"){
-            $('.date_inp > div').addClass('active');
-        } else if ($('#selectbox option:selected').val() == "종료"){
-            $('.date_inp > div').removeClass('active');
+    // $('.m_contents08').on('click','#selectbox',function(){
+    //     if ($('#selectbox option:selected').val() == "기간"){
+    //         $('.date_inp > div').addClass('active');
+    //     } else if ($('#selectbox option:selected').val() == "종료"){
+    //         $('.date_inp > div').removeClass('active');
+    //     }
+    // });/*8월 12일 추가됨 */
+
+    $('body').on('click','.btm_menu',function(){
+        $('.btm_menu_list').addClass('active');
+    });
+    // $('body').on('click','.btm_organ',function(){
+    //     $('.all_organ_modal').addClass('on');
+    //     $('.btm_menu_list').removeClass('active');
+    // });
+    $('body').on('click','.btm_btn li',function(){
+        $(this).addClass('on');
+        $(this).siblings('li').removeClass('on');
+    });
+    $('body').on('click','.close_btn', function() {
+        $(this).parent('div').removeClass('active')
+        // $(this).parent('div').siblings('.s_text').find('.st_more').removeClass('active');
+        $(this).parent('div').siblings('.st_more').removeClass('active');
+        // $(this).parent('div').parent('div').removeClass('active');
+    });
+    changeIMG();
+    function changeIMG(){
+        if ($('.wrap.btm_b').hasClass('dark')){
+            $('.up > img').attr('src','./img/up_btn_d.png');
+            $('.down > img').attr('src','./img/down_btn_d.png'); 
+        }else if ($('.wrap.btm_b').removeClass('dark')){
+            $('.up > img').attr('src','./img/up_btn.png');
+            $('.down > img').attr('src','./img/down_btn.png'); 
         }
-    });/*8월 12일 추가됨 */
-    $('.m_contents08').on('click','#rere_box',function(){
-        if ($('#rere_box option:selected').val() == "w"){
-            $('#se102_2').css('display','block');
-            $('#se103_2').css('display','none');
-            $('#se104_2').css('display','none');
-        } else if ($('#rere_box option:selected').val() == "md"){
-            $('#se103_2').css('display','block');
-            $('#se102_2').css('display','none');
-            $('#se104_2').css('display','none');
-        }else if ($('#rere_box option:selected').val() == "mp"){
-            $('#se104_2').css('display','block');
-            $('#se102_2').css('display','none');
-            $('#se103_2').css('display','none');
-        }else if ($('#rere_box option:selected').val() == "d"){
-            $('#se104_2').css('display','none');
-            $('#se102_2').css('display','none');
-            $('#se103_2').css('display','none');
-        }else if ($('#rere_box option:selected').val() == "y"){
-            $('#se104_2').css('display','none');
-            $('#se102_2').css('display','none');
-            $('#se103_2').css('display','none');
-        }
-        
-    });/*8월 12일 추가됨 */
-    $('#rere_box').on('click',function(){
-        if ($('#rere_box option:selected').val() == "d"){
-            $('#sel01').css('display','block');
-            $('#sel02_1').css('display','none');
-            $('#sel03_1').css('display','none');
-            $('#sel05_1').css('display','none');
-        } else if ($('#rere_box option:selected').val() == "w"){
-            $('#sel01').css('display','none');
-            $('#sel02_1').css('display','block');
-            $('#sel03_1').css('display','none');
-            $('#sel05_1').css('display','none');
-        }else if ($('#rere_box option:selected').val() == "md"){
-            $('#sel01').css('display','none');
-            $('#sel02_1').css('display','none');
-            $('#sel03_1').css('display','block');
-            $('#sel05_1').css('display','none');
-        }else if ($('#rere_box option:selected').val() == "mp"){
-            $('#sel01').css('display','none');
-            $('#sel02_1').css('display','none');
-            $('#sel03_1').css('display','block');
-            $('#sel05_1').css('display','none');
-        }else if ($('#rere_box option:selected').val() == "y"){
-            $('#sel01').css('display','none');
-            $('#sel02_1').css('display','none');
-            $('#sel03_1').css('display','none');
-            $('#sel05_1').css('display','block');
-        }
-    });/*8월 12일 추가됨 */
-    
+    };/*27일 추가됨*/
+    $('body').on('click','.new_addr textarea',function(){
+        $(this).parent('li').parent('ul').parent('div').siblings('div.add_search').toggleClass('active');
+    });/*27일 추가됨*/
 });

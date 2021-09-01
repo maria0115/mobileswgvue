@@ -8,8 +8,11 @@
       :date="fulldate"
     ></date-header>
     <Header :calmenu="this.calmenu" @calMenuOff="CalMenuOff"></Header>
-    <div class="m_contents09" @touchstart="Start($event)"
-      @touchmove="Move($event)">
+    <div
+      class="m_contents09"
+      @touchstart="Start($event)"
+      @touchmove="Move($event)"
+    >
       <div class="week_day">
         <div
           v-for="(value, index) in this.thisWeek"
@@ -52,18 +55,24 @@
             </div>
             <div class="time_con">
               <div class="week_caltit">
-                <div v-for="(v, i) in daysSort"  :key="i" :class="{ time_day: theDayOfWeek == i && hour==index &&haveem()}"> 
+                <div
+                  v-for="(v, i) in daysSort"
+                  :key="i"
+                  :class="{
+                    time_day:
+                      theDayOfWeek == i && hour == index && haveem(v, index,value,i),
+                  }"
+                >
                   <!-- :class="{ time_day: theDayOfWeek == i }" -->
                   <!-- :class="{time_day:GetSchedule.calList.week[index][].length}" -->
                   <!-- class="time_day" -->
                   <a v-if="GetSchedule.calList.week[v]">
-                    <em :ref="`days${i}`"
+                    <em
                       v-for="(va, idx) in GetSchedule.calList.week[v][index]"
                       :key="idx"
                       @click="Detail(va)"
                       >{{ va.subject }}
-                      </em
-                    >
+                    </em>
                   </a>
                 </div>
               </div>
@@ -85,12 +94,12 @@ import { mapState, mapGetters } from "vuex";
 import CalWrite from "./calWBtn.vue";
 export default {
   computed: {
-    ...mapGetters(["GetSchedule"]),
+    ...mapGetters("calendarjs", ["GetSchedule"]),
   },
   components: {
     Header,
     DateHeader,
-    CalWrite
+    CalWrite,
   },
   data() {
     return {
@@ -140,7 +149,6 @@ export default {
     };
   },
   created() {
-    console.log(this.GetSchedule)
     this.Init();
   },
   methods: {
@@ -151,10 +159,10 @@ export default {
     End(e) {},
     Move(e) {
       this.nowclientX = e.touches[0].pageX - e.touches[0].target.offsetLeft;
-      if (this.nowclientX - this.startX > 50 && this.check) {
+      if (this.nowclientX - this.startX > 100 && this.check) {
         this.calendarData(-1);
         this.check = false;
-      } else if (this.nowclientX - this.startX < -50 && this.check) {
+      } else if (this.nowclientX - this.startX < -100 && this.check) {
         this.calendarData(1);
         this.check = false;
       }
@@ -209,7 +217,7 @@ export default {
         this.thisWeek[this.thisWeek.length - 1].month
       }-${this.thisWeek[this.thisWeek.length - 1].day}`;
       send.today = this.fulldate;
-      this.$store.dispatch("CalList", { data: send, which: "week" });
+      this.$store.dispatch("calendarjs/CalList", { data: send, which: "week" });
     },
     calendarData(arg) {
       var now = new Date();
@@ -233,7 +241,8 @@ export default {
         2,
         this.today
       )}`;
-      var currentDay = new Date(this.fulldate);
+      var redate = this.fulldate.replaceAll(".", "/");
+      var currentDay = new Date(redate);
       this.theDayOfWeek = currentDay.getDay();
 
       for (var i = 0; i < this.daysSort.length; i++) {
@@ -265,7 +274,7 @@ export default {
         this.thisWeek[this.thisWeek.length - 1].month
       }-${this.thisWeek[this.thisWeek.length - 1].day}`;
       send.today = this.fulldate;
-      this.$store.dispatch("CalList", { data: send, which: "week" });
+      this.$store.dispatch("calendarjs/CalList", { data: send, which: "week" });
     },
     fill(width, number) {
       number = number + ""; //number를 문자열로 변환하는 작업
@@ -284,6 +293,7 @@ export default {
     },
     getWeekNo(v_date_str) {
       var date = new Date();
+
       if (v_date_str) {
         date = new Date(v_date_str);
       }
@@ -295,19 +305,23 @@ export default {
       this.today = parseInt(date.split(".")[2]);
       this.calendarData();
     },
-    async Detail(value){
-      this.$store.commit("SaveScheduleUnid",{unid:value.unid,where:"week"});
+    async Detail(value) {
+      this.$store.commit("calendarjs/SaveScheduleUnid", {
+        unid: value.unid,
+        where: "week",
+      });
       // await this.$store.dispatch("CalDetail",{data:value,path:this.$route.path,which:"week"});
-      this.$router.push("/schedule/read");
-
+      this.$router.push("/schedule_more/read");
     },
-    haveem(index){
-      // console.log(this.$refs[`days${index}`])
-      if(this.$refs[`days${index}`]){
-        return true;
+    haveem(v, index,value,i) {
+      if(this.GetSchedule.calList.week[v]){
+        var is = this.GetSchedule.calList.week[v][index];
+        if (is.length>0) {
+          return true;
+        }
+
       }
       return false;
-
     },
   },
 };

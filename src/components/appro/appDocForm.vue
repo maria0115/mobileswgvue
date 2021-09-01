@@ -7,19 +7,19 @@
         <li>
           <h3 :class="{active:often}" @click="toggle('often')"><a>자주 사용하는 서식</a></h3>
           <ul :class="{active:often}">
-            <li v-for="(value,index) in GetApproval.formList_favorite.data" :key="index"><a>{{value.category}}</a></li>
+            <li v-for="(value,index) in GetApproval.formList_favorite.data" :key="index"><router-link to="write">{{value.category}}</router-link></li>
           </ul>
         </li>
         <li>
           <h3 :class="{active:recent}" @click="toggle('recent')"><a>최근에 사용한 서식</a></h3>
           <ul :class="{active:recent}">
-            <li v-for="(value,index) in GetApproval.formList_recent.data" :key="index"><a>{{value.category}}</a></li>
+            <li v-for="(value,index) in GetApproval.formList_recent.data" :key="index"><router-link to="write">{{value.category}}</router-link></li>
           </ul>
         </li>
         <li>
           <h3 :class="{active:all}" @click="toggle('all')"><a>서식함</a></h3>
           <ul :class="{active:all}">
-            <li  v-for="(value,index) in GetApproval.formList_all.data" :key="index"><a>{{value.category}}</a></li>
+            <li  v-for="(value,index) in GetApproval.formList_all.data" :key="index"><router-link to="write">{{value.category}}</router-link></li>
           </ul>
         </li>
       </ul>
@@ -37,7 +37,7 @@ import BtnPlus from "./btnPlus.vue";
 import { mapState, mapGetters } from "vuex";
 export default {
     computed: {
-    ...mapGetters(["GetApproval"]),
+    ...mapGetters("approjs",["GetApproval"]),
   },
   components: {
     Header,

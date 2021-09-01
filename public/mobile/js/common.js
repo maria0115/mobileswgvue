@@ -222,6 +222,9 @@ $(function () {
     $('body').on('click','.rd_more',function(){
         $('.rdmail_icons .more_box').toggleClass('on');
     });
+    $('body').on('click','.more_box',function(){
+        $('.rdmail_icons .more_box').toggleClass('on');
+    });
     // $('body').on('click','.btn_toggle',function(){
     //     $(this).parent('a').parent('li').parent('ul').toggleClass('on');
     // });
@@ -292,24 +295,24 @@ $(function () {
     $('.my_cal strong').on('click',function(){
         $(this).parent('li').toggleClass('on');
     });
-    $('.repeat_s span em').on('click',function(){
-        $(this).addClass('click');
-        $(this).parents('span').siblings('span').find('em').removeClass('click')
-    });
-    $('body').on('click','.c_organ', function() {
-        $('.organ_modal').addClass('on');
-    });
-    $('.cal_att > strong').on('click', function() {
+    // $('.repeat_s span em').on('click',function(){
+    //     $(this).addClass('click');
+    //     $(this).parents('span').siblings('span').find('em').removeClass('click')
+    // });
+    // $('body').on('click','.c_organ', function() {
+    //     $('.organ_modal').addClass('on');
+    // });
+    $('body').on('click','.cal_att > strong', function() {
         $(this).toggleClass('active');
         $('.more_cal_att').slideToggle();
     });
-    $('body').on('click','.att_del', function() {
-        $(this).parent('li').css('display','none');
-    });
-    $('.a_list > li > h3 > a').on('click',function(){
-        $(this).parent('h3').toggleClass('active'); 
-        $(this).parent('h3').siblings('ul').toggleClass('active'); 
-    });
+    // $('body').on('click','.att_del', function() {
+    //     $(this).parent('li').css('display','none');
+    // });
+    // $('.a_list > li > h3 > a').on('click',function(){
+    //     $(this).parent('h3').toggleClass('active'); 
+    //     $(this).parent('h3').siblings('ul').toggleClass('active'); 
+    // });
     // action 버튼 
     $('body').on('click','.more_plus', function() {
         $('.ac_btns ul').toggleClass('active');
@@ -324,8 +327,8 @@ $(function () {
         $(this).parent('li').find('.app_status').addClass('active');
     });
     $('body').on('click','.close_btn', function() {
-        $(this).parent('div').removeClass('active')
-        $(this).parent('div').siblings('.s_text').find('.st_more').removeClass('active');
+        $(this).parent('div').parent('div').removeClass('active');
+        $(this).parent('div').parent('div').siblings('.st_more').removeClass('active');
     });
     // 
     $("body").on('change','#add_f',function(){
@@ -385,5 +388,71 @@ $(function () {
     $('body').on('click','.back_btn',function(){
         $('.ap_sub_search').removeClass('active');
     });
-    
+    $('.ap_sub_search').on('click',function(){
+        $('.search_con').addClass('active');
+    });
+    $('.back_btn').on('click',function(){
+        $('.ap_sub_search').removeClass('active');
+    });
+    // 게시판 
+    // $('.tit_clip').on('click',function(){
+    //     $('.att_file').toggleClass('active');
+    // });
+    $('body').on('click','.re_more',function(){
+        $('.posting').toggleClass('active');
+    });
+    // $('.like_btn span').on('click',function(){
+    //     $(this).toggleClass('active');
+    // });
+    // $('body').on('click','.com_ic',function(){
+    //     $(this).parent('div').siblings('.ccc_com').toggleClass('active');
+    // });
+    // $('body').on('click','.time_mo_btn',function(){
+    //     $('.rere_modal').removeClass('active');
+    // });/*8월 12일 추가됨 */
+    // $('body').on('click','.rereclose',function(){
+    //     $('.rere_modal').removeClass('active');
+    // });
+    // $('body').on('click','.rere_btn em',function(){
+    //     $('.rere_modal').addClass('active');
+    // });/*8월 12일 추가됨 */
+     /* 일정 쓰기 반복예약*/
+    // $('.m_contents08').on('click','#selectbox',function(){
+    //     if ($('#selectbox option:selected').val() == "기간"){
+    //         $('.date_inp > div').addClass('active');
+    //     } else if ($('#selectbox option:selected').val() == "종료"){
+    //         $('.date_inp > div').removeClass('active');
+    //     }
+    // });/*8월 12일 추가됨 */
+
+    $('body').on('click','.btm_menu',function(){
+        $('.btm_menu_list').addClass('active');
+    });
+    // $('body').on('click','.btm_organ',function(){
+    //     $('.all_organ_modal').addClass('on');
+    //     $('.btm_menu_list').removeClass('active');
+    // });
+    $('body').on('click','.btm_btn li',function(){
+        $(this).addClass('on');
+        $(this).siblings('li').removeClass('on');
+    });
+    $('body').on('click','.close_btn', function() {
+        $(this).parent('div').removeClass('active')
+        // $(this).parent('div').siblings('.s_text').find('.st_more').removeClass('active');
+        $(this).parent('div').siblings('.st_more').removeClass('active');
+        // $(this).parent('div').parent('div').removeClass('active');
+    });
+    changeIMG();
+    function changeIMG(){
+        if ($('.wrap.btm_b').hasClass('dark')){
+            $('.up > img').attr('src','./img/up_btn_d.png');
+            $('.down > img').attr('src','./img/down_btn_d.png'); 
+        }else if ($('.wrap.btm_b').removeClass('dark')){
+            $('.up > img').attr('src','./img/up_btn.png');
+            $('.down > img').attr('src','./img/down_btn.png'); 
+        }
+    };/*27일 추가됨*/
+    $('body').on('click','.new_addr textarea',function(){
+        $(this).parent('li').parent('ul').parent('div').siblings('div.add_search').toggleClass('active');
+    });/*27일 추가됨*/
 });

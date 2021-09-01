@@ -1,17 +1,16 @@
-<template>
-</template>
+<template></template>
 
 <script>
 export default {
   props: {
     editor: {
       default: null,
-      type: Object
+      type: Object,
     },
     value: {
       default: "",
-      type: String
-    }
+      type: String,
+    },
   },
 
   watch: {
@@ -19,7 +18,6 @@ export default {
       immediate: true,
       handler(editor) {
         if (!editor || !editor.element) return;
-        console.log(this.value,"this.value@@@@@@@@@@@@@@@@@@@")
 
         this.editor.setContent(this.value);
         this.editor.on("update", ({ getHTML }) => {
@@ -27,30 +25,28 @@ export default {
         });
 
         this.$nextTick(() => {
-          console.log("혹싀")
           this.$el.appendChild(editor.element.firstChild);
           editor.setParentComponent(this);
         });
-      }
+      },
     },
     value: {
       handler(value) {
-        // console.log(value,"value")
+        //
         this.editor.setContent(value);
-      }
-    }
+      },
+    },
   },
 
-//   render(createElement) {
-//     return createElement("textarea");
-//   },
+  //   render(createElement) {
+  //     return createElement("textarea");
+  //   },
 
   beforeDestroy() {
     this.editor.element = this.$el;
-  }
+  },
 };
 </script>
 
 <style>
-
 </style>

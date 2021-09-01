@@ -1,68 +1,75 @@
 <template>
   <div>
-    <div class="cal_w_header">
-      <h2>
-        <a href="./mob_calendar.html"
-          ><img src="../../mobile/img/wmail_back.png" alt="" /></a
-        >일정쓰기
-      </h2>
-      <div>
-        <span class="cal_save"><a href="mob_cal_list.html">등록</a></span>
-      </div>
-    </div>
-    <div class="m_contents08">
+    <CalHeader :title="Title()" @Send="Send"></CalHeader>
+    <div class="m_contents08 srl">
       <form action="">
         <ul class="wc_top">
           <li class="cal_title">
             <strong>일정제목</strong>
             <div>
-              <input type="text" />
-              <span class="tit_clip"></span>
+              <input type="text" v-model="Subject" />
+              <span class="tit_clip" @click="submitFile()" />
+              <input
+                multiple
+                style="display: none"
+                type="file"
+                id="file"
+                ref="file"
+                v-on:change="handleFileUpload()"
+              />
             </div>
           </li>
           <li class="cal_category">
             <strong>카테고리</strong>
             <div class="">
-              <select name="" id="">
-                <option value="">회의</option>
-                <option value="">약속</option>
-                <option value="">행사</option>
-                <option value="">기념일</option>
-                <option value="">리마인더</option>
+              <select name="" v-model="onCategory" id="">
+                <option
+                  v-for="(value, index) in category"
+                  :key="index"
+                  :value="Object.keys(value)[0]"
+                >
+                  {{ value[Object.keys(value)[0]] }}
+                </option>
               </select>
             </div>
           </li>
           <li class="cal_open">
             <strong>공개여부</strong>
             <div class="repeat_s">
-              <span> <em></em>공개 </span>
-              <span> <em></em>비공개 </span>
+              <span @click="isOpen(true)">
+                <em :class="{ click: this.open }"></em>공개
+              </span>
+              <span @click="isOpen(false)">
+                <em :class="{ click: !this.open }"></em>비공개
+              </span>
             </div>
           </li>
           <li class="cal_date">
             <strong>일자</strong>
             <div>
-              <input type="date" :value="date" />
+              <input type="date" v-model="date" />
             </div>
           </li>
-          <li class="repeat_s">
+          <li v-if="!this.GetEdit" class="repeat_s">
             <strong>반복</strong>
             <div>
-              <span> <em class="click"></em>일반 </span>
-              <span class="rere_btn"
+              <span @click="rClick('regular')">
+                <em :class="{ click: !rereclick }"></em>일반
+              </span>
+              <span  class="rere_btn" @click="RBtn"
                 ><!--클래스명 추가됨 8월 12일 -->
-                <em></em>반복예약
+                <em :class="{ click: rereclick }"></em>반복예약
               </span>
             </div>
           </li>
-          <li class="cal_time">
+          <li v-if="!(onCategory == 1 || onCategory == 2)" class="cal_time">
             <strong>시간</strong>
             <div>
-              <input type="time" value="15:00" /><b>~</b
-              ><input type="time" value="16:00" />
+              <input type="time" value="15:00" v-model="startTime" /><b>~</b
+              ><input type="time" value="16:00" v-model="endTime" />
             </div>
           </li>
-          <li class="cal_att">
+          <li v-if="onCategory == 3" class="cal_att">
             <strong>참석자</strong>
             <div>
               <ul class="list_add clfix">
@@ -282,194 +289,128 @@
           <li class="cal_place">
             <strong>장소</strong>
             <div>
-              <input type="text" />
+              <input type="text" v-model="place" />
             </div>
           </li>
           <li class="att_file">
             <strong>첨부파일</strong>
             <div>
               <ul class="file_list">
-                <li>IMG0534.JPG<span class="att_del"></span></li>
-                <li>IMG0534.JPG<span class="att_del"></span></li>
+                <li v-for="(value, index) in this.file" :key="index">
+                  {{ value.name }}<span class="att_del"></span>
+                </li>
               </ul>
             </div>
           </li>
           <li class="cal_memo">
             <strong>메모</strong>
             <div>
-              <textarea id="memo_t"></textarea>
+              <EditorContent id="memo_t" :editor="editor" />
+              <!-- <textarea id="memo_t" v-model="Body_Text"></textarea> -->
             </div>
           </li>
         </ul>
       </form>
     </div>
-    <div class="rere_modal">
+    <div class="rere_modal" :class="{ active: rmodalon }">
       <!--8월 12일 추가됨 반복예약-->
       <div class="rere_con">
         <strong>반복설정</strong>
         <p>행사가 반복될 때</p>
         <ul>
           <li>
-            <select id="rere_box">
-              <option value="d" selected>일 단위</option>
-              <option value="w">주 단위</option>
-              <option value="md">월 단위(날짜)</option>
-              <option value="mp">월 단위(요일)</option>
-              <option value="y">년 단위</option>
+            <select id="rere_box" v-model="RepeatUnit">
+              <option value="D" selected>일 단위</option>
+              <option value="W">주 단위</option>
+              <option value="MD">월 단위(날짜)</option>
+              <option value="MP">월 단위(요일)</option>
+              <option value="Y">년 단위</option>
             </select>
           </li>
           <li class="ri_adjust clfix">
             <div class="se_box01">
-              <select name="sel01" id="sel01">
+              <select
+                v-if="RepeatUnit == 'D'"
+                v-model="RepeatInterval"
+                name="sel01"
+                id="sel01"
+              >
                 <option value="매일 반복" selected>매일 반복</option>
-                <option value="1일마다 반복">1일마다 반복</option>
-                <option value="2일마다 반복">2일마다 반복</option>
-                <option value="3일마다 반복">3일마다 반복</option>
-                <option value="4일마다 반복">4일마다 반복</option>
-                <option value="5일마다 반복">5일마다 반복</option>
-                <option value="6일마다 반복">6일마다 반복</option>
-                <option value="7일마다 반복">7일마다 반복</option>
-                <option value="8일마다 반복">8일마다 반복</option>
-                <option value="9일마다 반복">9일마다 반복</option>
-                <option value="10일마다 반복">10일마다 반복</option>
-                <option value="11일마다 반복">11일마다 반복</option>
-                <option value="12일마다 반복">12일마다 반복</option>
-                <option value="13일마다 반복">13일마다 반복</option>
-                <option value="14일마다 반복">14일마다 반복</option>
-                <option value="15일마다 반복">15일마다 반복</option>
-                <option value="16일마다 반복">16일마다 반복</option>
-                <option value="17일마다 반복">17일마다 반복</option>
-                <option value="18일마다 반복">18일마다 반복</option>
-                <option value="19일마다 반복">19일마다 반복</option>
-                <option value="20일마다 반복">20일마다 반복</option>
-                <option value="21일마다 반복">21일마다 반복</option>
-                <option value="22일마다 반복">22일마다 반복</option>
-                <option value="23일마다 반복">23일마다 반복</option>
-                <option value="24일마다 반복">24일마다 반복</option>
-                <option value="25일마다 반복">25일마다 반복</option>
-                <option value="26일마다 반복">26일마다 반복</option>
-                <option value="27일마다 반복">27일마다 반복</option>
-                <option value="28일마다 반복">28일마다 반복</option>
-                <option value="29일마다 반복">29일마다 반복</option>
-                <option value="30일마다 반복">30일마다 반복</option>
-                <option value="31일마다 반복">31일마다 반복</option>
+                <option :value="fill(2, num)" v-for="num in 31" :key="num">
+                  {{ num }}일마다 반복
+                </option>
               </select>
-              <select id="sel02_1">
+              <select
+                v-if="RepeatUnit == 'W'"
+                v-model="RepeatInterval"
+                id="sel02_1"
+              >
                 <option value="매주 반복" selected>매주 반복</option>
-                <option value="2주마다 반복">2주마다 반복</option>
-                <option value="3주마다 반복">3주마다 반복</option>
-                <option value="4주마다 반복">4주마다 반복</option>
-                <option value="5주마다 반복">5주마다 반복</option>
-                <option value="6주마다 반복">6주마다 반복</option>
-                <option value="7주마다 반복">7주마다 반복</option>
-                <option value="8주마다 반복">8주마다 반복</option>
+                <option :value="fill(2, num)" v-for="num in 8" :key="num">
+                  {{ num }}주마다 반복
+                </option>
               </select>
-              <select id="sel03_1">
+              <select
+                v-model="RepeatInterval"
+                v-if="RepeatUnit == 'MD' || RepeatUnit == 'MP'"
+                id="sel03_1"
+              >
                 <option value="매월 반복" selected>매월 반복</option>
-                <option value="2개월마다 반복">2개월마다 반복</option>
-                <option value="3개월마다 반복">3개월마다 반복</option>
-                <option value="4개월마다 반복">4개월마다 반복</option>
-                <option value="5개월마다 반복">5개월마다 반복</option>
-                <option value="6개월마다 반복">6개월마다 반복</option>
-                <option value="7개월마다 반복">7개월마다 반복</option>
-                <option value="8개월마다 반복">8개월마다 반복</option>
-                <option value="9개월마다 반복">9개월마다 반복</option>
-                <option value="10개월마다 반복">10개월마다 반복</option>
-                <option value="11개월마다 반복">11개월마다 반복</option>
-                <option value="12개월마다 반복">12개월마다 반복</option>
+                <option :value="fill(2, num)" v-for="num in 12" :key="num">
+                  {{ num }}개월마다 반복
+                </option>
               </select>
-              <select id="sel05_1">
+              <select
+                v-model="RepeatInterval"
+                v-if="RepeatUnit == 'Y'"
+                id="sel05_1"
+              >
                 <option value="매년 반복" selected>매년 반복</option>
-                <option value="2년마다 반복">2년마다 반복</option>
-                <option value="3년마다 반복">3년마다 반복</option>
-                <option value="4년마다 반복">4년마다 반복</option>
-                <option value="5년마다 반복">5년마다 반복</option>
-                <option value="6년마다 반복">6년마다 반복</option>
-                <option value="7년마다 반복">7년마다 반복</option>
-                <option value="8년마다 반복">8년마다 반복</option>
-                <option value="9년마다 반복">9년마다 반복</option>
-                <option value="10년마다 반복">10년마다 반복</option>
+                <option :value="fill(2, num)" v-for="num in 10" :key="num">
+                  {{ num }}년마다 반복
+                </option>
               </select>
             </div>
-            <div class="se_box02">
-              <select id="se102_2">
-                <option value="일요일">일요일</option>
-                <option value="월요일">월요일</option>
-                <option value="화요일">화요일</option>
-                <option value="수요일">수요일</option>
-                <option value="목요일">목요일</option>
-                <option value="금요일">금요일</option>
-                <option value="토요일">토요일</option>
+            <div
+              class="se_box02"
+              v-if="
+                RepeatUnit == 'W' || RepeatUnit == 'MD' || RepeatUnit == 'MP'
+              "
+            >
+              <select
+                id="se102_2"
+                v-model="RepeatAdjust_W"
+                v-if="RepeatUnit == 'W'"
+              >
+                <option
+                  :value="fill(2, index)"
+                  v-for="(value, index) in daysSort"
+                  :key="index"
+                >
+                  {{ value }}요일
+                </option>
               </select>
-              <select id="se103_2">
-                <option value="1일">1일</option>
-                <option value="2일">2일</option>
-                <option value="3일">3일</option>
-                <option value="4일">4일</option>
-                <option value="5일">5일</option>
-                <option value="6일">6일</option>
-                <option value="7일">7일</option>
-                <option value="8일">8일</option>
-                <option value="9일">9일</option>
-                <option value="10일">10일</option>
-                <option value="11일">11일</option>
-                <option value="12일">12일</option>
-                <option value="13일">13일</option>
-                <option value="14일">14일</option>
-                <option value="15일">15일</option>
-                <option value="16일">16일</option>
-                <option value="17일">17일</option>
-                <option value="18일">18일</option>
-                <option value="19일">19일</option>
-                <option value="20일">20일</option>
-                <option value="21일">21일</option>
-                <option value="22일">22일</option>
-                <option value="23일">23일</option>
-                <option value="24일">24일</option>
-                <option value="25일">25일</option>
-                <option value="26일">26일</option>
-                <option value="27일">27일</option>
-                <option value="28일">28일</option>
-                <option value="29일">29일</option>
-                <option value="30일">30일</option>
-                <option value="31일">31일</option>
+              <select
+                id="se103_2"
+                v-model="RepeatAdjust_MD"
+                v-if="RepeatUnit == 'MD'"
+              >
+                <option :value="fill(2, num)" v-for="num in 31" :key="num">
+                  {{ num }}일
+                </option>
               </select>
-              <select id="se104_2">
-                <option value="첫번째 일요일">첫번째 일요일</option>
-                <option value="첫번째 월요일">첫번째 월요일</option>
-                <option value="첫번째 화요일">첫번째 화요일</option>
-                <option value="첫번째 수요일">첫번째 수요일</option>
-                <option value="첫번째 목요일">첫번째 목요일</option>
-                <option value="첫번째 금요일">첫번째 금요일</option>
-                <option value="첫번째 토요일">첫번째 토요일</option>
-                <option value="두번째 일요일">두번째 일요일</option>
-                <option value="두번째 월요일">두번째 월요일</option>
-                <option value="두번째 화요일">두번째 화요일</option>
-                <option value="두번째 수요일">두번째 수요일</option>
-                <option value="두번째 목요일">두번째 목요일</option>
-                <option value="두번째 금요일">두번째 금요일</option>
-                <option value="두번째 토요일">두번째 토요일</option>
-                <option value="세번째 일요일">세번째 일요일</option>
-                <option value="세번째 월요일">세번째 월요일</option>
-                <option value="세번째 화요일">세번째 화요일</option>
-                <option value="세번째 수요일">세번째 수요일</option>
-                <option value="세번째 목요일">세번째 목요일</option>
-                <option value="세번째 금요일">세번째 금요일</option>
-                <option value="세번째 토요일">세번째 토요일</option>
-                <option value="네번째 일요일">네번째 일요일</option>
-                <option value="네번째 월요일">네번째 월요일</option>
-                <option value="네번째 화요일">네번째 화요일</option>
-                <option value="네번째 수요일">네번째 수요일</option>
-                <option value="네번째 목요일">네번째 목요일</option>
-                <option value="네번째 금요일">네번째 금요일</option>
-                <option value="네번째 토요일">네번째 토요일</option>
-                <option value="마지막 일요일">마지막 일요일</option>
-                <option value="마지막 월요일">마지막 월요일</option>
-                <option value="마지막 화요일">마지막 화요일</option>
-                <option value="마지막 수요일">마지막 수요일</option>
-                <option value="마지막 목요일">마지막 목요일</option>
-                <option value="마지막 금요일">마지막 금요일</option>
-                <option value="마지막 토요일">마지막 토요일</option>
+              <select
+                id="se104_2"
+                v-model="RepeatAdjust_MP"
+                v-if="RepeatUnit == 'MP'"
+              >
+                <option
+                  v-for="(v, i) in this.Closs()"
+                  :value="v.index"
+                  :key="i"
+                >
+                  {{ v.str }}요일
+                </option>
               </select>
             </div>
           </li>
@@ -477,26 +418,26 @@
         <p>행사가 반복되는 기간</p>
         <ul class="inp_wrap">
           <li class="clfix term">
-            <select id="selectbox">
-              <option value="종료" selected>종료</option>
-              <option value="기간">기간</option>
+            <select id="selectbox" v-model="RepeatHow">
+              <option value="U" selected>종료</option>
+              <option value="F">기간</option>
             </select>
           </li>
           <li class="clfix date_inp">
-            <input type="date" />
-            <div class="clfix">
-              <span><input type="text" /></span>
-              <select>
-                <option value="일">일</option>
-                <option value="주">주</option>
-                <option value="개월">개월</option>
-                <option value="년">년</option>
+            <input type="date" v-model="RepeatUntil" v-if="RepeatHow == 'U'" />
+            <div class="clfix" :class="{ active: RepeatHow == 'F' }">
+              <span><input type="text" v-model="RepeatFor" /></span>
+              <select v-model="RepeatForUnit">
+                <option value="D">일</option>
+                <option value="W">주</option>
+                <option value="M">개월</option>
+                <option value="Y">년</option>
               </select>
             </div>
           </li>
         </ul>
-        <span class="time_mo_btn">확인</span>
-        <span class="modal_close rereclose"></span>
+        <span class="time_mo_btn" @click="rClick('rere')">확인</span>
+        <span class="modal_close rereclose" @click="RBtnremove"></span>
       </div>
     </div>
     <div class="organ_modal" :class="{ on: modalon }">
@@ -543,12 +484,55 @@
 <script>
 import { mapState, mapGetters } from "vuex";
 import OrgItem from "./orgitemview.vue";
+import CalHeader from "./calHeader.vue";
+import { Editor, EditorContent } from "tiptap";
 export default {
   created() {
-    this.date = new Date();
+    if (this.GetEdit) {
+      this.editData =
+        this.GetSchedule.calDetail[this.GetSaveSchedule.detail.where];
+      
+      this.Body_Text = this.editData.body;
+      this.date = this.editData.startdate;
+      this.onCategory = this.editData.categoryVal;
+      this.place = this.editData.place;
+      this.open = this.editData.secretVal;
+      this.Subject = this.editData.subject;
+      console.log(this.editData)
+      this.endTime = `${this.editData.endtime.split(":")[0]}:${this.editData.endtime.split(":")[1]}`;
+      this.startTime = `${this.editData.starttime.split(":")[0]}:${this.editData.starttime.split(":")[1]}`;
+
+      
+    }else{
+      var dates = new Date();
+      var hour = dates.getHours();
+      var minute = dates.getMinutes();
+      this.startTime = `${hour}:${minute}`;
+      this.endTime = `${hour + 1}:${minute}`;
+  
+      var moment = require("moment");
+      this.RepeatStartDate = moment().utc().format("YYYYMMDDTHHmmss");
+      this.RepeatUntil = moment().format("YYYYMMDD");
+      this.date = moment().format("YYYY-MM-DD");
+
+    }
+    // RepeatStartDate: "20210817T150000",
+    //   RepeatHow: "U",
+    //   RepeatUntil: "20210831",
+  },
+  mounted() {
+    this.editor = new Editor({
+      content: this.Body_Text,
+    });
+  },
+  beforeDestroy() {
+    this.editor.destroy();
+        this.$store.commit("calendarjs/isEdit",false);
+    this.$store.commit("calendarjs/ScheduleOrgDataInit");
   },
   data() {
     return {
+      editData: {},
       date: "",
       modalon: false,
       modalAutoOrg: 0,
@@ -558,21 +542,64 @@ export default {
       blindcopytosearchkeyword: "",
       copytosearchkeyword: "",
       sendtosearchkeyword: "",
-      time: "",
       ExpireDate: "",
-      STime: "05",
-      SMin: "50",
-      dispreserve: false,
-      timemodal: false,
+      category: [
+        { 0: "약속" },
+        { 1: "기념일" },
+        { 2: "행사" },
+        { 3: "회의" },
+        { 4: "리마인더" },
+      ],
+      daysSort: ["일", "월", "화", "수", "목", "금", "토"],
+      weekSort: ["첫번째", "두번째", "세번째", "네번째", "마지막"],
+      RepeatUnit: "D",
+      RepeatInterval: "01",
+      RepeatAdjust_W: "00",
+      RepeatAdjust_MD: "01",
+      RepeatAdjust_MP: "1.0",
+      RepeatStartDate: "",
+      RepeatHow: "U",
+      RepeatUntil: "",
+      RepeatFor: "0",
+      RepeatForUnit: "D",
+      RepeatWeekends: "D",
+      rmodalon: false,
+      onCategory: 0,
+      place: "",
+      file: [],
+      Subject: "",
+      Body_Text: "",
+      startTime: "",
+      endTime: "",
+      rereclick: false,
+      open: true,
+      field: {},
+      editor: null,
+      ReData: {},
     };
   },
   computed: {
-    ...mapState(["scheduleorg", "autosearchorg"]),
-    ...mapGetters(["GetMail"]),
+    ...mapState("calendarjs", ["scheduleorg"]),
+    ...mapState("mailjs", ["autosearchorg"]),
+    ...mapGetters("mailjs", ["GetMail"]),
+    ...mapGetters("calendarjs", [
+      "GetEdit",
+      "GetSchedule",
+      "GetSaveSchedule",
+      "GetSaveScheduleList",
+    ]),
   },
   methods: {
+    fill(width, number) {
+      number = number + ""; //number를 문자열로 변환하는 작업
+      var str = "";
+      for (var i = 0; i < width - number.length; i++) {
+        str = str + "0";
+      }
+      str = str + number;
+      return str;
+    },
     OrgSearch(value) {
-      console.log(value.length)
       if (value.length >= 2) {
         var data = {};
         data.menu = "schedule";
@@ -588,15 +615,13 @@ export default {
       this.modalon = false;
       this.$store.commit("SearchOrgInit");
     },
-    OpenFolder() {
-      console.log("열었다");
-    },
+    OpenFolder() {},
     ScheduleOrgDataDelete(data, pointer) {
-      this.$store.commit("ScheduleOrgDataDelete", { data, pointer });
+      this.$store.commit("calendarjs/ScheduleOrgDataDelete", { data, pointer });
     },
     orgClick(to) {
       if (!this.tome) {
-        this.$store.commit("ScheduleOrgPointer", to);
+        this.$store.commit("calendarjs/ScheduleOrgPointer", to);
         this.modalon = true;
       }
     },
@@ -611,7 +636,7 @@ export default {
       }
     },
     async AddOrg(who, value, what) {
-      await this.$store.commit("ScheduleAddOrg", {
+      await this.$store.commit("calendarjs/ScheduleAddOrg", {
         who,
         value,
         menu: "schedule",
@@ -627,21 +652,140 @@ export default {
       const color = ["#bcbbdd", "#bbcbdd", "#bbddd7", "#d0d0d0"];
       return `background: ${color[Math.floor(Math.random() * 4)]}`;
     },
-    timeOk() {
-      this.timemodal = false;
-      this.dispreserve = false;
-      if (this.ExpireDate !== null && this.time !== null) {
-        this.dispreserve = true;
+    submitFile() {
+      this.$refs.file.click();
+    },
+    handleFileUpload() {
+      this.file = [];
+      this.file.push(this.$refs.file.files[0]);
+      // }
+    },
+    RBtn() {
+      if(!this.GetEdit){
+
+        this.rmodalon = true;
       }
     },
-    disReservation() {
-      this.timemodal = false;
-      this.dispreserve = false;
-      this.$store.commit("ScheduleOrgDataInit");
+    RBtnremove() {
+      this.rmodalon = false;
+    },
+    rClick(value) {
+      this.rmodalon = false;
+      if (value == "rere") {
+        var data = {};
+        data.RepeatUnit = this.RepeatUnit;
+        data.RepeatWeekends = "";
+        if (this.RepeatUnit == "D") {
+          data.RepeatWeekends = "D";
+        }
+        data.RepeatInterval = this.RepeatInterval;
+        if (this.RepeatUnit !== "D" || this.RepeatUnit !== "Y") {
+          data.RepeatAdjust = this[`RepeatAdjust_${this.RepeatUnit}`];
+        } else {
+          data.RepeatAdjust = "";
+        }
+        data.RepeatUntil = "";
+        data.RepeatFor = "";
+        data.RepeatForUnit = "";
+        if (this.RepeatHow == "U") {
+          var moment = require("moment");
+          var start = moment(`${this.RepeatUntil}`).format("YYYYMMDD");
+          data.RepeatUntil = start;
+        } else {
+          data.RepeatFor = this.RepeatFor;
+          data.RepeatForUnit = this.RepeatForUnit;
+        }
+        data.RepeatStartDate = this.RepeatStartDate;
+        data.RepeatHow = this.RepeatHow;
+
+        this.ReData = data;
+        this.rereclick = true;
+      } else {
+        this.ReData = {};
+        this.rereclick = false;
+      }
+    },
+    isOpen(value) {
+      this.open = value;
+    },
+    Closs() {
+      // daysSort: ["일", "월", "화", "수", "목", "금", "토"],
+      // weekSort
+      var result = [];
+      for (var i = 0; i < this.weekSort.length; i++) {
+        for (var j = 0; j < this.daysSort.length; j++) {
+          var str = `${this.weekSort[i]} ${this.daysSort[j]}`;
+          var index = `${i + 1}.${j}`;
+          var data = {};
+          data.str = str;
+          data.index = index;
+          result.push(data);
+        }
+      }
+      return result;
+    },
+    RouterBack() {
+      this.$router.go(-1);
+    },
+    Send() {
+      console.log("Send")
+      let formData = new FormData();
+      formData.append("subject", this.Subject);
+      formData.append("sendTo", this.scheduleorg.SendTo);
+      formData.append("copyTo", this.scheduleorg.CopyTo);
+      formData.append("blindCopyTo", this.scheduleorg.BlindCopyTo);
+
+      console.log(this.date, "this.date");
+
+      var moment = require("moment");
+      var start = moment(`${this.date} ${this.startTime}`).format(
+        "YYYYMMDDTHHmmss"
+      );
+      var end = moment(`${this.date} ${this.endTime}`).format(
+        "YYYYMMDDTHHmmss"
+      );
+      console.log(start, end);
+      formData.append("startDate", start);
+      formData.append("endDate", end);
+      formData.append("location", this.place);
+      formData.append("body", this.editor.getHTML());
+      for (var i = 0; i < this.file.length; i++) {
+        formData.append("attach", this.file[i]);
+      }
+      formData.append("category", this.onCategory);
+      formData.append("private", !this.open);
+
+      if (this.rereclick) {
+        // 반복예약
+        formData.append("Repeats", "1");
+      } else {
+        // 일반
+        formData.append("Repeats", "");
+      }
+      for (var i in this.ReData) {
+        formData.append(i, this.ReData[i]);
+      }
+      var type = "write";
+      if (this.GetEdit) {
+        type = "edit";
+        formData.append("unid",this.editData.unid);
+      }
+      this.$store.dispatch("calendarjs/CalWrite", {
+        data: formData,
+        type,
+      });
+    },
+    Title() {
+      if (this.GetEdit) {
+        return "edit";
+      }
+      return "write";
     },
   },
   components: {
     OrgItem,
+    EditorContent,
+    CalHeader,
   },
 };
 </script>

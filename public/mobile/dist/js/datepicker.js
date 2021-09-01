@@ -1,5 +1,4 @@
 ;(function (window, $, undefined) { ;(function () {
-    
     var VERSION = '2.2.3',
         pluginName = 'datepicker',
         autoInitSelector = '.datepicker-here',
@@ -18,7 +17,7 @@
             startDate: new Date(),
             firstDay: '',
             weekends: [6, 0],
-            dateFormat: '',
+            dateFormat: 'yyyy.mm.dd',
             altField: '',
             altFieldDateFormat: '@',
             toggleSelected: true,
@@ -141,7 +140,6 @@
     };
 
     datepicker = Datepicker;
-    
 
     datepicker.prototype = {
         VERSION: VERSION,
@@ -1807,7 +1805,6 @@
 })();
 
 ;(function () {
-    
     var template = '' +
         '<div class="datepicker--nav-action" data-action="prev">#{prevHtml}</div>' +
         '<div class="datepicker--nav-title">#{title}</div>' +
@@ -1978,7 +1975,6 @@
 
         this.init();
     };
-    
 
     datepicker.Timepicker.prototype = {
         init: function () {

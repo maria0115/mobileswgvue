@@ -7,37 +7,65 @@
         >일정</em
       >
       <div class="rdcal_icons">
-        <span class="rdcal_edit"><a href="./mob_cal_edit.html">편집</a></span>
+        <span class="rdcal_edit"><a @click="Edit()">편집</a></span>
         <span class="rdcal_edit_del" @click="Del">삭제</span>
       </div>
     </div>
-    <div class="m_contents08">
+    <div class="m_contents08 srl">
       <div class="con_body_top">
-        <span>{{ GetSchedule.calDetail[this.GetSaveSchedule.detail.where].subject }}</span>
+        <span>{{
+          GetSchedule.calDetail[this.GetSaveSchedule.detail.where].subject
+        }}</span>
         <em
-          ><b class="cate">{{ GetSchedule.calDetail[this.GetSaveSchedule.detail.where].category }}</b> /
-          <b class="open">{{ GetSchedule.calDetail[this.GetSaveSchedule.detail.where].secret }}</b></em
+          ><b class="cate">{{
+            GetSchedule.calDetail[this.GetSaveSchedule.detail.where].category
+          }}</b>
+          /
+          <b class="open">{{
+            GetSchedule.calDetail[this.GetSaveSchedule.detail.where].secret
+          }}</b></em
         >
       </div>
       <ul class="rd_list">
         <li>
           <span>일자</span>
-          <div>{{ TransDate() }}</div>
+          <div>{{ today }}</div>
         </li>
-        <li>
+        <li
+          v-if="
+            !(
+              GetSchedule.calDetail[this.GetSaveSchedule.detail.where]
+                .category == '기념일' ||
+              GetSchedule.calDetail[this.GetSaveSchedule.detail.where]
+                .category == '행사'
+            )
+          "
+        >
           <span>시간</span>
           <div>{{ TransTime() }}</div>
         </li>
         <li>
           <span>위치</span>
-          <div>{{ GetSchedule.calDetail.place }}</div>
+          <div>
+            {{
+              this.GetSchedule.calDetail[this.GetSaveSchedule.detail.where]
+                .place
+            }}
+          </div>
         </li>
-        <li>
+        <li
+          v-if="
+            GetSchedule.calDetail[this.GetSaveSchedule.detail.where].attachInfo
+              .length > 0
+          "
+        >
           <span>첨부파일</span>
           <ul class="file_list">
             <li
-            @click="attachClick(value.url)"
-              v-for="(value, index) in GetSchedule.calDetail[this.GetSaveSchedule.detail.where].attachInfo"
+              @click="attachClick(value.url)"
+              v-for="(value, index) in GetSchedule.calDetail[
+                this.GetSaveSchedule.detail.where
+              ].attachInfo"
               :key="index"
             >
               {{ value.name }}
@@ -54,22 +82,36 @@
 import { mapState, mapGetters } from "vuex";
 import { Editor, EditorContent } from "tiptap";
 export default {
+  created() {
+    var date = this.GetSaveScheduleList.date;
+    console.log(date);
+
+    this.today = `${date.year}.${this.fill(2, date.month)}.${this.fill(
+      2,
+      date.day
+    )} (${this.daysSort[date.date]})`;
+  },
   components: {
     EditorContent,
   },
   computed: {
-    ...mapGetters(["GetSchedule","GetSaveSchedule"]),
+    ...mapGetters("calendarjs", [
+      "GetSchedule",
+      "GetSaveSchedule",
+      "GetSaveScheduleList",
+    ]),
   },
   data() {
     return {
       editor: null,
       daysSort: ["일", "월", "화", "수", "목", "금", "토"],
+      today: "",
     };
   },
   mounted() {
-    console.log(this.GetSaveSchedule.detail.where)
     this.editor = new Editor({
-      content: this.GetSchedule.calDetail[this.GetSaveSchedule.detail.where].body,
+      content:
+        this.GetSchedule.calDetail[this.GetSaveSchedule.detail.where].body,
       editable: false,
     });
   },
@@ -77,35 +119,53 @@ export default {
     this.editor.destroy();
   },
   methods: {
-    async Del(){
+    fill(width, number) {
+      number = number + ""; //number를 문자열로 변환하는 작업
+      var str = "";
+      for (var i = 0; i < width - number.length; i++) {
+        str = str + "0";
+      }
+      str = str + number;
+      return str;
+    },
+    async Del() {
       var data = {};
       data.unid = this.GetSaveSchedule.detail.unid;
-      
-      await this.$store.dispatch("CalDelete",data);
-      this.$router.push(`/schedule/${this.GetSaveSchedule.detail.where}`);
+
+      await this.$store.dispatch("calendarjs/CalDelete", data);
+      this.$router.push(`/schedule_more/${this.GetSaveSchedule.detail.where}`);
     },
     // 전 url 이동
     RouterBack() {
-      this.$store.commit("Back");
-      this.$router.go(-1);
+      this.$router.replace(`${this.GetSaveSchedule.detail.where}`);
     },
     TransTime() {
       // 15:00 ~ 16:00
       var end =
-        this.GetSchedule.calDetail[this.GetSaveSchedule.detail.where].endtime.split(":")[0] +
+        this.GetSchedule.calDetail[
+          this.GetSaveSchedule.detail.where
+        ].endtime.split(":")[0] +
         ":" +
-        this.GetSchedule.calDetail[this.GetSaveSchedule.detail.where].endtime.split(":")[1];
+        this.GetSchedule.calDetail[
+          this.GetSaveSchedule.detail.where
+        ].endtime.split(":")[1];
       var start =
-        this.GetSchedule.calDetail[this.GetSaveSchedule.detail.where].starttime.split(":")[0] +
+        this.GetSchedule.calDetail[
+          this.GetSaveSchedule.detail.where
+        ].starttime.split(":")[0] +
         ":" +
-        this.GetSchedule.calDetail[this.GetSaveSchedule.detail.where].starttime.split(":")[1];
+        this.GetSchedule.calDetail[
+          this.GetSaveSchedule.detail.where
+        ].starttime.split(":")[1];
       return `${start} ~ ${end}`;
     },
     TransDate() {
       // 2021-05-24(월)
-      var end = this.GetSchedule.calDetail[this.GetSaveSchedule.detail.where].enddate;
-      var start = this.GetSchedule.calDetail[this.GetSaveSchedule.detail.where].startdate;
-      console.log(end, start);
+      var end =
+        this.GetSchedule.calDetail[this.GetSaveSchedule.detail.where].enddate;
+      var start =
+        this.GetSchedule.calDetail[this.GetSaveSchedule.detail.where].startdate;
+
       var day = "";
 
       var arrend = end.split("-");
@@ -137,6 +197,10 @@ export default {
     },
     attachClick(url) {
       window.open(url);
+    },
+    Edit() {
+      this.$store.commit("calendarjs/isEdit", true);
+      this.$router.push("/schedule_more/write");
     },
   },
 };

@@ -108,7 +108,7 @@
             </div>
             <div slot="error">
               Error message, click
-              <router-link to="/maillist">here</router-link> to retry
+              <router-link to="/mail_more">here</router-link> to retry
             </div>
           </infinite-loading>
         </ul>
@@ -133,7 +133,7 @@
           <li>
             <em>일자</em>
             <div>
-              <input type="date" :value="this.date" />
+              <input type="date" v-model="date" />
             </div>
           </li>
           <li>
@@ -171,10 +171,14 @@
         </div>
       </div>
     </div>
-
-    <router-link to="/maillist/write_mail"
-      ><span class="w_mail_btn"><a></a></span
-    ></router-link>
+    <div class="ac_btns">
+            <span class="more_plus"></span>
+            <ul>
+                <li><a>맨 위로</a></li>
+                <li><router-link to="write_mail">메일 작성</router-link></li>
+            </ul>
+        </div>
+<!-- <BtnPlus :menu="morePlus"></BtnPlus> -->
     <ListHeader></ListHeader>
     <MoveFile></MoveFile>
     <Folder></Folder>
@@ -182,10 +186,11 @@
 </template>
 
 <script>
+import BtnPlus from "../../View/BtmBtn.vue";
 import config from "../../config/config.json";
 import InfiniteLoading from "vue-infinite-loading";
 import { mapState, mapGetters } from "vuex";
-import { MailSearch,Mail } from "../../api/index.js";
+import { MailSearch, Mail } from "../../api/index.js";
 import "vue-swipe-actions/dist/vue-swipe-actions.css";
 import { SwipeList, SwipeOut } from "vue-swipe-actions";
 import ListHeader from "./listheader.vue";
@@ -201,9 +206,11 @@ export default {
     MoveFile,
     Folder,
     EditorContent,
+    BtnPlus,
   },
   data() {
     return {
+      morePlus: [{ top: "맨 위로" }, { write: "메일 작성" }],
       // path:this.path,
       editor: null,
       active: false,
@@ -221,14 +228,10 @@ export default {
     };
   },
   computed: {
-    ...mapState([
-      "mail",
-      "config",
-      "systemcolor",
-      "TimeOption",
-      "mailSearchPath",
-    ]),
-    ...mapGetters(["GetMail","GetMailConfig"]),
+    ...mapState("mailjs", ["mail", "TimeOption", "mailSearchPath"]),
+    ...mapState("configjs", ["config", "systemcolor"]),
+    ...mapGetters("mailjs", ["GetMail", "GetMailConfig"]),
+    ...mapGetters("configjs", ["GetConfig"]),
     path() {
       if (this.$route.path.indexOf("custom") === -1) {
         return this.$route.path.substring(this.$route.path.indexOf("/", 1) + 1);
@@ -239,18 +242,24 @@ export default {
   },
   beforeRouteLeave(to, from, next) {
     // this.$refs.infiniteLoading.$emit('$InfiniteLoading:reset');
-    this.$store.commit("MailSearchOptionInit");
-    this.$store.commit("Back");
+    this.$store.commit("mailjs/MailSearchOptionInit");
+    this.$store.commit("mailjs/Back");
     this.infiniteId += 1;
     next();
   },
   created() {
+    this.$store.commit("mailjs/Back");
+    var moment = require("moment");
+      var localTime = moment.utc().toDate();
+      this.date = moment(localTime).format("YY-MM-DD");
+     
+
     this.infiniteId += 1;
     this.editor = new Editor({
       content: "",
     });
     if (this.path === "custom") {
-      this.$store.dispatch("GetMailDetail", {
+      this.$store.dispatch("mailjs/GetMailDetail", {
         mailtype: "custom",
         folderId: this.$route.params.folderId,
       });
@@ -262,15 +271,12 @@ export default {
     }
   },
   beforeDestroy() {
-    
     if (this.editor !== null) {
-      
       this.editor.destroy();
     }
   },
   methods: {
     MailDetail(unid) {
-      
       if (!this.mail.checkBtn.editclicked) {
         this.$router.push({ name: "ReadMail", params: { unid } });
       }
@@ -280,20 +286,19 @@ export default {
       data.unid = item.unid;
       data.key = index;
       this.mail.checkBtn.checkedNames.push(data);
-      console.log(this.path)
-      if(this.path !== "mail_trash"){
-        this.$store.dispatch("MailDelete", {
-          datas: this.mail.checkBtn.checkedNames,
-          type: this.path,
-        });
-      }else{
-        this.$store.dispatch("MailRealDelete", {
-          datas: this.mail.checkBtn.checkedNames,
-          type: this.path,
-        });
 
+      if (this.path !== "mail_trash") {
+        this.$store.dispatch("mailjs/MailDelete", {
+          datas: this.mail.checkBtn.checkedNames,
+          type: this.path,
+        });
+      } else {
+        this.$store.dispatch("mailjs/MailRealDelete", {
+          datas: this.mail.checkBtn.checkedNames,
+          type: this.path,
+        });
       }
-      this.$store.commit("mailDelete", { type: this.path });
+      this.$store.commit("mailjs/mailDelete", { type: this.path });
     },
     remove(item) {
       this.mail.data[this.path].data.data = this.mail.data[
@@ -316,22 +321,21 @@ export default {
         option.searchfield = this.GetMailConfig.searchOption.searchfield;
 
         option.searchword = this.GetMailConfig.searchOption.searchword;
+        option.size = this.GetConfig.listcount;
 
-        this.SearchData(option,$state);
-        // 
+        this.SearchData(option, $state);
+        //
       } else {
         option = this.GetMail[this.path];
-        console.log(option,"mail")
-        this.GetData(option,$state);
-      }
-        // this.SearchData(this.GetMail[this.path],$state);
-    },
-    GetData(option,$state) {
-      
+        option.size = this.GetConfig.listcount;
 
+        this.GetData(option, $state);
+      }
+      // this.SearchData(this.GetMail[this.path],$state);
+    },
+    GetData(option, $state) {
       Mail(option)
         .then((response) => {
-          
           return response.data.data;
         })
         .then((data) => {
@@ -347,7 +351,7 @@ export default {
 
               // 끝 지정(No more data) - 데이터가 EACH_LEN개 미만이면
 
-              if (data.length / this.GetMail[this.path].size < 1) {
+              if (data.length / this.GetConfig.listcount < 1) {
                 $state.complete();
               }
             } else {
@@ -361,12 +365,9 @@ export default {
           console.error(err);
         });
     },
-    SearchData(option,$state) {
-      
-
+    SearchData(option, $state) {
       MailSearch(option)
         .then((response) => {
-          
           return response.data.data;
         })
         .then((data) => {
@@ -382,7 +383,7 @@ export default {
 
               // 끝 지정(No more data) - 데이터가 EACH_LEN개 미만이면
 
-              if (data.length / this.GetMail[this.path].size < 1) {
+              if (data.length / this.GetConfig.listcount < 1) {
                 $state.complete();
               }
             } else {
@@ -417,7 +418,7 @@ export default {
     },
     // 체크박스 누르면 목록 체크할 수 있도록
     boxClick() {
-      this.$store.commit("disAllCheck");
+      this.$store.commit("mailjs/disAllCheck");
     },
     // 목록 중 하나 선택
     onecheck(value) {
@@ -446,7 +447,7 @@ export default {
     transTime(time) {
       var moment = require("moment");
       var localTime = moment.utc(time).toDate();
-      localTime = moment(localTime).format("YYYY.MM.DD HH:mm");
+      localTime = moment(localTime).format("YY.MM.DD HH:mm");
       return localTime;
     },
     // 기본이미지 랜덤 색
@@ -473,7 +474,7 @@ export default {
     async followUp(unid) {
       this.editor.destroy();
       this.unid = unid;
-      var result = await this.$store.dispatch("FollowUpInfo", unid);
+      var result = await this.$store.dispatch("mailjs/FollowUpInfo", unid);
       if (result) {
         if (this.GetMail.followUpInfo.use) {
           var followUpInfo = this.GetMail.followUpInfo;
@@ -490,7 +491,6 @@ export default {
           this.STime = "05";
           this.SMin = "50";
           this.use = false;
-          this.date = "";
           this.body = "";
           this.editor = new Editor({
             content: this.body,
@@ -503,8 +503,9 @@ export default {
         this.editor.destroy();
       }
     },
-    followSet() {
+    async followSet() {
       if (this.editor) {
+        console.log("여기")
         var data = {};
         if (this.date) {
           data.use = this.use;
@@ -512,7 +513,9 @@ export default {
           data.unid = this.unid;
           data.time = `${this.STime}:${this.SMin}:00`;
           data.body = this.editor.getHTML();
-          this.$store.dispatch("FollowupSet", data);
+
+          await this.$store.dispatch("mailjs/FollowupSet", data);
+          this.$router.push(this.$router.currentRoute);
         }
         this.editor.destroy();
       }

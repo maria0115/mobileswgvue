@@ -1,0 +1,18 @@
+{
+    "board":{
+        "data":{
+            "notice":{
+                "page": "0",
+                "data": []
+            },
+            "education":{
+                "page": "0",
+                "data": []
+            },
+            "congratulate":{
+                "page": "0",
+                "data": []
+            }
+        }
+    }
+}

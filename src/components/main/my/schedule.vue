@@ -6,23 +6,34 @@
         <em>{{ changeDate().yearmonth }}</em>
         <b>{{ changeDate().day }}</b>
       </span>
-      <ul class="c_list" v-if="sliceDate().length > 0">
-        <li
-          :class="[{ red: name === 0 }]"
-          v-for="(value, name) in sliceDate()"
-          :key="name"
-        >
-          <a>
-            <em>{{value.time}}</em>
-            <p>{{ value.subject }}</p>
-          </a>
-        </li>
-      </ul>
-      <ul class="c_list" v-else>
-        결과가 없습니다.
-      </ul>
+      <div class="ri_info">
+        <div  v-for="(value, name) in sliceDate()"
+            :key="name">
+        <div v-if="value.allDay" class="all_cal" >
+            <a href="#">
+                <em>종일 일정</em>
+                <p>[{{ value.category }}]{{ value.subject }}</p>
+            </a>
+        </div>
+        </div>
+        <ul class="c_list" v-if="sliceDate().length > 0">
+          <li
+            :class="[{ red: name === 0 }]"
+            v-for="(value, name) in sliceDate()"
+            :key="name"
+          >
+            <a v-if="!value.allDay" @click="Detail(value)">
+              <em>{{value.time}}</em>
+              <p>{{ value.subject }}</p>
+            </a>
+          </li>
+        </ul>
+        <ul class="c_list" v-else>
+          결과가 없습니다.
+        </ul>
+      </div>
     </div>
-    <span class="m_more"><a></a></span>
+    <span class="m_more"><router-link to="/schedule_more"></router-link></span>
   </div>
 </template>
 
@@ -37,7 +48,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["GetMain"]),
+    ...mapGetters("mainjs",["GetMain"]),
   },
   methods: {
     // 오늘의 모든 일정을 노드에서 가져온 후의 현재 시간 이후의 데이터를 색출
@@ -84,6 +95,12 @@ export default {
       result.day = moment().format("DD");
       // }
       return result;
+    },
+    async Detail(value){
+      this.$store.commit("calendarjs/SaveScheduleUnid",{unid:value.unid,where:"month"});
+      // await this.$store.dispatch("CalDetail",{data:value.data,path:this.$route.path,which:"month"});
+      this.$router.push("/schedule_more/read");
+
     },
   },
 };

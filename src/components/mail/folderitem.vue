@@ -1,11 +1,7 @@
 <template>
-  <li :class="{ drop_menu: this.isFolder>0 }">
+  <li :class="{ drop_menu: this.isFolder > 0 }">
     <a @click="toggle" :class="{ on: this.isOpen }">{{ item.nodetitle.ko }}</a>
-    <ul
-      v-if="isFolder"
-      
-      :style="{ display: this.isBlock }"
-    >
+    <ul v-if="isFolder" :style="{ display: this.isBlock }">
       <folder-item
         v-for="(child, index) in item.children"
         :key="index"
@@ -14,7 +10,7 @@
         @add-item="$emit('add-item', $event)"
       ></folder-item>
     </ul>
-  </li> 
+  </li>
 </template>
 
 <script>
@@ -48,14 +44,21 @@ export default {
     async toggle() {
       if (this.isFolder > 0) {
         this.isOpen = !this.isOpen;
-      }else{
-        console.log(this.item.nodetitle.ko,this.item.mycode,"this.item.mycode")
-        const result = await this.$store.dispatch("MailMove", { viewname:this.item.nodetitle.ko,folderId: this.item.mycode});
-        console.log(result);
-        if(result){
-          this.$store.commit("MailCustomFolderTitle",this.item.nodetitle.ko);
-          this.$router.replace({ name: 'Custom',params:{folderId:this.item.mycode}});
+      } else {
+        const result = await this.$store.dispatch("mailjs/MailMove", {
+          viewname: this.item.nodetitle.ko,
+          folderId: this.item.mycode,
+        });
 
+        if (result) {
+          this.$store.commit(
+            "mailjs/MailCustomFolderTitle",
+            this.item.nodetitle.ko
+          );
+          this.$router.replace({
+            name: "Custom",
+            params: { folderId: this.item.mycode },
+          });
         }
       }
     },

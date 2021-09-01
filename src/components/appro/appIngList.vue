@@ -1,40 +1,82 @@
 <template>
   <div>
-    <Header desc="결재중 문서" :title="title" @OpenHam="OpenHam"></Header>
+    <Header
+      desc="결재중 문서"
+      :title="title"
+      :cnt="GetApproval.approving.data.cnt"
+      @OpenHam="OpenHam"
+    ></Header>
     <SubMenu :isOpen="isOpen" @CloseHam="CloseHam"></SubMenu>
     <div class="a_contents06">
       <form action="">
         <ul class="app06_list">
-          <li v-for="(value,index) in GetApproval.approving.data.data" :key="index">
-            <a href="./mob_app_ingview.html">
+          <li
+            v-for="(value, index) in GetApproval.approving.data.data"
+            :key="index"
+          >
+            <router-link to="ingview">
               <span class="ing_sta">
-                <em class="active" v-if="value.approved<value.approvalinfo.length">{{value.approvalinfo[value.approved].approvalKind}}</em>
-                <em class="active" v-else>{{value.approvalinfo[value.approved-1].approvalKind}}</em>
+                <em
+                  class="active"
+                  v-if="value.approved < value.approvalinfo.length"
+                  >{{ value.approvalinfo[value.approved].approvalKind }}</em
+                >
+                <em class="active" v-else>{{
+                  value.approvalinfo[value.approved - 1].approvalKind
+                }}</em>
               </span>
               <div class="s_text">
-                <em>{{value.category}}</em>
-                <strong>{{value.subject}}</strong>
-                <p>{{value.approvalinfo[0].author}} {{value.approvalinfo[0].position}}/{{value.approvalinfo[0].authordept}}<span>{{transTime(value.created)}}</span></p>
+                <em>{{ value.category }}</em>
+                <strong>{{ value.subject }}</strong>
+                <p>
+                  {{ value.approvalinfo[0].author }}
+                  {{ value.approvalinfo[0].position }}/{{
+                    value.approvalinfo[0].authordept
+                  }}<span>{{ transTime(value.created) }}</span>
+                </p>
               </div>
               <div class="icons">
                 <span class="opin" v-if="value.coment"></span>
                 <span class="clip" v-if="value.attachinfo.attach"></span>
               </div>
-            </a>
+            </router-link>
             <div class="app_status">
-              <ul aclass="clfix">
-                <li v-for="(v,i) in value.approvalinfo" :key="i" class="active">
-                  <em>{{v.approvalKind}}</em>
-                  <span class="basic_img on">
-                    <!-- <img src="../../mobile/img/img01.png" alt="" /> -->
-                    <em class="no_img"><b>{{v.author.split("")[0]}}</b></em>
-                  </span>
-                  <dl>
-                    <dt><b>{{v.author}}</b> {{v.authorposition}}</dt>
-                    <dd>{{v.authordept}}</dd>
-                  </dl>
-                </li>
-              </ul>
+              <div class="status">
+                <div class="status_slide">
+                  <div
+                    v-for="(v, i) in value.approvalinfo"
+                    :key="i"
+                    :class="{ active: v.approval }"
+                  >
+                    <em>{{ v.approvalKind }}</em>
+                    <span class="basic_img on">
+                      <img src="../../mobile/img/img01.png" alt="" />
+                      <!-- <img :src="url(item.photo)"
+                @error="photoError(index)"
+                v-if="item.photoerror" alt="" /> -->
+                      <em class="no_img"
+                        ><b>{{ v.author.split("")[0] }}</b></em
+                      >
+                    </span>
+                    <dl>
+                      <dt>
+                        <b>{{ v.author }}</b> {{ v.authorposition }}
+                      </dt>
+                      <dd>{{ v.authordept }}</dd>
+                    </dl>
+                    <div>
+                      <p v-if="v.approval">
+                        {{ v.approvalKind }}<i>(결재중)</i>
+                      </p>
+                      <em v-else-if="v.created.length>0">
+                        <p>{{transDate(v.created)}}</p>
+                        <p>{{transTime(v.created)}}</p></em
+                      >
+                      <p v-else>{{ v.approvalKind }}<i>(대기중)</i></p>
+                    </div>
+                  </div>
+                </div>
+              </div>
               <span class="close_btn"></span>
             </div>
             <b class="st_more"></b>
@@ -73,7 +115,7 @@ import { mapState, mapGetters } from "vuex";
 import InfiniteLoading from "vue-infinite-loading";
 import { Approval } from "../../api/index.js";
 export default {
-    created() {
+  created() {
     this.infiniteId += 1;
   },
   beforeRouteLeave(to, from, next) {
@@ -81,7 +123,9 @@ export default {
     next();
   },
   computed: {
-    ...mapGetters(["GetApproval"]),
+    ...mapGetters("approjs", ["GetApproval"]),
+    ...mapGetters("configjs", ["GetConfig"]),
+
     path() {
       // if (this.$route.path.indexOf("custom") === -1) {
       return this.$route.path.substring(this.$route.path.indexOf("/", 1) + 1);
@@ -106,14 +150,18 @@ export default {
         { currentapprover: "현재결재자" },
         { date: "기안일자" },
       ],
-      morePlus: [{ return: "회수" }, { approverchange: "결재자 변경" }],
+      morePlus: [
+        { return: "회수" },
+        { view: "원문 보기" },
+        { write: "결재 작성" },
+      ],
       isOpen: false,
       title: "결재중 문서",
       infiniteId: 0,
     };
   },
   methods: {
-      // utc 시간 to local 시간
+    // utc 시간 to local 시간
     transTime(time) {
       var moment = require("moment");
       var localTime = moment.utc(time).toDate();
@@ -136,19 +184,16 @@ export default {
 
       option = this.GetApproval.approving;
       option.approvaltype = "approving";
+      option.size = this.GetConfig.listcount;
       this.GetData(option, $state);
     },
     GetData(option, $state) {
-      console.log(option, "option");
-
       Approval(option)
         .then((response) => {
           return response.data.data;
         })
         .then((data) => {
-            console.log(data)
           setTimeout(() => {
-              console.log(this.GetApproval.approving,"setTimeout")
             if (data) {
               if (
                 Object.keys(this.GetApproval.approving.data.data).length > 0
@@ -158,12 +203,12 @@ export default {
               } else {
                 this.GetApproval.approving.data.data = data;
               }
-              console.log(data)
+
               $state.loaded();
 
               // 끝 지정(No more data) - 데이터가 EACH_LEN개 미만이면
 
-              if (data.length / this.GetApproval.approving.size < 1) {
+              if (data.length / this.GetConfig.listcount < 1) {
                 $state.complete();
               }
             } else {
@@ -176,6 +221,18 @@ export default {
         .catch((err) => {
           console.error(err);
         });
+    },
+    transDate(created){
+      var moment = require("moment");
+      var localTime = moment.utc(created).toDate();
+      localTime = moment(localTime).format("YYYY.MM.DD");
+      return localTime;
+    },
+    transTime(created){
+      var moment = require("moment");
+      var localTime = moment.utc(created).toDate();
+      localTime = moment(localTime).format("HH:mm:ss");
+      return localTime;
     },
   },
 };

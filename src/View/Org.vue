@@ -1,0 +1,94 @@
+<template>
+  <div class="all_organ_modal" :class="{ on: this.modalon }">
+    <!--위치 수정됨-->
+    <div class="organ_con">
+      <form>
+        <div>
+          <strong>조직도</strong>
+          <div>
+            <input
+              type="text"
+              class="search"
+              placeholder="검색어를 입력하세요"
+              autocomplete="on"
+              @keyup="OrgSearch($event.target.value)"
+            />
+            <div class="btns">
+              <span class="del_btn"><em></em></span>
+              <span class="search_icon" @click="SetAutoOrg"
+                ><img src="../mobile/img/search_icon.png" alt="검색하기"
+              /></span>
+            </div>
+          </div>
+        </div>
+        <ul class="organlist">
+          <span
+            class=""
+            v-for="(value, name) in this.GetMail.org.trans"
+            :key="name"
+          >
+            <org-item
+              :item="value"
+              :modalAutoOrg="modalAutoOrg"
+              @OpenFolder="OpenFolder"
+            ></org-item>
+          </span>
+        </ul>
+      </form>
+      <span class="modal_close" @click="ModalOff"></span>
+    </div>
+  </div>
+</template>
+
+<script>
+import { mapState, mapGetters } from "vuex";
+import OrgItem from "../components/mail/orgitemview.vue";
+export default {
+  created() {
+    var data = {};
+    data.menu = "mail";
+    this.$store.dispatch("mailjs/InitOrg", data);
+  },
+  props: {
+    modalon: Boolean,
+  },
+  components: {
+    OrgItem,
+  },
+  computed: {
+    ...mapState("mailjs", ["mailorg"]),
+    ...mapGetters("mailjs", ["GetMail"]),
+  },
+  data: function () {
+    return {
+      modalAutoOrg: 0,
+    };
+  },
+  beforeDestroy() {
+    console.log("destroy");
+    this.$store.commit("mailjs/From", "");
+    this.$store.commit("mailjs/MailOrgDataInit");
+  },
+  methods: {
+    ModalOff() {
+      this.$emit("ModalOff");
+    },
+    OpenFolder() {},
+    OrgSearch(value) {
+      if (value.length >= 2) {
+        var data = {};
+        data.menu = "mail";
+        data.keyword = value;
+        data.who = this.mailorg.pointer;
+        this.$store.dispatch("OrgAutoSearch", data);
+      }
+    },
+    SetAutoOrg() {
+      this.modalAutoOrg += 1;
+    },
+  },
+};
+</script>
+
+<style>
+</style>

@@ -1,4 +1,87 @@
 import axios from 'axios';
+// /api/schedule?type=edit
+function CalWrite(data,type) {
+    // console.log("api",data)
+    return axios({
+        method: 'post',
+        url: `/api/schedule?type=${type}`,
+        data:data,
+        headers: {
+            "Content-Type": "multipart/form-data"
+        }
+    })
+}
+function BoardEdit(data) {
+    // console.log("api",data)
+    return axios({
+        method: 'post',
+        url: `/api/board?type=editItem_${data.path}`,
+        data:data.data,
+        headers: {
+            "Content-Type": "multipart/form-data"
+        }
+    })
+}
+function DeleteBoard(data) {
+    return axios({
+        method: 'DELETE',
+        url: `/api/board?type=delete_item`,
+        data,
+        headers: {
+            "Content-Type": "application/json"
+        }
+    })
+}
+function Likeit(data) {
+    return axios({
+        method: 'post',
+        url: `/api/board?type=likeIt`,
+        data,
+        headers: {
+            "Content-Type": "application/json"
+        }
+    })
+}
+function DeleteReply(data) {
+    return axios({
+        method: 'delete',
+        url: `/api/board?type=delete_reply`,
+        data,
+        headers: {
+            "Content-Type": "application/json"
+        }
+    })
+}
+function WriteReply(data) {
+    return axios({
+        method: 'post',
+        url: `/api/board?type=wrtie_reply`,
+        data,
+        headers: {
+            "Content-Type": "application/json"
+        }
+    })
+}
+function BoardDetail(data) {
+    return axios({
+        method: 'get',
+        url: `/api/board?type=detail&boardType=${data.menu}&unid=${data.unid}`,
+        headers: {
+            "Content-Type": "application/json"
+        }
+    })
+}
+function BoardWrite(data) {
+    // console.log("api",data)
+    return axios({
+        method: 'post',
+        url: `/api/board?type=write_${data.path}`,
+        data:data.data,
+        headers: {
+            "Content-Type": "multipart/form-data"
+        }
+    })
+}
 // 전자결재 양식
 // approvaltype이 approving이면 결재중 문서 approve면 결재할 문서
 function DocApproval(data) {
@@ -590,4 +673,12 @@ export {
     CalDelete,
     MailRealDelete,
     DocApproval,
+    BoardWrite,
+    BoardDetail,
+    WriteReply,
+    DeleteReply,
+    Likeit,
+    DeleteBoard,
+    BoardEdit,
+    CalWrite
 }

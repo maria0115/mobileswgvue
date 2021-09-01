@@ -1,0 +1,17 @@
+{
+    "schedule": {
+        "data": {
+            "holiday": {},
+            "calList":{
+                "day":[],
+                "month":[],
+                "week":{}
+            },
+            "calDetail":{
+                "day":{},
+                "month":{},
+                "week":{}
+            }
+        }
+    }
+}

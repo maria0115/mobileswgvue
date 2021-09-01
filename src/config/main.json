@@ -1,0 +1,121 @@
+{
+    "main": {
+        "photo": "http://swg60.saerom.co.kr/dwp/com/portal/userphoto.nsf/photo/@/$FILE/@.jpg",
+        "newcount": 0,
+        "my": {
+            "recentdate": 20,
+            "recentdate_desc": "최근 생성된 게시물 new 아이콘 ex)1=1일전 , 0=오늘",
+            "description_myinfo": "/ my 페이지 변수 초기화"
+        },
+        "data": {
+            "description": "page 부터 size 개 data 변수 초기화",
+            "mailtype": {
+                "inbox_detail": {
+                    "my": {
+                        "page": "0",
+                        "size": "4",
+                        "data": []
+                    },
+                    "more": {
+                        "page": "0",
+                        "size": "8",
+                        "data": []
+                    }
+                },
+                "sent_main": {
+                    "my": {
+                        "page": "0",
+                        "size": "4",
+                        "data": []
+                    },
+                    "more": {
+                        "page": "0",
+                        "size": "8",
+                        "data": []
+                    }
+                }
+            },
+            "approvaltype": {
+                "approving": {
+                    "my": {
+                        "page": "0",
+                        "size": "3",
+                        "data": [],
+                        "cnt": 0
+                    },
+                    "more": {
+                        "page": "0",
+                        "size": "3",
+                        "data": [],
+                        "cnt": 0
+                    }
+                },
+                "approve": {
+                    "my": {
+                        "page": "0",
+                        "size": "3",
+                        "data": [],
+                        "cnt": 0
+                    },
+                    "more": {
+                        "page": "0",
+                        "size": "3",
+                        "data": [],
+                        "cnt": 0
+                    }
+                }
+            },
+            "boardtype": {
+                "notice": {
+                    "my": {
+                        "page": "0",
+                        "size": "3",
+                        "data": []
+                    },
+                    "more": {
+                        "page": "0",
+                        "size": "4",
+                        "data": []
+                    }
+                },
+                "education": {
+                    "more": {
+                        "page": "0",
+                        "size": "4",
+                        "data": []
+                    }
+                },
+                "congratulate": {
+                    "more": {
+                        "page": "0",
+                        "size": "4",
+                        "data": []
+                    }
+                },
+                "recent": {
+                    "my": {
+                        "page": "0",
+                        "size": "4",
+                        "data": []
+                    },
+                    "more": {
+                        "page": "0",
+                        "size": "4",
+                        "data": []
+                    }
+                }
+            },
+            "scheduletype": {
+                "recent": {
+                    "my": {
+                        "data": [],
+                        "size": 2
+                    },
+                    "more": {
+                        "data": []
+                    }
+                }
+            }
+        }
+    }
+}

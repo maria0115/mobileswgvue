@@ -1,13 +1,7 @@
 <template>
   <div>
-      <div class="cal_w_header">
-            <h2><a href="./mob_cal_read.html"><img src="../../mobile/img/wmail_back.png" alt=""></a>일정 편집</h2>
-            <div>
-                <span class="cal_save"><a href="./mob_cal_read.html">취소</a></span>
-                <span class="cal_save"><a href="./mob_cal_list.html">저장</a></span>
-            </div>
-        </div>
-        <div class="m_contents08">
+      
+        <div class="m_contents08 srl">
             <form action="">
                 <ul class="wc_top">
                     <li class="cal_title">

@@ -5,8 +5,8 @@
       <ul>
         <li
           :class="{ new: value.unread }"
-          
-          v-for="(value, name) in main.data.mailtype.inbox_detail.more.data.data"
+          v-for="(value, name) in main.data.mailtype.inbox_detail.more.data
+            .data"
           :key="name"
         >
           <a
@@ -28,20 +28,26 @@
                 </div>
               </dt>
               <!-- 7월 5일 div태그 추가됨 -->
-              <dd><b :class="{impor_icon:value.importance}"></b>{{ value.subject }}</dd>
+              <dd>
+                <b :class="{ impor_icon: value.importance }"></b
+                >{{ value.subject }}
+              </dd>
               <!-- 7월 05일 중요메일 느낌표 태그 추가됨-->
             </dl>
             <div class="impor">
               <p>
-                {{ transTime(value.created)
-                }}{{value.followup}}
-                <span @click="followUp(value.unid)" class="star" :class="{active:value.followup}"></span>
+                {{ transTime(value.created) }}
+                <span
+                  @click="followUp(value.unid)"
+                  class="star"
+                  :class="{ active: value.followup }"
+                ></span>
               </p>
               <span :class="[{ clip: haveClip(value.attach) }]"></span></div
           ></a>
         </li>
       </ul>
-      <router-link to="/maillist"
+      <router-link to="/mail_more"
         ><span class="m_more"><a></a></span
       ></router-link>
     </div>
@@ -57,63 +63,63 @@
         </li>
       </ul>
       <div class="impor_mail">
-      <!--7월 29일 추가됨 -->
-      <div class="impor_con">
-        <strong>수행 설정</strong>
-        <p>
-          <span
-            ><em
-              class="edit_check"
-              ref="edit_check"
-              @click="followUse"
-              :class="{ active: this.use }"
-            ></em
-            >수행필요로 설정</span
-          >
-        </p>
-        <ul>
-          <li>
-            <em>일자</em>
-            <div>
-              <input type="date" :value="this.date" />
-            </div>
-          </li>
-          <li>
-            <em>시간</em>
-            <div>
-              <select name="" id="" v-model="STime">
-                <option
-                  :value="value"
-                  v-for="(value, index) in this.TimeOption.mail.hour"
-                  :key="index"
-                >
-                  {{ value }}
-                </option>
-              </select>
-              :
-              <select name="" id="" v-model="SMin">
-                <option
-                  :value="value"
-                  v-for="(value, index) in this.TimeOption.mail.min"
-                  :key="index"
-                >
-                  {{ value }}
-                </option>
-              </select>
-            </div>
-          </li>
-          <li>
-            <em>수행할 내용</em>
-            <editor-content :editor="editor" />
-          </li>
-        </ul>
-        <div>
-          <span class="impor_mo_btn" @click="followSet">확인</span>
-          <span class="modal_cancel" @click="followCancle">취소</span>
+        <!--7월 29일 추가됨 -->
+        <div class="impor_con">
+          <strong>수행 설정</strong>
+          <p>
+            <span
+              ><em
+                class="edit_check"
+                ref="edit_check"
+                @click="followUse"
+                :class="{ active: this.use }"
+              ></em
+              >수행필요로 설정</span
+            >
+          </p>
+          <ul>
+            <li>
+              <em>일자</em>
+              <div>
+                <input type="date" :value="this.date" />
+              </div>
+            </li>
+            <li>
+              <em>시간</em>
+              <div>
+                <select name="" id="" v-model="STime">
+                  <option
+                    :value="value"
+                    v-for="(value, index) in this.TimeOption.mail.hour"
+                    :key="index"
+                  >
+                    {{ value }}
+                  </option>
+                </select>
+                :
+                <select name="" id="" v-model="SMin">
+                  <option
+                    :value="value"
+                    v-for="(value, index) in this.TimeOption.mail.min"
+                    :key="index"
+                  >
+                    {{ value }}
+                  </option>
+                </select>
+              </div>
+            </li>
+            <li>
+              <em>수행할 내용</em>
+              <editor-content :editor="editor" />
+            </li>
+          </ul>
+          <div>
+            <span class="impor_mo_btn" @click="followSet">확인</span>
+            <span class="modal_cancel" @click="followCancle">취소</span>
+          </div>
         </div>
       </div>
-    </div>
-      <router-link to="/maillist/sent_detail"
+      <router-link to="/mail_more/sent_detail"
         ><span class="m_more"><a></a></span
       ></router-link>
     </div>
@@ -140,8 +146,11 @@ export default {
     };
   },
   computed: {
-    ...mapState(["main","TimeOption"]),
-    ...mapGetters(["GetMail","GetMain", "GetMyInfo", "GetMainLanguage"]),
+    ...mapState("mainjs", ["main"]),
+    ...mapState("mailjs", ["TimeOption"]),
+    ...mapGetters("mailjs", ["GetMail"]),
+    ...mapGetters("mainjs", ["GetMyInfo", , "GetMain"]),
+    ...mapGetters(["GetMainLanguage"]),
   },
   created() {
     this.editor = new Editor({
@@ -149,15 +158,12 @@ export default {
     });
   },
   beforeDestroy() {
-    
     if (this.editor !== null) {
-      
       this.editor.destroy();
     }
   },
   methods: {
     MailDetail(unid) {
-      console.log(unid);
       this.$router.push({ name: "ReadMail", params: { unid } });
     },
     // 현재 날짜와 문서의 created 시간을 비교, 안 읽은 문서이면 new icon 표시
@@ -201,9 +207,8 @@ export default {
     async followUp(unid) {
       this.editor.destroy();
       this.unid = unid;
-      var result = await this.$store.dispatch("FollowUpInfo", unid);
+      var result = await this.$store.dispatch("mailjs/FollowUpInfo", unid);
       if (result) {
-        console.log(this.GetMail.followUpInfo)
         if (this.GetMail.followUpInfo.use) {
           var followUpInfo = this.GetMail.followUpInfo;
           this.STime = followUpInfo.time.split(":")[0];
@@ -220,7 +225,7 @@ export default {
           this.SMin = "50";
           this.use = false;
           var moment = require("moment");
-      this.date = moment().format("YYYY-MM-DD");
+          this.date = moment().format("YYYY-MM-DD");
           this.body = "";
           this.editor = new Editor({
             content: this.body,
@@ -237,13 +242,12 @@ export default {
       if (this.editor) {
         var data = {};
         if (this.date) {
-          console.log("여기안오냐")
           data.use = this.use;
           data.date = this.date;
           data.unid = this.unid;
           data.time = `${this.STime}:${this.SMin}:00`;
           data.body = this.editor.getHTML();
-          await this.$store.dispatch("FollowupSet", data);
+          await this.$store.dispatch("mailjs/FollowupSet", data);
           this.$router.push("/mail");
         }
         this.editor.destroy();

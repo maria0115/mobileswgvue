@@ -2,7 +2,7 @@
   <div>
     <div class="wmail_header">
       <h2>
-        <router-link to="/maillist"
+        <router-link to="/mail_more"
           ><img src="../../mobile/img/wmail_back.png" alt="" /></router-link
         >메일쓰기
       </h2>
@@ -25,7 +25,7 @@
                   v-for="(value, index) in this.mailorg.SendTo"
                   :key="index"
                 >
-                  {{ value.shortname }}
+                  {{ isShortName(value) }}
                   <div class="del_add">
                     <dl>
                       <dt v-if="value.department">
@@ -50,17 +50,19 @@
                           'sendtosearch',
                           $event.target.value
                         ),
-                        showAddSearch('sendtosearch'),
+                        
                       ]
                     "
                     id="toinput"
                     v-model="sendtosearchkeyword"
-                    @keyup="
+                    @keyup="[
                       SendToSearch(
                         'SendTo',
                         'sendtosearch',
                         $event.target.value
-                      )
+                      ),
+                      showAddSearch('sendtosearch'),
+                      ]
                     "
                   ></textarea>
                 </li>
@@ -101,7 +103,7 @@
                     v-for="(value, index) in this.mailorg.CopyTo"
                     :key="index"
                   >
-                    {{ value.shortname }}
+                    {{ isShortName(value) }}
                     <div class="del_add">
                       <dl>
                         <dt>{{ value.name }} / {{ value.department }}</dt>
@@ -123,17 +125,17 @@
                             'copytosearch',
                             $event.target.value
                           ),
-                          showAddSearch('copytosearch'),
+                          
                         ]
                       "
                       id="referinput"
                       v-model="copytosearchkeyword"
                       @keyup="
-                        SendToSearch(
+                        [SendToSearch(
                           'CopyTo',
                           'copytosearch',
                           $event.target.value
-                        )
+                        ),showAddSearch('copytosearch'),]
                       "
                     ></textarea>
                   </li>
@@ -170,7 +172,7 @@
                     v-for="(value, index) in this.mailorg.BlindCopyTo"
                     :key="index"
                   >
-                    {{ value.shortname }}
+                    {{ isShortName(value) }}
                     <div class="del_add">
                       <dl>
                         <dt>{{ value.name }} / {{ value.department }}</dt>
@@ -192,17 +194,17 @@
                             'blindcopytosearch',
                             $event.target.value
                           ),
-                          showAddSearch('blindcopytosearch'),
+                          
                         ]
                       "
                       id="cryinput"
                       v-model="blindcopytosearchkeyword"
                       @keyup="
-                        SendToSearch(
+                       [ SendToSearch(
                           'BlindCopyTo',
                           'blindcopytosearch',
                           $event.target.value
-                        )
+                        ),showAddSearch('blindcopytosearch'),]
                       "
                     ></textarea>
                   </li>
@@ -259,7 +261,9 @@
                 :key="index"
               >
                 <span
-                  ><img src="../../mobile/img/test_img02.png" alt=""
+                  ><img
+                    :src="`../../mobile/img/icon_${fileImg(value.name)}.png`"
+                    alt=""
                 /></span>
                 <div>
                   <p>{{ value.name }}</p>
@@ -384,9 +388,11 @@
 import { mapState, mapGetters } from "vuex";
 import OrgItem from "./orgitemview.vue";
 import { Editor, EditorContent } from "tiptap";
+import configjson from "../../config/config.json";
 // import EditorContent from "../mailconfig/EditorContent.vue";
 export default {
   created() {
+    // this.$store.commit("mailjs/MailOrgDataInit");
     this.Body_Text = `${this.GetMail.writeForm.greetings}<p></p><p></p>${this.GetMail.writeForm.signature}<p></p><p></p>`;
     if (this.from == "Relay") {
       this.file = this.GetMailDetail.attach;
@@ -400,7 +406,8 @@ export default {
   beforeDestroy() {
     clearInterval(this.delay);
     this.editor.destroy();
-    this.$store.commit("From", "");
+    this.$store.commit("mailjs/From", "");
+    this.$store.commit("mailjs/MailOrgDataInit");
   },
   mounted() {
     this.editor = new Editor({
@@ -411,7 +418,7 @@ export default {
     if (this.GetMailConfig.autosave.config.use) {
       this.delay = setInterval(function () {
         var formData = here.FormSet();
-        here.$store.dispatch("MailSave", {
+        here.$store.dispatch("mailjs/MailSave", {
           data: formData,
           menu: "autoSave",
         });
@@ -419,8 +426,9 @@ export default {
     }
   },
   computed: {
-    ...mapState(["mailorg", "autosearchorg", "from", "TimeOption"]),
-    ...mapGetters(["GetMailDetail", "GetMail", "GetMailConfig"]),
+    ...mapState("mailjs", ["mailorg", "from", "TimeOption"]),
+    ...mapState(["autosearchorg"]),
+    ...mapGetters("mailjs", ["GetMailDetail", "GetMail", "GetMailConfig"]),
     isBlock: function () {
       if (this.isOpen) {
         return "block";
@@ -434,7 +442,7 @@ export default {
   },
   data: function () {
     return {
-      modalAutoOrg:0,
+      modalAutoOrg: 0,
       delay: null,
       editor: null,
       isOpen: false,
@@ -459,15 +467,30 @@ export default {
     };
   },
   methods: {
+    getExtensionOfFilename(filename) {
+      var _fileLen = filename.length;
+      var _lastDot = filename.lastIndexOf(".");
+      var _fileExt = filename.substring(_lastDot + 1, _fileLen).toLowerCase();
+
+      return _fileExt;
+    },
+    fileImg(name) {
+      var dot = this.getExtensionOfFilename(name);
+
+      if (configjson.extension.indexOf(dot) !== -1) {
+        return dot;
+      }
+      return "etc";
+    },
     MailOrgDataDelete(data, pointer) {
-      this.$store.commit("MailOrgDataDelete", { data, pointer });
+      this.$store.commit("mailjs/MailOrgDataDelete", { data, pointer });
     },
     ToMe() {
       this.tome = !this.tome;
       if (this.tome) {
-        this.$store.dispatch("ToMe");
+        this.$store.dispatch("mailjs/ToMe");
       } else {
-        this.$store.commit("MailOrgDataInit");
+        this.$store.commit("mailjs/MailOrgDataInit");
       }
     },
     FormSet() {
@@ -568,11 +591,18 @@ export default {
         me = "Y";
       }
 
+      for (var i = 0; i < this.file.length; i++) {
+        formData.append("attach", this.file[i]);
+      }
+
       formData.append("delaysend_use", delaysend_use);
       formData.append("ToMe", me);
 
       formData.append("STime", this.STime);
       formData.append("SMin", this.SMin);
+
+      for (var fo of formData.values()) {
+      }
       return formData;
     },
     async Send(menu) {
@@ -586,10 +616,10 @@ export default {
         // 사람이 한사람이라도 있으면
         // 전송가능
         if (menu === "send") {
-          this.$store.dispatch("MailWrite", formData);
+          this.$store.dispatch("mailjs/MailWrite", formData);
         } else if (menu === "save") {
           // 저장가능
-          this.$store.dispatch("MailSave", {
+          this.$store.dispatch("mailjs/MailSave", {
             data: formData,
             menu: "draftSave",
           });
@@ -599,7 +629,7 @@ export default {
         // 사람이 한사람이라도 없으면
         if (menu === "save") {
           // 저장가능
-          this.$store.dispatch("MailSave", {
+          this.$store.dispatch("mailjs/MailSave", {
             data: formData,
             menu: "draftSave",
           });
@@ -609,7 +639,7 @@ export default {
     },
     orgClick(to) {
       if (!this.tome) {
-        this.$store.commit("MailOrgPointer", to);
+        this.$store.commit("mailjs/MailOrgPointer", to);
         this.modalon = true;
       }
     },
@@ -623,7 +653,6 @@ export default {
     disReservation() {
       this.timemodal = false;
       this.dispreserve = false;
-      this.$store.commit("MailOrgDataInit");
     },
     timeToggle() {
       this.dispreserve = true;
@@ -665,14 +694,18 @@ export default {
       this.$router.go(-1);
     },
     SendToSearch(who, keyword, value) {
-      if(value.length >= 2) {
+      console.log(value)
+      if (value.length >= 2) {
         var data = {};
         data.menu = "mail";
         data.who = who;
         data.keyword = value;
-  
-        this.$store.dispatch("OrgAutoSearch", data);
 
+        this.$store.dispatch("OrgAutoSearch", data);
+        console.log(who)
+        this.showAddSearch(who);
+      }else{
+        this.removeAddSearch(who);
       }
     },
     randomColor() {
@@ -680,9 +713,13 @@ export default {
       return `background: ${color[Math.floor(Math.random() * 4)]}`;
     },
     async AddOrg(who, value, what) {
-      await this.$store.commit("AddOrg", { who, value, menu: "mail" });
+      await this.$store.commit("mailjs/AddOrg", { who, value, menu: "mail" });
       this[what] = false;
       this[`${what}keyword`] = "";
+      this.$store.commit("SearchOrgInit");
+    },
+    removeAddSearch(value) {
+      this[value] = false;
       this.$store.commit("SearchOrgInit");
     },
     showAddSearch(value) {
@@ -698,20 +735,23 @@ export default {
       this.Importance = !this.Importance;
     },
     OrgSearch(value) {
-      if(value.length >= 2) {
+      if (value.length >= 2) {
         var data = {};
         data.menu = "mail";
         data.keyword = value;
         data.who = this.mailorg.pointer;
-        this.$store.dispatch("OrgAutoSearch",data);
+        this.$store.dispatch("OrgAutoSearch", data);
       }
     },
-    SetAutoOrg(){
-      this.modalAutoOrg +=1;
-
+    SetAutoOrg() {
+      this.modalAutoOrg += 1;
     },
-    OpenFolder(){
-      console.log("열었다")
+    OpenFolder() {},
+    isShortName(value) {
+      if(value.shortname){
+        return value.shortname;
+      }
+      return value.name;
     },
   },
 };

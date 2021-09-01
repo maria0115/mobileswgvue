@@ -30,7 +30,7 @@
             </div>
             <div slot="error">
               Error message, click
-              <router-link to="/maillist">here</router-link> to retry
+              <router-link to="/search">here</router-link> to retry
             </div>
           </infinite-loading>
         </ul>
@@ -43,14 +43,16 @@
 import { mapState, mapGetters } from "vuex";
 import { Search } from "../../api/index.js";
 import InfiniteLoading from "vue-infinite-loading";
-import config from "../../config/config.json";
+import config from "../../config/search.json";
 export default {
   components: {
     InfiniteLoading,
   },
   computed: {
-    ...mapState(["sortdata", "langa", "data", "searchInfiniteId"]),
+    ...mapState([ "langa",]),
+    ...mapState("searchjs",["sortdata",  "data", "searchInfiniteId"]),
     ...mapGetters(["GetSearchLanguage"]),
+    ...mapGetters("configjs",["GetConfig"]),
     // image 파일을 가지고 있는 url 반환
     url() {
       return config.search.category;
@@ -119,7 +121,7 @@ export default {
     // 스크롤 페이징
     infiniteHandler($state) {
       this.data.from += 1;
-      this.data.pagenum = this.data.from * config.search.defaultSize;
+      this.data.pagenum = this.data.from * this.GetConfig.listcount;
       Search(this.data)
         .then((response) => {
           return response.data.data;
@@ -142,7 +144,7 @@ export default {
                 this.data.pagenum
               );
               // 끝 지정(No more data) - 데이터가 EACH_LEN개 미만이면
-              if (data.length / config.search.defaultSize < 1) {
+              if (data.length / this.GetConfig.listcount < 1) {
                 $state.complete();
               }
             } else {

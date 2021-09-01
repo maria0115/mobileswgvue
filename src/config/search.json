@@ -1,0 +1,53 @@
+{
+    "timezone": -540,
+    "defaultHomeSize": 4,
+    "search": {
+        "defaultSize": 10,
+        "defaultPageNum": 1,
+        "form_description": "통합검색 category별 component 지정",
+        "form": [
+            {
+                "datatype": "allsearch",
+                "name": "allsearch"
+            },
+            {
+                "datatype": "person",
+                "name": "person"
+            },
+            {
+                "datatype": "document",
+                "name": "approval"
+            },
+            {
+                "datatype": "document",
+                "name": "board"
+            },
+            {
+                "datatype": "document",
+                "name": "mail"
+            }
+        ],
+        "category_description": "category 별 uri 사용",
+        "category": {
+            "allsearch": {
+                "id": "allsearch"
+            },
+            "person": {
+                "id": "person",
+                "url": "http://swg60.saerom.co.kr"
+            },
+            "approval": {
+                "id": "approval",
+                "url": "http://kms.saerom.co.kr"
+            },
+            "board": {
+                "id": "board",
+                "url": "http://ktop.saerom.co.kr"
+            },
+            "mail": {
+                "id": "mail",
+                "url": "http://ktop.saerom.co.kr"
+            }
+        }
+    }
+}

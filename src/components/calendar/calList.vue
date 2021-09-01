@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="cal_header">
-      <h2 class="today_date">{{today}}</h2>
+      <h2 class="today_date">{{ today }}</h2>
       <em>
         <a @click="RouterBack"
           ><img src="../../mobile/img/m_edit_icon01.png" alt=""
@@ -9,37 +9,54 @@
       </em>
     </div>
     <div class="m_contents08">
-      <ul class="cal_view" v-if="this.GetSaveScheduleList.data.length>0">
-        <li @click="Detail(value)" v-for="(value,index) in this.GetSaveScheduleList.data" :key="index">
+      <ul class="cal_view" v-if="this.GetSaveScheduleList.data.length > 0">
+        <li
+          @click="Detail(value)"
+          v-for="(value, index) in this.GetSaveScheduleList.data"
+          :key="index"
+        >
           <a>
             <dl>
-              <dt v-if="value.name =='allday'">종일</dt>
-              <dt v-else>{{value.data.starttime.split(":")[0]}}:{{value.data.starttime.split(":")[1]}} ~ {{value.data.endtime.split(":")[0]}}:{{value.data.endtime.split(":")[1]}}</dt>
-              
-              <dd>{{value.data.subject}}</dd>
+              <dt v-if="value.data.allDay">종일</dt>
+              <dt v-else>
+                {{ value.data.starttime.split(":")[0] }}:{{
+                  value.data.starttime.split(":")[1]
+                }}
+                ~ {{ value.data.endtime.split(":")[0] }}:{{
+                  value.data.endtime.split(":")[1]
+                }}
+              </dt>
+
+              <dd>{{ value.data.subject }}</dd>
             </dl>
           </a>
         </li>
       </ul>
-      <div class="no_schedule" v-if="this.GetSaveScheduleList.data.length===0">
+      <div
+        class="no_schedule"
+        v-if="this.GetSaveScheduleList.data.length === 0"
+      >
         <div>
           <span></span>
           <p>등록된 일정이 없습니다.<br />일정을 등록하세요</p>
         </div>
       </div>
     </div>
-    <span class="w_cal_btn"><a href="./mob_wmail.html"></a></span>
+    <CalWrite></CalWrite>
   </div>
 </template>
 
 <script>
 import { mapState, mapGetters } from "vuex";
+import CalWrite from "./calWBtn.vue";
 export default {
   computed: {
-    ...mapGetters(["GetSaveScheduleList"]),
+    ...mapGetters("calendarjs", ["GetSaveScheduleList"]),
+  },
+  components: {
+    CalWrite,
   },
   created() {
-    console.log(this.GetSaveScheduleList)
     var date = this.GetSaveScheduleList.date;
 
     this.today = `${date.year}.${this.fill(2, date.month)}.${this.fill(
@@ -50,21 +67,12 @@ export default {
   data() {
     return {
       today: "",
-      days: [
-        "일",
-        "월",
-        "화",
-        "수",
-        "목",
-        "금",
-        "토",
-      ],
+      days: ["일", "월", "화", "수", "목", "금", "토"],
     };
   },
   methods: {
-      // 전 url 이동
+    // 전 url 이동
     RouterBack() {
-      this.$store.commit("Back");
       this.$router.go(-1);
     },
     fill(width, number) {
@@ -76,12 +84,13 @@ export default {
       str = str + number;
       return str;
     },
-    async Detail(value){
-      console.log(value)
-      this.$store.commit("SaveScheduleUnid",{unid:value.data.unid,where:"month"});
+    async Detail(value) {
+      this.$store.commit("calendarjs/SaveScheduleUnid", {
+        unid: value.data.unid,
+        where: "month",
+      });
       // await this.$store.dispatch("CalDetail",{data:value.data,path:this.$route.path,which:"month"});
-      this.$router.push("/schedule/read");
-
+      this.$router.push("/schedule_more/read");
     },
   },
 };

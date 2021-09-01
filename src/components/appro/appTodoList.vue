@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Header desc="결재할 문서" :title="this.path" @OpenHam="OpenHam"></Header>
+    <Header desc="결재할 문서" :title="this.path" :cnt="GetApproval[this.path].data.cnt" @OpenHam="OpenHam"></Header>
     <SubMenu :isOpen="isOpen" @CloseHam="CloseHam"></SubMenu>
     <div class="a_contents06">
       <form action="">
@@ -104,7 +104,8 @@ export default {
     next();
   },
   computed: {
-    ...mapGetters(["GetApproval"]),
+    ...mapGetters("approjs", ["GetApproval"]),
+    ...mapGetters("configjs", ["GetConfig"]),
     path() {
       // if (this.$route.path.indexOf("custom") === -1) {
       return this.$route.path.substring(this.$route.path.indexOf("/", 1) + 1);
@@ -122,7 +123,7 @@ export default {
         { dept: "기안부서" },
         { date: "기안일자" },
       ],
-      morePlus: [{ allow: "승인" }, { reject: "반려" }],
+      morePlus: [{ write: "결재 작성" }, { view: "원문 보기" }, { allow: "승인" }, { reject: "반려" }],
       isOpen: false,
       infiniteId: 0,
       enabled: true,
@@ -140,11 +141,10 @@ export default {
 
       option = this.GetApproval[this.path];
       option.approvaltype = this.path;
+      option.size = this.GetConfig.listcount;
       this.GetData(option, $state);
     },
     GetData(option, $state) {
-      console.log(option, "option");
-
       Approval(option)
         .then((response) => {
           return response.data.data;
@@ -164,7 +164,7 @@ export default {
 
               // 끝 지정(No more data) - 데이터가 EACH_LEN개 미만이면
 
-              if (data.length / this.GetApproval[this.path].size < 1) {
+              if (data.length / this.GetConfig.listcount < 1) {
                 $state.complete();
               }
             } else {
@@ -215,4 +215,7 @@ export default {
   background: #ff743c url(/mobile/img/edit_check.png) center no-repeat;
   background-size: 1.5rem 0.87rem;
 }
+.app06_list li{height:5.43rem;position:relative;padding:0.62rem 1.06rem 0 3.93rem;}
+.app06_list li a{display:block;}
+.swipeout-list-item + .swipeout-list-item{border-top:0.06rem solid #e6e6e6;}
 </style>

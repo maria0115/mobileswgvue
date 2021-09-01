@@ -63,15 +63,20 @@
 </template>
 
 <script>
-import { mapState,mapGetters } from "vuex";
+import { mapState, mapGetters } from "vuex";
 import $ from "jquery";
 let qwe = null;
 export default {
+  created() {
+    // 다국어 처리
+    // this.$store.dispatch("search/GetLanguage", { app: "search" });
+  },
   computed: {
-    ...mapState(["autoList", "data", "recent", "form", "config"]),
+    ...mapState("searchjs", ["autoList", "data", "recent", "form"]),
+    ...mapState("configjs", ["config"]),
     ...mapGetters(["GetSearchLanguage"]),
-    copyRecent(){
-      this.copyrecent = this.recent
+    copyRecent() {
+      this.copyrecent = this.recent;
     },
     // 자동완성 검색어에서 입력된 단어가 일치하면 strong tag 설정
     strong() {
@@ -102,7 +107,7 @@ export default {
   },
   data() {
     return {
-      copyrecent:[],
+      copyrecent: [],
       searchQuery: "",
       fo: false,
       cNum: 0,
@@ -112,10 +117,6 @@ export default {
       oncategory: "allsearch",
     };
   },
-  created() {
-    // 다국어 처리
-    // this.$store.dispatch("GetLanguage", { app: "search" });
-  },
   mounted() {
     // 검색창 외의 다른 곳 찍을 때 검색어 창 닫힐 수있는 이벤트 리스너
     document.addEventListener("click", this.click);
@@ -124,7 +125,7 @@ export default {
     // 검색어 삭제
     wordReset() {
       this.searchQuery = "";
-      this.$store.commit("WordReset");
+      this.$store.commit("searchjs/WordReset");
     },
     // 검색창 외의 다른 곳 찍을 때 창 닫기
     click(e) {
@@ -143,12 +144,12 @@ export default {
     },
     // 검색어 전체 삭제
     AllDel() {
-      this.$store.dispatch("AllDelKeyword");
-      this.$store.dispatch("GetRecent");
+      this.$store.dispatch("searchjs/AllDelKeyword");
+      this.$store.dispatch("searchjs/GetRecent");
     },
     // 검색어 선택 삭제
     DelKeyword(word, index) {
-      this.$store.dispatch("DelKeyword", { word, index });
+      this.$store.dispatch("searchjs/DelKeyword", { word, index });
     },
     // button in form 클릭시 submit 되지 않게
     signInButtonPressed(e) {
@@ -157,26 +158,24 @@ export default {
     // 검색 data
     SearchWord(word) {
       this.allremove();
-      console.log(word);
-      this.$store.commit("setWord", { word });
+      this.$store.commit("searchjs/setWord", { word });
       if (this.$route.path !== "/search/allsearch") {
         this.$router.push("/search/allsearch");
-        console.log("여기들어오잖아")
       } else {
-        this.$store.dispatch("SearchWord", {
+        this.$store.dispatch("searchjs/SearchWord", {
           word,
         });
       }
     },
     // 최근 검색어  data
     Recent() {
-      this.$store.dispatch("GetRecent");
+      this.$store.dispatch("searchjs/GetRecent");
       this.auto_removeClass();
       this.recent_addClass();
     },
     // 카테고리 별 검색
     Categorysearch(cate, category) {
-      this.$store.dispatch("SearchWord", { category: category });
+      this.$store.dispatch("searchjs/SearchWord", { category: category });
     },
     // 필터 검색
     Datesearch(what, value, kind) {
@@ -190,7 +189,7 @@ export default {
         data.kind = kind;
       }
 
-      this.$store.dispatch("SearchWord", data);
+      this.$store.dispatch("searchjs/SearchWord", data);
     },
     // 음성인식
     checkApi() {
@@ -227,7 +226,7 @@ export default {
                 this.runtimeTranscription,
                 "ddddddddddddddddddddddddddd"
               );
-              this.$store.dispatch("SearchWord", {
+              this.$store.dispatch("searchjs/SearchWord", {
                 word: this.runtimeTranscription,
                 category: this.data.class,
               });
@@ -294,7 +293,7 @@ export default {
           this.auto_addClass();
           this.recent_removeClass();
           var word = this.searchQuery;
-          this.$store.dispatch("autoComplete", {
+          this.$store.dispatch("searchjs/autoComplete", {
             word: word,
             category: this.data.class,
             timeStamp: timeStamp,

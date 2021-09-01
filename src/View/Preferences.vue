@@ -1,18 +1,23 @@
 <template>
-  <div class="wrap" :class="{ dark: this.color }">
+  <div class="wrap p_b50" :class="{ dark: this.color }" >
+    <div class="modal_wrap">
     {{this.color}}
     <router-view></router-view>
+    <Footer></Footer>
+    </div>
   </div>
 </template>
 
 <script>
 import { mapGetters, mapState } from "vuex";
+import Footer from "./footer.vue";
 import $ from "jquery";
 export default {
   components: {
+    Footer
   },
   computed: {
-    ...mapGetters(["GetSystemColor","GetConfig"]),
+    ...mapGetters("configjs",["GetSystemColor","GetConfig"]),
     // 사용자가 설정한 display color
     color() {
       if (this.GetSystemColor === "dark") {
@@ -50,4 +55,5 @@ export default {
 </script>
 
 <style>
+.p_b50{padding-bottom:3.12rem;}
 </style>

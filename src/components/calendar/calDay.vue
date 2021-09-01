@@ -23,9 +23,9 @@
             :key="index">
             <div><div>{{ value }}</div></div>
             <div class="time_con">
-              <p v-for="(v, i) in GetSchedule.calList.day[index]"
-                      :key="i">
-                <a @click="Detail(v)">
+              <p v-for="(v, i) in isToday(GetSchedule.calList.day[index])"
+                      :key="i" :style="{ width: `calc(100% / ${isToday(GetSchedule.calList.day[index]).length})` }">
+                <a  @click="Detail(v)">
                   <span class="time">{{v.starttime.split(":")[0]}}:{{v.starttime.split(":")[1]}} ~ {{v.endtime.split(":")[0]}}:{{v.endtime.split(":")[1]}}</span>
                   <span class="con">{{v.subject}}</span>.
                 </a>
@@ -51,7 +51,8 @@ export default {
     this.Init();
   },
   computed: {
-    ...mapGetters(["GetSchedule"]),
+    ...mapGetters("calendarjs",["GetSchedule"]),
+    
   },
   components: {
     Header,
@@ -102,6 +103,15 @@ export default {
     };
   },
   methods: {
+    isToday(value){
+      if(value&& value.length>0){
+        var str = this.fill(2,this.year)+"-"+this.fill(2,this.month)+"-"+this.fill(2,this.today);
+        return value.filter(x=>{
+          return x.startdate === str;
+        })
+      }
+      return [];
+    },
     Start(e) {
       this.startX = e.touches[0].pageX - e.touches[0].target.offsetLeft;
       this.check = true;
@@ -109,10 +119,10 @@ export default {
     End(e) {},
     Move(e) {
       this.nowclientX = e.touches[0].pageX - e.touches[0].target.offsetLeft;
-      if (this.nowclientX - this.startX > 50 && this.check) {
+      if (this.nowclientX - this.startX > 100 && this.check) {
         this.calendarData(-1);
         this.check = false;
-      } else if (this.nowclientX - this.startX < -50 && this.check) {
+      } else if (this.nowclientX - this.startX < -100 && this.check) {
         this.calendarData(1);
         this.check = false;
       }
@@ -148,7 +158,7 @@ export default {
       data.start = this.fulldate;
       data.end = this.fulldate
       data.today = this.fulldate;
-      this.$store.dispatch("CalList", { data,which:"day"});
+      this.$store.dispatch("calendarjs/CalList", { data,which:"day"});
 
     },
     calendarData(arg) {
@@ -175,8 +185,9 @@ export default {
       )}`;
       data.end = data.start;
       data.today = data.start;
-      this.$store.dispatch("CalList", { data,which:"day"});
-      var currentDay = new Date(this.fulldate);
+      this.$store.dispatch("calendarjs/CalList", { data,which:"day"});
+      var redate = this.fulldate.replaceAll(".","/");
+      var currentDay = new Date(redate);
       this.theDayOfWeek = currentDay.getDay();
       
     },
@@ -201,9 +212,9 @@ export default {
       return str;
     },
     async Detail(value){
-      this.$store.commit("SaveScheduleUnid",{unid:value.unid,where:"day"});
+      this.$store.commit("calendarjs/SaveScheduleUnid",{unid:value.unid,where:"day"});
       // await 
-      this.$router.push("/schedule/read");
+      this.$router.push("/schedule_more/read");
 
     },
   },

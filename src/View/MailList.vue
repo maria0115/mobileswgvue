@@ -1,7 +1,9 @@
 <template>
   <div class="wrap btm_b" :class="{ dark: this.color }">
+    <div class="modal_wrap">
     <router-view :key="$route.fullPath"></router-view>
     <Footer></Footer>
+    </div>
   </div>
 </template>
 
@@ -18,7 +20,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters([
+    ...mapGetters("configjs",[
       "GetSystemColor","GetConfig"
     ]),
     color() {

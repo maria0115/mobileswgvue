@@ -17,11 +17,11 @@
           </dl>
         </div>
         <div class="icons">
-          <span class="sub_set"><a href="./mob_setting.html"></a></span>
+          <span class="sub_set"><a></a></span>
           <span class="sub_close" @click="CloseHam"></span>
         </div>
       </div>
-      <ul>
+      <ul @click="CloseHam">
         <li>
           <h3><router-link to="docform">결재 양식함</router-link></h3>
         </li>
@@ -96,6 +96,15 @@
 <script>
 import { mapState, mapGetters } from "vuex";
 export default {
+  created(){
+    this.$store.dispatch("approjs/GetApprovalList", { type: "draft" });
+        this.$store.dispatch("approjs/GetApprovalList", { type: "approve" });
+        this.$store.dispatch("approjs/GetApprovalList", { type: "approving" });
+        this.$store.dispatch("approjs/GetApprovalList", { type: "reject" });
+        this.$store.dispatch("approjs/GetApprovalList", { type: "success_date" });
+        this.$store.dispatch("approjs/GetApprovalList", { type: "success_my" });
+        this.$store.dispatch("approjs/GetApprovalList", { type: "success_dept" });
+  },
   props: {
     isOpen: Boolean,
   },
@@ -110,7 +119,8 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(["GetMyInfo", "GetApproval"]),
+    ...mapGetters("mainjs",["GetMyInfo"]),
+    ...mapGetters("approjs",["GetApproval"]),
   },
 };
 </script>

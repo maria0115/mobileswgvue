@@ -4,11 +4,11 @@
             <div class="info_tit">
                 <span class="cal_img01"></span>
                 <dl>
-                    <dt>안지원 대리</dt>
-                    <dd>전략구매팀</dd>
+                    <dt>{{GetMyInfo.info.name}} {{GetMyInfo.info.position}}</dt>
+                    <dd>{{GetMyInfo.info.dept}}</dd>
                 </dl>
                 <div>
-                    <span class="cal_sub_set"><a href="./mob_mail_set.html"></a></span>
+                    <span class="cal_sub_set"><a></a></span>
                     <span class="cal_sub_close" @click="$emit('calMenuOff')"></span>
                 </div>
             </div>
@@ -32,10 +32,14 @@
 </template>
 
 <script>
+import { mapState, mapGetters } from "vuex";
 export default {
     props: [
         'calmenu',
     ],
+    computed: {
+    ...mapGetters("mainjs",["GetMyInfo"]),
+  },
     data(){
         return {
             myCal:false

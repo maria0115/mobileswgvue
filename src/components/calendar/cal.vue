@@ -29,9 +29,16 @@
         <tbody>
           <tr v-for="(date, idx) in dates" :key="idx">
             <td v-for="(day, secondIdx) in date" :key="secondIdx">
-              <a @click="Detail(day,
+              <a
+                @click.stop="
+                  Detail(
+                    day,
                     dates.length - 1 === idx && nextMonthStart > day,
-                    idx === 0 && day >= lastMonthStart,secondIdx)">
+                    idx === 0 && day >= lastMonthStart,
+                    secondIdx
+                  )
+                "
+              >
                 <div
                   :class="{
                     last_month: idx === 0 && day >= lastMonthStart,
@@ -63,14 +70,17 @@
                   >{{ isHoliday(day).name }}</span
                 >
                 <span
+                  @click.stop="oneDetail(value.data)"
                   v-for="(value, index) in isAllday(
                     day,
                     dates.length - 1 === idx && nextMonthStart > day,
                     idx === 0 && day >= lastMonthStart
                   )"
                   :key="index"
-                  :class="[{all_day:value.name=='allday'},{time_day:value.name=='timeday'}]"
-                  
+                  :class="[
+                    { all_day: value.data.allDay },
+                    { time_day: !value.data.allDay },
+                  ]"
                   >{{ value.data.subject }}</span
                 >
               </a>
@@ -96,8 +106,6 @@ export default {
     CalWrite,
   },
   created() {
-    
-    
     this.Init();
   },
   data() {
@@ -133,7 +141,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["GetSchedule"]),
+    ...mapGetters("calendarjs", ["GetSchedule"]),
   },
   methods: {
     isAllday(day, next, last) {
@@ -141,8 +149,8 @@ export default {
       var callist = [];
 
       for (var i = 0; i < calList.length; i++) {
-        var startdate = calList[i].startdate.replaceAll("-","/");
-        var enddate = calList[i].enddate.replaceAll("-","/");
+        var startdate = calList[i].startdate.replaceAll("-", "/");
+        var enddate = calList[i].enddate.replaceAll("-", "/");
         let start = Math.floor(+new Date(startdate) / 1000);
         let end = Math.floor(+new Date(enddate) / 1000);
 
@@ -164,20 +172,20 @@ export default {
         data.boo = false;
         if (isOneDay && current === start) {
           // timeday
-          // console.log(calList[i],"timeday",thisdate);
+          //
           data.name = "timeday";
           data.data = calList[i];
           data.boo = true;
           callist.push(data);
         } else {
           if (current === start || current == end) {
-            // console.log(calList[i],"timeday",thisdate);
+            //
             data.name = "timeday";
             data.boo = true;
             data.data = calList[i];
             callist.push(data);
           } else if (start < current && end > current) {
-            // console.log(calList[i],"allday",thisdate);
+            //
             data.name = "allday";
             data.boo = true;
             data.data = calList[i];
@@ -195,10 +203,10 @@ export default {
     End(e) {},
     Move(e) {
       this.nowclientX = e.touches[0].pageX - e.touches[0].target.offsetLeft;
-      if (this.nowclientX - this.startX > 50 && this.check) {
+      if (this.nowclientX - this.startX > 100 && this.check) {
         this.calendarData(-1);
         this.check = false;
-      } else if (this.nowclientX - this.startX < -50 && this.check) {
+      } else if (this.nowclientX - this.startX < -100 && this.check) {
         this.calendarData(1);
         this.check = false;
       }
@@ -260,7 +268,7 @@ export default {
         2,
         this.today
       )}`;
-    // alert(this.fulldate)
+      // alert(this.fulldate)
 
       // this.selectedMonth = moment(`${this.year}/${this.month}`, "yyyyMM");
       await this.Rest();
@@ -341,15 +349,13 @@ export default {
       data.start = start;
       data.end = last;
       data.today = this.fulldate;
-      this.$store.dispatch("CalList", {data,which:"month"});
+      this.$store.dispatch("calendarjs/CalList", { data, which: "month" });
       if (weekOfDays.length > 0) dates.push(weekOfDays);
       this.nextMonthStart = weekOfDays[0];
       return dates;
     },
     DateChange(e) {
-      
       if (e) {
-        console.log(e["_i"])
         this.year = parseInt(e["_i"].split(".")[0]);
         this.month = parseInt(e["_i"].split(".")[1]);
 
@@ -382,7 +388,7 @@ export default {
         data.month = this.fill(2, this.month);
         data.menu = "holiday";
 
-        this.$store.dispatch("Holiday", data);
+        this.$store.dispatch("calendarjs/Holiday", data);
       }
       return;
     },
@@ -403,26 +409,35 @@ export default {
 
       this.calendarData();
     },
-    async Detail(day, next, last,yuil){
+    async Detail(day, next, last, yuil) {
       var data = await this.isAllday(day, next, last);
       var m = this.month;
 
-      if(next){
-        m+=1;
-
-      }else if(last){
-        m-=1;
+      if (next) {
+        m += 1;
+      } else if (last) {
+        m -= 1;
       }
-      
-      var result ={};
+
+      var result = {};
       result.month = m;
       result.year = this.year;
       result.day = day;
       result.date = yuil;
-      console.log(result)
-      await this.$store.commit("SaveScheduleList",{data,date:result});
-      this.$router.push("/schedule/list");
 
+      await this.$store.commit("calendarjs/SaveScheduleList", {
+        data,
+        date: result,
+      });
+      this.$router.push("/schedule_more/list");
+    },
+    oneDetail(value) {
+      this.$store.commit("calendarjs/SaveScheduleUnid", {
+        unid: value.unid,
+        where: "month",
+      });
+      // await
+      this.$router.push("/schedule_more/read");
     },
   },
 };

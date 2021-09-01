@@ -7,6 +7,7 @@
     ]"
     des="main2"
   >
+  <div class="modal_wrap">
     <div class="se_header">
       <div class="main_header">
         <span class="ham" @click="clickHam"></span>
@@ -57,11 +58,11 @@
           ><span class="main_sub_set"><a></a></span
         ></router-link> -->
       </div>
-      <div class="menu00">
+      <div v-if="this.GetConfig.display == 'portal'" class="menu00">
         <strong>전체메뉴</strong>
         <ul class="allmenu_list clfix">
           <li v-for="(value, name) in mainmenu" :key="name">
-            <router-link :to="`/${value.key}`">
+            <router-link :to="`/${value.key}_more`">
               <span>
                 <img
                   :src="`../mobile/img/menu_icon${value.key}.png`"
@@ -74,15 +75,15 @@
         </ul>
       </div>
       <div class="menu01" des="main2" v-if="this.GetConfig.display == 'menu'">
-        <strong desc="메뉴관리">{{
+        <!-- <strong desc="메뉴관리">{{
           GetMainLanguage.hamburger.menu.menuset
-        }}</strong>
+        }}</strong> -->
         <div class="mymenu" v-if="!edit">
           <span class="btn_edit" @click="editmodeChange">{{
             GetMainLanguage.hamburger.button.edit
           }}</span>
           <ul class="clfix">
-            <li v-for="(value, name) in this.menuposition" :key="name">
+            <li v-for="(value, name) in this.menuposition" @click="MenuGo(!edit,value)" :key="name">
               <a>
                 <span>
                   <img
@@ -197,7 +198,7 @@
           v-for="(value, name) in GetConfig.main.menuportlet"
           :key="name"
         >
-          <router-link :to="`/${value.key}`">{{
+          <router-link :to="`/${MenuRouter(value.key)}`">{{
             GetMainLanguage.header[value.key]
           }}</router-link>
         </li>
@@ -221,13 +222,13 @@
     <router-view></router-view>
     <ul class="quick" v-if="this.GetConfig.display == 'menu'">
       <li>
-        <a>{{ GetMainLanguage.footer.ktop_home }}</a>
+        <a>{{ GetMainLanguage.footer.home }}</a>
       </li>
       <li>
-        <a>{{ GetMainLanguage.footer.saerom_home }}</a>
+        <a>{{ GetMainLanguage.footer.messinger }}</a>
       </li>
-      <li>
-        <a>{{ GetMainLanguage.footer.talk_install }}</a>
+      <li @click="orgClick()">
+        <a>{{ GetMainLanguage.footer.org }}</a>
       </li>
       <li>
         <a>{{ GetMainLanguage.footer.logout }}</a>
@@ -241,16 +242,16 @@
       <strong>바로가기</strong>
       <ul class="quick2 clfix">
         <li>
-          <a><span class="q_ic01"></span>새롬홈페이지</a>
+          <a><span class="q_ic01"></span>홈페이지</a>
         </li>
         <li>
-          <a href="./mob_main.html"><span class="q_ic02"></span>Ktop홈</a>
+          <a><span class="q_ic02"></span>근태관리</a>
         </li>
         <li>
-          <a><span class="q_ic03"></span>Talk4설치</a>
+          <a><span class="q_ic03"></span>메신저</a>
         </li>
-        <li>
-          <a><span class="q_ic04"></span>경조사</a>
+        <li @click="orgClick()">
+          <a><span class="q_ic04"></span>조직도</a>
         </li>
       </ul>
     </div>
@@ -258,6 +259,8 @@
       <span><a>로그아웃</a></span>
     </div>
     <div class="top_btn"></div>
+    <Org :modalon="modalon" @ModalOff="ModalOff"></Org>
+  </div>
   </div>
 </template>
 <script src="//cdnjs.cloudflare.com/ajax/libs/vue/2.5.2/vue.min.js"></script>
@@ -270,11 +273,12 @@ import { mapState, mapGetters } from "vuex";
 import SearchHeader from "./SearchHeader.vue";
 import $ from "jquery";
 import draggable from "vuedraggable";
-
+import Org from "./Org.vue";
 export default {
   components: {
     SearchHeader,
     draggable,
+    Org,
   },
   data() {
     return {
@@ -283,13 +287,19 @@ export default {
       menuposition: [],
       portletposition: [],
       oncategory: "my",
+      modalAutoOrg: 0,
+      modalon: false,
     };
   },
   computed: {
-    ...mapState(["main"]),
+    ...mapState("mainjs",["main"]),
     ...mapGetters([
-      "GetMyInfo",
       "GetMainLanguage",
+    ]),
+    ...mapGetters("mainjs",[
+      "GetMyInfo",
+    ]),
+    ...mapGetters("configjs",[
       "GetConfig",
       "GetSystemColor",
     ]),
@@ -349,10 +359,13 @@ export default {
       $("html").removeClass("normal");
       $("html").addClass("mar15");
     }
-    if (this.GetConfig.display == "portal" && this.$route.path !== "/myicon") {
-      this.$router.replace("myicon");
-    } else if (this.GetConfig.display == "menu" && this.$route.path !== "/my") {
-      this.$router.replace("my");
+    if(this.$route.fullPath == "/"||this.$route.fullPath == "/my"||this.$route.fullPath == "/myicon"){
+      if (this.GetConfig.display == "portal" && this.$route.path !== "/myicon") {
+        this.$router.replace("myicon");
+      } else if (this.GetConfig.display == "menu" && this.$route.path !== "/my") {
+        this.$router.replace("my");
+      }
+
     }
   },
   mounted() {
@@ -360,6 +373,26 @@ export default {
     $(".wrap").css("font-family", this.GetConfig.font.font);
   },
   methods: {
+    ModalOff() {
+      this.modalon = false;
+    },
+    orgClick(to) {
+      this.modalon = true;
+    },
+    MenuGo(isNotEdit,value){
+      if(isNotEdit){
+        this.$router.replace(`/${value.key}_more`);
+
+      }
+
+    },
+    MenuRouter(key){
+      if(key==="schedule"){
+        return `${key}_more`
+      }
+      return key;
+
+    },
     // 메뉴 관리 편집 후 완료 버튼 누르지 않아도 data vind 으로 변경이 되어 있어 hamberger button click 시 다시 사용자 설정값 가져옴
     clickHam() {
       var newmenu = [];
@@ -376,10 +409,6 @@ export default {
     },
     onEnd: function (evt) {},
     checkMove: function (evt, originalEvent) {
-      console.log(
-        evt.draggedContext.element.name,
-        "evt.draggedContext.element.name"
-      );
       // return evt.draggedContext.element.name !== "リンゴ";
     },
 
@@ -429,7 +458,7 @@ export default {
     },
     // 메뉴관리 변경 완료
     complete() {
-      this.$store.dispatch("setConfig", {
+      this.$store.dispatch("configjs/setConfig", {
         menu: "main",
         value: this.menuposition,
         setting: "menuportlet",
@@ -447,7 +476,7 @@ export default {
     },
     // 포틀릿 순서변경 할 때마다 db입력
     RealTimeData() {
-      this.$store.dispatch("setConfig", {
+      this.$store.dispatch("configjs/setConfig", {
         menu: "main",
         value: this.GetConfig.main.portlet,
         setting: "portlet",
@@ -457,7 +486,7 @@ export default {
     checkService(value, index) {
       this.GetConfig.main.portlet[index].service =
         !this.GetConfig.main.portlet[index].service;
-      this.$store.dispatch("setConfig", {
+      this.$store.dispatch("configjs/setConfig", {
         menu: "main",
         value: this.GetConfig.main.portlet,
         setting: "portlet",

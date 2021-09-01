@@ -1,47 +1,49 @@
 <template>
-<div class="m_contents01">
-  <div class="main_tab" @touchend="mmouseup($event)">
-    <div id="my_tab">
-      <div class="my_info">
-        <div class="info_in">
-          <span
-            ><em
-              ><img
-                v-if="GetMyInfo.photo !== undefined"
-                :src="url(GetMyInfo.photo)"
-                alt=""
-                @error="$event.target.src = '../../mobile/img/img03.png'" /></em
-          ></span>
-          <dl>
-            <dt>
-              <span>{{ GetMyInfo.info.name }}</span>
-              {{ GetMyInfo.info.position }} /
-              {{ GetMyInfo.info.dept }}
-            </dt>
-            <dd class="mar30">
-              <span
-                >{{ GetMainLanguage.myinfo.mail }}
-                <router-link to="/mail"
-                  ><b>{{ GetMyInfo.mailCount }}</b></router-link
-                ></span
-              >
-              <span
-                >{{ GetMainLanguage.myinfo.approval }}
-                <router-link to="/approval"
-                  ><b>{{ GetMyInfo.approvalCount }}</b></router-link
-                ></span
-              >
-              <span
-                >{{ GetMainLanguage.myinfo.schedule }}
-                <router-link to="/schedule"
-                  ><b>{{ GetMyInfo.scheduleCount }}</b></router-link
-                ></span
-              >
-            </dd>
-          </dl>
+  <div class="m_contents01">
+    <div class="main_tab" @touchend="mmouseup($event)">
+      <div id="my_tab">
+        <div class="my_info">
+          <div class="info_in">
+            <span
+              ><em
+                ><img
+                  v-if="GetMyInfo.photo !== undefined"
+                  :src="url(GetMyInfo.photo)"
+                  alt=""
+                  @error="
+                    $event.target.src = '../../mobile/img/img03.png'
+                  " /></em
+            ></span>
+            <dl>
+              <dt>
+                <span>{{ GetMyInfo.info.name }}</span>
+                {{ GetMyInfo.info.position }} /
+                {{ GetMyInfo.info.dept }}
+              </dt>
+              <dd class="mar30">
+                <span
+                  >{{ GetMainLanguage.myinfo.mail }}
+                  <router-link to="/mail_more"
+                    ><b>{{ GetMyInfo.mailCount }}</b></router-link
+                  ></span
+                >
+                <span
+                  >{{ GetMainLanguage.myinfo.approval }}
+                  <router-link to="/approval_more"
+                    ><b>{{ GetMyInfo.approvalCount }}</b></router-link
+                  ></span
+                >
+                <span
+                  >{{ GetMainLanguage.myinfo.schedule }}
+                  <router-link to="/schedule_more"
+                    ><b>{{ GetMyInfo.scheduleCount }}</b></router-link
+                  ></span
+                >
+              </dd>
+            </dl>
+          </div>
         </div>
-      </div>
-      <!-- <div
+        <!-- <div
         class="circle"
         @touchstart="[mmousedown($event)]"
         @touchmove="mmousemove($event)"
@@ -59,26 +61,26 @@
         </ul>
       </div> -->
 
-      <div v-for="(value, name) in GetConfig.main.portlet" :key="name">
-        <div v-if="value.key === 'mail' && value.service">
-          <Mail :portlet="GetMainLanguage.portlet"></Mail>
-        </div>
-        <div v-else-if="value.key === 'notice' && value.service">
-          <Notice :portlet="GetMainLanguage.portlet"></Notice>
-        </div>
-        <div v-else-if="value.key === 'approving' && value.service">
-          <Approving :portlet="GetMainLanguage.portlet"></Approving>
-        </div>
-        <div v-else-if="value.key === 'schedule' && value.service">
-          <Schedule :portlet="GetMainLanguage.portlet"></Schedule>
-        </div>
-        <div v-else-if="value.key === 'recentboard' && value.service">
-          <Recent :portlet="GetMainLanguage.portlet"></Recent>
+        <div v-for="(value, name) in GetConfig.main.portlet" :key="name">
+          <div v-if="value.key === 'mail' && value.service">
+            <Mail :portlet="GetMainLanguage.portlet"></Mail>
+          </div>
+          <div v-else-if="value.key === 'notice' && value.service">
+            <Notice :portlet="GetMainLanguage.portlet"></Notice>
+          </div>
+          <div v-else-if="value.key === 'approving' && value.service">
+            <Approving :portlet="GetMainLanguage.portlet"></Approving>
+          </div>
+          <div v-else-if="value.key === 'schedule' && value.service">
+            <Schedule :portlet="GetMainLanguage.portlet"></Schedule>
+          </div>
+          <div v-else-if="value.key === 'recentboard' && value.service">
+            <Recent :portlet="GetMainLanguage.portlet"></Recent>
+          </div>
         </div>
       </div>
     </div>
   </div>
-</div>
 </template>
 
 <script>
@@ -91,6 +93,7 @@ import Recent from "./my/recent.vue";
 import $ from "jquery";
 
 export default {
+  created() {},
   components: {
     Mail,
     Notice,
@@ -99,8 +102,10 @@ export default {
     Recent,
   },
   computed: {
-    ...mapState(["main"]),
-    ...mapGetters(["GetMain", "GetMyInfo", "GetMainLanguage", "GetConfig"]),
+    ...mapState("mainjs", ["main"]),
+    ...mapGetters("mainjs", ["GetMain", "GetMyInfo"]),
+    ...mapGetters(["GetMainLanguage"]),
+    ...mapGetters("configjs", ["GetConfig"]),
     style() {
       return { transform: "rotate(" + this.degree + "deg)" };
     },
@@ -141,7 +146,7 @@ export default {
   mounted() {
     var elems = $(".minicircle");
     var increase = (Math.PI * 2) / elems.length;
-    // console.log(increase * (180.0 / Math.PI));
+    //
     var x = 0,
       y = 0,
       angle = -90;
@@ -169,11 +174,9 @@ export default {
   methods: {
     remove(item) {
       this.mockSwipeList = this.mockSwipeList.filter((i) => i !== item);
-      // console.log(e, 'remove');
+      //
     },
-    itemClick(e) {
-      console.log(e, "item click");
-    },
+    itemClick(e) {},
     onDragged({
       el,
       deltaX,
@@ -185,18 +188,6 @@ export default {
       first,
       last,
     }) {
-      console.log(
-        "hey",
-        el,
-        deltaX,
-        deltaY,
-        offsetX,
-        offsetY,
-        clientX,
-        clientY,
-        first,
-        last
-      );
       if (first) {
         this.isDragging = true;
         return;
@@ -213,7 +204,7 @@ export default {
 
     mmousedown(e) {
       e.preventDefault();
-      console.log(e, "아딱!!!!!!!!!!!!!!!!!!!!!방금눌렀다");
+
       // this.preclientX = e.touches[0].pageX - e.touches[0].target.offsetLeft;
       // this.preclientY = e.touches[0].pageY - e.touches[0].target.offsetTop;
       const { x, y, width, height } = e.currentTarget.getBoundingClientRect();
@@ -230,7 +221,7 @@ export default {
     mmousemove(e) {
       if (this.didyouclick) {
         this.moveboo = true;
-        console.log("지금 딱 돌아가야함");
+
         // var nowclientX = e.touches[0].pageX - e.touches[0].target.offsetLeft;
         // var nowclientY = e.touches[0].pageY - e.touches[0].target.offsetTop;
         // this.top = e.touches[0].target.offsetTop;
@@ -271,7 +262,6 @@ export default {
       }
     },
     mmouseup(e) {
-      console.log(e, "아딱!!!!!!!!!!!!!!!!!!!!!방금뗏다");
       if (this.moveboo) {
         this.cw = "지금떼기시작";
 
@@ -352,8 +342,7 @@ export default {
       for (var i = 0; i < a.length; i++) {
         var diff = sign * this.getDiffClockWise(a[i], θ);
         var diffPos = this.getValueBetween0And360(diff);
-        //console.log(`start a[${i}] = ${a[i]}, diffPos = ${diffPos}, iF = ${iF}, diffF = ${diffF}, sign = ${sign}`);
-        console.log(diffPos, ":diffPos");
+        //
 
         if (diffPos < diffF) {
           diffF = diffPos;
@@ -361,7 +350,7 @@ export default {
           result.index = i;
           result.dif = diffPos;
         }
-        //console.log(`end   a[${i}] = ${a[i]}, diffPos = ${diffPos}, iF = ${iF}, diffF = ${diffF}`);
+        //
       }
 
       return result;
@@ -372,7 +361,7 @@ export default {
 
 <style>
 /*MAIN CIRCLE*/
-.circle{
+.circle {
   position: relative;
   width: 300px;
   height: 300px;
@@ -407,7 +396,4 @@ export default {
   -o-transition: width 0s;
   transition: width 0s;
 }
-
-
-
 </style>

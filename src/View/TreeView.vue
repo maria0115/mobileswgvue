@@ -44,8 +44,8 @@ export default {
         this.isOpen = !this.isOpen;
       } else {
         this.customFolder = this.item.mycode;
-        this.$store.commit("MailCustomFolderTitle", this.item.nodetitle.ko);
-        this.$router.replace({
+        this.$store.commit("mailjs/MailCustomFolderTitle", this.item.nodetitle.ko);
+        this.$router.push({
           name: "Custom",
           params: { folderId: this.item.mycode },
         });

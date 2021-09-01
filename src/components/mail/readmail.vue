@@ -23,7 +23,7 @@
           <h2 class="mail_tit">{{ GetMailDetail.subject }}</h2>
           <div class="clfix">
             <span class="per_img">
-              <em class="no_img" style="background: #aea9db"
+              <em class="no_img" :style="randomColor()"
                 ><b>{{ GetMailDetail.author.name.split("")[0] }}</b></em
               >
             </span>
@@ -80,7 +80,10 @@
               </div>
             </li>
           </ul>
-          <span class="star" :class="{ active: this.GetMail.followUpInfo.use }"></span>
+          <span
+            class="star"
+            :class="{ active: this.GetMail.followUpInfo.use }"
+          ></span>
           <div class="impor_mail">
             <!--7월 29일 추가됨 -->
             <div class="impor_con">
@@ -148,7 +151,11 @@
               @click="attachClick(value.url)"
               class="active"
             >
-              <span><img src="../../mobile/img/test_img01.png" alt="" /></span>
+              <span
+                ><img
+                  :src="`../../mobile/img/icon_${fileImg(value.name)}.png`"
+                  alt=""
+              /></span>
               <div>
                 <p>{{ value.name }}</p>
                 <em>({{ value.size }})</em>
@@ -174,6 +181,7 @@
 import { mapState, mapGetters } from "vuex";
 import MoveFile from "./movefile.vue";
 import { Editor, EditorContent } from "tiptap";
+import configjson from "../../config/config.json";
 export default {
   components: {
     MoveFile,
@@ -193,14 +201,13 @@ export default {
     };
   },
   computed: {
-    ...mapState(["TimeOption"]),
-    ...mapGetters(["GetMailDetail", "GetMail"]),
+    ...mapState("mailjs", ["TimeOption"]),
+    ...mapGetters("mailjs", ["GetMailDetail", "GetMail"]),
   },
   mounted() {
     var followUpInfo = this.GetMail.followUpInfo;
-    
+
     if (followUpInfo.use) {
-      
       this.STime = followUpInfo.time.split(":")[0];
       this.SMin = followUpInfo.time.split(":")[1];
       this.use = followUpInfo.use;
@@ -218,13 +225,33 @@ export default {
     }
   },
   created() {
-    this.$store.dispatch("FollowUpInfo", this.GetMailDetail.unid);
-    this.$store.commit("checkedNamesPush", this.GetMailDetail.unid);
+    this.$store.dispatch("mailjs/FollowUpInfo", this.GetMailDetail.unid);
+    this.$store.commit("mailjs/checkedNamesPush", this.GetMailDetail.unid);
   },
   methods: {
+    // 기본이미지 랜덤 색
+    randomColor() {
+      const color = ["#bcbbdd", "#bbcbdd", "#bbddd7", "#d0d0d0"];
+      return `background: ${color[Math.floor(Math.random() * 4)]}`;
+    },
+    getExtensionOfFilename(filename) {
+      var _fileLen = filename.length;
+      var _lastDot = filename.lastIndexOf(".");
+      var _fileExt = filename.substring(_lastDot + 1, _fileLen).toLowerCase();
+
+      return _fileExt;
+    },
+    fileImg(name) {
+      var dot = this.getExtensionOfFilename(name);
+
+      if (configjson.extension.indexOf(dot) !== -1) {
+        return dot;
+      }
+      return "etc";
+    },
     Replay(value) {
-      this.$store.commit("From", value);
-      this.$router.push("/maillist/write_mail");
+      this.$store.commit("mailjs/From", value);
+      this.$router.push("/mail_more/write_mail");
     },
     SpamSet() {
       var data = {};
@@ -233,12 +260,12 @@ export default {
       if (this.GetMailDetail.authorEmail) {
         data.email = this.GetMailDetail.authorEmail;
       }
-      // 
-      
-      this.$store.dispatch("SpamSet", data);
+      //
+
+      this.$store.dispatch("mailjs/SpamSet", data);
     },
     Back() {
-      this.$store.commit("Back");
+      this.$store.commit("mailjs/Back");
       this.$router.go(-1);
     },
     getTime(date) {
@@ -255,8 +282,10 @@ export default {
       data.unid = this.GetMailDetail.unid;
       var arr = [];
       arr.push(data);
-      var result = await this.$store.dispatch("MailDelete", { datas: arr });
-      
+      var result = await this.$store.dispatch("mailjs/MailDelete", {
+        datas: arr,
+      });
+
       if (result) {
         this.$router.go(-1);
       }
@@ -264,7 +293,7 @@ export default {
     followCancle() {},
     followSet() {
       var data = {};
-      
+
       if (this.date) {
         data.use = this.use;
         data.date = this.date;
@@ -272,8 +301,8 @@ export default {
         data.time = `${this.STime}:${this.SMin}:00`;
         data.body = this.editor.getHTML();
         data.unid = this.GetMailDetail.unid;
-        this.$store.dispatch("FollowupSet", data);
-        this.$router.push("/maillist/read_mail")
+        this.$store.dispatch("mailjs/FollowupSet", data);
+        this.$router.push("/mail_more/read_mail");
       }
     },
     followUse() {

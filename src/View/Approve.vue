@@ -1,7 +1,9 @@
 <template>
   <div class="wrap btm_b" :class="{ dark: this.color }">
+    <div class="modal_wrap">
     <router-view></router-view>
     <Footer></Footer>
+    </div>
   </div>
 </template>
 
@@ -14,7 +16,7 @@ components: {
     Footer,
   },
   computed: {
-    ...mapGetters(["GetSystemColor", "GetConfig"]),
+    ...mapGetters("configjs",["GetSystemColor", "GetConfig"]),
     color() {
       if (this.GetSystemColor === "dark") {
         return true;

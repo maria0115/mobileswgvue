@@ -1,0 +1,92 @@
+{
+    "mail": {
+        "searchOption": {
+            "size": "14",
+            "searchType": "inbox_detail",
+            "searchfield": [
+                "subject",
+                "author",
+                "sender",
+                "copyto"
+            ],
+            "searchword": ""
+        },
+        "data": {
+            "inbox_detail": {
+                "data": {}
+            },
+            "mail_inner": {
+                "data": {}
+            },
+            "mail_attach": {
+                "data": {}
+            },
+            "mail_outer": {
+                "data": {}
+            },
+            "sent_detail": {
+                "data": {}
+            },
+            "mail_draft": {
+                "data": {}
+            },
+            "mail_autoSave": {
+                "data": {}
+            },
+            "mail_trash": {
+                "data": {}
+            },
+            "mail_unread": {
+                "data": {}
+            },
+            "mail_reservation": {
+                "data": {}
+            },
+            "mail_my": {
+                "data": {}
+            },
+            "mail_importance": {
+                "data": {}
+            },
+            "folderList": {
+                "data": []
+            },
+            "mail_followup": {
+                "data": {}
+            },
+            "custom": {
+                "data": []
+            },
+            "signature": {
+                "size": "50",
+                "data": []
+            },
+            "greetings": {
+                "size": "50",
+                "data": []
+            },
+            "delay": {
+                "delayTime": "10",
+                "use": false
+            },
+            "autoSave": {
+                "saveDay": "60",
+                "saveTime": "10",
+                "use": false
+            },
+            "org": {
+                "init": [],
+                "trans": []
+            },
+            "myinfo": {},
+            "writeForm": {},
+            "followUpInfo": {}
+        },
+        "checkBtn": {
+            "checkedNames": [],
+            "editclicked": false,
+            "photoon": true,
+            "allchecked": false
+        }
+    }
+}

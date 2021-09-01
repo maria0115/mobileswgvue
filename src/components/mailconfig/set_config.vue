@@ -1,7 +1,7 @@
 <template>
   <div>
     <h2 class="mail_st_header">
-      <router-link to="/maillist"><img src="../../mobile/img/wmail_back.png" alt="" /></router-link>환경설정
+      <router-link to="/mail_more"><img src="../../mobile/img/wmail_back.png" alt="" /></router-link>환경설정
     </h2>
     <div class="m_contents05">
       <ul class="cm_list">
@@ -34,7 +34,7 @@
 import { mapState, mapGetters } from "vuex";
 export default {
   computed: {
-    ...mapState(["mail"]),
+    ...mapState("mailjs",["mail"]),
   },
   methods: {
     Back() {
