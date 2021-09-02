@@ -120,13 +120,46 @@ export default {
     Move(e) {
       this.nowclientX = e.touches[0].pageX - e.touches[0].target.offsetLeft;
       if (this.nowclientX - this.startX > 100 && this.check) {
-        this.calendarData(-1);
+        this.DayChange(-1);
         this.check = false;
       } else if (this.nowclientX - this.startX < -100 && this.check) {
-        this.calendarData(1);
+        this.DayChange(1);
         this.check = false;
       }
       // this.nowclientY = e.touches[0].pageY - e.touches[0].target.offsetTop;
+    },
+    DayChange(arg) {
+      // this.currentYear = currentDay.getFullYear();
+      // this.currentMonth = currentDay.getMonth() + 1;
+      // var hour = currentDay.getHours(); //시간
+      // var min = currentDay.getMinutes(); //분
+      // this.month = this.currentMonth;
+      // this.today = currentDay.getDate();
+      var rd = this.fulldate.replaceAll(".","/");
+
+
+      var dt = new Date(rd);
+      var diff = dt.getDate()+arg;
+      if(diff==0){
+        diff =-1;
+      }
+      dt.setDate(diff) ;
+      dt.setMonth(dt.getMonth()+1);
+      console.log(dt.getDate()+arg)
+      var y = dt.getFullYear();
+      var m = dt.getMonth();
+      var d = dt.getDate();
+      this.fulldate = `${y}.${this.fill(2,m)}.${this.fill(2,d)}`;
+      
+      var data = {};
+      data.start =`${y}-${this.fill(2,m)}-${this.fill(2,d)}`;
+      data.end = data.start;
+      data.today = data.start;
+      this.$store.dispatch("calendarjs/CalList", { data,which:"day"});
+      var redate = this.fulldate.replaceAll(".","/");
+      var currentDay = new Date(redate);
+      this.theDayOfWeek = currentDay.getDay();
+      
     },
     Today() {
       this.Init();

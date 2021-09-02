@@ -1,5 +1,14 @@
 import axios from 'axios';
-// /api/schedule?type=edit
+// /api/approval?type=detail&unid=7A37FAC92B50F43C492587370002C0B2
+function AppDetail(data) {
+    return axios({
+        method: 'get',
+        url: `/api/approval?type=detail&unid=${data.unid}&approvalType=${data.type}`,
+        headers: {
+            "Content-Type": "application/json"
+        }
+    })
+}
 function CalWrite(data,type) {
     // console.log("api",data)
     return axios({
@@ -680,5 +689,6 @@ export {
     Likeit,
     DeleteBoard,
     BoardEdit,
-    CalWrite
+    CalWrite,
+    AppDetail
 }

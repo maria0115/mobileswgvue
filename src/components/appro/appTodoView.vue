@@ -1,95 +1,79 @@
 <template>
   <div>
-      <BackHeader desc="결재할 문서" :title="title"></BackHeader>
+    <BackHeader desc="결재할 문서" :title="title"></BackHeader>
     <div class="a_contents02">
-            <div>
-                <div class="line01">
-                    <em>휴가원</em>
-                    <strong>1일 연차신청</strong>
-                    <div class="clfix">
-                        <span>기안</span>
-                        <dl>
-                            <dt>안지원 대리 / 전략구매팀</dt>
-                            <dd>2021.04.03 15:32</dd>
-                        </dl>
-                    </div>
-                </div>
-                <ul class="line02">
-                    <li>
-                        <h3><a href="#">결재정보 <em>(3)</em></a></h3>
-                        <div>
-                            <ul>
-                                <li>
-                                    <span>기안</span>
-                                    <div>
-                                        <strong>홍길동 매니저 / IT팀</strong>
-                                        <em>2021.04.02 15:00</em>
-                                    </div>
-                                </li>
-                                <li>
-                                    <span>합의</span>
-                                    <div>
-                                        <strong>안영희 매니저 / IT팀</strong>
-                                        <em>2021.04.03 16:24</em>
-                                        <P>승인후 연차 1일 차감하겠습니다.<br>참고하시기 바랍니다.</P>
-                                    </div>
-                                </li>
-                                <li>
-                                    <span>결재</span>
-                                    <div>
-                                        <strong>정미영 차장 / IT팀</strong>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                    </li>
-                    <li class="app_file">
-                        <h3><a href="#">첨부파일 <em>(3)</em></a></h3>
-                        <div>
-                            <ul>
-                                <li>
-                                    <a href="#">첨부파일.xls(55.12kb)</a>
-                                    <div class="file_btn">
-                                        <span class="open_btn">열기</span>
-                                        <span class="save_btn">저장</span>
-                                    </div>
-                                </li>
-                                <li>
-                                    <a href="#">첨부파일.xls(55.12kb)</a>
-                                    <div class="file_btn">
-                                        <span class="open_btn">열기</span>
-                                        <span class="save_btn">저장</span>
-                                    </div>
-                                </li>
-                                <li>
-                                    <a href="#">첨부파일.xls(55.12kb)</a>
-                                    <div class="file_btn">
-                                        <span class="open_btn">열기</span>
-                                        <span class="save_btn">저장</span>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                    </li>
-                </ul>
-                <div class="line03"><a href="#">2021.04.16(금) 개인사유로 연차신청합니다.<br>재가 바랍니다.</a></div>
-                <div class="line04 clfix">
-                    <form>
-                        <strong>결재의견</strong>
-                        <div>
-                            <input type="text">
-                        </div>
-                    </form>
-                </div>
-            </div>
-            <div class="ac_btns">
-                <span class="more_plus"></span>
-                <ul>
-                    <li><a href="#">승인</a></li>
-                    <li><a href="#">반려</a></li>
-                </ul>
-            </div>
+      <div>
+        <div class="line01">
+          <em>{{ this.detail.category }}</em>
+          <strong>{{ this.detail.subject }}</strong>
+          <div class="clfix">
+            <span>{{ this.detail.approvalInfo.approval }}</span>
+            <dl>
+              <dt>
+                {{ this.detail.authorName }} {{ this.detail.authorGradeName }} /
+                {{ this.detail.authorOrgName }}
+              </dt>
+              <dd>{{ transTime(this.detail.created) }}</dd>
+            </dl>
+          </div>
         </div>
+        <ul class="line02">
+          <li>
+            <h3 :class="{active:appActive}">
+              <a @click="isOpenApp">결재정보 <em>({{this.detail.approvalInfo.length}})</em></a>
+            </h3>
+            <div :class="{active:appActive}">
+              <ul>
+                <li v-for="(value,index) in this.detail.approvalInfo" :key="index">
+                  <span>{{value.approvalKind}}</span>
+                  <div>
+                    <strong>{{value.author}} {{value.authorposition}} / {{value.authordept}}</strong>
+                    <em v-if="value.created.length>0">{{ transTime(value.created) }}</em>
+                    <P v-if="value.body" v-html="value.body"
+                      ></P
+                    >
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </li>
+          <li class="app_file" v-if="this.detail.attachInfo.length>0">>
+            <h3 :class="{active:attActive}">
+              <a @click="isOpenAtt">첨부파일 <em>({{this.detail.attachInfo.length}})</em></a>
+            </h3>
+            <div :class="{active:attActive}">
+              <ul>
+                <li v-for="(value,index) in this.detail.attachInfo" :key="index">
+                  <a>{{value.name}}</a>
+                  <div class="file_btn">
+                    <span class="open_btn" @click="attOpen(value.path)">열기</span>
+                    <span class="save_btn">저장</span>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </li>
+        </ul>
+        <div class="line03">
+          <a v-html="detail.body"></a>
+        </div>
+        <div class="line04 clfix">
+          <form>
+            <strong>결재의견</strong>
+            <div>
+              <input type="text" />
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="ac_btns">
+        <span class="more_plus"></span>
+        <ul>
+          <li><a>승인</a></li>
+          <li><a>반려</a></li>
+        </ul>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -97,22 +81,48 @@
 import BackHeader from "./backheader.vue";
 import SubMenu from "./menu.vue";
 import BtnPlus from "./btnPlus.vue";
+import { mapState, mapGetters } from "vuex";
 export default {
-components: {
+  created() {
+    console.log(this.detail);
+  },
+  computed: {
+    // ...mapGetters("approjs", ["GetApproval"]),
+    ...mapState("approjs", ["detail"]),
+  },
+  components: {
     BackHeader,
     SubMenu,
     BtnPlus,
   },
-  data(){
-      return {
-          
-          morePlus:[{allow:"승인"},{reject:"반려"}],
-          title:"결재할 문서",
-      }
+  data() {
+    return {
+      morePlus: [{ allow: "승인" }, { reject: "반려" }],
+      title: "결재할 문서",
+      appActive:false,
+      attActive:false,
+    };
   },
-}
+  methods: {
+    // utc 시간 to local 시간
+    transTime(time) {
+      var moment = require("moment");
+      var localTime = moment.utc(time).toDate();
+      localTime = moment(localTime).format("YY.MM.DD HH:mm");
+      return localTime;
+    },
+    isOpenApp(){
+      this.appActive = !this.appActive;
+    },
+    isOpenAtt(){
+      this.attActive = !this.attActive;
+    },
+    attOpen(url) {
+      window.open(url);
+    },
+  },
+};
 </script>
 
 <style>
-
 </style>

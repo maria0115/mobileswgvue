@@ -50,18 +50,18 @@
                           'sendtosearch',
                           $event.target.value
                         ),
-                        
                       ]
                     "
                     id="toinput"
                     v-model="sendtosearchkeyword"
-                    @keyup="[
-                      SendToSearch(
-                        'SendTo',
-                        'sendtosearch',
-                        $event.target.value
-                      ),
-                      showAddSearch('sendtosearch'),
+                    @keyup="
+                      [
+                        SendToSearch(
+                          'SendTo',
+                          'sendtosearch',
+                          $event.target.value
+                        ),
+                        showAddSearch('sendtosearch'),
                       ]
                     "
                   ></textarea>
@@ -125,17 +125,19 @@
                             'copytosearch',
                             $event.target.value
                           ),
-                          
                         ]
                       "
                       id="referinput"
                       v-model="copytosearchkeyword"
                       @keyup="
-                        [SendToSearch(
-                          'CopyTo',
-                          'copytosearch',
-                          $event.target.value
-                        ),showAddSearch('copytosearch'),]
+                        [
+                          SendToSearch(
+                            'CopyTo',
+                            'copytosearch',
+                            $event.target.value
+                          ),
+                          showAddSearch('copytosearch'),
+                        ]
                       "
                     ></textarea>
                   </li>
@@ -194,17 +196,19 @@
                             'blindcopytosearch',
                             $event.target.value
                           ),
-                          
                         ]
                       "
                       id="cryinput"
                       v-model="blindcopytosearchkeyword"
                       @keyup="
-                       [ SendToSearch(
-                          'BlindCopyTo',
-                          'blindcopytosearch',
-                          $event.target.value
-                        ),showAddSearch('blindcopytosearch'),]
+                        [
+                          SendToSearch(
+                            'BlindCopyTo',
+                            'blindcopytosearch',
+                            $event.target.value
+                          ),
+                          showAddSearch('blindcopytosearch'),
+                        ]
                       "
                     ></textarea>
                   </li>
@@ -694,7 +698,6 @@ export default {
       this.$router.go(-1);
     },
     SendToSearch(who, keyword, value) {
-      console.log(value)
       if (value.length >= 2) {
         var data = {};
         data.menu = "mail";
@@ -702,9 +705,9 @@ export default {
         data.keyword = value;
 
         this.$store.dispatch("OrgAutoSearch", data);
-        console.log(who)
+
         this.showAddSearch(who);
-      }else{
+      } else {
         this.removeAddSearch(who);
       }
     },
@@ -748,7 +751,7 @@ export default {
     },
     OpenFolder() {},
     isShortName(value) {
-      if(value.shortname){
+      if (value.shortname) {
         return value.shortname;
       }
       return value.name;

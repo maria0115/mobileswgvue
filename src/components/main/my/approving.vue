@@ -14,6 +14,7 @@
         <div
           v-for="(value, name) in main.data.approvaltype.approving.my.data"
           :key="name"
+          @click="Read(value,'ingview')"
         >
             <div class="icons">
               <span class="opin"></span>
@@ -150,6 +151,12 @@ export default {
     randomColor() {
       const color = ["#bcbbdd", "#bbcbdd", "#bbddd7", "#d0d0d0"];
       return `background: ${color[Math.floor(Math.random() * 4)]}`;
+    },
+    Read(value,where) {
+      value.where = where;
+      this.$store.commit("approjs/AppSaveUnid",{unid:value.unid});
+      this.$router.push("/approval_more/ingview");
+
     },
   },
 };

@@ -28,7 +28,7 @@
                       ><b>{{ item.author.split("")[0] }}</b></em
                     >
                   </span>
-                  <div class="s_text">
+                  <div class="s_text" @click="Read(item)">
                     <em>{{ item.category }}</em>
                     <strong>{{ item.subject }}</strong>
                     <p class="pd_0">
@@ -131,6 +131,12 @@ export default {
     };
   },
   methods: {
+    Read(value) {
+      value.where = "todoview";
+      this.$store.commit("approjs/AppSaveUnid",{unid:value.unid});
+      this.$router.push("/approval_more/todoview");
+
+    },
     // 스크롤 페이징
     infiniteHandler($state) {
       this.GetApproval[this.path].page = String(

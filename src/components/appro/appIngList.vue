@@ -14,7 +14,7 @@
             v-for="(value, index) in GetApproval.approving.data.data"
             :key="index"
           >
-            <router-link to="ingview">
+            <a>
               <span class="ing_sta">
                 <em
                   class="active"
@@ -25,7 +25,7 @@
                   value.approvalinfo[value.approved - 1].approvalKind
                 }}</em>
               </span>
-              <div class="s_text">
+              <div class="s_text" @click="Read(value)">
                 <em>{{ value.category }}</em>
                 <strong>{{ value.subject }}</strong>
                 <p>
@@ -39,7 +39,7 @@
                 <span class="opin" v-if="value.coment"></span>
                 <span class="clip" v-if="value.attachinfo.attach"></span>
               </div>
-            </router-link>
+            </a>
             <div class="app_status">
               <div class="status">
                 <div class="status_slide">
@@ -233,6 +233,12 @@ export default {
       var localTime = moment.utc(created).toDate();
       localTime = moment(localTime).format("HH:mm:ss");
       return localTime;
+    },
+    Read(value) {
+      value.where = "ingview";
+      this.$store.commit("approjs/AppSaveUnid",{unid:value.unid});
+      this.$router.push("/approval_more/ingview");
+
     },
   },
 };

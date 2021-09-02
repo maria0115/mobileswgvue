@@ -16,6 +16,7 @@ import boardjs from './modules/board';
 import createPersistedState from 'vuex-persistedstate';
 const dataState = createPersistedState({
     paths: [
+        'approjs.store.app',
         'boardjs.store.board',
         'calendarjs.store.schedulelist',
         'calendarjs.store.schedule',

@@ -21,7 +21,7 @@
           <em>{{ value.category }}</em>
           <strong>{{ value.subject }}</strong>
           <p>{{ transTime(value.created) }}</p>
-          <div class="per_info clfix">
+          <div class="per_info clfix" @click="Read(value,'todoview')">
             <span class="basic_img on">
               <em class="no_img" :style="randomColor()"
                 ><b>{{ value.author.split("")[0] }}</b></em
@@ -71,7 +71,7 @@
           </div>
           <em>{{ value.category }}</em>
           <strong>{{ value.subject }}</strong>
-          <div class="per_info clfix">
+          <div @click="Read(value,'ingview')" class="per_info clfix">
             <span class="basic_img on">
               <em class="no_img" :style="randomColor()"><b>{{ value.approvalinfo[0].author.split("")[0] }}</b></em>
             </span>
@@ -133,6 +133,12 @@ export default {
     };
   },
   methods: {
+    Read(value,where) {
+      value.where = where;
+      this.$store.commit("approjs/AppSaveUnid",{unid:value.unid});
+      this.$router.push("/approval_more/ingview");
+
+    },
     // 툴팁 활성화 될 list 확인
     tooltipActive(index) {
       if (this.tooltipActiveIndex === index) {

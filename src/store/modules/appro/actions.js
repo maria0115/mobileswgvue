@@ -1,8 +1,30 @@
 import {
-    DocApproval, Approval
+    DocApproval, Approval,AppDetail
 } from '../../../api/index';
+import router from '../../../router/index';
 export default {
-   
+    AppDetail({state,commit}){
+        var data = {};
+        data.unid = state.store.app.unid;
+        data.type = state.store.app.from;
+        return AppDetail(data)
+        .then((res) => {
+
+            if (res.status !== 200) {
+                return false;
+            } else {
+                console.log(res.data);
+                
+                commit("SetDetail",res.data);
+                // router.push(`/approval_more/${data.where}`);
+
+                return true;
+
+            }
+
+        })
+
+    },
     DocApproval({state,commit},{type}){
 
         DocApproval(type)

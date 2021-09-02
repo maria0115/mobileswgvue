@@ -702,7 +702,9 @@ export default new Router({
           path: 'draft',
           component: appTodoList,
           beforeEnter: (to, from, next) => {
-            store.dispatch("approjs/GetApprovalList", { type: "draft" })
+            store.dispatch("approjs/GetApprovalList", { type: "draft" });
+            store.commit("approjs/AppSaveFrom","")
+
             // .then(() => {
             next();
             // })
@@ -713,7 +715,9 @@ export default new Router({
           path: 'approve',
           component: appTodoList,
           beforeEnter: (to, from, next) => {
-            store.dispatch("approjs/GetApprovalList", { type: "approve" })
+            store.dispatch("approjs/GetApprovalList", { type: "approve" });
+            store.commit("approjs/AppSaveFrom","");
+
             // .then(() => {
             next();
             // })
@@ -723,7 +727,9 @@ export default new Router({
           path: 'reject',
           component: appTodoList,
           beforeEnter: (to, from, next) => {
-            store.dispatch("approjs/GetApprovalList", { type: "reject" })
+            store.dispatch("approjs/GetApprovalList", { type: "reject" });
+            store.commit("approjs/AppSaveFrom","");
+
             // .then(() => {
             next();
             // })
@@ -735,6 +741,7 @@ export default new Router({
           beforeEnter: (to, from, next) => {
             store.dispatch("approjs/GetApprovalList", { type: "success_date" })
             // .then(() => {
+              store.commit("approjs/AppSaveFrom","complete");
             next();
             // })
           },
@@ -743,7 +750,9 @@ export default new Router({
           path: 'success_my',
           component: appTodoList,
           beforeEnter: (to, from, next) => {
-            store.dispatch("approjs/GetApprovalList", { type: "success_my" })
+            store.dispatch("approjs/GetApprovalList", { type: "success_my" });
+            store.commit("approjs/AppSaveFrom","complete");
+
             // .then(() => {
             next();
             // })
@@ -753,7 +762,9 @@ export default new Router({
           path: 'success_dept',
           component: appTodoList,
           beforeEnter: (to, from, next) => {
-            store.dispatch("approjs/GetApprovalList", { type: "success_dept" })
+            store.dispatch("approjs/GetApprovalList", { type: "success_dept" });
+            store.commit("approjs/AppSaveFrom","complete");
+
             // .then(() => {
             next();
             // })
@@ -761,19 +772,35 @@ export default new Router({
         },
         {
           path: 'todoview',
-          component: appTodoView
+          component: appTodoView,
+          beforeEnter: (to, from, next) => {
+            store.dispatch("approjs/AppDetail")
+            .then(res=>{
+              next();
+
+            })
+          }
         }, {
           path: 'ing',
           component: appIngList,
           beforeEnter: (to, from, next) => {
-            store.dispatch("approjs/GetApprovalList", { type: "approving" })
+            store.dispatch("approjs/GetApprovalList", { type: "approving" });
+            store.commit("approjs/AppSaveFrom","");
+
             // .then(() => {
             next();
             // })
           },
         }, {
           path: 'ingview',
-          component: appIngView
+          component: appIngView,
+          beforeEnter: (to, from, next) => {
+            store.dispatch("approjs/AppDetail")
+            .then(res=>{
+              next();
+
+            })
+          }
         }, {
           path: 'docform',
           component: appDocForm,
