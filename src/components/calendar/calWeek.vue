@@ -26,14 +26,14 @@
         </div>
       </div>
       <div class="week_cal_con">
-        <ul>
-          <li>
+        <div>
+          <div class="week_cal_top">
             <div>
               <span>종일</span>
             </div>
-            <div class="week_caltit">
-              <div
-                v-for="(value, index) in this.thisWeek"
+            <ul class="week_caltit">
+              <li
+                v-for="(value, index) in daysSort"
                 :key="index"
                 class="sun"
                 :class="{
@@ -41,11 +41,70 @@
                 }"
               >
                 <!--해당날짜일떄 active 생기게 해주세요-->
-                <em></em>
+                <p
+                  v-if="
+                    GetSchedule.calList.week[value] &&
+                    GetSchedule.calList.week[value].allday
+                  "
+                >
+                  <em
+                    v-for="(v, i) in GetSchedule.calList.week[value].allday"
+                    :key="i"
+                  >
+                    {{ v.subject }}
+                  </em>
+                </p>
+              </li>
+            </ul>
+          </div>
+          <div class="time_area">
+            <div class="scrl clfix">
+              <div class="timeline">
+                <ul>
+                  <li v-for="(value, index) in timeSort" :key="index">
+                    {{ value }}
+                  </li>
+                </ul>
+              </div>
+              <div class="row_wrap">
+                <div class="row">
+                  <div
+                    class="col1"
+                    v-for="(value, index) in daysSort"
+                    :key="index"
+                  >
+                    <div class="col_wrap">
+                      <div
+                        class="schedule_wrap"
+                        day-index="0"
+                        v-if="
+                          GetSchedule.calList.week[value] &&
+                          GetSchedule.calList.week[value].timeday
+                        "
+                      >
+                        <div
+                          v-for="(v, i) in GetSchedule.calList.week[value]
+                            .timeday"
+                          :key="i"
+                          class="schedule time_schedule"
+                          :style="timeStyle(v)"
+                          @click="Detail(v)"
+                        >
+                          <div class="schedule_box">
+                            <p>
+                              <span class="tit">{{ v.subject }}</span>
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
-          </li>
-          <li
+          </div>
+
+          <!-- <li
             class="w_timeline"
             v-for="(value, index) in timeSort"
             :key="index"
@@ -63,9 +122,6 @@
                       theDayOfWeek == i && hour == index && haveem(v, index,value,i),
                   }"
                 >
-                  <!-- :class="{ time_day: theDayOfWeek == i }" -->
-                  <!-- :class="{time_day:GetSchedule.calList.week[index][].length}" -->
-                  <!-- class="time_day" -->
                   <a v-if="GetSchedule.calList.week[v]">
                     <em
                       v-for="(va, idx) in GetSchedule.calList.week[v][index]"
@@ -77,8 +133,8 @@
                 </div>
               </div>
             </div>
-          </li>
-        </ul>
+          </li> -->
+        </div>
         <span class="now_line" :style="`top:${now}rem`"></span>
       </div>
       <span class="today_btn" @click="Today">Today</span>
@@ -152,6 +208,18 @@ export default {
     this.Init();
   },
   methods: {
+    timeStyle(value) {
+      if (!value.allDay) {
+        var start = new Date(`${value.startdate}T${value.starttime}`);
+        var end = new Date(`${value.enddate}T${value.endtime}`);
+        var elapsed = (end.getTime() - start.getTime()) / 1000 / 60;
+        return `top: ${
+          start.getMinutes() + start.getHours() * 60
+        }px;height: ${elapsed}px`;
+      }
+      return "";
+      // style="top: 60px; height: 70px"
+    },
     Start(e) {
       this.startX = e.touches[0].pageX - e.touches[0].target.offsetLeft;
       this.check = true;
@@ -160,13 +228,39 @@ export default {
     Move(e) {
       this.nowclientX = e.touches[0].pageX - e.touches[0].target.offsetLeft;
       if (this.nowclientX - this.startX > 100 && this.check) {
-        this.calendarData(-1);
+        this.MoveChange(-1);
         this.check = false;
       } else if (this.nowclientX - this.startX < -100 && this.check) {
-        this.calendarData(1);
+        this.MoveChange(1);
         this.check = false;
       }
       // this.nowclientY = e.touches[0].pageY - e.touches[0].target.offsetTop;
+    },
+    MoveChange(arg) {
+      var moment = require("moment");
+      var redate = this.fulldate.replaceAll(".", "/");
+      if (arg > 0) {
+        this.fulldate = moment(redate).add("7", "d").format("YYYY.MM.DD");
+      } else {
+        // -1
+        this.fulldate = moment(redate).subtract("7", "d").format("YYYY.MM.DD");
+      }
+      this.year = parseInt(this.fulldate.split(".")[0]);
+      this.month = parseInt(this.fulldate.split(".")[1]);
+      this.today = parseInt(this.fulldate.split(".")[2]);
+
+      redate = this.fulldate.replaceAll(".", "/");
+      var currentDay = new Date(redate);
+      this.theDayOfWeek = currentDay.getDay();
+
+      this.SetthisWeek();
+      var send = {};
+      send.start = `${this.thisWeek[0].year}-${this.thisWeek[0].month}-${this.thisWeek[0].day}`;
+      send.end = `${this.thisWeek[this.thisWeek.length - 1].year}-${
+        this.thisWeek[this.thisWeek.length - 1].month
+      }-${this.thisWeek[this.thisWeek.length - 1].day}`;
+      send.today = this.fulldate;
+      this.$store.dispatch("calendarjs/CalList", { data: send, which: "week" });
     },
     Today() {
       this.Init();
@@ -189,28 +283,7 @@ export default {
         this.today
       )}`;
 
-      for (var i = 0; i < this.daysSort.length; i++) {
-        var resultDay = new Date(
-          this.currentYear,
-          this.currentMonth,
-          this.today + (i - this.theDayOfWeek)
-        );
-        var yyyy = resultDay.getFullYear();
-        var mm = Number(resultDay.getMonth());
-        var dd = resultDay.getDate();
-
-        mm = String(mm).length === 1 ? "0" + mm : mm;
-        dd = String(dd).length === 1 ? "0" + dd : dd;
-
-        var data = {};
-        data.sort = this.daysSort[i];
-        data.day = dd;
-        data.month = mm;
-        data.year = yyyy;
-
-        // thisWeek[i] = yyyy + "-" + mm + "-" + dd;
-        this.thisWeek[i] = data;
-      }
+      this.SetthisWeek();
       var send = {};
       send.start = `${this.thisWeek[0].year}-${this.thisWeek[0].month}-${this.thisWeek[0].day}`;
       send.end = `${this.thisWeek[this.thisWeek.length - 1].year}-${
@@ -244,7 +317,17 @@ export default {
       var redate = this.fulldate.replaceAll(".", "/");
       var currentDay = new Date(redate);
       this.theDayOfWeek = currentDay.getDay();
+      this.SetthisWeek();
 
+      var send = {};
+      send.start = `${this.thisWeek[0].year}-${this.thisWeek[0].month}-${this.thisWeek[0].day}`;
+      send.end = `${this.thisWeek[this.thisWeek.length - 1].year}-${
+        this.thisWeek[this.thisWeek.length - 1].month
+      }-${this.thisWeek[this.thisWeek.length - 1].day}`;
+      send.today = this.fulldate;
+      this.$store.dispatch("calendarjs/CalList", { data: send, which: "week" });
+    },
+    SetthisWeek() {
       for (var i = 0; i < this.daysSort.length; i++) {
         var resultDay = new Date(
           this.year,
@@ -268,13 +351,6 @@ export default {
         // thisWeek[i] = yyyy + "-" + mm + "-" + dd;
         this.thisWeek[i] = data;
       }
-      var send = {};
-      send.start = `${this.thisWeek[0].year}-${this.thisWeek[0].month}-${this.thisWeek[0].day}`;
-      send.end = `${this.thisWeek[this.thisWeek.length - 1].year}-${
-        this.thisWeek[this.thisWeek.length - 1].month
-      }-${this.thisWeek[this.thisWeek.length - 1].day}`;
-      send.today = this.fulldate;
-      this.$store.dispatch("calendarjs/CalList", { data: send, which: "week" });
     },
     fill(width, number) {
       number = number + ""; //number를 문자열로 변환하는 작업
@@ -313,13 +389,12 @@ export default {
       // await this.$store.dispatch("CalDetail",{data:value,path:this.$route.path,which:"week"});
       this.$router.push("/schedule_more/read");
     },
-    haveem(v, index,value,i) {
-      if(this.GetSchedule.calList.week[v]){
+    haveem(v, index, value, i) {
+      if (this.GetSchedule.calList.week[v]) {
         var is = this.GetSchedule.calList.week[v][index];
-        if (is.length>0) {
+        if (is.length > 0) {
           return true;
         }
-
       }
       return false;
     },

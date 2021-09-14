@@ -28,7 +28,7 @@
                   <span>{{value.approvalKind}}</span>
                   <div>
                     <strong>{{value.author}} {{value.authorposition}} / {{value.authordept}}</strong>
-                    <em>{{ transTime(value.created) }}</em>
+                    <em  v-if="value.created.length>0">{{ transTime(value.created) }}</em>
                     <P v-html="value.body"
                       ></P
                     >

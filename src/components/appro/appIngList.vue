@@ -32,12 +32,12 @@
                   {{ value.approvalinfo[0].author }}
                   {{ value.approvalinfo[0].position }}/{{
                     value.approvalinfo[0].authordept
-                  }}<span>{{ transTime(value.created) }}</span>
+                  }}<span>{{ transDate(value.created) }}</span>
                 </p>
               </div>
               <div class="icons">
                 <span class="opin" v-if="value.coment"></span>
-                <span class="clip" v-if="value.attachinfo.attach"></span>
+                <span class="clip" v-if="value.attach"></span>
               </div>
             </a>
             <div class="app_status">
@@ -66,13 +66,13 @@
                     </dl>
                     <div>
                       <p v-if="v.approval">
-                        {{ v.approvalKind }}<i>(결재중)</i>
+                        <i>(결재중)</i>
                       </p>
-                      <em v-else-if="v.created.length>0">
+                      <em v-else-if="v.created&&v.created.length>0">
                         <p>{{transDate(v.created)}}</p>
                         <p>{{transTime(v.created)}}</p></em
                       >
-                      <p v-else>{{ v.approvalKind }}<i>(대기중)</i></p>
+                      <p v-else><i>(대기중)</i></p>
                     </div>
                   </div>
                 </div>
@@ -231,12 +231,13 @@ export default {
     transTime(created){
       var moment = require("moment");
       var localTime = moment.utc(created).toDate();
-      localTime = moment(localTime).format("HH:mm:ss");
+      localTime = moment(localTime).format("HH:mm");
       return localTime;
     },
     Read(value) {
       value.where = "ingview";
-      this.$store.commit("approjs/AppSaveUnid",{unid:value.unid});
+      console.log(value)
+      this.$store.commit("approjs/AppSaveUnid",{unid:value.unid,openurl:value.openurl});
       this.$router.push("/approval_more/ingview");
 
     },

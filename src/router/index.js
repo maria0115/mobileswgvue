@@ -4,6 +4,7 @@ import Vue from 'vue';
 import Preferences from '../View/Preferences.vue';
 import Search from '../View/Search.vue';
 import Main from '../View/Main.vue';
+import Login from '../View/Login.vue';
 import MailList from '../View/MailList.vue';
 import MailConfig from '../View/MailConfig.vue';
 import addgreet from '../components/mailconfig/addgreet.vue';
@@ -73,6 +74,14 @@ export default new Router({
   mode: 'history',
   base: process.env.BASE_URL,
   routes: [
+    {
+      path: '/login',
+      name:'login',
+      component: Login,
+      beforeEnter: (to, from, next) => {
+        next();
+      },
+    },
     {
       path: '/',
       component: Main,
@@ -671,18 +680,18 @@ export default new Router({
             data.menu = "mail";
             store.dispatch("mailjs/InitOrg", data);
 
-            if(store.state.calendarjs.store.edit){
+            if (store.state.calendarjs.store.edit) {
               var which = store.state.calendarjs.store.schedule.detail.where;
               // console.log(which,"여기드루왔다")
               var unid = {};
               unid.unid = store.state.calendarjs.store.schedule.detail.unid;
 
 
-            store.dispatch("calendarjs/CalDetail", { data:unid, path: "", which })
-              .then(() => {
-                next();
-              })
-            }else{
+              store.dispatch("calendarjs/CalDetail", { data: unid, path: "", which })
+                .then(() => {
+                  next();
+                })
+            } else {
               next();
             }
           },
@@ -703,7 +712,7 @@ export default new Router({
           component: appTodoList,
           beforeEnter: (to, from, next) => {
             store.dispatch("approjs/GetApprovalList", { type: "draft" });
-            store.commit("approjs/AppSaveFrom","")
+            store.commit("approjs/AppSaveFrom", "")
 
             // .then(() => {
             next();
@@ -716,7 +725,7 @@ export default new Router({
           component: appTodoList,
           beforeEnter: (to, from, next) => {
             store.dispatch("approjs/GetApprovalList", { type: "approve" });
-            store.commit("approjs/AppSaveFrom","");
+            store.commit("approjs/AppSaveFrom", "");
 
             // .then(() => {
             next();
@@ -728,7 +737,7 @@ export default new Router({
           component: appTodoList,
           beforeEnter: (to, from, next) => {
             store.dispatch("approjs/GetApprovalList", { type: "reject" });
-            store.commit("approjs/AppSaveFrom","");
+            store.commit("approjs/AppSaveFrom", "");
 
             // .then(() => {
             next();
@@ -741,7 +750,7 @@ export default new Router({
           beforeEnter: (to, from, next) => {
             store.dispatch("approjs/GetApprovalList", { type: "success_date" })
             // .then(() => {
-              store.commit("approjs/AppSaveFrom","complete");
+            store.commit("approjs/AppSaveFrom", "complete");
             next();
             // })
           },
@@ -751,7 +760,7 @@ export default new Router({
           component: appTodoList,
           beforeEnter: (to, from, next) => {
             store.dispatch("approjs/GetApprovalList", { type: "success_my" });
-            store.commit("approjs/AppSaveFrom","complete");
+            store.commit("approjs/AppSaveFrom", "complete");
 
             // .then(() => {
             next();
@@ -763,7 +772,7 @@ export default new Router({
           component: appTodoList,
           beforeEnter: (to, from, next) => {
             store.dispatch("approjs/GetApprovalList", { type: "success_dept" });
-            store.commit("approjs/AppSaveFrom","complete");
+            store.commit("approjs/AppSaveFrom", "complete");
 
             // .then(() => {
             next();
@@ -775,17 +784,17 @@ export default new Router({
           component: appTodoView,
           beforeEnter: (to, from, next) => {
             store.dispatch("approjs/AppDetail")
-            .then(res=>{
-              next();
+              .then(res => {
+                next();
 
-            })
+              })
           }
         }, {
           path: 'ing',
           component: appIngList,
           beforeEnter: (to, from, next) => {
             store.dispatch("approjs/GetApprovalList", { type: "approving" });
-            store.commit("approjs/AppSaveFrom","");
+            store.commit("approjs/AppSaveFrom", "");
 
             // .then(() => {
             next();
@@ -796,10 +805,10 @@ export default new Router({
           component: appIngView,
           beforeEnter: (to, from, next) => {
             store.dispatch("approjs/AppDetail")
-            .then(res=>{
-              next();
+              .then(res => {
+                next();
 
-            })
+              })
           }
         }, {
           path: 'docform',

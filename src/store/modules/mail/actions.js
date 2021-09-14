@@ -1,12 +1,12 @@
 import {
     MailDetail, FollowupSet, MailAutoSave, MailDelay, MailWrite,
     MailRealDelete,
-    
+
     FollowUpInfo,
     MailSearch,
     MailSave,
     writeForm,
-    
+
     OrgAutoSearch,
     ToMe,
     SpamSet,
@@ -21,7 +21,7 @@ import {
     GreetList,
     GreetSet,
     GreetAdd,
-    GreetDetail, SignAdd, SignSet, SignList, ReadFlag, MailMove, MailDelete,Mail
+    GreetDetail, SignAdd, SignSet, SignList, ReadFlag, MailMove, MailDelete, Mail
 } from '../../../api/index';
 import router from '../../../router/index';
 export default {
@@ -36,16 +36,13 @@ export default {
             }
         }
         var data = {};
-        data.unid = datastr;
-
-        console.log(data)
-        MailRealDelete(data)
+        data.unid = datastr; MailRealDelete(data)
             .then((res) => {
 
                 if (res.status !== 200) {
                     return false;
                 } else {
-                    console.log("CalDelete", res.data)
+
                     return true;
 
                 }
@@ -59,7 +56,7 @@ export default {
                 if (res.status !== 200) {
                     return false;
                 } else {
-                    console.log(res.data, "FollowUpInfo");
+
                     state.mail.data.followUpInfo = res.data;
                     return true;
 
@@ -79,11 +76,11 @@ export default {
 
         data.searchType = mailtype;
         data.searchfield = state.store.mailconfig.searchOption.searchfield;
-        
+
         data.searchword = state.store.mailconfig.searchOption.searchword;
         data.size = rootState.configjs.store.config.listcount;
 
-        // console.log(state.mail.searchOption,"action")
+        // 
 
         MailSearch(data)
             .then((res) => {
@@ -131,16 +128,11 @@ export default {
             .then(response => {
                 if (response.status !== 200) {
                     return false;
-                } else {
-
-
-                }
-
-
+                } else { }
             })
 
     },
-    
+
     ModalOrgAutoSearch({ state, commit }, data) {
 
         OrgAutoSearch(data)
@@ -148,10 +140,7 @@ export default {
 
                 if (res.status !== 200) {
                     return false;
-                } else {
-                    console.log(res.data, "ModalOrgAutoSearch");
-
-                }
+                } else { }
 
             })
     },
@@ -235,12 +224,10 @@ export default {
 
     },
     InitOrg({ state, commit, dispatch }, data) {
-        console.log(data)
+
         // 
         InitOrg(data)
             .then((res) => {
-                console.log(res.data)
-
                 commit("MailOrgTransData", res.data);
             })
     },
@@ -266,10 +253,7 @@ export default {
             where = "greet";
         } else {
             where = "sign";
-        }
-
-
-        SignGreetDelete(state.store.mailconfig.view[`${where}DetailUnid`])
+        } SignGreetDelete(state.store.mailconfig.view[`${where}DetailUnid`])
             .then((response) => {
 
                 if (response.status !== 200) {
@@ -278,8 +262,6 @@ export default {
                     router.push(`/mailconfig/${where}`);
 
                 }
-
-
             })
     },
     SignEdit({ state, commit }, data) {
@@ -309,17 +291,13 @@ export default {
 
     },
     async MailDetail({ state, commit }, data) {
-        console.log(state,data,"detail")
-
         return await MailDetail(data)
             .then(response => {
 
                 if (response.status !== 200) {
 
                 } else {
-
-
-
+                    console.log(response.data)
                     commit("MailDetailData", response.data);
                     return true;
 
@@ -329,14 +307,14 @@ export default {
 
     },
     FollowupSet({ state, commit }, data) {
-        console.log(data,"왜 여기 안오냐")
+
         return FollowupSet(data)
             .then(response => {
                 if (response.status !== 200) {
                     return false;
 
                 } else {
-                    console.log(response)
+
                     return true
 
                     // commit("GreetViewData", data);
@@ -413,10 +391,7 @@ export default {
 
                 } else {
                     commit("GreetViewData", data);
-                    commit("BeforeSave");
-
-
-                    router.push({ name: 'SeeGreet', params: { before: "add" } });
+                    commit("BeforeSave"); router.push({ name: 'SeeGreet', params: { before: "add" } });
                 }
             });
 
@@ -478,10 +453,7 @@ export default {
 
                 } else {
                     commit("SignViewData", data);
-                    commit("BeforeSave");
-
-
-                    router.push({ name: 'SeeSign', params: { before: "add" } });
+                    commit("BeforeSave"); router.push({ name: 'SeeSign', params: { before: "add" } });
                 }
             });
 
@@ -540,9 +512,6 @@ export default {
             data.ids = folderstr;
             data.viewname = viewname;
             data.folderId = folderId;
-
-
-
             return await MailMove(data)
                 .then(response => {
 
@@ -554,13 +523,8 @@ export default {
                     }
                     return false;
                 });
-
-
         }
-    },
-
-
-    // 메일 삭제
+    },    // 메일 삭제
     async MailDelete({ state, dispatch }, { datas, type }) {
         // data는 //unid,unid string
         var datastr = "";
@@ -577,7 +541,7 @@ export default {
                 return false;
             });
     },
-    
+
     // maildetail data
     GetMailDetail({ commit, state, rootState }, { mailtype, folderId }) {
         state.mail.data[mailtype].page = 0;
@@ -586,11 +550,11 @@ export default {
         data.mailtype = mailtype;
         data.page = 0;
         data.size = rootState.configjs.store.config.listcount;
-        
+
         if (mailtype == 'custom') {
             data.FolderId = folderId;
         }
-        console.log(data,"GetMailDetail")
+
         Mail(data)
             .then(response => {
                 // 

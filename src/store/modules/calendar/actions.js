@@ -8,17 +8,17 @@ import {
 } from '../../../api/index';
 import router from '../../../router/index';
 export default {
-    CalWrite({ state, commit }, {data,type}){
-        CalWrite(data,type)
-        .then(response => {
-            if (response.status !== 200) {
-                return false;
-            } else {
-                console.log(response.data,"CalWrite")
-                router.push(`/schedule_more/month`);
-                return true;
-            }
-        })
+    CalWrite({ state, commit }, { data, type }) {
+        CalWrite(data, type)
+            .then(response => {
+                if (response.status !== 200) {
+                    return false;
+                } else {
+
+                    router.push(`/schedule_more/${state.store.schedule.detail.where}`);
+                    return true;
+                }
+            })
     },
     async Holiday({ state, commit }, data) {
         state.schedule.data.holiday = {};
@@ -48,7 +48,7 @@ export default {
                 if (res.status !== 200) {
                     return false;
                 } else {
-                    console.log("CalDelete", res.data);
+
                     return true;
 
                 }
@@ -56,17 +56,17 @@ export default {
             })
     },
     CalDetail({ state, commit }, { data, path, which }) {
-        // console.log(data)
+        // 
         return CalDetail(data)
             .then((res) => {
 
                 if (res.status !== 200) {
                     return false;
                 } else {
-                    console.log(res.data,"hihi")
+
                     commit("CalDetail", { data: res.data, which })
                     // .then((r) => {
-                        return true;
+                    return true;
 
                     // })
 
@@ -75,6 +75,7 @@ export default {
             })
     },
     CalList({ state, commit }, { data, which }) {
+
         CalList(data)
             .then((res) => {
 
@@ -89,7 +90,7 @@ export default {
             })
     },
     OrgAutoSearch({ state, commit }, data) {
-        console.log(data)
+
 
         OrgAutoSearch(data)
             .then((res) => {
@@ -97,13 +98,13 @@ export default {
                 if (res.status !== 200) {
                     return false;
                 } else {
-                    console.log(res.data)
+
                     commit("AutoSearchOrg", { data: res.data, menu: data })
 
                 }
 
             })
     },
-    
+
 
 }

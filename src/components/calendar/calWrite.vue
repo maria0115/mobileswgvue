@@ -731,9 +731,34 @@ export default {
       console.log("Send")
       let formData = new FormData();
       formData.append("subject", this.Subject);
-      formData.append("sendTo", this.scheduleorg.SendTo);
-      formData.append("copyTo", this.scheduleorg.CopyTo);
-      formData.append("blindCopyTo", this.scheduleorg.BlindCopyTo);
+      console.log(this.scheduleorg.SendTo)
+      var SendTo = "";
+      for (var i = 0; i < this.scheduleorg.SendTo.length; i++) {
+        if (i == this.scheduleorg.SendTo.length - 1) {
+          SendTo += this.scheduleorg.SendTo[i].id;
+        } else {
+          SendTo += this.scheduleorg.SendTo[i].id + ";";
+        }
+      }
+      var CopyTo = "";
+      for (var i = 0; i < this.scheduleorg.CopyTo.length; i++) {
+        if (i == this.scheduleorg.CopyTo.length - 1) {
+          CopyTo += this.scheduleorg.CopyTo[i].id;
+        } else {
+          CopyTo += this.scheduleorg.CopyTo[i].id + ";";
+        }
+      }
+      var BlindCopyTo = "";
+      for (var i = 0; i < this.scheduleorg.BlindCopyTo.length; i++) {
+        if (i == this.scheduleorg.BlindCopyTo.length - 1) {
+          BlindCopyTo += this.scheduleorg.BlindCopyTo[i].id;
+        } else {
+          BlindCopyTo += this.scheduleorg.BlindCopyTo[i].id + ";";
+        }
+      }
+      formData.append("sendTo", SendTo);
+      formData.append("copyTo", CopyTo);
+      formData.append("blindCopyTo", BlindCopyTo);
 
       console.log(this.date, "this.date");
 

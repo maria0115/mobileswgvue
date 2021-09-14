@@ -1,24 +1,70 @@
 <template>
   <div>
     <date-header
-    @ChangeDate="changeDate"
+      @ChangeDate="changeDate"
       @cNext="calendarData(1)"
       @cPrev="calendarData(-1)"
       :date="fulldate"
       @calMenu="CalMenu"
     ></date-header>
     <Header @calMenuOff="CalMenuOff" :calmenu="this.calmenu"></Header>
-    <div class="m_contents09" @touchstart="Start($event)"
-      @touchmove="Move($event)">
+    <div
+      class="m_contents09"
+      @touchstart="Start($event)"
+      @touchmove="Move($event)"
+    >
       <div class="day_cal_con">
-        <ul>
-          <li>
-            <div>
-              <span>{{this.daysSort[this.theDayOfWeek]}}</span>
-              <b>{{this.today}}</b>
+        <div class="day_top">
+          <div>
+            <span>{{ this.daysSort[this.theDayOfWeek] }}</span>
+            <b>{{ this.today }}</b>
+          </div>
+          <div v-for="(value, index) in GetSchedule.calList.day" :key="index">
+            <p v-if="value.allDay">{{value.subject}}</p>
+          </div>
+        </div>
+        <div class="time_area">
+          <div class="scrl clfix">
+            <div class="timeline">
+              <ul>
+                <li v-for="(value, index) in timeSort" :key="index">
+                  {{ value }}
+                </li>
+              </ul>
             </div>
-            <div><p>주간회의</p></div>
-          </li>
+            <div class="row_wrap">
+              <div class="row">
+                <div
+                  class="col1"
+                  v-for="(v, i) in isToday(GetSchedule.calList.day)"
+                  :key="i"
+                >
+                  <!-- :style="{ width: `calc(100% / ${isToday(GetSchedule.calList.day).length})` }" -->
+                  <div class="col_wrap" v-if="!v.allDay">
+                    <div class="schedule_wrap">
+                      <div class="schedule time_schedule" :style="SetStyle(v)">
+                        <div class="schedule_box" @click="Detail(v)">
+                          <p>
+                            <em class="time"
+                              >{{ v.starttime.split(":")[0] }}:{{
+                                v.starttime.split(":")[1]
+                              }}
+                              ~ {{ v.endtime.split(":")[0] }}:{{
+                                v.endtime.split(":")[1]
+                              }}</em
+                            >
+                            <span class="con">{{ v.subject }}</span>
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- <ul>
           <li class="timeline" v-for="(value, index) in timeSort"
             :key="index">
             <div><div>{{ value }}</div></div>
@@ -32,7 +78,7 @@
               </p>
             </div>
           </li>
-        </ul>
+        </ul> -->
         <span class="now_line" :style="`top:${now}rem`"></span>
       </div>
       <span class="today_btn" @click="Today">Today</span>
@@ -47,12 +93,11 @@ import DateHeader from "./datepicker.vue";
 import { mapState, mapGetters } from "vuex";
 import CalWrite from "./calWBtn.vue";
 export default {
-  created(){
+  created() {
     this.Init();
   },
   computed: {
-    ...mapGetters("calendarjs",["GetSchedule"]),
-    
+    ...mapGetters("calendarjs", ["GetSchedule"]),
   },
   components: {
     Header,
@@ -90,7 +135,7 @@ export default {
         "24:00",
       ],
       calmenu: false,
-      fulldate:"",
+      fulldate: "",
       currentYear: 0,
       currentMonth: 0,
       currentDay: 0,
@@ -103,12 +148,30 @@ export default {
     };
   },
   methods: {
-    isToday(value){
-      if(value&& value.length>0){
-        var str = this.fill(2,this.year)+"-"+this.fill(2,this.month)+"-"+this.fill(2,this.today);
-        return value.filter(x=>{
+    SetStyle(value) {
+      // style="top: 60px; height: 90px"
+      if (!value.allDay) {
+        var start = new Date(`${value.startdate}T${value.starttime}`);
+        var end = new Date(`${value.enddate}T${value.endtime}`);
+        var elapsed = (end.getTime() - start.getTime()) / 1000 / 60;
+        return `top: ${
+          start.getMinutes() + start.getHours() * 60
+        }px;height: ${elapsed}px`;
+      }
+      return "";
+      // style="top: 60px; height: 70px"
+    },
+    isToday(value) {
+      if (value && value.length > 0) {
+        var str =
+          this.fill(2, this.year) +
+          "-" +
+          this.fill(2, this.month) +
+          "-" +
+          this.fill(2, this.today);
+        return value.filter((x) => {
           return x.startdate === str;
-        })
+        });
       }
       return [];
     },
@@ -129,37 +192,30 @@ export default {
       // this.nowclientY = e.touches[0].pageY - e.touches[0].target.offsetTop;
     },
     DayChange(arg) {
-      // this.currentYear = currentDay.getFullYear();
-      // this.currentMonth = currentDay.getMonth() + 1;
-      // var hour = currentDay.getHours(); //시간
-      // var min = currentDay.getMinutes(); //분
-      // this.month = this.currentMonth;
-      // this.today = currentDay.getDate();
-      var rd = this.fulldate.replaceAll(".","/");
-
-
-      var dt = new Date(rd);
-      var diff = dt.getDate()+arg;
-      if(diff==0){
-        diff =-1;
+      var moment = require("moment");
+      var redate = this.fulldate.replaceAll(".", "/");
+      if (arg > 0) {
+        this.fulldate = moment(redate).add("1", "d").format("YYYY.MM.DD");
+      } else if (arg < 0) {
+        // -1
+        this.fulldate = moment(redate).subtract("1", "d").format("YYYY.MM.DD");
       }
-      dt.setDate(diff) ;
-      dt.setMonth(dt.getMonth()+1);
-      console.log(dt.getDate()+arg)
-      var y = dt.getFullYear();
-      var m = dt.getMonth();
-      var d = dt.getDate();
-      this.fulldate = `${y}.${this.fill(2,m)}.${this.fill(2,d)}`;
-      
+
+      this.year = parseInt(this.fulldate.split(".")[0]);
+      this.month = parseInt(this.fulldate.split(".")[1]);
+      this.today = parseInt(this.fulldate.split(".")[2]);
+
       var data = {};
-      data.start =`${y}-${this.fill(2,m)}-${this.fill(2,d)}`;
+      data.start = `${this.year}-${this.fill(2, this.month)}-${this.fill(
+        2,
+        this.today
+      )}`;
       data.end = data.start;
       data.today = data.start;
-      this.$store.dispatch("calendarjs/CalList", { data,which:"day"});
-      var redate = this.fulldate.replaceAll(".","/");
+      this.$store.dispatch("calendarjs/CalList", { data, which: "day" });
+      var redate = this.fulldate.replaceAll(".", "/");
       var currentDay = new Date(redate);
       this.theDayOfWeek = currentDay.getDay();
-      
     },
     Today() {
       this.Init();
@@ -177,7 +233,7 @@ export default {
       var hour = currentDay.getHours(); //시간
       var min = currentDay.getMinutes(); //분
       min += hour * 60;
-      this.now = min/16 + 4.68;
+      this.now = min / 16 + 4.68;
       this.year = this.currentYear;
       this.month = this.currentMonth;
       this.today = currentDay.getDate();
@@ -189,10 +245,9 @@ export default {
 
       var data = {};
       data.start = this.fulldate;
-      data.end = this.fulldate
+      data.end = this.fulldate;
       data.today = this.fulldate;
-      this.$store.dispatch("calendarjs/CalList", { data,which:"day"});
-
+      this.$store.dispatch("calendarjs/CalList", { data, which: "day" });
     },
     calendarData(arg) {
       if (arg < 0) {
@@ -218,18 +273,17 @@ export default {
       )}`;
       data.end = data.start;
       data.today = data.start;
-      this.$store.dispatch("calendarjs/CalList", { data,which:"day"});
-      var redate = this.fulldate.replaceAll(".","/");
+      this.$store.dispatch("calendarjs/CalList", { data, which: "day" });
+      var redate = this.fulldate.replaceAll(".", "/");
       var currentDay = new Date(redate);
       this.theDayOfWeek = currentDay.getDay();
-      
     },
     changeDate(date) {
       var currentDay = new Date();
       var hour = currentDay.getHours(); //시간
       var min = currentDay.getMinutes(); //분
       min += hour * 60;
-      this.now = min/16 + 4.68;
+      this.now = min / 16 + 4.68;
       this.year = parseInt(date.split(".")[0]);
       this.month = parseInt(date.split(".")[1]);
       this.today = parseInt(date.split(".")[2]);
@@ -244,11 +298,13 @@ export default {
       str = str + number;
       return str;
     },
-    async Detail(value){
-      this.$store.commit("calendarjs/SaveScheduleUnid",{unid:value.unid,where:"day"});
-      // await 
+    async Detail(value) {
+      this.$store.commit("calendarjs/SaveScheduleUnid", {
+        unid: value.unid,
+        where: "day",
+      });
+      // await
       this.$router.push("/schedule_more/read");
-
     },
   },
 };

@@ -21,7 +21,7 @@
           <em>{{ value.category }}</em>
           <strong>{{ value.subject }}</strong>
           <p>{{ transTime(value.created) }}</p>
-          <div class="per_info clfix" @click="Read(value,'todoview')">
+          <div class="per_info clfix" @click="Read(value, 'todoview')">
             <span class="basic_img on">
               <em class="no_img" :style="randomColor()"
                 ><b>{{ value.author.split("")[0] }}</b></em
@@ -56,24 +56,28 @@
         >{{ GetMainLanguage.portlet.approval.approving }}
         <em>{{ main.data.approvaltype.approving.more.cnt }}</em></strong
       >
-      <div class="app_list01" v-for="(value, name) in main.data.approvaltype.approving.more.data"
-          :key="name">
+      <div
+        class="app_list01"
+        v-for="(value, name) in main.data.approvaltype.approving.more.data"
+        :key="name"
+      >
         <div>
           <div class="icons">
             <span class="opin"></span>
             <span
               class="clip"
               v-if="
-                value.attachinfo.attachinfo.length > 0 &&
-                value.attachinfo.attachinfo[0] !== ''
+                value.attach
               "
             ></span>
           </div>
           <em>{{ value.category }}</em>
           <strong>{{ value.subject }}</strong>
-          <div @click="Read(value,'ingview')" class="per_info clfix">
+          <div @click="Read(value, 'ingview')" class="per_info clfix">
             <span class="basic_img on">
-              <em class="no_img" :style="randomColor()"><b>{{ value.approvalinfo[0].author.split("")[0] }}</b></em>
+              <em class="no_img" :style="randomColor()"
+                ><b>{{ value.approvalinfo[0].author.split("")[0] }}</b></em
+              >
             </span>
             <dl>
               <dt>
@@ -90,7 +94,8 @@
           </div>
         </div>
       </div>
-      <span class="app_more"><router-link to="/approval_more/ing"></router-link
+      <span class="app_more"
+        ><router-link to="/approval_more/ing"></router-link
       ></span>
     </div>
     <span
@@ -127,17 +132,17 @@ export default {
       checkEvent: "touch",
       tooltipActiveIndex: -1,
       data: {
-        approve:{},
-        approving:{}
+        approve: {},
+        approving: {},
       },
     };
   },
   methods: {
-    Read(value,where) {
+    Read(value, where) {
+      console.log(value, where);
       value.where = where;
-      this.$store.commit("approjs/AppSaveUnid",{unid:value.unid});
-      this.$router.push("/approval_more/ingview");
-
+      this.$store.commit("approjs/AppSaveUnid", { unid: value.unid });
+      this.$router.push(`/approval_more/${where}`);
     },
     // 툴팁 활성화 될 list 확인
     tooltipActive(index) {

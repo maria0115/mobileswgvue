@@ -14,48 +14,52 @@
         <div
           v-for="(value, name) in main.data.approvaltype.approving.my.data"
           :key="name"
-          @click="Read(value,'ingview')"
+          @click="Read(value, 'ingview')"
         >
-            <div class="icons">
-              <span class="opin"></span>
-              <span
-                class="clip"
-                v-if="
-                  checkEvent === 'mouse' &&
-                  value.attachinfo.attachinfo.length > 0 &&
-                  value.attachinfo.attachinfo[0] !== ''
-                "
-                @mousedown="onOpen($event, value)"
-                @mouseup="onClose($event, value)"
+          <div class="icons">
+            <span class="opin"></span>
+            <span
+              class="clip"
+              v-if="
+                checkEvent === 'mouse' &&
+                value.attach
+              "
+              @mousedown="onOpen($event, value)"
+              @mouseup="onClose($event, value)"
+            >
+            </span>
+            <span
+              class="clip"
+              v-else-if="
+                checkEvent === 'touch' &&
+                value.attach
+              "
+              @touchstart="onOpen($event, value)"
+              @touchend="onClose($event, value)"
+            >
+            </span>
+          </div>
+          <em>{{ value.category }}</em>
+          <strong>{{ value.subject }}</strong>
+          <div class="per_info clfix">
+            <span class="basic_img on">
+              <em class="no_img" :style="randomColor()"
+                ><b>{{ nowApprover(value).author.split("")[0] }}</b></em
               >
-              </span>
-              <span
-                class="clip"
-                v-else-if="
-                  checkEvent === 'touch' &&
-                  value.attachinfo.attachinfo.length > 0 &&
-                  value.attachinfo.attachinfo[0] !== ''
-                "
-                @touchstart="onOpen($event, value)"
-                @touchend="onClose($event, value)"
-              >
-              </span>
-            </div>
-            <em>{{ value.category }}</em>
-            <strong>{{ value.subject }}</strong>
-            <div class="per_info clfix">
-              <span class="basic_img on">
-                <em class="no_img" :style="randomColor()"><b>{{ nowApprover(value).author.split("")[0] }}</b></em>
-              </span>
-              <dl>
-                <dt>{{ nowApprover(value).authorposition }} {{ nowApprover(value).author }} {{nowApprover(value).authordept}}</dt>
-                <dd>{{
-                  transTime(value.created)
-                
-              }}</dd>
-              </dl>
-            </div>
-            <div class="counter"><em>{{value.approved}}</em>/<span>{{value.totalApprover}}</span></div>
+            </span>
+            <dl>
+              <dt>
+                {{ nowApprover(value).authorposition }}
+                {{ nowApprover(value).author }}
+                {{ nowApprover(value).authordept }}
+              </dt>
+              <dd>{{ transTime(value.created) }}</dd>
+            </dl>
+          </div>
+          <div class="counter">
+            <em>{{ value.approved }}</em
+            >/<span>{{ value.totalApprover }}</span>
+          </div>
           <ul class="m_paying">
             <li
               :class="{ active: dotActive(value, n) }"
@@ -152,11 +156,10 @@ export default {
       const color = ["#bcbbdd", "#bbcbdd", "#bbddd7", "#d0d0d0"];
       return `background: ${color[Math.floor(Math.random() * 4)]}`;
     },
-    Read(value,where) {
+    Read(value, where) {
       value.where = where;
-      this.$store.commit("approjs/AppSaveUnid",{unid:value.unid});
-      this.$router.push("/approval_more/ingview");
-
+      this.$store.commit("approjs/AppSaveUnid", { unid: value.unid });
+      this.$router.push(`/approval_more/${where}`);
     },
   },
 };
@@ -183,7 +186,7 @@ export default {
   vertical-align: top;
 }
 .app_slide .slick-slide div div > strong {
-  display:block !important;
+  display: block !important;
   font-size: 1rem !important;
   color: #000;
   text-overflow: ellipsis;
@@ -191,13 +194,8 @@ export default {
   line-height: 1.2 !important;
   font-weight: 600 !important;
   white-space: nowrap;
-  margin-top:0.5rem;
+  margin-top: 0.5rem;
 }
-
-
-
-
-
 
 .app_slide .slick-slide .per_info {
   margin-top: 0.62rem;
@@ -236,5 +234,4 @@ export default {
 .app_slide .slick-slide .per_info dl dd em {
   font-size: 0.87rem;
 }
-
 </style>

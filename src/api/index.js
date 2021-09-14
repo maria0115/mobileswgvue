@@ -1,9 +1,19 @@
 import axios from 'axios';
 // /api/approval?type=detail&unid=7A37FAC92B50F43C492587370002C0B2
+function Login(data) {
+    return axios({
+        method: 'post',
+        url: `/api/login?type=login`,
+        data,
+        headers: {
+            "Content-Type": "application/json"
+        }
+    })
+}
 function AppDetail(data) {
     return axios({
         method: 'get',
-        url: `/api/approval?type=detail&unid=${data.unid}&approvalType=${data.type}`,
+        url: `/api/approval?type=detail&unid=${data.unid}&approvalType=${data.type}&openurl=${data.openurl}`,
         headers: {
             "Content-Type": "application/json"
         }
@@ -474,7 +484,7 @@ function MailMove(data) {
 }
 // 메일삭제
 function MailDelete(data) {
-    // console.log(data,"data")
+    console.log(data,"data")
     return axios({
         method: 'delete',
         url: `/api/mail`,
@@ -690,5 +700,6 @@ export {
     DeleteBoard,
     BoardEdit,
     CalWrite,
-    AppDetail
+    AppDetail,
+    Login
 }

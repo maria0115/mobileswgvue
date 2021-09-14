@@ -5,7 +5,7 @@ import router from '../../../router/index';
 export default {
     AppDetail({state,commit}){
         var data = {};
-        data.unid = state.store.app.unid;
+        data.openurl = state.store.app.openurl;
         data.type = state.store.app.from;
         return AppDetail(data)
         .then((res) => {

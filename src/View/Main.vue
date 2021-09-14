@@ -58,7 +58,7 @@
           ><span class="main_sub_set"><a></a></span
         ></router-link> -->
       </div>
-      <div v-if="this.GetConfig.display == 'portal'" class="menu00">
+      <!-- <div v-if="this.GetConfig.display == 'portal'" class="menu00">
         <strong>전체메뉴</strong>
         <ul class="allmenu_list clfix">
           <li v-for="(value, name) in mainmenu" :key="name">
@@ -73,8 +73,8 @@
             </router-link>
           </li>
         </ul>
-      </div>
-      <div class="menu01" des="main2" v-if="this.GetConfig.display == 'menu'">
+      </div> -->
+      <div class="menu01" des="main2">
         <!-- <strong desc="메뉴관리">{{
           GetMainLanguage.hamburger.menu.menuset
         }}</strong> -->
@@ -360,10 +360,10 @@ export default {
       $("html").addClass("mar15");
     }
     if(this.$route.fullPath == "/"||this.$route.fullPath == "/my"||this.$route.fullPath == "/myicon"){
-      if (this.GetConfig.display == "portal" && this.$route.path !== "/myicon") {
-        this.$router.replace("myicon");
+      if ((this.GetConfig.display == "portal"||this.GetConfig.display == "potal") && this.$route.path !== "/myicon") {
+        this.$router.push("myicon");
       } else if (this.GetConfig.display == "menu" && this.$route.path !== "/my") {
-        this.$router.replace("my");
+        this.$router.push("my");
       }
 
     }

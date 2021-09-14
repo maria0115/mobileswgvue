@@ -1,8 +1,22 @@
 import {
-    OrgAutoSearch,GetLanguage,
+    OrgAutoSearch, GetLanguage,Login
 } from '../api/index.js';
+import axios from 'axios';
 import $, { data } from "jquery";
 export default {
+    login({ commit }, credentials) {
+        Login(credentials)
+        .then((res) => {
+
+            if (res.status !== 200) {
+                return false;
+            } else {
+                console.log(res.headers,"action")
+
+            }
+
+        })
+    },
     OrgAutoSearch({ state, commit }, data) {
         console.log(data)
 
@@ -18,8 +32,8 @@ export default {
                 }
 
             })
-    },    
-    
+    },
+
     ModalOrgAutoSearch({ state, commit }, data) {
 
         OrgAutoSearch(data)
@@ -34,8 +48,8 @@ export default {
 
             })
     },
-    
-    
+
+
     // 다국어 data
     async GetLanguage({ commit }, { app }) {
         await GetLanguage(app)

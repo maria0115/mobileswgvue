@@ -22,10 +22,16 @@ export default {
         state.scheduleorg.pointer = point;
     },
     ScheduleOrgData(state, data) {
+        
         var scheduleorg = state.scheduleorg[state.scheduleorg.pointer];
         if (data.kinds === "Department") {
             data.id = data.mycode;
             data.shortname = data.name;
+        }
+
+        if(data.scheduleId){
+            data.id = data.scheduleId;
+
         }
         scheduleorg.push(data);
 
@@ -51,7 +57,7 @@ export default {
     },
 
     SaveScheduleList(state, { data, date }) {
-        console.log(state, "SaveScheduleList")
+        
         state.store.schedulelist.date = date;
         state.store.schedulelist.data = data;
         return;
@@ -62,6 +68,7 @@ export default {
             var daysSort = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
             let range_s = Math.floor(+new Date(option.start) / 1000);
             let range_e = Math.floor(+new Date(option.end) / 1000);
+            
             for (var i = 0; i < data.length; i++) {
                 var start = data[i].startdate;
                 let current = Math.floor(+new Date(start) / 1000);
@@ -70,40 +77,52 @@ export default {
                 var month = start.split("-")[1];
                 var date = start.split("-")[2];
                 var day = new Date(year, month - 1, date).getDay();
-                // console.log(daysSort[day])
-                d[daysSort[day]] = d[daysSort[day]] || [];
+                // 
+                d[daysSort[day]] = d[daysSort[day]] || {};
+                if(data[i].allDay){
+                    d[daysSort[day]].allday = d[daysSort[day]].allday || [];
+                    d[daysSort[day]].allday.push(data[i]);
 
-                var endtime = data[i].endtime.split(":")[0];
-                var starttime = data[i].starttime.split(":")[0];
-                var chai = parseInt(endtime) - parseInt(starttime); //
-                if (d[daysSort[day]].length === 0) {
-                    for (var h = 0; h < 24; h++) {
-                        d[daysSort[day]].push([]);
-                    }
+                }else{
+                    d[daysSort[day]].timeday = d[daysSort[day]].timeday || [];
+                    d[daysSort[day]].timeday.push(data[i]);
                 }
-                for (var j = 0; j < chai; j++) {
-                    d[daysSort[day]][parseInt(starttime) + j].push(data[i]);
-                }
+
+                
+
+                // var endtime = data[i].endtime.split(":")[0];
+                // var starttime = data[i].starttime.split(":")[0];
+                // var chai = parseInt(endtime) - parseInt(starttime); //
+                // if (d[daysSort[day]].length === 0) {
+                //     for (var h = 0; h < 24; h++) {
+                //         d[daysSort[day]].push([]);
+                //     }
+                // }
+                // for (var j = 0; j < chai; j++) {
+                //     d[daysSort[day]][parseInt(starttime) + j].push(data[i]);
+                // }
             }
             data = d;
 
         } else if (which === "day") {
-            var d = {};
+            var d = [];
             for (var i = 0; i < data.length; i++) {
-                var endtime = data[i].endtime.split(":")[0];
-                var starttime = data[i].starttime.split(":")[0];
-                var chai = parseInt(endtime) - parseInt(starttime); //
-                for (var h = 0; h < 24; h++) {
-                    d[h] = d[h] || [];
-                }
-                for (var j = 0; j < chai; j++) {
-                    d[parseInt(starttime) + j].push(data[i]);
-                }
+                // var endtime = data[i].endtime.split(":")[0];
+                // var starttime = data[i].starttime.split(":")[0];
+                d.push(data[i]);
+                // var chai = parseInt(endtime) - parseInt(starttime); //
+                // for (var h = 0; h < 24; h++) {
+                //     d[h] = d[h] || [];
+                // }
+                // for (var j = 0; j < chai; j++) {
+                //     d[parseInt(starttime) + j].push(data[i]);
+                // }
 
             }
             data = d;
 
         }
+        
         state.schedule.data.calList[which] = data;
     },
     SearchOrgInit(state) {

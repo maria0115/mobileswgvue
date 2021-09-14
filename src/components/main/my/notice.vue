@@ -67,5 +67,6 @@ export default {
 </script>
 
 <style>
-
+.m_notice em{position:absolute;top:50%;left:1.25rem;transform:translateY(-50%);width:2.18rem;height:1.37rem;background:#655da7;text-align:center;font-size:0.81rem;color:#fff;line-height:1.37rem;border-radius:0.12rem;}
+.m_notice .slick-slider{height:2.5rem;overflow:hidden;}
 </style>

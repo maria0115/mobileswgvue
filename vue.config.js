@@ -84,6 +84,13 @@ module.exports = {
           '^/api/myinfo': ''
         }
       },
+      '/api/login': {
+        target: 'http://localhost:4001/api/login',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/api/login': ''
+        }
+      },
       
     }
   },

@@ -174,7 +174,7 @@ export default {
           end +
           `(${
             this.daysSort[
-              new Date(arrend[0], arrend[1] - 1, arrend[2]).getDay()
+              new Date(arrend[0], arrend[1] - 1, arrend[2],0,0,0).getDay()
             ]
           })`;
       } else {
@@ -183,13 +183,13 @@ export default {
           start +
           `(${
             this.daysSort[
-              new Date(arrstart[0], arrstart[1] - 1, arrstart[2]).getDay()
+              new Date(arrstart[0], arrstart[1] - 1, arrstart[2],0,0,0).getDay()
             ]
           })` +
           end +
           `(${
             this.daysSort[
-              new Date(arrend[0], arrend[1] - 1, arrend[2]).getDay()
+              new Date(arrend[0], arrend[1] - 1, arrend[2],0,0,0).getDay()
             ]
           })`;
       }
