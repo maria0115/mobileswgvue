@@ -18,51 +18,8 @@ export default {
     From(state, from) {
         state.from = from;
     },
-    SearchOrgInit(state) {
-        state.autosearchorg = {
-            mail: {
-                SendTo: [],
-                CopyTo: [],
-                BlindCopyTo: []
-            },schedule: {
-                SendTo: [],
-                CopyTo: [],
-                BlindCopyTo: []
-            }
-        };
-    },
-    AddOrg(state, { who, value, menu }) {
-        var mailorg = state.mailorg[who];
-        mailorg.push(value);
-
-        var result = mailorg.filter(function (item1, idx1) {
-            return mailorg.findIndex(function (item2, idx) {
-                return item1.email == item2.email
-            }) == idx1;
-        });
-
-        state.mailorg[who] = result;
-
-        return;
-
-    },
-    MailOrgDataDelete(state, { data, pointer }) {
-        state.mailorg[pointer] = state.mailorg[pointer].filter((element) => element !== data);
-    },
-    MailOrgDataInit(state) {
-        state.mailorg = {
-            pointer: "SendTo",
-            SendTo: [],
-            CopyTo: [],
-            BlindCopyTo: []
-        };
-        return;
-    },
     MailOrgTransData(state, data) {
         state.mail.data.org.trans = data;
-    },
-    MailOrgPointer(state, point) {
-        state.mailorg.pointer = point;
     },
     ToMe(state, data) {
         // 
@@ -98,32 +55,6 @@ export default {
 
         state.mailorg['SendTo'] = send;
         state.mailorg['CopyTo'] = copy;
-
-    },
-    MailOrgData(state, data) {
-        var mailorg = state.mailorg[state.mailorg.pointer];
-        if (data.kinds === "Department") {
-            data.id = data.mycode;
-            data.shortname = data.name;
-        }
-        console.log(mailorg)
-        mailorg.push(data);
-
-        var result = mailorg.filter(function (item1, idx1) {
-            return mailorg.findIndex(function (item2, idx) {
-                console.log(item1,"MailOrgData");
-                if (item1.email) {
-                    return item1.email == item2.email;
-                } else {
-                    return item1.id == item2.id;
-                }
-            }) == idx1;
-        });
-
-
-        state.mailorg[state.mailorg.pointer] = result;
-        console.log(state.mailorg,"result")
-
 
     },
     MailOrgInit(state) {

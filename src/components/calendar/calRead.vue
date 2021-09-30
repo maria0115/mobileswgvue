@@ -73,7 +73,9 @@
           </ul>
         </li>
       </ul>
-      <editor-content class="cal_info" :editor="editor" />
+      <!-- <div class="cal_info" v-html="GetSchedule.calDetail[GetSaveSchedule.detail.where].body"></div> -->
+      <Namo id="memo_t" :read="true" :editor="GetSchedule.calDetail[GetSaveSchedule.detail.where].body" ref="editor"></Namo>
+      <!-- <editor-content class="cal_info" :editor="editor" /> -->
     </div>
   </div>
 </template>
@@ -81,18 +83,18 @@
 <script>
 import { mapState, mapGetters } from "vuex";
 import { Editor, EditorContent } from "tiptap";
+import Namo from '../editor/namo.vue';
 export default {
   created() {
-    var date = this.GetSaveScheduleList.date;
-    console.log(date);
+    var date =
+      this.GetSchedule.calDetail[this.GetSaveSchedule.detail.where].startdate;
+    var currentDay = new Date(date.replaceAll("-", "/"));
+    var theDayOfWeek = currentDay.getDay();
 
-    this.today = `${date.year}.${this.fill(2, date.month)}.${this.fill(
-      2,
-      date.day
-    )} (${this.daysSort[date.date]})`;
+    this.today = date.replaceAll("-", ".") + `(${this.daysSort[theDayOfWeek]})`;
   },
   components: {
-    EditorContent,
+    EditorContent,Namo
   },
   computed: {
     ...mapGetters("calendarjs", [

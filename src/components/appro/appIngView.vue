@@ -7,7 +7,10 @@
           <em>{{ this.detail.category }}</em>
           <strong>{{ this.detail.subject }}</strong>
           <div class="clfix">
-            <span>{{ this.detail.approvalInfo.approval }}</span>
+            <em v-for="(value,index) in this.detail.approvalInfo" :key="index">
+
+            <span v-if="value.approval">{{value.approvalKind}}</span>
+            </em>
             <dl>
               <dt>
                 {{ this.detail.authorName }} {{ this.detail.authorGradeName }} /
@@ -83,12 +86,8 @@ export default {
   },
   data() {
     return {
-      morePlus: [
-        { circulate: "회람" },
-        { modify: "편집" },
-        { remove: "삭제" },
-        { uppercancle: "상신취소" },
-      ],
+      morePlus: 
+        { circulate: "회람",modify: "편집",remove: "삭제",  uppercancle: "상신취소"},
       isOpen: false,
       title: "결재중 문서 보기",
       body: "",

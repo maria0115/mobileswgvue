@@ -141,7 +141,7 @@ export default {
     Read(value, where) {
       console.log(value, where);
       value.where = where;
-      this.$store.commit("approjs/AppSaveUnid", { unid: value.unid });
+      this.$store.commit("approjs/AppSaveUnid", { unid: value.unid ,openurl:value.openurl});
       this.$router.push(`/approval_more/${where}`);
     },
     // 툴팁 활성화 될 list 확인

@@ -2,6 +2,7 @@
 import Router from 'vue-router';
 import Vue from 'vue';
 import Preferences from '../View/Preferences.vue';
+import Common from '../View/Common.vue';
 import Search from '../View/Search.vue';
 import Main from '../View/Main.vue';
 import Login from '../View/Login.vue';
@@ -70,13 +71,18 @@ Router.prototype.push = function push(location) {
 
 Vue.use(Router);
 
-export default new Router({
+const router = new Router({
   mode: 'history',
   base: process.env.BASE_URL,
   routes: [
     {
-      path: '/login',
-      name:'login',
+      path: '/mobile_index',
+      component: Common,
+      
+    },
+    {
+      path: 'login',
+      name: 'login',
       component: Login,
       beforeEnter: (to, from, next) => {
         next();
@@ -914,3 +920,40 @@ export default new Router({
     },
   ]
 })
+import axios from 'axios';
+router.beforeEach((to, from, next) => {
+  // let isLogged = ... 
+  // /login URL은 로그인 페이지 
+  // to.meta.isLogged && !isLogged ? next({ path: '/login', replace: true }) : next() 
+  console.log("beforeEach", to, from)
+  if (to.name === 'login') {
+    next();
+    return;
+  } else {
+    axios({
+      method: 'get',
+      url: `/api/login?type=Authority`,
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+      .then(res => {
+        console.log(res.data);
+        // if (!res.data) {
+          if (res.data.UserName === "Anonymous") {
+            next({ path: '/login' });
+            console.log("어머 왜 어노이머스니")
+  
+          } else {
+            next();
+          }
+
+        // }
+      })
+
+  }
+  // next();
+})
+
+
+export default router

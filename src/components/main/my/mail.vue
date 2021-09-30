@@ -139,6 +139,7 @@ export default {
     this.editor = new Editor({
       content: "",
     });
+    console.log(this.main.data.mailtype.inbox_detail,"main.data.mailtype.inbox_detail")
   },
   beforeDestroy() {
     if (this.editor) {

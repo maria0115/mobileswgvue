@@ -335,8 +335,9 @@ $(function () {
         var fileName = $("#add_f").val();
         $(".load_name").val(fileName);
     });
-    $('body').on('click','sv_radio',function(){
-        $(this).parent('span').siblings('span').find('.sv_radio').removeClass('active');
+    $('body').on('click','.sv_radio1',function(){
+        $(this).addClass('active');
+        $(this).parent('span').siblings('span').find('.sv_radio1').removeClass('active');
     });
     $('body').on('click','.app_pointer', function() {
         $('.a_organ_modal').addClass('on');

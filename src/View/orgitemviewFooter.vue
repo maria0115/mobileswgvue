@@ -9,9 +9,9 @@
       { active: this.clicked },
     ]"
   >
-    <div>
+    <div @click="onCard">
       <b @click="toggle" :class="{ on: this.isOpen }"></b>
-      <span @click="MailOrgData"
+      <span 
         >{{ item.name }}
         <em v-if="this.item.kinds == 'Person'" class="tel">{{
           item.office
@@ -27,6 +27,8 @@
         :item="child"
         @OpenFolder="OpenFolder"
         :modalAutoOrg="modalAutoOrg"
+        :createdOrg="createdOrg"
+        @OpenCard="OpenCard"
       ></org-item>
     </ul>
   </li>
@@ -39,14 +41,22 @@ export default {
   async created() {
     // item이 person이아니고 department면 무조건
     // child 뽑기
-    if (this.item.kinds == "Department") {
-      this.item.menu = "mail";
-      this.children = await this.$store.dispatch("mailjs/Org", this.item);
+    if (this.createdOrg) {
+      this.GetChildren();
+      var auto = this.autosearchorg[this.org.pointer];
+      var result = auto.findIndex(
+        (element) => element.shortname === this.item.shortname
+      );
+      if (result !== -1) {
+        this.$emit("OpenFolder");
+        this.clicked = true;
+      }
     }
   },
   props: {
     item: Object,
     modalAutoOrg: Number,
+    createdOrg: Boolean,
   },
   data: function () {
     return {
@@ -57,8 +67,7 @@ export default {
     };
   },
   computed: {
-    ...mapState("mailjs", ["mailorg"]),
-    ...mapState(["autosearchorg"]),
+    ...mapState(["autosearchorg","org"]),
     // 다른것들을 끌어왔을때 렝스가 1이상이면
     isFolder: function () {
       if (this.item.kinds == "Department") {
@@ -80,32 +89,43 @@ export default {
     },
   },
   watch: {
-    modalAutoOrg() {
-      var auto = this.autosearchorg.mail[this.mailorg.pointer];
+    async modalAutoOrg() {
+      if (this.item.kinds == "Department" && this.children.length === 0) {
+        this.GetChildren();
+        this.$emit("SetcreatedOrg");
+      }
+      var auto = this.autosearchorg[this.org.pointer];
       var result = auto.findIndex(
         (element) => element.shortname === this.item.shortname
       );
       if (result !== -1) {
-        // this.isOpen = true;
         this.$emit("OpenFolder");
         this.clicked = true;
       }
     },
   },
   methods: {
+    OpenCard(i){
+      this.$emit("OpenCard",i);
+    },
     OpenFolder() {
       this.$emit("OpenFolder");
       this.isOpen = true;
     },
     toggle() {
-      if (this.item.kinds == "Department") {
-        this.isOpen = !this.isOpen;
+      if (this.item.kinds == "Department" && this.children.length === 0) {
+        this.GetChildren();
       }
+      this.isOpen = !this.isOpen;
     },
-    MailOrgData() {
-      this.$store.commit("mailjs/MailOrgData", this.item);
-      this.$store.commit("SearchOrgInit");
-      this.clicked = false;
+    async GetChildren() {
+      this.children = await this.$store.dispatch("Org", this.item);
+    },
+    onCard() {
+      if (this.item.kinds == "Person") {
+        this.$emit("OpenCard",this.item);
+        this.clicked = false;
+      }
     },
     Or_bg() {
       if (this.item.kinds == "Person") {

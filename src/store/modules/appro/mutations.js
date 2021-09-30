@@ -4,6 +4,7 @@ export default {
         state.approval.data[menu].data = data;
     },
     AppSaveUnid(state,{unid,openurl}){
+        console.log(unid,openurl,"unid,openurl")
         state.store.app.unid = unid;
         state.store.app.openurl = openurl;
 

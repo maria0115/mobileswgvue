@@ -24,10 +24,7 @@
             </div>
           </li>
           <li>
-            <editor-content
-            class="texteditor"
-              :editor="editor"
-            />
+            <Namo :editor="body" :read="false" ref="editor"></Namo>
             <!-- <textarea contenteditable="true" :value="GetGreetView.body">
 안녕하세요 디자인팀 홍길동입니다.
                     </textarea
@@ -42,6 +39,7 @@
 <script>
 import { mapState, mapGetters } from "vuex";
 import { Editor,EditorContent } from "tiptap";
+import Namo from '../editor/namo.vue';
 // import EditorContent from "./EditorContent.vue";
 export default {
   created() {
@@ -72,14 +70,16 @@ export default {
     ...mapGetters("mailjs",["GetGreetView"]),
   },
   components: {
-    EditorContent,
+    EditorContent,Namo
   },
   methods: {
     Delete(){
       this.$store.dispatch("mailjs/SignGreetDelete","greet");
     },
     async Modify() {
-      this.GetGreetView.body = this.editor.getHTML();
+      let editorData = this.$refs.editor.$refs.namo.contentWindow.crosseditor.GetBodyValue();
+      this.GetGreetView.body = editorData;
+      // this.GetGreetView.body = this.editor.getHTML();
       this.GetGreetView.subject = this.subject;
       this.GetGreetView.default = this.default;
       var result = await this.$store.dispatch("mailjs/GreetEdit", this.GetGreetView);

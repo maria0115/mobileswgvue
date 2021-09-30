@@ -1,17 +1,13 @@
 import {
     MailDetail, FollowupSet, MailAutoSave, MailDelay, MailWrite,
     MailRealDelete,
-
     FollowUpInfo,
     MailSearch,
+    InitOrg,
     MailSave,
     writeForm,
-
-    OrgAutoSearch,
     ToMe,
     SpamSet,
-    InitOrg,
-    Org,
     SignDetail,
     SignGreetDelete,
     GETMailDelay,
@@ -132,18 +128,6 @@ export default {
             })
 
     },
-
-    ModalOrgAutoSearch({ state, commit }, data) {
-
-        OrgAutoSearch(data)
-            .then((res) => {
-
-                if (res.status !== 200) {
-                    return false;
-                } else { }
-
-            })
-    },
     MailWrite({ state, commit }, data) {
 
         MailWrite(data)
@@ -228,6 +212,7 @@ export default {
         // 
         InitOrg(data)
             .then((res) => {
+                console.log(res.data)
                 commit("MailOrgTransData", res.data);
             })
     },

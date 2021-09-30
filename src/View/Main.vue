@@ -11,10 +11,8 @@
     <div class="se_header">
       <div class="main_header">
         <span class="ham" @click="clickHam"></span>
-        <router-link to="/"
           ><h1 class="logo">
-            <a></a></h1
-        ></router-link>
+            <a @click="GoHome"></a></h1>
         <div class="allim_btn">
           <span class="allim_icon"></span>
           <span class="allim_num">2</span>
@@ -219,8 +217,8 @@
             </li>
         </draggable>
     </ul> -->
-    <router-view></router-view>
-    <ul class="quick" v-if="this.GetConfig.display == 'menu'">
+    <router-view :key="$route.fullPath"></router-view>
+    <!-- <ul class="quick" v-if="this.GetConfig.display == 'menu'">
       <li>
         <a>{{ GetMainLanguage.footer.home }}</a>
       </li>
@@ -230,11 +228,11 @@
       <li @click="orgClick()">
         <a>{{ GetMainLanguage.footer.org }}</a>
       </li>
-      <li>
+      <li @click="logout">
         <a>{{ GetMainLanguage.footer.logout }}</a>
       </li>
-    </ul>
-    <div
+    </ul> -->
+    <!-- <div
       class="quickmenu2"
       v-else-if="this.GetConfig.display == 'portal'"
       des="main2"
@@ -254,9 +252,9 @@
           <a><span class="q_ic04"></span>조직도</a>
         </li>
       </ul>
-    </div>
+    </div> -->
     <div class="logout" v-if="this.GetConfig.display == 'portal'" des="main2">
-      <span><a>로그아웃</a></span>
+      <span @click="logout"><a>로그아웃</a></span>
     </div>
     <div class="top_btn"></div>
     <Org :modalon="modalon" @ModalOff="ModalOff"></Org>
@@ -359,7 +357,9 @@ export default {
       $("html").removeClass("normal");
       $("html").addClass("mar15");
     }
+    console.log(this.$route.fullPath,"fullPath")
     if(this.$route.fullPath == "/"||this.$route.fullPath == "/my"||this.$route.fullPath == "/myicon"){
+      console.log(this.GetConfig.display,"display")
       if ((this.GetConfig.display == "portal"||this.GetConfig.display == "potal") && this.$route.path !== "/myicon") {
         this.$router.push("myicon");
       } else if (this.GetConfig.display == "menu" && this.$route.path !== "/my") {
@@ -373,6 +373,10 @@ export default {
     $(".wrap").css("font-family", this.GetConfig.font.font);
   },
   methods: {
+    logout(){
+      this.$store.dispatch("logout");
+      this.$router.push("/login");
+    },
     ModalOff() {
       this.modalon = false;
     },
@@ -504,6 +508,10 @@ export default {
         return true;
       }
       return false;
+    },
+    GoHome(){
+      console.log("여기는 들어오오?")
+      this.$router.push("/")
     },
   },
 };

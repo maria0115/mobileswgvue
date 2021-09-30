@@ -89,22 +89,4 @@ export default {
 
             })
     },
-    OrgAutoSearch({ state, commit }, data) {
-
-
-        OrgAutoSearch(data)
-            .then((res) => {
-
-                if (res.status !== 200) {
-                    return false;
-                } else {
-
-                    commit("AutoSearchOrg", { data: res.data, menu: data })
-
-                }
-
-            })
-    },
-
-
 }

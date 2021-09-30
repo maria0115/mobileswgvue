@@ -34,7 +34,7 @@
       </ul>
       <div
         class="no_schedule"
-        v-if="this.GetSaveScheduleList.data.length === 0"
+        v-else
       >
         <div>
           <span></span>

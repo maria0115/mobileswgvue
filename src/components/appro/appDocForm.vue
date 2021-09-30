@@ -22,6 +22,12 @@
             <li  v-for="(value,index) in GetApproval.formList_all.data" :key="index"><router-link to="write">{{value.category}}</router-link></li>
           </ul>
         </li>
+        <li>
+          <h3 class="active" @click="toggle('var')"><a>서식함</a></h3>
+          <ul class="active">
+            <li v-for="(value,name) in formCode" :key="name"><router-link :to="`write?form=${name}`">{{value}}</router-link></li>
+          </ul>
+        </li>
       </ul>
     </div>
     <BtnPlus :menu="morePlus"></BtnPlus>
@@ -48,12 +54,14 @@ export default {
   data() {
     return {
       checkbox: [{ doc: "양식명" }],
-      morePlus: [{ view: "결제문서 불러오기" }],
+      morePlus: { view: "결제문서 불러오기" },
       isOpen: false,
       often:false,
       recent:false,
       all:false,
+      var:false,
       title:"결재 양식함",
+      formCode:{"K-SIS_Form601m":"품의서-기본","K-SIS_Form661m":"신청서-기본"},
     };
   },
   methods: {

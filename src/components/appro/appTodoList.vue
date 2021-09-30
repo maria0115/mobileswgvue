@@ -123,7 +123,7 @@ export default {
         { dept: "기안부서" },
         { date: "기안일자" },
       ],
-      morePlus: [{ write: "결재 작성" }, { view: "원문 보기" }, { allow: "승인" }, { reject: "반려" }],
+      morePlus: { write: "결재 작성",view: "원문 보기" },
       isOpen: false,
       infiniteId: 0,
       enabled: true,

@@ -7,7 +7,10 @@
           <em>{{ this.detail.category }}</em>
           <strong>{{ this.detail.subject }}</strong>
           <div class="clfix">
-            <span>{{ this.detail.approvalInfo.approval }}</span>
+            <em v-for="(value,index) in this.detail.approvalInfo" :key="index">
+
+            <span v-if="value.approval">{{value.approvalKind}}</span>
+            </em>
             <dl>
               <dt>
                 {{ this.detail.authorName }} {{ this.detail.authorGradeName }} /
@@ -61,18 +64,12 @@
           <form>
             <strong>결재의견</strong>
             <div>
-              <input type="text" />
+              <input type="text" v-on:input="comment=$event.target.value" />
             </div>
           </form>
         </div>
       </div>
-      <div class="ac_btns">
-        <span class="more_plus"></span>
-        <ul>
-          <li><a>승인</a></li>
-          <li><a>반려</a></li>
-        </ul>
-      </div>
+      <BtnPlus :menu="morePlus" @BtnClick="BtnClick"></BtnPlus>
     </div>
   </div>
 </template>
@@ -97,13 +94,24 @@ export default {
   },
   data() {
     return {
-      morePlus: [{ allow: "승인" }, { reject: "반려" }],
+      morePlus: { agree: "승인" ,reject: "반려"}, 
       title: "결재할 문서",
       appActive:false,
       attActive:false,
+      comment:"",
     };
   },
   methods: {
+    BtnClick(e){
+      console.log("BtnClick",e,this.comment);
+      let formData = new FormData();
+      formData.append("openurl", this.detail.openurl);
+      formData.append("comment", this.comment);
+      formData.append("approve", e);
+
+      this.$store.dispatch("approjs/agreeNreject",formData)
+
+    },
     // utc 시간 to local 시간
     transTime(time) {
       var moment = require("moment");

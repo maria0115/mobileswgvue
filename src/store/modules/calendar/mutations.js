@@ -3,54 +3,6 @@ export default {
     isEdit(state, value) {
         state.store.edit = value;
     },
-    ScheduleOrgDataDelete(state, { data, pointer }) {
-        state.scheduleorg[pointer] = state.scheduleorg[pointer].filter((element) => element !== data);
-    },
-    ScheduleOrgDataInit(state) {
-        state.scheduleorg = {
-            pointer: "SendTo",
-            SendTo: [],
-            CopyTo: [],
-            BlindCopyTo: []
-        };
-        return;
-    },
-    // ScheduleOrgTransData(state, data) {
-    //     state.mail.data.org.trans = data;
-    // },
-    ScheduleOrgPointer(state, point) {
-        state.scheduleorg.pointer = point;
-    },
-    ScheduleOrgData(state, data) {
-        
-        var scheduleorg = state.scheduleorg[state.scheduleorg.pointer];
-        if (data.kinds === "Department") {
-            data.id = data.mycode;
-            data.shortname = data.name;
-        }
-
-        if(data.scheduleId){
-            data.id = data.scheduleId;
-
-        }
-        scheduleorg.push(data);
-
-        var result = scheduleorg.filter(function (item1, idx1) {
-            return scheduleorg.findIndex(function (item2, idx) {
-                if (item1.email) {
-                    return item1.email == item2.email;
-                } else {
-                    return item1.name == item2.name;
-                }
-            }) == idx1;
-        });
-
-
-
-        state.scheduleorg[state.scheduleorg.pointer] = result;
-
-
-    },
     SaveScheduleUnid(state, { unid, where }) {
         state.store.schedule.detail.unid = unid;
         state.store.schedule.detail.where = where;
@@ -124,37 +76,6 @@ export default {
         }
         
         state.schedule.data.calList[which] = data;
-    },
-    SearchOrgInit(state) {
-        state.autosearchorg = {
-            mail: {
-                SendTo: [],
-                CopyTo: [],
-                BlindCopyTo: []
-            }, schedule: {
-                SendTo: [],
-                CopyTo: [],
-                BlindCopyTo: []
-            }
-        };
-    },
-    ScheduleAddOrg(state, { who, value, menu }) {
-        var scheduleorg = state.scheduleorg[who];
-        scheduleorg.push(value);
-
-        var result = scheduleorg.filter(function (item1, idx1) {
-            return scheduleorg.findIndex(function (item2, idx) {
-                return item1.email == item2.email
-            }) == idx1;
-        });
-
-        state.scheduleorg[who] = result;
-
-        return;
-
-    },
-    AutoSearchOrg(state, { data, menu }) {
-        state.autosearchorg[menu.menu][menu.who] = data;
     },
     CalDetail(state, { data, which }) {
         state.schedule.data.calDetail[which] = data;

@@ -14,6 +14,7 @@
       <div class="list_inner">
         <ul class="clfix">
           <li v-for="(value, name) in mainmenu" :key="name">
+            <!-- v-if="value.key !== 'person'" -->
             <router-link :to="`/${value.key}_more`"
               ><span :class="`${value.key}_f_ic`"></span
               >{{ GetMainLanguage.header[value.key] }}</router-link
@@ -23,17 +24,24 @@
         <em class="close_btn"></em>
       </div>
     </div>
-    <Org :modalon="modalon" @ModalOff="ModalOff"></Org>
+    <OrgFooter
+      @CardOpen="CardOpen"
+      :modalon="modalon"
+      @ModalOff="ModalOff"
+    ></OrgFooter>
+    <PersonCard @ModalOff="CardOff" :item="cardItem" :modalon="cardon"></PersonCard>
   </div>
 </template>
 
 <script>
 import { mapState, mapGetters } from "vuex";
-
-import Org from "./Org.vue";
+import PersonCard from "./PersonCard.vue";
+import OrgFooter from "./OrgFooter.vue";
 export default {
+  created() {},
   computed: {
-    ...mapState("mailjs", ["mail", "mailorg"]),
+    ...mapState("mailjs", ["mail"]),
+    ...mapState(["org"]),
     ...mapGetters("mailjs", ["GetMailDetail", "GetMail", "GetMailConfig"]),
     ...mapGetters(["GetMainLanguage"]),
     path() {
@@ -41,16 +49,26 @@ export default {
     },
   },
   components: {
-    Org
+    OrgFooter,
+    PersonCard,
   },
   data: function () {
     return {
       modalAutoOrg: 0,
       modalon: false,
+      cardItem: {},
+      cardon:false,
     };
   },
-  
+
   methods: {
+    CardOff(){
+      this.cardon = false;
+    },
+    CardOpen(item) {
+      this.cardon = true;
+      this.cardItem = item;
+    },
     ModalOff() {
       this.modalon = false;
     },

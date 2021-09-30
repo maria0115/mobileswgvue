@@ -70,11 +70,11 @@ textarea,input{font-family: 'Apple SD Gothic','Nanum Gothic', sans-serif;}
 .btm_menu_list ul li:nth-child(n+4){margin-top:7px;}
 .btm_menu_list ul li a{display:block;line-height:40px;padding-left:40px;position:relative;font-size:14px;color:#000;letter-spacing:-1px;}
 .btm_menu_list ul li a span{position:absolute;top:50%;left:0;transform:translateY(-50%);width:34px;height:34px;border-radius:50%;}
-.btm_menu_list ul .mail_f_ic{background:#f1f2f2 url(/mobile/img/btm_list_ic01.png)center no-repeat;background-size:29px 29px;}
-.btm_menu_list ul .approval_f_ic{background:#f1f2f2 url(/mobile/img/btm_list_ic02.png)center no-repeat;background-size:29px 29px;}
+.btm_menu_list ul .mail_f_ic{background:#f1f2f2 url(/mobile/img/btm_list_ic01.png)center no-repeat;background-size:19px 19px;}
+.btm_menu_list ul .approval_f_ic{background:#f1f2f2 url(/mobile/img/btm_list_ic02.png)center no-repeat;background-size:19px 19px;}
 .btm_menu_list ul .schedule_f_ic{background:#f1f2f2 url(/mobile/img/btm_list_ic03.png)center no-repeat;background-size:21px 20px;}
-.btm_menu_list ul .board_f_ic{background:#f1f2f2 url(/mobile/img/btm_list_ic04.png)center no-repeat;background-size:17px 29px;}
-.btm_menu_list ul .reservation_f_ic{background:#f1f2f2 url(/mobile/img/btm_list_ic05.png)center no-repeat;background-size:29px 29px;}
+.btm_menu_list ul .board_f_ic{background:#f1f2f2 url(/mobile/img/btm_list_ic04.png)center no-repeat;background-size:17px 19px;}
+.btm_menu_list ul .reservation_f_ic{background:#f1f2f2 url(/mobile/img/btm_list_ic05.png)center no-repeat;background-size:19px 19px;}
 .btm_menu_list ul .person_f_ic{background:#f1f2f2 url(/mobile/img/btm_list_ic06.png)center no-repeat;background-size:17px 21px;}
 .btm_menu_list .close_btn{top:14px;right:15px;width:14px;height:14px;}
 
@@ -755,7 +755,7 @@ textarea,input{font-family: 'Apple SD Gothic','Nanum Gothic', sans-serif;}
 .line01 > em{display:block;width:3.12rem;height:1.25rem;border-radius:0.31rem;border:0.06rem solid #ff743c;font-size:0.81rem;color:#ff743c;text-align:center;line-height:1.12rem;}
 .line01 > strong{display:block;margin-top:0.62rem;font-size:1.06rem;color:#000;line-height:1.2;font-weight:700;text-overflow:ellipsis;overflow:hidden;word-break:break-all;white-space:nowrap;}
 .line01 > div{margin-top:0.43rem;}
-.line01 div > span{float:left;width:2.5rem;height:2.5rem;border-radius:50%;background:#655da7;font-size:0.93rem;color:#fff;text-align:center;line-height:2.5rem;}
+.line01 div em span{float:left;width:2.5rem;height:2.5rem;border-radius:50%;background:#655da7;font-size:0.93rem;color:#fff;text-align:center;line-height:2.5rem;}
 .line01 div dl{margin-left:3.12rem;padding-top:0.25rem;}
 .line01 div dl dt{color:#575757;font-size:0.81rem;}
 .line01 div dl dd{color:#575757;font-size:0.81rem;}
@@ -933,14 +933,14 @@ app04->파일명 mob_app_ docform로 변경됨 7월 29일 전체 수정 */
 /*결재선 지정*/
 .a_organ_modal{display:none;position:fixed;top:0;left:0;right:0;margin:0 auto;width:100%;height:100%;background:rgba(0, 0, 0, 0.6);padding:0 0.62rem;z-index:10;}
 .a_organ_modal.on{display:block;}
-.a_organ_con{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:calc(100% - 1.87rem);background:#fff;overflow:hidden;border-radius:0.31rem;height:38.43rem;}
+.a_organ_con{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:calc(100% - 1.87rem);background:#fff;overflow:hidden;border-radius:0.31rem;height:calc(100% - 140px);}
 .a_organ_con form > div{padding:1.25rem 0.62rem 0.62rem;}
 .a_organ_con form > div strong{font-size:1.25rem;color:#7c76da;line-height:1;font-weight:normal;}
 .a_organ_con form > div > div{position:relative;overflow:hidden;margin-top:0.75rem;border-radius:0.31rem;padding-right:3.75rem;border:0.06rem solid #ebebeb;}
 .a_organ_con form > div > div input{height:2.18rem;appearance:none;outline:none;border:0;padding-left:0.75rem;font-size:0.87rem;color:#494949;width:100%;}
 .a_organ_con form > div > div .btns{position:absolute;top:0;right:0.37rem;}
 .a_organ_con form > div > div .btns > span{float:left;width:1.87rem;height:2.18rem;position:relative;}
-.a_organlist{border-top:0.06rem solid #f4f4f4;border-bottom:0.06rem solid #f4f4f4;height:28.75rem;overflow-y:scroll;padding:0.93rem 0;}
+.a_organlist{border-top:0.06rem solid #f4f4f4;border-bottom:0.06rem solid #f4f4f4;height:436px;overflow-y:scroll;padding:0.93rem 1.25rem;}
 .a_organlist div{display:inline-block;padding:0 1.25rem 0 0;font-size:0.93rem;color:#4d4d4d;position:relative;line-height:2rem;}
 .a_organlist div.on{color:#655da7;}
 .a_organlist div b{display:inline-block;position:relative;width:1.87rem;height:1.87rem;vertical-align:middle;}
@@ -949,7 +949,7 @@ app04->파일명 mob_app_ docform로 변경됨 7월 29일 전체 수정 */
 .a_o_depth02 ul{margin-left:1.25rem;}
 .a_o_depth02 div{margin-left:1.25rem;}
 .a_or_bg.active div{display:inline-block;background:#fdf1ea;}
-.a_last_deps div{padding:0 1.87rem 0 0;margin-left:0.93rem;}
+.a_last_deps div{padding:0 1.87rem 0 0;/*margin-left:0.93rem;*/}
 .a_last_deps div em.tel{margin-left:0.37rem;padding-left:0.43rem;border-left:0.06rem solid #4d4d4d;}
 .a_organ_con .a_last_deps div b:after{display:none;}
 
@@ -966,14 +966,14 @@ app04->파일명 mob_app_ docform로 변경됨 7월 29일 전체 수정 */
 .a_organ_con .a_last_deps div b:after{display:none;} */
 
 
-.a_organ_modal .a_modal_close{position:absolute;top:1.25rem;right:1.25rem;width:1.06rem;height:1.06rem;background:url(/mobile/img/modal_close.png)center no-repeat;background-size:0.75rem 0.75rem;cursor:pointer;}
+.a_organ_modal .modal_close{position:absolute;top:1.25rem;right:1.25rem;width:1.06rem;height:1.06rem;background:url(/mobile/img/modal_close.png)center no-repeat;background-size:0.75rem 0.75rem;cursor:pointer;}
 .a_organ_modal div.a_organ_ft{height:3.43rem;padding:0.62rem 0.81rem 1.18rem;font-size:0;}
 .a_organ_modal div.a_organ_ft div{float:left;margin:0;border:0;padding:0;}
 .a_organ_ft div > span{position:relative;display:inline-block;padding-left:1.25rem;font-size:0.87rem;color:#494949;line-height:1.62rem;}
 .a_organ_ft div > span + span{margin-left:0.93rem;}
-.a_organ_ft .sv_radio{position:absolute;top:50%;left:0;transform:translateY(-50%);appearance:none;border-radius:50%;border:0.06rem solid #acacac;background:#fff;outline:none;width:1rem;height:1rem;}
-.a_organ_ft .sv_radio.active{border-color:#655da7;}
-.a_organ_ft .sv_radio.active:after{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:0.5rem;height:0.5rem;border-radius:50%;content:"";background:#655da7;}
+.a_organ_ft .sv_radio1{position:absolute;top:50%;left:0;transform:translateY(-50%);appearance:none;border-radius:50%;border:0.06rem solid #acacac;background:#fff;outline:none;width:1rem;height:1rem;}
+.a_organ_ft .sv_radio1.active{border-color:#655da7;}
+.a_organ_ft .sv_radio1.active:after{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:0.5rem;height:0.5rem;border-radius:50%;content:"";background:#655da7;}
 .a_organ_ft .ps_add{float:right;width:3.62rem;height:1.62rem;text-align:center;font-size:0.87rem;color:#fff;line-height:1.62rem;background:#655da7;}
 
 
@@ -1340,7 +1340,7 @@ app04->파일명 mob_app_ docform로 변경됨 7월 29일 전체 수정 */
 .organlist div.on{color:#655da7;}
 .organlist div b{display:inline-block;position:relative;width:1.87rem;height:1.87rem;vertical-align:middle;}
 .organlist div b:after{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:0.87rem;height:0.87rem;border-radius:50%;content:"";background:url(/mobile/img/plus_btn.png)center no-repeat;border:0.06rem solid #655da7;background-size:0.43rem 0.43rem;}
-.organlist div b.on:after{background:url(/mobile/img/minus_btn.png)center no-repeat;;background-size:0.43rem 0.06rem;}
+.organlist div b.on:after{background:url(/mobile/img/minus_btn.png)center no-repeat;background-size:0.43rem 0.06rem;}
 .o_depth04{display:none;}
 .o_depth02 ul{margin-left:1.25rem;}
 /* .o_depth02 li > div{margin-left:1.25rem;} */
@@ -1351,6 +1351,7 @@ app04->파일명 mob_app_ docform로 변경됨 7월 29일 전체 수정 */
 .organ_modal .modal_close{position:absolute;top:0.93rem;right:0.93rem;width:1.06rem;height:1.06rem;background:url(/mobile/img/modal_close.png)center no-repeat;background-size:0.75rem 0.75rem;cursor:pointer;}
 
 .all_organ_modal{display:none;position:absolute;top:0;left:0;right:0;margin:0 auto;width:100%;height:100%;background:rgba(0, 0, 0, 0.6);padding:0 0.62rem;z-index:12;}
+.all_organ_modal .organ_con{height:550px;}
 .all_organ_modal.on{display:block;}
 .all_organ_modal .modal_close{position:absolute;top:0.93rem;right:0.93rem;width:1.06rem;height:1.06rem;background:url(/mobile/img/modal_close.png)center no-repeat;background-size:0.75rem 0.75rem;cursor:pointer;}
 
@@ -1675,11 +1676,42 @@ app04->파일명 mob_app_ docform로 변경됨 7월 29일 전체 수정 */
 .cal_list .my_cal.on ul{display:block;}
 .cal_list .my_cal ul li a:after{position:absolute;top:50%;left:1rem;transform:translateY(-50%);width:1rem;height:0.81rem;content:"";background:url(/mobile/img/my_cal_icon.png)center no-repeat;background-size:100%;}
 
+/* 조직도 상세보기 */
+/* .a_contents09{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:100%;height:100%;background:rgba(0, 0, 0, 0.6);z-index:11;} */
+.con09_inner{z-index: 22;display:none;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);padding:80px 0 32px;background:#fff;text-align:center;width:calc(100% - 1.87rem);border-radius:5px;height:550px;}
+.con09_inner.active{display:block;}
+.con09_inner strong{font-size:15px;color:#000;line-height:1;font-weight:normal;}
+.con09_inner strong em{font-size:18px;font-weight:600;margin-right:5px;}
+.con09_inner div{margin-top:17px;}
+.con09_inner .basic_img{display:inline-block;position:static;top:auto;left:auto;transform:translateY(0);width:135px;height:135px;}
+.con09_inner .basic_img.on img{display:inline-block;}
+.con09_inner .basic_img img{display:none;}
+.con09_inner .basic_img .no_img{display:block;width:135px;height:135px;text-align:center;line-height:135px;}
+.con09_inner .basic_img.on .no_img{display:none;}
+.con09_inner .basic_img .no_img b{font-size:40px;}
+.con09_inner div ul li{margin-top:17px;font-size:15px;color:#474747;line-height:1;}
+.con09_inner div ul li span{display:inline-block;margin-right:6px;}
+.con09_inner > ul{margin-top:30px;font-size:0;}
+.con09_inner > ul li{display:inline-block;width:55px;}
+.con09_inner > ul li + li{margin-left:10px;}
+.con09_inner > ul li a{display:block;height:100%;font-size:0}
+.con09_inner > ul li a span{display:inline-block;width:50px;height:50px;border-radius:50%;overflow:hidden;}
+.con09_inner > ul li:nth-child(1) a span{background:#746ac3 url(/mobile/img/tel_icon.png)center no-repeat;background-size:20px 29px;}
+.con09_inner > ul li:nth-child(2) a span{background:#746ac3 url(/mobile/img/phone_icon.png)center no-repeat;background-size:17px 26px;}
+.con09_inner > ul li:nth-child(3) a span{background:#746ac3 url(/mobile/img/sms_icon.png)center no-repeat;background-size:27px 23px;}
+.con09_inner > ul li:nth-child(4) a span{background:#746ac3 url(/mobile/img/or_mail_icon.png)center no-repeat;background-size:23px 18px;}
+.con09_inner > ul li a em{display:block;font-size:13px;color:#252525;line-height:1;margin-top:7px;}
+.con09_inner .modal_close{position:absolute;top:0.93rem;right:0.93rem;width:1.06rem;height:1.06rem;background:url(/mobile/img/modal_close.png)center no-repeat;background-size:0.75rem 0.75rem;cursor:pointer;}
+
+
+
+
+
 /* 일정 리스트 */
 .today_date{padding-left:3.12rem;font-size:1.12rem;color:#fff;line-height:3.12rem;}
 .cal_header > em{position:absolute;top:50%;left:1rem;transform:translateY(-50%);width:0.62rem;height:1.18rem;}
 .cal_header > em a{display:block;height:100%;}
-.no_schedule{display:none;position:relative;height:calc(100vh - 5.62rem);}
+.no_schedule{position:relative;height:calc(100vh - 5.62rem);}
 .no_schedule div{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;font-size:0;}
 .no_schedule div span{display:inline-block;width:4.87rem;height:4.87rem;border-radius:50%;background:#f3f3f3 url(/mobile/img/cal_icon.png)center no-repeat;background-size:2rem 1.93rem;}
 .no_schedule div p{font-size:0.93rem;color:#999;line-height:1.37rem;margin-top:1.25rem;}

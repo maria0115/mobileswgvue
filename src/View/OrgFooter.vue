@@ -34,6 +34,7 @@
               @OpenFolder="OpenFolder"
               :createdOrg="createdOrg"
               @SetcreatedOrg="SetcreatedOrg"
+              @OpenCard="OpenCard"
             ></org-item>
           </span>
         </ul>
@@ -45,7 +46,7 @@
 
 <script>
 import { mapState, mapGetters } from "vuex";
-import OrgItem from "./orgitemview.vue";
+import OrgItem from "./orgitemviewFooter.vue";
 export default {
   created() {
     var data = {};
@@ -69,9 +70,9 @@ export default {
     };
   },
   beforeDestroy() {
-    console.log("destroy");
+    console.log("orgfooterdestroy");
     this.$store.commit("mailjs/From", "");
-    this.$store.commit("OrgDataInit");
+    // this.$store.commit("OrgDataInit");
   },
   methods: {
     delBtn() {
@@ -81,6 +82,11 @@ export default {
       this.$emit("ModalOff");
       this.$store.commit("SearchOrgInit");
       this.createdOrg=false;
+    },
+    OpenCard(item){
+      console.log(item);
+      this.$emit("CardOpen",item);
+
     },
     OpenFolder() {},
     OrgSearch(value) {

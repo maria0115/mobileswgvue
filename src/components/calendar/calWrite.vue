@@ -75,7 +75,7 @@
               <ul class="list_add clfix">
                 <li
                   class="add_obj"
-                  v-for="(value, index) in scheduleorg.SendTo"
+                  v-for="(value, index) in org.SendTo"
                   :key="index"
                 >
                   {{ value.shortname }}
@@ -120,7 +120,7 @@
             <div class="add_search" :class="{ active: this.sendtosearch }">
               <ul>
                 <li
-                  v-for="(value, index) in this.autosearchorg.schedule.SendTo"
+                  v-for="(value, index) in this.autosearchorg.SendTo"
                   :key="index"
                   @click="AddOrg('SendTo', value, 'sendtosearch')"
                 >
@@ -144,7 +144,7 @@
                   <ul class="list_add clfix">
                     <li
                       class="add_obj"
-                      v-for="(value, index) in this.scheduleorg.CopyTo"
+                      v-for="(value, index) in this.org.CopyTo"
                       :key="index"
                     >
                       {{ value.shortname }}
@@ -190,7 +190,7 @@
                 <div class="add_search" :class="{ active: this.copytosearch }">
                   <ul>
                     <li
-                      v-for="(value, index) in this.autosearchorg.schedule
+                      v-for="(value, index) in this.autosearchorg
                         .CopyTo"
                       :key="index"
                       @click="AddOrg('CopyTo', value, 'copytosearch')"
@@ -215,7 +215,7 @@
                   <ul class="list_add clfix">
                     <li
                       class="add_obj"
-                      v-for="(value, index) in this.scheduleorg.BlindCopyTo"
+                      v-for="(value, index) in this.org.BlindCopyTo"
                       :key="index"
                     >
                       {{ value.shortname }}
@@ -265,7 +265,7 @@
                 >
                   <ul>
                     <li
-                      v-for="(value, index) in this.autosearchorg.schedule
+                      v-for="(value, index) in this.autosearchorg
                         .BlindCopyTo"
                       @click="AddOrg('BlindCopyTo', value, 'blindcopytosearch')"
                       :key="index"
@@ -305,7 +305,8 @@
           <li class="cal_memo">
             <strong>메모</strong>
             <div>
-              <EditorContent id="memo_t" :editor="editor" />
+              <Namo id="memo_t" :read="false" :editor="Body_Text" ref="editor"></Namo>
+              <!-- <EditorContent id="memo_t" :editor="editor" /> -->
               <!-- <textarea id="memo_t" v-model="Body_Text"></textarea> -->
             </div>
           </li>
@@ -440,52 +441,16 @@
         <span class="modal_close rereclose" @click="RBtnremove"></span>
       </div>
     </div>
-    <div class="organ_modal" :class="{ on: modalon }">
-      <div class="organ_con">
-        <form>
-          <div>
-            <strong>조직도</strong>
-            <div>
-              <input
-                type="text"
-                class="search"
-                placeholder="검색어를 입력하세요"
-                autocomplete="on"
-                @keyup="OrgSearch($event.target.value)"
-              />
-              <div class="btns">
-                <span class="del_btn"><em></em></span>
-                <span class="search_icon" @click="SetAutoOrg"
-                  ><img src="../../mobile/img/search_icon.png" alt="검색하기"
-                /></span>
-              </div>
-            </div>
-          </div>
-          <ul class="organlist">
-            <span
-              class=""
-              v-for="(value, name) in this.GetMail.org.trans"
-              :key="name"
-            >
-              <org-item
-                :item="value"
-                :modalAutoOrg="modalAutoOrg"
-                @OpenFolder="OpenFolder"
-              ></org-item>
-            </span>
-          </ul>
-        </form>
-        <span class="modal_close" @click="ModalOff"></span>
-      </div>
-    </div>
+    <Org :modalon="modalon" @ModalOff="ModalOff"></Org>
   </div>
 </template>
 
 <script>
 import { mapState, mapGetters } from "vuex";
-import OrgItem from "./orgitemview.vue";
+import Org from "../../View/Org.vue";
 import CalHeader from "./calHeader.vue";
 import { Editor, EditorContent } from "tiptap";
+import Namo from '../editor/namo.vue';
 export default {
   created() {
     if (this.GetEdit) {
@@ -528,7 +493,7 @@ export default {
   beforeDestroy() {
     this.editor.destroy();
         this.$store.commit("calendarjs/isEdit",false);
-    this.$store.commit("calendarjs/ScheduleOrgDataInit");
+    this.$store.commit("OrgDataInit");
   },
   data() {
     return {
@@ -579,8 +544,7 @@ export default {
     };
   },
   computed: {
-    ...mapState("calendarjs", ["scheduleorg"]),
-    ...mapState("mailjs", ["autosearchorg"]),
+    ...mapState(["org","autosearchorg"]),
     ...mapGetters("mailjs", ["GetMail"]),
     ...mapGetters("calendarjs", [
       "GetEdit",
@@ -590,6 +554,9 @@ export default {
     ]),
   },
   methods: {
+    ModalOff() {
+      this.modalon = false;
+    },
     fill(width, number) {
       number = number + ""; //number를 문자열로 변환하는 작업
       var str = "";
@@ -599,36 +566,18 @@ export default {
       str = str + number;
       return str;
     },
-    OrgSearch(value) {
-      if (value.length >= 2) {
-        var data = {};
-        data.menu = "schedule";
-        data.keyword = value;
-        data.who = this.scheduleorg.pointer;
-        this.$store.dispatch("OrgAutoSearch", data);
-      }
-    },
-    SetAutoOrg() {
-      this.modalAutoOrg += 1;
-    },
-    ModalOff() {
-      this.modalon = false;
-      this.$store.commit("SearchOrgInit");
-    },
-    OpenFolder() {},
     ScheduleOrgDataDelete(data, pointer) {
-      this.$store.commit("calendarjs/ScheduleOrgDataDelete", { data, pointer });
+      this.$store.commit("OrgDataDelete", { data, pointer });
     },
     orgClick(to) {
       if (!this.tome) {
-        this.$store.commit("calendarjs/ScheduleOrgPointer", to);
+        this.$store.commit("OrgPointer", to);
         this.modalon = true;
       }
     },
     SendToSearch(who, keyword, value) {
       if (value.length >= 2) {
         var data = {};
-        data.menu = "schedule";
         data.who = who;
         data.keyword = value;
 
@@ -636,10 +585,9 @@ export default {
       }
     },
     async AddOrg(who, value, what) {
-      await this.$store.commit("calendarjs/ScheduleAddOrg", {
+      await this.$store.commit("AddOrg", {
         who,
         value,
-        menu: "schedule",
       });
       this[what] = false;
       this[`${what}keyword`] = "";
@@ -731,29 +679,29 @@ export default {
       console.log("Send")
       let formData = new FormData();
       formData.append("subject", this.Subject);
-      console.log(this.scheduleorg.SendTo)
+      console.log(this.org.SendTo)
       var SendTo = "";
-      for (var i = 0; i < this.scheduleorg.SendTo.length; i++) {
-        if (i == this.scheduleorg.SendTo.length - 1) {
-          SendTo += this.scheduleorg.SendTo[i].id;
+      for (var i = 0; i < this.org.SendTo.length; i++) {
+        if (i == this.org.SendTo.length - 1) {
+          SendTo += this.org.SendTo[i].id;
         } else {
-          SendTo += this.scheduleorg.SendTo[i].id + ";";
+          SendTo += this.org.SendTo[i].id + ";";
         }
       }
       var CopyTo = "";
-      for (var i = 0; i < this.scheduleorg.CopyTo.length; i++) {
-        if (i == this.scheduleorg.CopyTo.length - 1) {
-          CopyTo += this.scheduleorg.CopyTo[i].id;
+      for (var i = 0; i < this.org.CopyTo.length; i++) {
+        if (i == this.org.CopyTo.length - 1) {
+          CopyTo += this.org.CopyTo[i].id;
         } else {
-          CopyTo += this.scheduleorg.CopyTo[i].id + ";";
+          CopyTo += this.org.CopyTo[i].id + ";";
         }
       }
       var BlindCopyTo = "";
-      for (var i = 0; i < this.scheduleorg.BlindCopyTo.length; i++) {
-        if (i == this.scheduleorg.BlindCopyTo.length - 1) {
-          BlindCopyTo += this.scheduleorg.BlindCopyTo[i].id;
+      for (var i = 0; i < this.org.BlindCopyTo.length; i++) {
+        if (i == this.org.BlindCopyTo.length - 1) {
+          BlindCopyTo += this.org.BlindCopyTo[i].id;
         } else {
-          BlindCopyTo += this.scheduleorg.BlindCopyTo[i].id + ";";
+          BlindCopyTo += this.org.BlindCopyTo[i].id + ";";
         }
       }
       formData.append("sendTo", SendTo);
@@ -773,7 +721,10 @@ export default {
       formData.append("startDate", start);
       formData.append("endDate", end);
       formData.append("location", this.place);
-      formData.append("body", this.editor.getHTML());
+      // namo 에디터 본문 내용 받아오기
+      let editorData = this.$refs.editor.$refs.namo.contentWindow.crosseditor.GetBodyValue();
+      formData.append("body", editorData);
+      // formData.append("body", this.editor.getHTML());
       for (var i = 0; i < this.file.length; i++) {
         formData.append("attach", this.file[i]);
       }
@@ -808,9 +759,10 @@ export default {
     },
   },
   components: {
-    OrgItem,
+    Org,
     EditorContent,
     CalHeader,
+    Namo,
   },
 };
 </script>

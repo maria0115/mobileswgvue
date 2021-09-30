@@ -1,12 +1,43 @@
 import {
-    DocApproval, Approval,AppDetail
+    DocApproval, Approval,AppDetail,agreeNreject,AppWrite
 } from '../../../api/index';
 import router from '../../../router/index';
 export default {
+    AppWrite({state,commit},data){
+        AppWrite(data)
+        .then((res) => {
+            if (res.status !== 200) {
+                return false;
+            } else {
+                console.log(res.data,"AppWrite");
+            }
+        })
+    },
+    agreeNreject({state,commit},data){
+        agreeNreject(data)
+        .then((res) => {
+            if (res.status !== 200) {
+                return false;
+            } else {
+                console.log(res.data,"agreeNreject");
+                if(res.data){
+                    alert("완료")
+                }
+                
+                // commit("SetDetail",res.data);
+                // // router.push(`/approval_more/${data.where}`);
+
+                // return true;
+
+            }
+        })
+
+    },
     AppDetail({state,commit}){
         var data = {};
         data.openurl = state.store.app.openurl;
         data.type = state.store.app.from;
+        console.log(data)
         return AppDetail(data)
         .then((res) => {
 

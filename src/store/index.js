@@ -52,16 +52,16 @@ export const store = new VueX.Store({
 
         children: [],
         autosearchorg: {
-            mail: {
-                SendTo: [],
-                CopyTo: [],
-                BlindCopyTo: []
-            },
-            schedule: {
-                SendTo: [],
-                CopyTo: [],
-                BlindCopyTo: []
-            }
+            SendTo: [],
+            CopyTo: [],
+            BlindCopyTo: []
+
+        },
+        org: {
+            pointer: "SendTo",
+            SendTo: [],
+            CopyTo: [],
+            BlindCopyTo: []
         },
 
     },

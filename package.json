@@ -23,6 +23,7 @@
     "tiptap": "^1.32.2",
     "v-dragged": "0.0.5",
     "vue": "^2.6.11",
+    "vue-cookie": "^1.1.4",
     "vue-infinite-loading": "^2.4.5",
     "vue-router": "^3.5.1",
     "vue-slick-carousel": "^1.0.6",

@@ -23,8 +23,6 @@
           <dl>
             <dt>
               {{ GetStoreBoard.detail.author }}
-              {{ GetStoreBoard.detail.authorGrade }} /
-              {{ GetStoreBoard.detail.authorDept }}
             </dt>
             <dd>
               {{ transTime(GetStoreBoard.detail.created) }}
@@ -65,15 +63,16 @@
             /></span>
             <div>
               <p>{{ value.name }}</p>
-              <em>(32.52KB)</em>
+              <em>({{value.size}})</em>
             </div>
           </li>
         </ul>
       </div>
       <!-- <div class="noti_con" v-html="GetStoreBoard.detail.body"></div> -->
-      <editor-content class="noti_con" :editor="editor" />
+      <Namo id="memo_t" :read="true" :editor="GetStoreBoard.detail.body" ref="editor"></Namo>
+      <!-- <editor-content class="noti_con" :editor="editor" /> -->
       <div class="like_btn" @click="Likeit()">
-        <span :class="{ active: true }"
+        <span :class="{ active: !GetStoreBoard.detail.isLike }"
           ><em>{{ GetStoreBoard.detail.like_cnt }}</em> LIKE <b></b
         ></span>
       </div>
@@ -150,9 +149,10 @@
 import { mapState, mapGetters } from "vuex";
 import { Editor, EditorContent } from "tiptap";
 import configjson from "../../config/config.json";
+import Namo from '../editor/namo.vue';
 export default {
   components: {
-    EditorContent,
+    EditorContent,Namo
   },
   mounted() {
     this.editor = new Editor({

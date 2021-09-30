@@ -18,12 +18,6 @@ export default {
   mutations,
   state: {
     schedule: config.schedule,
-    scheduleorg: {
-      pointer: "SendTo",
-      SendTo: [],
-      CopyTo: [],
-      BlindCopyTo: []
-    },
   },
   getters: {
     GetSchedule: (state) => {

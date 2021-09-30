@@ -1,11 +1,10 @@
 <template>
-  <div class="all_organ_modal" :class="{ on: this.modalon }">
-    <!--위치 수정됨-->
-    <div class="organ_con">
-      <form>
-        <div>
-          <strong>조직도</strong>
+  <div class="a_organ_modal" :class="{ on: this.modalon }">
+      <div class="a_organ_con">
+        <form>
           <div>
+            <strong>{{this.title[appDept]}}</strong>
+            <div>
             <input
               type="text"
               class="search"
@@ -22,7 +21,7 @@
             </div>
           </div>
         </div>
-        <ul class="organlist">
+        <ul class="a_organlist">
           <span
             class=""
             v-for="(value, name) in this.GetMail.org.trans"
@@ -34,9 +33,18 @@
               @OpenFolder="OpenFolder"
               :createdOrg="createdOrg"
               @SetcreatedOrg="SetcreatedOrg"
+              @PickItem="PickItem"
+              :appDept="appDept"
             ></org-item>
           </span>
         </ul>
+        <div class="a_organ_ft" >
+            <div v-if="appDept=='sAppList1'">
+              <span><em class="sv_radio1 active" @click="Add('AP')"></em>결재</span>
+              <span><em class="sv_radio1" @click="Add('AG_S!@AG_M')"></em>합의</span>
+            </div>
+            <span class="ps_add" @click="AddItem">추가</span>
+          </div>
       </form>
       <span class="modal_close" @click="ModalOff"></span>
     </div>
@@ -45,14 +53,16 @@
 
 <script>
 import { mapState, mapGetters } from "vuex";
-import OrgItem from "./orgitemview.vue";
+import OrgItem from "./orgitemviewApp.vue";
 export default {
   created() {
     var data = {};
+    data.menu = "mail";
     this.$store.dispatch("mailjs/InitOrg", data);
   },
   props: {
     modalon: Boolean,
+    appDept:String
   },
   components: {
     OrgItem,
@@ -66,14 +76,28 @@ export default {
       modalAutoOrg: 0,
       createdOrg: false,
       keyword: "",
+      title:{sAppList1:"결재선 지정",sAppList2:"주관부서"},
+      pickItem:{},
+      appadd:"AP"
     };
   },
   beforeDestroy() {
-    console.log("destroy");
-    this.$store.commit("mailjs/From", "");
-    this.$store.commit("OrgDataInit");
   },
   methods: {
+    AddItem(){
+      var data = {};
+      data.approvalInfo = this.pickItem;
+      data.appadd = this.appadd;
+      data.appDept = this.appDept;
+console.log(data)
+      this.$emit("AddItem",data);
+      // this.appadd = "AP";
+      this.$emit("ModalOff");
+
+    },
+    Add(value) {
+      this.appadd = value;
+    },
     delBtn() {
       this.keyword = "";
     },
@@ -96,6 +120,11 @@ export default {
     },
     SetcreatedOrg() {
       this.createdOrg = true;
+    },
+    PickItem(item) {
+      this.pickItem = item;
+      
+
     },
   },
 };

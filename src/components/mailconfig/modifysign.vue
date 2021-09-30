@@ -24,10 +24,7 @@
             </div>
           </li>
           <li>
-            <editor-content
-            class="texteditor"
-              :editor="editor"
-            />
+            <Namo :editor="body" :read="false" ref="editor"></Namo>
             <!-- <textarea v-model="GetSignView.body">
 ---------------------------------------------------------
 이정인 책임연구원
@@ -50,6 +47,7 @@ http://www.saerom.co.kr
 <script>
 import { mapState, mapGetters } from "vuex";
 import { Editor,EditorContent } from "tiptap";
+import Namo from '../editor/namo.vue';
 // import EditorContent from "./EditorContent.vue";
 export default {
   created() {
@@ -79,14 +77,16 @@ export default {
     ...mapGetters("mailjs",["GetSignView"]),
   },
   components: {
-    EditorContent,
+    EditorContent,Namo
   },
   methods: {
     Delete(){
       this.$store.dispatch("mailjs/SignGreetDelete","sign");
     },
     async Modify() {
-      this.GetSignView.body = this.editor.getHTML();
+      let editorData = this.$refs.editor.$refs.namo.contentWindow.crosseditor.GetBodyValue();
+      this.GetSignView.body = editorData;
+      // this.GetSignView.body = this.editor.getHTML();
       this.GetSignView.subject = this.subject;
       this.GetSignView.default = this.default;
       var result = await this.$store.dispatch("mailjs/SignEdit", this.GetSignView);

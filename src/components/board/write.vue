@@ -118,7 +118,8 @@
           </li>
         </ul>
         <div class="noti_con">
-          <editor-content :editor="editor" />
+          <!-- <editor-content :editor="editor" /> -->
+          <Namo :read="false" :editor="Body_Text" ref="editor"></Namo>
         </div>
       </form>
     </div>
@@ -128,6 +129,7 @@
 <script>
 import { mapState, mapGetters } from "vuex";
 import { Editor, EditorContent } from "tiptap";
+import Namo from '../editor/namo.vue';
 export default {
   computed: {
     ...mapGetters("mainjs", ["GetMyInfo"]),
@@ -177,7 +179,7 @@ export default {
     this.$store.commit("boardjs/EditMode", false);
   },
   components: {
-    EditorContent,
+    EditorContent, Namo
   },
   data: function () {
     return {
@@ -224,7 +226,10 @@ export default {
       let formData = new FormData();
       formData.append("subject", this.Subject);
 
-      formData.append("body", this.editor.getHTML());
+      let editorData = this.$refs.editor.$refs.namo.contentWindow.crosseditor.GetBodyValue();
+
+      formData.append("body", editorData);
+      // formData.append("body", this.editor.getHTML());
 
       if (this.GetStoreBoard.path === "congratulate") {
         formData.append("category1", this.category);

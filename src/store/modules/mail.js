@@ -32,12 +32,6 @@ export default {
       date: "", // "2021-07-22"
       time: "", // "12:30:00"
     },
-    mailorg: {
-      pointer: "SendTo",
-      SendTo: [],
-      CopyTo: [],
-      BlindCopyTo: []
-    },
     TimeOption: {
       mail: {
         hour: [
@@ -83,18 +77,6 @@ export default {
     },
 
     mailSearchPath: ["inbox_detail", "mail_inner", "mail_outer", "mail_attach", "sent_detail", "mail_draft", "mail_autoSave", "mail_my", "mail_followup", "mail_trash"],
-    autosearchorg: {
-      mail: {
-        SendTo: [],
-        CopyTo: [],
-        BlindCopyTo: []
-      },
-      schedule: {
-        SendTo: [],
-        CopyTo: [],
-        BlindCopyTo: []
-      }
-    },
     mail: config.mail,
   },
   getters: {

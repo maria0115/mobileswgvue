@@ -22,7 +22,8 @@
         </li>
         <li class="texteditor">
           <!-- <div v-html="GetGreetView.body">안녕하세요 디자인팀 홍길동입니다.</div> -->
-          <editor-content :editor="editor" />
+          <Namo :editor="GetGreetView.body" :read="true" ref="editor"></Namo>
+          <!-- <editor-content :editor="editor" /> -->
         </li>
       </ul>
     </div>
@@ -32,9 +33,10 @@
 <script>
 import { mapState, mapGetters } from "vuex";
 import { Editor, EditorContent } from "tiptap";
+import Namo from '../editor/namo.vue';
 export default {
   components: {
-    EditorContent,
+    EditorContent,Namo
   },
   beforeDestroy() {
     this.editor.destroy();

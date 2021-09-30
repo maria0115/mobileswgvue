@@ -150,11 +150,8 @@ export default {
         { currentapprover: "현재결재자" },
         { date: "기안일자" },
       ],
-      morePlus: [
-        { return: "회수" },
-        { view: "원문 보기" },
-        { write: "결재 작성" },
-      ],
+      morePlus: 
+        { return: "회수",view: "원문 보기", write: "결재 작성"  },
       isOpen: false,
       title: "결재중 문서",
       infiniteId: 0,

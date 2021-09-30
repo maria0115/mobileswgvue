@@ -1,5 +1,34 @@
 import axios from 'axios';
-// /api/approval?type=detail&unid=7A37FAC92B50F43C492587370002C0B2
+// /api/approval?type=write
+function AppWrite(data) {
+    return axios({
+        method: 'post',
+        url: `/api/approval?type=write`,
+        data,
+        headers: {
+            "Content-Type": "multipart/form-data"
+        }
+    })
+}
+function Authority() {
+    return axios({
+        method: 'get',
+        url: `/api/login?type=Authority`,
+        headers: {
+            "Content-Type": "application/json"
+        }
+    })
+}
+function agreeNreject(data) {
+    return axios({
+        method: 'post',
+        url: `/api/approval?type=agreeNreject`,
+        data,
+        headers: {
+            "Content-Type": "multipart/form-data"
+        }
+    })
+}
 function Login(data) {
     return axios({
         method: 'post',
@@ -11,6 +40,7 @@ function Login(data) {
     })
 }
 function AppDetail(data) {
+    console.log(data,"appdetail")
     return axios({
         method: 'get',
         url: `/api/approval?type=detail&unid=${data.unid}&approvalType=${data.type}&openurl=${data.openurl}`,
@@ -244,7 +274,7 @@ function ToMe() {
 function Org(data) {
     return axios({
         method: 'get',
-        url: `/api/${data.menu}?type=orgSearch&companycode=${data.companycode}&departmentcode=${data.mycode}`,
+        url: `/api/mail?type=orgSearch&companycode=${data.companycode}&departmentcode=${data.mycode}`,
         headers: {
             'Content-Type': 'application/json'
         }
@@ -254,7 +284,7 @@ function Org(data) {
 function InitOrg(data) {
     return axios({
         method: 'get',
-        url: `/api/${data.menu}?type=org`,
+        url: `/api/mail?type=org`,
         headers: {
             'Content-Type': 'application/json'
         }
@@ -701,5 +731,8 @@ export {
     BoardEdit,
     CalWrite,
     AppDetail,
-    Login
+    Login,
+    agreeNreject,
+    Authority,
+    AppWrite
 }

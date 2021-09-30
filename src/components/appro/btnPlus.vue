@@ -2,7 +2,7 @@
   <div class="ac_btns">
         <span class="more_plus"></span>
         <ul>
-            <li v-for="(value,name) in menu" :key="name"><a>{{value[Object.keys(value)[0]]}}</a></li>
+            <li v-for="(value,name) in menu" :key="name" @click="BtnClick(name)"><a>{{value}}</a></li>
         </ul>
     </div>
 </template>
@@ -10,8 +10,13 @@
 <script>
 export default {
     props: {
-    menu: Array,
+    menu: Object,
   },
+  methods: {
+    BtnClick(value){
+      this.$emit("BtnClick",value);
+    },
+  }
 
 }
 </script>

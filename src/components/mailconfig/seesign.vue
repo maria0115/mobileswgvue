@@ -31,7 +31,9 @@
             http://www.saerom.co.kr<br />
             ---------------------------------------------------------
           </div> -->
-          <editor-content :editor="editor" />
+          <Namo :editor="GetSignView.body" :read="true" ref="editor"></Namo>
+          <!-- <div v-html="GetSignView.body"></div> -->
+          <!-- <editor-content :editor="editor" /> -->
         </li>
       </ul>
     </div>
@@ -41,9 +43,10 @@
 <script>
 import { mapState, mapGetters } from "vuex";
 import { Editor,EditorContent  } from "tiptap";
+import Namo from '../editor/namo.vue';
 export default {
   components: {
-    EditorContent,
+    EditorContent,Namo
   },
   beforeDestroy() {
     this.editor.destroy()

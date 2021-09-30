@@ -24,22 +24,27 @@
           <li class="approver">
             <strong>결재자</strong>
             <div>
-              <input
-                @click="orgClick('SendTo')"
+              <!-- <input
                 type="text"
                 @keyup="
                   SendToSearch('SendTo', 'sendtosearch', $event.target.value)
                 "
               />
-              <span class="ps_add">추가</span>
-              <span class="app_pointer" @click="orgClick('SendTo')"
+              <span class="ps_add" @click="addApprover">추가</span> -->
+              <span class="app_pointer" @click="orgClick('SendTo', 'sAppList1')"
                 >결재선 지정</span
+              >
+              <span
+                v-if="thisform == 'K-SIS_Form661m'"
+                class="app_pointer"
+                @click="orgClick('CopyTo', 'sAppList2')"
+                >주관부서</span
               >
             </div>
             <div class="add_search" :class="{ active: this.sendtosearch }">
               <ul>
                 <li
-                  v-for="(value, index) in this.autosearchorg.schedule.SendTo"
+                  v-for="(value, index) in this.autosearchorg.SendTo"
                   :key="index"
                   @click="AddOrg('SendTo', value, 'sendtosearch')"
                 >
@@ -67,12 +72,13 @@
                 </p>
                 <ul>
                   <li
-                    v-for="(value, index) in scheduleorg.SendTo"
+                    v-for="(value, index) in appPath"
                     @click="Pointer(index)"
                     :key="index"
                   >
                     <em>{{ index + 1 }}</em
-                    >담당 {{ AppPath(value) }}
+                    >{{ pathDivision[value.appDept] }}
+                    {{ AppPath(value.approvalInfo) }}
                   </li>
                 </ul>
               </div>
@@ -91,7 +97,7 @@
               </p>
             </div>
           </li>
-          <li class="referrer">
+          <!-- <li class="referrer">
             <strong>참조자</strong>
             <div>
               <p>
@@ -108,7 +114,7 @@
             <div class="add_search" :class="{ active: this.copytosearch }">
               <ul>
                 <li
-                  v-for="(value, index) in this.autosearchorg.schedule.CopyTo"
+                  v-for="(value, index) in this.autosearchorg.CopyTo"
                   :key="index"
                   @click="AddOrg('CopyTo', value, 'copytosearch')"
                 >
@@ -125,8 +131,8 @@
                 </li>
               </ul>
             </div>
-          </li>
-          <li class="division">
+          </li> -->
+          <!-- <li class="division">
             <strong>구분</strong>
             <div>
               <select v-model="onCategory">
@@ -139,20 +145,55 @@
                 </option>
               </select>
             </div>
+          </li> -->
+          <li class="division">
+            <strong>공유범위</strong>
+            <div>
+              <select v-model="pDocPermission">
+                <option
+                  v-for="(value, index) in DocPermission"
+                  :key="index"
+                  :value="index"
+                >
+                  {{ value }}
+                </option>
+              </select>
+            </div>
           </li>
-          <li class="date">
+          <li class="division">
+            <strong>보존년한</strong>
+            <div>
+              <select v-model="pDocPeriod">
+                <option
+                  v-for="(value, index) in DocPeriod"
+                  :key="index"
+                  :value="index"
+                >
+                  {{ value }}
+                </option>
+              </select>
+            </div>
+          </li>
+          <!-- <li class="date">
             <strong>일시</strong>
             <div><input type="date" /> ~ <input type="date" /></div>
           </li>
           <li class="num_day">
             <strong>일수</strong>
             <div><input type="text" v-model="daycount" />일</div>
-          </li>
+          </li> -->
           <li class="reason">
             <strong>사유</strong>
             <div>
-              <editor-content :editor="editor" />
-              <!-- <textarea v-model="Body_Text"></textarea> -->
+              <!-- <editor-content :editor="editor" /> -->
+              <textarea v-model="TmpsComment"></textarea>
+            </div>
+          </li>
+          <li class="reason">
+            <strong>본문</strong>
+            <div>
+              <!-- <editor-content :editor="editor" /> -->
+              <textarea v-model="Body_Text"></textarea>
             </div>
           </li>
           <li class="file_add">
@@ -177,52 +218,13 @@
         </ul>
       </form>
     </div>
-    <BtnPlus></BtnPlus>
-    <div class="a_organ_modal">
-      <div class="a_organ_con">
-        <form>
-          <div>
-            <strong>결재선 지정</strong>
-            <div>
-              <input
-                type="text"
-                class="search"
-                placeholder="검색어를 입력하세요"
-                autocomplete="on"
-                @keyup="OrgSearch($event.target.value)"
-              />
-              <div class="btns">
-                <span class="del_btn"><em></em></span>
-                <span class="search_icon" @click="SetAutoOrg"
-                  ><img src="../../mobile/img/search_icon.png" alt="검색하기"
-                /></span>
-              </div>
-            </div>
-          </div>
-          <ul class="a_organlist">
-            <span
-              class=""
-              v-for="(value, name) in this.GetMail.org.trans"
-              :key="name"
-            >
-              <org-item
-                :item="value"
-                :modalAutoOrg="modalAutoOrg"
-                @OpenFolder="OpenFolder"
-              ></org-item>
-            </span>
-          </ul>
-          <div class="a_organ_ft">
-            <div>
-              <span><em class="sv_radio"></em>결재</span>
-              <span><em class="sv_radio"></em>합의</span>
-            </div>
-            <span class="ps_add">추가</span>
-          </div>
-        </form>
-        <span class="a_modal_close" @click="ModalOff"></span>
-      </div>
-    </div>
+    <BtnPlus :menu="morePlus" @BtnClick="Send"></BtnPlus>
+    <Org
+      :modalon="modalon"
+      :appDept="appDept"
+      @AddItem="AddItem"
+      @ModalOff="ModalOff"
+    ></Org>
   </div>
 </template>
 
@@ -231,13 +233,15 @@ import BackHeader from "./backheader.vue";
 import BtnPlus from "./btnPlus.vue";
 import SubMenu from "./menu.vue";
 import { mapState, mapGetters } from "vuex";
-import OrgItem from "../calendar/orgitemview.vue";
+import Org from "../../View/OrgAppro.vue";
 import { Editor, EditorContent } from "tiptap";
 export default {
   created() {
     const date = new Date();
     this.startdate = date;
     this.enddate = date;
+
+    this.thisform = this.$route.query.form;
   },
   mounted() {
     this.editor = new Editor({
@@ -248,23 +252,20 @@ export default {
     BackHeader,
     SubMenu,
     BtnPlus,
-    OrgItem,
+    Org,
     EditorContent,
   },
   beforeDestroy() {
     this.editor.destroy();
-    this.$store.commit("calendarjs/ScheduleOrgDataInit");
   },
   data() {
     return {
+      thisform: "",
+      appPath: [],
+      appDept: "sAppList1",
       editor: null,
       file: [],
-      morePlus: [
-        { refer: "기결문서 참조" },
-        { approval: "결재" },
-        { upper: "상신" },
-        { save: "저장" },
-      ],
+      morePlus: { raise: "결재보내기", draft: "임시저장" },
       title: "결재양식함에서 지정",
       modalon: false,
       modalAutoOrg: 0,
@@ -274,36 +275,110 @@ export default {
       sendtosearchkeyword: "",
       ExpireDate: "",
       pointer: -1,
-      category: [
-        { year: "연차휴가" },
-        { prize: "경조/포상" },
-        { health: "보건" },
-        { free: "무급휴가" },
-        { month: "월차" },
-        { sick: "병가" },
-        { Refresh: "Refresh" },
-        { military: "병역동원훈련" },
-        { baby: "산전산후" },
-        { early: "조퇴" },
-      ],
+      category: {
+        year: "연차휴가",
+        prize: "경조/포상",
+        health: "보건",
+        free: "무급휴가",
+        month: "월차",
+        sick: "병가",
+        Refresh: "Refresh",
+        military: "병역동원훈련",
+        baby: "산전산후",
+        early: "조퇴",
+      },
       onCategory: "year",
       file: [],
       Subject: "",
       Body_Text: "",
+      TmpsComment: "",
       rereclick: false,
       open: true,
       daycount: 0,
       startdate: null,
       enddate: null,
+      pDocPeriod:1,
+      DocPeriod: {
+        1: "1년",
+        3: "3년",
+        5: "5년",
+        10: "10년",
+        15: "15년",
+        99: "영구",
+      },
+      pathDivision: { sAppList1: "기안", sAppList2: "담당" },
+      DocPermission: { H0: "권한자만 공유", H1: "부서공유", H2: "사내공유" },
+      pDocPermission:"H0"
     };
   },
   computed: {
-    ...mapState(["autosearchorg"]),
-    ...mapState("calendarjs", ["scheduleorg"]),
+    ...mapState(["autosearchorg", "org"]),
     ...mapGetters("mainjs", ["GetMyInfo"]),
     ...mapGetters("mailjs", ["GetMail"]),
   },
   methods: {
+    Send(e) {
+      console.log(this.appPath,this.GetMyInfo,"GetMyInfoGetMyInfoGetMyInfo");
+      var sAppList1 = "";
+      var sAppList2 = "";
+      var AprTcount1 = 0;
+      var AprTcount2 = 0;
+      for (var i = 0; i < this.appPath.length; i++) {
+        if (this.appPath[i].appDept == "sAppList1") {
+          AprTcount1++;
+          sAppList1 += `${this.appPath[i].appadd}^${i + 1}^${
+            this.appPath[i].approvalInfo.approvalInfo
+          };`;
+        } else if (this.appPath[i].appDept == "sAppList2") {
+          AprTcount2++;
+          sAppList2 += `${this.appPath[i].appadd}^${i + 1}^${
+            this.appPath[i].approvalInfo.approvalInfo
+          };`;
+        }
+      }
+      let formData = new FormData();
+      formData.append("approvalType", e);
+      formData.append("formCode", this.thisform);
+      formData.append("From", this.GetMyInfo.info.notesid);
+      formData.append("myinfo", this.GetMyInfo.approvalInfo);
+      formData.append("sAppList1", sAppList1);
+      formData.append("sAppList2", sAppList2);
+      formData.append("AprTcount1", AprTcount1);
+      formData.append("AprTcount2", AprTcount2);
+      formData.append("subject", this.Subject);
+      formData.append("body", this.Body_Text);
+      formData.append("DocPeriod", this.pDocPeriod);
+      formData.append("DocPermission", this.pDocPermission);
+      for (var i = 0; i < this.file.length; i++) {
+        formData.append("attach", this.file[i]);
+      }
+      for (var pair of formData.entries())
+       { console.log(pair[0]+ ', ' + pair[1]); }
+
+      this.$store.dispatch("approjs/AppWrite",formData);
+      console.log(e);
+    },
+    AddItem(item) {
+      this.appPath.push(item);
+      var result = this.appPath;
+
+      var result = result.filter(function (item1, idx1) {
+        return (
+          result.findIndex(function (item2, idx) {
+            return (
+              item1.approvalInfo.email == item2.approvalInfo.email &&
+              item1.appadd == item2.appadd &&
+              item1.appDept == item2.appDept
+            );
+          }) == idx1
+        );
+      });
+
+      this.appPath = result;
+    },
+    ModalOff() {
+      this.modalon = false;
+    },
     submitFile() {
       this.$refs.file.click();
     },
@@ -314,36 +389,18 @@ export default {
 
       // }
     },
-    OrgSearch(value) {
-      if (value.length >= 2) {
-        var data = {};
-        data.menu = "schedule";
-        data.keyword = value;
-        data.who = this.scheduleorg.pointer;
-        this.$store.dispatch("OrgAutoSearch", data);
-      }
-    },
-    SetAutoOrg() {
-      this.modalAutoOrg += 1;
-    },
-    ModalOff() {
-      this.modalon = false;
-      this.$store.commit("SearchOrgInit");
-    },
-    OpenFolder() {},
     ScheduleOrgDataDelete(data, pointer) {
-      this.$store.commit("calendarjs/ScheduleOrgDataDelete", { data, pointer });
+      this.$store.commit("OrgDataDelete", { data, pointer });
     },
-    orgClick(to) {
-      if (!this.tome) {
-        this.$store.commit("calendarjs/ScheduleOrgPointer", to);
-        this.modalon = true;
-      }
+    orgClick(to, dept) {
+      this.$store.commit("OrgPointer", to);
+      this.modalon = true;
+      this.appDept = dept;
+      console.log(this.appDept);
     },
     SendToSearch(who, keyword, value) {
       if (value.length >= 2) {
         var data = {};
-        data.menu = "schedule";
         data.who = who;
         data.keyword = value;
 
@@ -351,10 +408,9 @@ export default {
       }
     },
     async AddOrg(who, value, what) {
-      await this.$store.commit("calendarjs/ScheduleAddOrg", {
+      await this.$store.commit("AddOrg", {
         who,
         value,
-        menu: "schedule",
       });
       this[what] = false;
       this[`${what}keyword`] = "";
@@ -370,7 +426,7 @@ export default {
     SendToArr() {
       // for="(value, index) in scheduleorg.SendTo"
       var str = "";
-      for (var data of this.scheduleorg.SendTo) {
+      for (var data of this.appPath) {
         str += data.shortname;
         str += ",";
       }
@@ -399,8 +455,8 @@ export default {
     },
     Up() {
       if (this.pointer !== -1 && this.pointer !== 0) {
-        var list = this.scheduleorg.SendTo;
-        this.scheduleorg.SendTo = this.changeArrayOrder(list, this.pointer, -1);
+        var list = this.appPath;
+        this.appPath = this.changeArrayOrder(list, this.pointer, -1);
         if (this.pointer === 0) {
           this.pointer = list.length - 1;
         } else {
@@ -409,12 +465,9 @@ export default {
       }
     },
     Down() {
-      if (
-        this.pointer !== -1 &&
-        this.pointer !== this.scheduleorg.SendTo.length - 1
-      ) {
-        var list = this.scheduleorg.SendTo;
-        this.scheduleorg.SendTo = this.changeArrayOrder(list, this.pointer, 1);
+      if (this.pointer !== -1 && this.pointer !== this.appPath.length - 1) {
+        var list = this.appPath;
+        this.appPath = this.changeArrayOrder(list, this.pointer, 1);
         if (this.pointer === list.length - 1) {
           this.pointer = 0;
         } else {
@@ -424,14 +477,18 @@ export default {
     },
     Delete() {
       if (this.pointer !== -1) {
-        this.scheduleorg.SendTo = this.scheduleorg.SendTo.filter(
-          (element) => element !== this.scheduleorg.SendTo[this.pointer]
+        this.appPath = this.appPath.filter(
+          (element) => element !== this.appPath[this.pointer]
         );
         this.pointer = -1;
       }
     },
     AllDel() {
-      this.scheduleorg.SendTo = [];
+      this.appPath = [];
+    },
+    addApprover() {
+      console.log(this.pointer);
+      // console.log(autosearchorg.)
     },
   },
 };
@@ -445,5 +502,11 @@ export default {
   outline: none;
   border: 0.06rem solid #e6e6e6;
   padding: 0.62rem;
+}
+.a_contents05 ul li.approver div span.app_pointer {
+  margin: 0;
+}
+.a_contents05 ul li.approver div span.app_pointer + .app_pointer {
+  margin-left: 0.25rem !important;
 }
 </style>

@@ -22,7 +22,7 @@
               <ul class="list_add clfix">
                 <li
                   class="add_obj"
-                  v-for="(value, index) in this.mailorg.SendTo"
+                  v-for="(value, index) in this.org.SendTo"
                   :key="index"
                 >
                   {{ isShortName(value) }}
@@ -75,7 +75,7 @@
             <div class="add_search" :class="{ active: this.sendtosearch }">
               <ul>
                 <li
-                  v-for="(value, index) in this.autosearchorg.mail.SendTo"
+                  v-for="(value, index) in this.autosearchorg.SendTo"
                   :key="index"
                   @click="AddOrg('SendTo', value, 'sendtosearch')"
                 >
@@ -100,7 +100,7 @@
                 <ul class="list_add">
                   <li
                     class="add_obj"
-                    v-for="(value, index) in this.mailorg.CopyTo"
+                    v-for="(value, index) in this.org.CopyTo"
                     :key="index"
                   >
                     {{ isShortName(value) }}
@@ -146,7 +146,7 @@
               <div class="add_search" :class="{ active: this.copytosearch }">
                 <ul>
                   <li
-                    v-for="(value, index) in this.autosearchorg.mail.CopyTo"
+                    v-for="(value, index) in this.autosearchorg.CopyTo"
                     :key="index"
                     @click="AddOrg('CopyTo', value, 'copytosearch')"
                   >
@@ -171,7 +171,7 @@
                 <ul class="list_add">
                   <li
                     class="add_obj"
-                    v-for="(value, index) in this.mailorg.BlindCopyTo"
+                    v-for="(value, index) in this.org.BlindCopyTo"
                     :key="index"
                   >
                     {{ isShortName(value) }}
@@ -220,7 +220,7 @@
               >
                 <ul>
                   <li
-                    v-for="(value, index) in this.autosearchorg.mail
+                    v-for="(value, index) in this.autosearchorg
                       .BlindCopyTo"
                     @click="AddOrg('BlindCopyTo', value, 'blindcopytosearch')"
                     :key="index"
@@ -303,7 +303,8 @@
           </li>
           <li class="mail_edit">
             <label for="mail_wri"></label>
-            <editor-content id="mail_wri" :editor="editor" />
+            <!-- <editor-content id="mail_wri" :editor="editor" /> -->
+            <Namo id="mail_wri" :read="false" :editor="Body_Text" ref="editor"></Namo>
             <!-- <textarea name="" id="mail_wri" v-model="Body_Text"></textarea> -->
           </li>
         </ul>
@@ -343,46 +344,7 @@
             <span class="modal_close" @click="disReservation"></span>
           </div>
         </div>
-        <div class="organ_modal" :class="{ on: this.modalon }">
-          <div class="organ_con">
-            <form>
-              <div>
-                <strong>조직도</strong>
-                <div>
-                  <input
-                    type="text"
-                    class="search"
-                    placeholder="검색어를 입력하세요"
-                    autocomplete="on"
-                    @keyup="OrgSearch($event.target.value)"
-                  />
-                  <div class="btns">
-                    <span class="del_btn"><em></em></span>
-                    <span class="search_icon" @click="SetAutoOrg"
-                      ><img
-                        src="../../mobile/img/search_icon.png"
-                        alt="검색하기"
-                    /></span>
-                  </div>
-                </div>
-              </div>
-              <ul class="organlist">
-                <span
-                  class=""
-                  v-for="(value, name) in this.GetMail.org.trans"
-                  :key="name"
-                >
-                  <org-item
-                    :item="value"
-                    :modalAutoOrg="modalAutoOrg"
-                    @OpenFolder="OpenFolder"
-                  ></org-item>
-                </span>
-              </ul>
-            </form>
-            <span class="modal_close" @click="ModalOff"></span>
-          </div>
-        </div>
+        <Org :modalon="modalon" @ModalOff="ModalOff"></Org>
       </form>
     </div>
   </div>
@@ -390,12 +352,14 @@
 
 <script>
 import { mapState, mapGetters } from "vuex";
-import OrgItem from "./orgitemview.vue";
+import Org from "../../View/Org.vue";
 import { Editor, EditorContent } from "tiptap";
 import configjson from "../../config/config.json";
+import Namo from '../editor/namo.vue';
 // import EditorContent from "../mailconfig/EditorContent.vue";
 export default {
   created() {
+    console.log("created",this.org)
     // this.$store.commit("mailjs/MailOrgDataInit");
     this.Body_Text = `${this.GetMail.writeForm.greetings}<p></p><p></p>${this.GetMail.writeForm.signature}<p></p><p></p>`;
     if (this.from == "Relay") {
@@ -410,8 +374,6 @@ export default {
   beforeDestroy() {
     clearInterval(this.delay);
     this.editor.destroy();
-    this.$store.commit("mailjs/From", "");
-    this.$store.commit("mailjs/MailOrgDataInit");
   },
   mounted() {
     this.editor = new Editor({
@@ -430,8 +392,8 @@ export default {
     }
   },
   computed: {
-    ...mapState("mailjs", ["mailorg", "from", "TimeOption"]),
-    ...mapState(["autosearchorg"]),
+    ...mapState("mailjs", [ "from", "TimeOption"]),
+    ...mapState(["autosearchorg","org"]),
     ...mapGetters("mailjs", ["GetMailDetail", "GetMail", "GetMailConfig"]),
     isBlock: function () {
       if (this.isOpen) {
@@ -441,12 +403,12 @@ export default {
     },
   },
   components: {
-    OrgItem,
+    Org,
     EditorContent,
+    Namo,
   },
   data: function () {
     return {
-      modalAutoOrg: 0,
       delay: null,
       editor: null,
       isOpen: false,
@@ -468,6 +430,7 @@ export default {
       copytosearchkeyword: "",
       sendtosearchkeyword: "",
       modalon: false,
+      modalAutoOrg: 0,
     };
   },
   methods: {
@@ -487,76 +450,76 @@ export default {
       return "etc";
     },
     MailOrgDataDelete(data, pointer) {
-      this.$store.commit("mailjs/MailOrgDataDelete", { data, pointer });
+      this.$store.commit("OrgDataDelete", { data, pointer });
     },
     ToMe() {
       this.tome = !this.tome;
       if (this.tome) {
         this.$store.dispatch("mailjs/ToMe");
       } else {
-        this.$store.commit("mailjs/MailOrgDataInit");
+        this.$store.commit("OrgDataInit");
       }
     },
     FormSet() {
       var SendTo = "";
-      for (var i = 0; i < this.mailorg.SendTo.length; i++) {
-        if (i == this.mailorg.SendTo.length - 1) {
-          SendTo += this.mailorg.SendTo[i].id;
+      for (var i = 0; i < this.org.SendTo.length; i++) {
+        if (i == this.org.SendTo.length - 1) {
+          SendTo += this.org.SendTo[i].id;
         } else {
-          SendTo += this.mailorg.SendTo[i].id + ";";
+          SendTo += this.org.SendTo[i].id + ";";
         }
       }
 
       var inSendTo = "";
-      for (var i = 0; i < this.mailorg.SendTo.length; i++) {
-        if (i == this.mailorg.SendTo.length - 1) {
-          inSendTo += this.mailorg.SendTo[i].name;
+      for (var i = 0; i < this.org.SendTo.length; i++) {
+        if (i == this.org.SendTo.length - 1) {
+          inSendTo += this.org.SendTo[i].name;
         } else {
-          inSendTo += this.mailorg.SendTo[i].name + ";";
+          inSendTo += this.org.SendTo[i].name + ";";
         }
       }
 
       var ocxSendTo = "";
-      for (var i = 0; i < this.mailorg.SendTo.length; i++) {
-        if (i == this.mailorg.SendTo.length - 1) {
-          ocxSendTo += this.mailorg.SendTo[i].shortname;
+      for (var i = 0; i < this.org.SendTo.length; i++) {
+        if (i == this.org.SendTo.length - 1) {
+          ocxSendTo += this.org.SendTo[i].shortname;
         } else {
-          ocxSendTo += this.mailorg.SendTo[i].shortname + ";";
+          ocxSendTo += this.org.SendTo[i].shortname + ";";
         }
       }
 
       var CopyTo = "";
-      for (var i = 0; i < this.mailorg.CopyTo.length; i++) {
-        if (i == this.mailorg.CopyTo.length - 1) {
-          CopyTo += this.mailorg.CopyTo[i].id;
+      for (var i = 0; i < this.org.CopyTo.length; i++) {
+        if (i == this.org.CopyTo.length - 1) {
+          CopyTo += this.org.CopyTo[i].id;
         } else {
-          CopyTo += this.mailorg.CopyTo[i].id + ";";
+          CopyTo += this.org.CopyTo[i].id + ";";
         }
       }
 
       var ocxCopyTo = "";
-      for (var i = 0; i < this.mailorg.CopyTo.length; i++) {
-        if (i == this.mailorg.CopyTo.length - 1) {
-          ocxCopyTo += this.mailorg.CopyTo[i].shortname;
+      for (var i = 0; i < this.org.CopyTo.length; i++) {
+        if (i == this.org.CopyTo.length - 1) {
+          ocxCopyTo += this.org.CopyTo[i].shortname;
         } else {
-          ocxCopyTo += this.mailorg.CopyTo[i].shortname + ";";
+          ocxCopyTo += this.org.CopyTo[i].shortname + ";";
         }
       }
 
       var BlindCopyTo = "";
-      for (var i = 0; i < this.mailorg.BlindCopyTo.length; i++) {
-        if (i == this.mailorg.BlindCopyTo.length - 1) {
-          BlindCopyTo += this.mailorg.BlindCopyTo[i].id;
+      for (var i = 0; i < this.org.BlindCopyTo.length; i++) {
+        if (i == this.org.BlindCopyTo.length - 1) {
+          BlindCopyTo += this.org.BlindCopyTo[i].id;
         } else {
-          BlindCopyTo += this.mailorg.BlindCopyTo[i].id + ";";
+          BlindCopyTo += this.org.BlindCopyTo[i].id + ";";
         }
       }
       var ocxBCopyTo = "";
-      for (var i = 0; i < this.mailorg.BlindCopyTo.length; i++) {
-        if (i == this.mailorg.BlindCopyTo.length - 1) {
-          ocxBCopyTo += this.mailorg.BlindCopyTo[i].shortname;
+      for (var i = 0; i < this.org.BlindCopyTo.length; i++) {
+        if (i == this.org.BlindCopyTo.length - 1) {
+          ocxBCopyTo += this.org.BlindCopyTo[i].shortname;
         } else {
-          ocxBCopyTo += this.mailorg.BlindCopyTo[i].shortname + ";";
+          ocxBCopyTo += this.org.BlindCopyTo[i].shortname + ";";
         }
       }
       let formData = new FormData();
@@ -568,7 +531,9 @@ export default {
       formData.append("BlindCopyTo", BlindCopyTo);
       formData.append("ocxBCopyTo", ocxBCopyTo);
       formData.append("Subject", this.Subject);
-      formData.append("Body_Text", this.editor.getHTML());
+      // namo editor 본문 내용 받아오기
+      let editorData = this.$refs.editor.$refs.namo.contentWindow.crosseditor.GetBodyValue();
+      formData.append("Body_Text", editorData);
 
       var impor = 2;
 
@@ -615,7 +580,7 @@ export default {
 
       // data에 담고
 
-      if (this.mailorg.SendTo.length > 0 && this.mailorg.SendTo[0].id) {
+      if (this.org.SendTo.length > 0 && this.org.SendTo[0].id) {
         var formData = this.FormSet();
         // 사람이 한사람이라도 있으면
         // 전송가능
@@ -643,7 +608,7 @@ export default {
     },
     orgClick(to) {
       if (!this.tome) {
-        this.$store.commit("mailjs/MailOrgPointer", to);
+        this.$store.commit("OrgPointer", to);
         this.modalon = true;
       }
     },
@@ -685,22 +650,12 @@ export default {
         this.isOpen = !this.isOpen;
       }
     },
-    makeFolder: function (item) {
-      item.children = [];
-      this.addItem(item);
-    },
-    addItem: function (item) {
-      item.children.push({
-        name: "new stuff",
-      });
-    },
     Back() {
       this.$router.go(-1);
     },
     SendToSearch(who, keyword, value) {
       if (value.length >= 2) {
         var data = {};
-        data.menu = "mail";
         data.who = who;
         data.keyword = value;
 
@@ -716,7 +671,7 @@ export default {
       return `background: ${color[Math.floor(Math.random() * 4)]}`;
     },
     async AddOrg(who, value, what) {
-      await this.$store.commit("mailjs/AddOrg", { who, value, menu: "mail" });
+      await this.$store.commit("AddOrg", { who, value});
       this[what] = false;
       this[`${what}keyword`] = "";
       this.$store.commit("SearchOrgInit");
@@ -740,16 +695,11 @@ export default {
     OrgSearch(value) {
       if (value.length >= 2) {
         var data = {};
-        data.menu = "mail";
         data.keyword = value;
-        data.who = this.mailorg.pointer;
+        data.who = this.org.pointer;
         this.$store.dispatch("OrgAutoSearch", data);
       }
     },
-    SetAutoOrg() {
-      this.modalAutoOrg += 1;
-    },
-    OpenFolder() {},
     isShortName(value) {
       if (value.shortname) {
         return value.shortname;
