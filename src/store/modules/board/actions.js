@@ -97,7 +97,7 @@ export default {
                     return false;
                 } else {
                     if (!comment) {
-                        router.push(`/board_more/read`);
+                        router.push({name:'boardread'});
                     }
                     commit("BoardDetailData", res.data)
                     return true;

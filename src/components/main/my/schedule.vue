@@ -33,7 +33,7 @@
         </ul>
       </div>
     </div>
-    <span class="m_more"><router-link to="/schedule_more"></router-link></span>
+    <span class="m_more"><router-link :to="{name:'schedule'}"></router-link></span>
   </div>
 </template>
 
@@ -99,7 +99,7 @@ export default {
     async Detail(value){
       this.$store.commit("calendarjs/SaveScheduleUnid",{unid:value.unid,where:"month"});
       // await this.$store.dispatch("CalDetail",{data:value.data,path:this.$route.path,which:"month"});
-      this.$router.push("/schedule_more/read");
+      this.$router.push({name:"calread"});
 
     },
   },

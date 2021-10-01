@@ -95,7 +95,7 @@
             </div>
             <div slot="error">
               Error message, click
-              <router-link to="/app/ing">here</router-link> to retry
+              <router-link :to="{name:'apping'}">here</router-link> to retry
             </div>
           </infinite-loading>
         </ul>

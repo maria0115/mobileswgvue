@@ -140,7 +140,7 @@ export default {
         this.$store.dispatch("mailjs/MailDetail", unid);
         this.$store.commit("mailjs/MailDetailUnid", unid);
         this.$store.commit("mailjs/From", "Relay");
-        this.$router.push("/mail_more/write_mail");
+        this.$router.push({name:'WriteMail'});
       }
     },
     ReadFlag() {

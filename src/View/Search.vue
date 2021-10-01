@@ -23,7 +23,7 @@
               v-for="(value, name) in this.form"
               :key="name"
             >
-              <router-link :to="`/search/${value.name}`"
+              <router-link :to="`search/${value.name}`"
                 ><a>{{ GetSearchLanguage.menu[value.name] }}</a></router-link
               >
             </li>

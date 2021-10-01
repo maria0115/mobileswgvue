@@ -1,7 +1,7 @@
 <template>
   <div>
     <h2 class="mail_st_header">
-      <router-link to="greet">
+      <router-link :to="{name:'greet'}">
         <img src="../../mobile/img/wmail_back.png" alt="" /> </router-link
       >인사말 등록
       <span class="save" @click="GreetAdd"><a>저장</a></span>

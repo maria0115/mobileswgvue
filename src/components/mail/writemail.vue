@@ -2,7 +2,7 @@
   <div>
     <div class="wmail_header">
       <h2>
-        <router-link to="/mail_more"
+        <router-link :to="{name:'mail'}"
           ><img src="../../mobile/img/wmail_back.png" alt="" /></router-link
         >메일쓰기
       </h2>

@@ -1,11 +1,40 @@
 import {
-    OrgAutoSearch, GetLanguage, Login, InitOrg, Org,
+    OrgAutoSearch, GetLanguage, Login, InitOrg, Org,CategoryList
 } from '../api/index.js';
 import axios from 'axios';
 import cookie from 'vue-cookie';
 import $, { data } from "jquery";
 import config from '../config/config.json';
 export default {
+    ListOfCategory({ state, commit }, data){
+        ListOfCategory(data)
+        .then((res) => {
+
+            if (res.status !== 200) {
+                return false;
+            } else {
+                commit("ListOfCategory", { id, list: res.data });
+                console.log(res.data);
+                return res.data;
+
+            }
+
+        })
+    },
+    CategoryList({commit},id){
+        return CategoryList(id)
+        .then((res) => {
+
+            if (res.status !== 200) {
+                return false;
+            } else {
+                commit("CategoryList", { id, list: res.data });
+                return res.data;
+
+            }
+
+        })
+    },
     logout() {
         console.log("logout")
         if (!JSON.parse(localStorage.getItem("idSave"))) {

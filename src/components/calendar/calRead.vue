@@ -135,7 +135,7 @@ export default {
       data.unid = this.GetSaveSchedule.detail.unid;
 
       await this.$store.dispatch("calendarjs/CalDelete", data);
-      this.$router.push(`/schedule_more/${this.GetSaveSchedule.detail.where}`);
+      this.$router.push(`schedule_more/${this.GetSaveSchedule.detail.where}`);
     },
     // 전 url 이동
     RouterBack() {
@@ -202,7 +202,7 @@ export default {
     },
     Edit() {
       this.$store.commit("calendarjs/isEdit", true);
-      this.$router.push("/schedule_more/write");
+      this.$router.push({name:'calwrite'});
     },
   },
 };

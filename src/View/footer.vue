@@ -1,7 +1,7 @@
 <template>
   <div>
     <ul class="btm_btn clfix">
-      <li class="home"><router-link to="/"></router-link></li>
+      <li class="home"><router-link :to="{ name: 'root' }"></router-link></li>
       <li class="back" @click="RouterBack"><a></a></li>
       <li class="go" @click="RouterGo"><a></a></li>
       <li class="btm_menu"><a></a></li>
@@ -13,11 +13,12 @@
     <div class="btm_menu_list">
       <div class="list_inner">
         <ul class="clfix">
-          <li v-for="(value, name) in mainmenu" :key="name">
+          <li v-for="(value, name) in GetCategory['main']" :key="name">
             <!-- v-if="value.key !== 'person'" -->
-            <router-link :to="`/${value.key}_more`"
-              ><span :class="`${value.key}_f_ic`"></span
-              >{{ GetMainLanguage.header[value.key] }}</router-link
+            <a 
+            @click="MenuGo(value)"
+              ><span :class="`${value.category}_f_ic`"></span
+              >{{ value.title }}</a
             >
           </li>
         </ul>
@@ -29,7 +30,11 @@
       :modalon="modalon"
       @ModalOff="ModalOff"
     ></OrgFooter>
-    <PersonCard @ModalOff="CardOff" :item="cardItem" :modalon="cardon"></PersonCard>
+    <PersonCard
+      @ModalOff="CardOff"
+      :item="cardItem"
+      :modalon="cardon"
+    ></PersonCard>
   </div>
 </template>
 
@@ -37,13 +42,15 @@
 import { mapState, mapGetters } from "vuex";
 import PersonCard from "./PersonCard.vue";
 import OrgFooter from "./OrgFooter.vue";
+import { CategoryList } from "../api/index.js";
 export default {
-  created() {},
+  created() {
+  },
   computed: {
     ...mapState("mailjs", ["mail"]),
     ...mapState(["org"]),
     ...mapGetters("mailjs", ["GetMailDetail", "GetMail", "GetMailConfig"]),
-    ...mapGetters(["GetMainLanguage"]),
+    ...mapGetters(["GetMainLanguage","GetCategory"]),
     path() {
       return this.$route.path.substring(this.$route.path.lastIndexOf("/") + 1);
     },
@@ -57,12 +64,28 @@ export default {
       modalAutoOrg: 0,
       modalon: false,
       cardItem: {},
-      cardon:false,
+      cardon: false,
+      mainmenu: [],
     };
   },
 
   methods: {
-    CardOff(){
+    MenuGo(value) {
+      this.$router.push({
+        name: `${value.category}`,
+        params: { type: value.lnbid },
+      });
+    },
+    InitMenu(id) {
+      CategoryList(id).then((res) => {
+        console.log(res,"resres")
+        for (let key in res.data) {
+          this.mainmenu[key] = res.data[key];
+        }
+        console.log(this.mainmenu,"thismainmenu")
+      });
+    },
+    CardOff() {
       this.cardon = false;
     },
     CardOpen(item) {

@@ -7,25 +7,25 @@
         <li>
           <h3 :class="{active:often}" @click="toggle('often')"><a>자주 사용하는 서식</a></h3>
           <ul :class="{active:often}">
-            <li v-for="(value,index) in GetApproval.formList_favorite.data" :key="index"><router-link to="write">{{value.category}}</router-link></li>
+            <li v-for="(value,index) in GetApproval.formList_favorite.data" :key="index"><router-link :to="{name:'appwrite'}">{{value.category}}</router-link></li>
           </ul>
         </li>
         <li>
           <h3 :class="{active:recent}" @click="toggle('recent')"><a>최근에 사용한 서식</a></h3>
           <ul :class="{active:recent}">
-            <li v-for="(value,index) in GetApproval.formList_recent.data" :key="index"><router-link to="write">{{value.category}}</router-link></li>
+            <li v-for="(value,index) in GetApproval.formList_recent.data" :key="index"><router-link :to="{name:'appwrite'}">{{value.category}}</router-link></li>
           </ul>
         </li>
         <li>
           <h3 :class="{active:all}" @click="toggle('all')"><a>서식함</a></h3>
           <ul :class="{active:all}">
-            <li  v-for="(value,index) in GetApproval.formList_all.data" :key="index"><router-link to="write">{{value.category}}</router-link></li>
+            <li  v-for="(value,index) in GetApproval.formList_all.data" :key="index"><router-link :to="{name:'appwrite'}">{{value.category}}</router-link></li>
           </ul>
         </li>
         <li>
           <h3 class="active" @click="toggle('var')"><a>서식함</a></h3>
           <ul class="active">
-            <li v-for="(value,name) in formCode" :key="name"><router-link :to="`write?form=${name}`">{{value}}</router-link></li>
+            <li v-for="(value,name) in formCode" :key="name"><router-link :to="{name:'appwrite',query:{form:name}}">{{value}}</router-link></li>
           </ul>
         </li>
       </ul>

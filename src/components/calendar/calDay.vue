@@ -19,7 +19,7 @@
             <span>{{ this.daysSort[this.theDayOfWeek] }}</span>
             <b>{{ this.today }}</b>
           </div>
-          <div v-for="(value, index) in GetSchedule.calList.day" :key="index">
+          <div v-for="(value, index) in (GetSchedule.calList.day.allday)" :key="index">
             <p v-if="value.allDay">{{value.subject}}</p>
           </div>
         </div>
@@ -36,14 +36,15 @@
               <div class="row">
                 <div
                   class="col1"
-                  v-for="(v, i) in isToday(GetSchedule.calList.day)"
-                  :key="i"
+                  v-for="(value, index) in (GetSchedule.calList.day.data)"
+                  :key="index"
                 >
                   <!-- :style="{ width: `calc(100% / ${isToday(GetSchedule.calList.day).length})` }" -->
-                  <div class="col_wrap" v-if="!v.allDay">
+                  <div class="col_wrap" >
                     <div class="schedule_wrap">
-                      <div class="schedule time_schedule" :style="SetStyle(v)">
-                        <div class="schedule_box" @click="Detail(v)">
+                      <div class="schedule time_schedule" v-for="(v, i) in isToday(value)"
+                  :key="i" :style="SetStyle(v)">
+                        <div class="schedule_box" v-if="!v.allDay" @click="Detail(v)">
                           <p>
                             <em class="time"
                               >{{ v.starttime.split(":")[0] }}:{{
@@ -304,7 +305,7 @@ export default {
         where: "day",
       });
       // await
-      this.$router.push("/schedule_more/read");
+      this.$router.push({name:'calread'});
     },
   },
 };

@@ -429,7 +429,7 @@ export default {
         data,
         date: result,
       });
-      this.$router.push("/schedule_more/list");
+      this.$router.push({name:'callist'});
     },
     oneDetail(value) {
       this.$store.commit("calendarjs/SaveScheduleUnid", {
@@ -437,7 +437,7 @@ export default {
         where: "month",
       });
       // await
-      this.$router.push("/schedule_more/read");
+      this.$router.push({name:'calread'});
     },
   },
 };

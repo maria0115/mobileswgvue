@@ -14,6 +14,13 @@ module.exports = {
       //   // 프록시 요청을 보낼 서버의 주소
       //   target: 'http://localhost:3000'
       // },
+      '/api/navigation': {
+        target: 'http://localhost:4001/api/navigation',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/api/navigation': ''
+        }
+      },
       '/api/form': {
         target: 'http://localhost:4001/api/form',
         changeOrigin: true,

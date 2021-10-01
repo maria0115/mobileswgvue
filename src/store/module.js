@@ -4,5 +4,6 @@ export const dataStore = {
     state: {
         language: {},  //다국어}
         credentials:{},
+        category:{},
     }
 }

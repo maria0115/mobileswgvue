@@ -35,10 +35,10 @@
           <div class="impor">
             <p>
               {{ transTime(value.created)
-              }}<img
+              }}<span
                 class="star"
                 @click="followUp(value.unid)"
-                :src="`../mobile/img/star${important(value.followup)}.png`"
+                :src="`/mobile/img/star${important(value.followup)}.png`"
                 alt="중요메일"
               />
             </p>
@@ -104,7 +104,7 @@
         </div>
       </div>
     </div>
-    <router-link to="/mail_more"
+    <router-link :to="{name:'mail'}"
       ><span class="m_more"><a></a></span
     ></router-link>
   </div>
@@ -231,7 +231,7 @@ export default {
           data.time = `${this.STime}:${this.SMin}:00`;
           data.body = this.editor.getHTML();
           await this.$store.dispatch("mailjs/FollowupSet", data);
-          this.$router.push("/my");
+          this.$router.push({name:'My'});
         }
         this.editor.destroy();
       }

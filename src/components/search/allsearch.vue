@@ -18,7 +18,7 @@
           </li>
         </ul>
         <span class="ex_more">
-          <router-link to="/search/person"
+          <router-link :to="{name:'personsearch'}"
             ><a
               >{{GetSearchLanguage.menu.person}} {{GetSearchLanguage.more}}<img
                 src="../../mobile/img/more_icon.png"

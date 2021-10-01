@@ -46,24 +46,24 @@
             </dl>
           </div>
           <div class="info_btm">
-            <router-link to="/mail_more/inbox_detail">
+            <router-link :to="{name:'inbox'}">
             <span
               >새 메일 <em>{{ GetMyInfo.mailCount }}</em></span
             ></router-link>
-            <router-link to="/approval_more/approve"><span
+            <router-link :to="{name:'apptodolist'}"><span
               >결재 <em>{{ GetMyInfo.approvalCount }}</em></span
             ></router-link>
           </div>
         </div>
         <div class="top_rig">
           <div class="m_mail2">
-            <router-link to="/mail_more/inbox_detail">
+            <router-link :to="{name:'inbox'}">
               <span><img src="../../mobile/img/mail_icon_w.png" alt="" /></span>
               <em>받은메일</em>
             </router-link>
           </div>
           <div class="m_cal">
-            <router-link to="/approval_more/approve">
+            <router-link :to="{name:'apptodolist'}">
               <span><img src="../../mobile/img/app_icon_p.png" alt="" /></span>
               <em>전자결재</em>
             </router-link>
@@ -71,7 +71,7 @@
         </div>
         <div class="mld_cen clfix">
           <div class="m_app">
-            <router-link to="/schedule_more/month">
+            <router-link :to="{name:'calmonth'}">
               <span
                 ><img src="../../mobile/img/cal_icon_w.png" alt="일정"
               /></span>
@@ -79,7 +79,7 @@
             </router-link>
           </div>
           <div class="m_board">
-            <router-link to="/board">
+            <router-link :to="{name:'board'}">
               <span
                 ><img src="../../mobile/img/board_icon_p.png" alt="공지사항"
               /></span>
@@ -87,7 +87,7 @@
             </router-link>
           </div>
           <div class="m_noti">
-            <router-link to="/board_more/notice">
+            <router-link :to="{name:'notice'}">
               <span
                 ><img src="../../mobile/img/noti_icon_p.png" alt="공지사항"
               /></span>

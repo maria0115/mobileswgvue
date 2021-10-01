@@ -64,7 +64,7 @@
             </div>
             <div slot="error">
               Error message, click
-              <router-link to="/app">here</router-link> to retry
+              <router-link :to="{name:'appmore'}">here</router-link> to retry
             </div>
           </infinite-loading>
         </ul>
@@ -89,6 +89,7 @@ import "vue-swipe-actions/dist/vue-swipe-actions.css";
 export default {
   created() {
     this.infiniteId += 1;
+    console.log(this.path,"path")
   },
   components: {
     InfiniteLoading,
@@ -108,7 +109,8 @@ export default {
     ...mapGetters("configjs", ["GetConfig"]),
     path() {
       // if (this.$route.path.indexOf("custom") === -1) {
-      return this.$route.path.substring(this.$route.path.indexOf("/", 1) + 1);
+        
+      return this.$route.path.substring(this.$route.path.lastIndexOf("/")+1);
       // } else {
       //   return "custom";
       // }
@@ -135,7 +137,7 @@ export default {
       value.where = "todoview";
       console.log(value)
       this.$store.commit("approjs/AppSaveUnid",{unid:value.unid,openurl:value.openurl});
-      this.$router.push("/approval_more/todoview");
+      this.$router.push({name:'apptodoview'});
 
     },
     // 스크롤 페이징

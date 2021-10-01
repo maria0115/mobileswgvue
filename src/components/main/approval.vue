@@ -42,7 +42,7 @@
       
     </div> -->
       <span class="app_more"
-        ><router-link to="/approval_more/approve"></router-link
+        ><router-link :to="{name:'apptodolist'}"></router-link
       ></span>
     </div>
     <span class="load" @click="addApprove('approve')" v-if="moreList.approve"
@@ -95,7 +95,7 @@
         </div>
       </div>
       <span class="app_more"
-        ><router-link to="/approval_more/ing"></router-link
+        ><router-link :to="{name:'apping'}"></router-link
       ></span>
     </div>
     <span

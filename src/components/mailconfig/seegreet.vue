@@ -1,10 +1,10 @@
 <template>
   <div>
     <h2 class="mail_st_header">
-      <router-link to="greet">
+      <router-link :to="{name:'greet'}">
         <img src="../../mobile/img/wmail_back.png" alt="" /> </router-link
       >인사말 보기
-      <span><router-link to="modifygreet">편집</router-link></span>
+      <span><router-link :to="{name:'modifygreet'}">편집</router-link></span>
     </h2>
     <div class="m_contents07">
       <ul>

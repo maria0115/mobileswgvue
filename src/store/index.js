@@ -29,6 +29,7 @@ const dataState = createPersistedState({
         'configjs.store.config',
         'configjs.store.systemcolor',
         'store.language',
+        'store.category',
         'mainjs.store.myinfo',
     ]
 })
@@ -63,6 +64,7 @@ export const store = new VueX.Store({
             CopyTo: [],
             BlindCopyTo: []
         },
+        listOfCategory:{},
 
     },
     mutations,
@@ -89,6 +91,9 @@ export const store = new VueX.Store({
         GetMailLanguage: (state) => {
             return state.store.language.mail;
         },
+        GetCategory: (state) => {
+            return state.store.category;
+        }
     },
     // }
 })

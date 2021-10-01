@@ -1,5 +1,5 @@
 <template>
-  <span class="w_mail_btn"><router-link to="/board_more/write"></router-link></span>
+  <span class="w_mail_btn"><router-link :to="{name:'boardwrite'}"></router-link></span>
 </template>
 
 <script>

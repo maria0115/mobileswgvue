@@ -7,56 +7,58 @@
     ]"
     des="main2"
   >
-  <div class="modal_wrap">
-    <div class="se_header">
-      <div class="main_header">
-        <span class="ham" @click="clickHam"></span>
-          ><h1 class="logo">
-            <a @click="GoHome"></a></h1>
-        <div class="allim_btn">
-          <span class="allim_icon"></span>
-          <span class="allim_num">2</span>
+    <div class="modal_wrap">
+      <div class="se_header">
+        <div class="main_header">
+          <span class="ham" @click="clickHam"></span>
+          >
+          <h1 class="logo">
+            <a @click="GoHome"></a>
+          </h1>
+          <div class="allim_btn">
+            <span class="allim_icon"></span>
+            <span class="allim_num">2</span>
+          </div>
         </div>
+        <SearchHeader></SearchHeader>
       </div>
-      <SearchHeader></SearchHeader>
-    </div>
-    <!-- 햄버거 -->
-    <div class="main_sub">
-      <div class="main_s_t">
-        <div class="clfix">
-          <span class="basic_img on">
-            <img
-              v-if="GetMyInfo.photo !== undefined"
-              :src="url(GetMyInfo.photo)"
-              alt=""
-              @error="$event.target.src = '../../mobile/img/img03.png'"
-            />
-            <em class="no_img"
-              ><b>{{ GetMyInfo.info.name.split("")[0] }}</b></em
-            >
-          </span>
-          <dl>
-            <dt>
-              <span>{{ GetMyInfo.info.name }}</span>
-              {{ GetMyInfo.info.position }}
-            </dt>
-            <dd>
-              {{ GetMyInfo.info.dept }}
-            </dd>
-          </dl>
-        </div>
-        <router-link to="/setting"
-          ><span class="main_sub_set"><a></a></span
-        ></router-link>
-        <span class="main_sub_close" @click="editmodeReset"></span>
-        <!-- <h2 class="sub_logo">
+      <!-- 햄버거 -->
+      <div class="main_sub">
+        <div class="main_s_t">
+          <div class="clfix">
+            <span class="basic_img on">
+              <img
+                v-if="GetMyInfo.photo !== undefined"
+                :src="url(GetMyInfo.photo)"
+                alt=""
+                @error="$event.target.src = '/mobile/img/img03.png'"
+              />
+              <em class="no_img"
+                ><b>{{ GetMyInfo.info.name.split("")[0] }}</b></em
+              >
+            </span>
+            <dl>
+              <dt>
+                <span>{{ GetMyInfo.info.name }}</span>
+                {{ GetMyInfo.info.position }}
+              </dt>
+              <dd>
+                {{ GetMyInfo.info.dept }}
+              </dd>
+            </dl>
+          </div>
+          <router-link :to="{ name: 'setting' }"
+            ><span class="main_sub_set"><a></a></span
+          ></router-link>
+          <span class="main_sub_close" @click="editmodeReset"></span>
+          <!-- <h2 class="sub_logo">
           <a href="../mobile/mob_main.html"></a>
         </h2>
         <router-link to="/setting"
           ><span class="main_sub_set"><a></a></span
         ></router-link> -->
-      </div>
-      <!-- <div v-if="this.GetConfig.display == 'portal'" class="menu00">
+        </div>
+        <!-- <div v-if="this.GetConfig.display == 'portal'" class="menu00">
         <strong>전체메뉴</strong>
         <ul class="allmenu_list clfix">
           <li v-for="(value, name) in mainmenu" :key="name">
@@ -72,137 +74,149 @@
           </li>
         </ul>
       </div> -->
-      <div class="menu01" des="main2">
-        <!-- <strong desc="메뉴관리">{{
+        <div class="menu01" des="main2">
+          <!-- <strong desc="메뉴관리">{{
           GetMainLanguage.hamburger.menu.menuset
         }}</strong> -->
-        <div class="mymenu" v-if="!edit">
-          <span class="btn_edit" @click="editmodeChange">{{
-            GetMainLanguage.hamburger.button.edit
-          }}</span>
-          <ul class="clfix">
-            <li v-for="(value, name) in this.menuposition" @click="MenuGo(!edit,value)" :key="name">
-              <a>
+          <div class="mymenu" v-if="!edit">
+            <span class="btn_edit" @click="editmodeChange">{{
+              GetMainLanguage.hamburger.button.edit
+            }}</span>
+            <ul class="clfix">
+              <li
+                v-for="(value, name) in this.menuposition"
+                @click="MenuGo(!edit, value)"
+                :key="name"
+              >
+                <a>
+                  <span>
+                    <img
+                      :src="`/mobile/img/menu_icon${value.category}.png`"
+                      :alt="`${value.title}`"
+                    />
+                  </span>
+                  <em>{{ value.title }}</em>
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div class="editmenu" v-else>
+            <div class="edit">
+              <span @click="resetItem">{{
+                GetMainLanguage.hamburger.button.reset
+              }}</span>
+              <span class="btn_save" @click="complete">{{
+                GetMainLanguage.hamburger.button.success
+              }}</span>
+            </div>
+            <ul class="clfix">
+              <li v-for="(value, name) in mainmenu" :key="name">
                 <span>
                   <img
-                    :src="`../mobile/img/menu_icon${value.key}.png`"
-                    :alt="`${value.name}`"
+                    :src="`/mobile/img/menu_icon${value.category}.png`"
+                    :alt="`${value.title}`"
                   />
+                  <b
+                    @click="deleteItem(value, name)"
+                    :class="{ on: isOn(value, name) }"
+                  ></b>
                 </span>
-                <em>{{ GetMainLanguage.header[value.key] }}</em>
-              </a>
+                <em>{{ value.title }}</em>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="menu02" des="main2" v-if="this.GetConfig.display == 'menu'">
+          <strong desc="포틀릿 서비스">{{
+            GetMainLanguage.hamburger.menu.portlet
+          }}</strong>
+          <ul class="my_list clfix">
+            <li v-for="(value, name) in GetConfig.main.portlet" :key="name">
+              <span
+                :class="{ on: value.service }"
+                @click="checkService(value, name)"
+              ></span
+              >{{ GetMainLanguage.portlet.portletposition[value.key] }}
             </li>
           </ul>
         </div>
-        <div class="editmenu" v-else>
-          <div class="edit">
-            <span @click="resetItem">{{
-              GetMainLanguage.hamburger.button.reset
-            }}</span>
-            <span class="btn_save" @click="complete">{{
-              GetMainLanguage.hamburger.button.success
-            }}</span>
-          </div>
-          <ul class="clfix">
-            <li v-for="(value, name) in mainmenu" :key="name">
-              <span>
-                <img
-                  :src="`../mobile/img/menu_icon${value.key}.png`"
-                  :alt="`${value.name}`"
-                />
-                <b
-                  @click="deleteItem(value, name)"
-                  :class="{ on: isOn(value, name) }"
-                ></b>
-              </span>
-              <em>{{ GetMainLanguage.header[value.key] }}</em>
-            </li>
+        <div class="menu03" des="main2" v-if="this.GetConfig.display == 'menu'">
+          <strong desc="포틀릿 순서변경">{{
+            GetMainLanguage.hamburger.menu.portletposition
+          }}</strong>
+          <ul class="change clfix">
+            <draggable
+              @change="RealTimeData()"
+              class="list-group"
+              tag="ul"
+              v-model="GetConfig.main.portlet"
+              v-bind="dragOptions"
+              @start="drag = true"
+              @end="drag = false"
+            >
+              <transition-group
+                type="transition"
+                :name="!drag ? 'flip-list' : null"
+              >
+                <template v-for="(value, name) in GetConfig.main.portlet">
+                  <li v-if="value.service" :key="value.key">
+                    <em>{{ numSort(value, name) + 1 }}.</em>
+                    <span>{{
+                      GetMainLanguage.portlet.portletposition[value.key]
+                    }}</span>
+                  </li>
+                </template>
+              </transition-group>
+            </draggable>
           </ul>
         </div>
       </div>
-      <div class="menu02" des="main2" v-if="this.GetConfig.display == 'menu'">
-        <strong desc="포틀릿 서비스">{{
-          GetMainLanguage.hamburger.menu.portlet
-        }}</strong>
-        <ul class="my_list clfix">
-          <li v-for="(value, name) in GetConfig.main.portlet" :key="name">
-            <span
-              :class="{ on: value.service }"
-              @click="checkService(value, name)"
-            ></span
-            >{{ GetMainLanguage.portlet.portletposition[value.key] }}
+      <!-- 햄버거 -->
+
+      <div class="main_tabmenu">
+        <ul class="main_menu clfix">
+          {{
+            this.Category
+          }}
+          <li
+            :class="[{ active: Category === 'My' || Category === 'MyIcon' }]"
+            class="tab"
+          >
+            <router-link
+              :to="{ name: 'My' }"
+              v-if="this.GetConfig.display == 'menu'"
+              >MY</router-link
+            >
+            <router-link
+              :to="{ name: 'MyIcon' }"
+              v-else-if="
+                this.GetConfig.display == 'portal' ||
+                this.GetConfig.display == 'potal'
+              "
+              des="main2"
+              >MY</router-link
+            >
+          </li>
+          <li
+            :class="[
+              {
+                active:
+                  Category === `main${value.category}` && value.lnbid == Type,
+              },
+            ]"
+            class="tab"
+            v-for="(value, name) in GetConfig.main.menuportlet"
+            :key="name"
+          >
+            <!-- <router-link :to="`${MenuRouter(value.key)}`">{{
+            GetMainLanguage.header[value.key]
+          }}</router-link> -->
+
+            <a @click="MainGo(value)">{{ value.title }}</a>
           </li>
         </ul>
       </div>
-      <div class="menu03" des="main2" v-if="this.GetConfig.display == 'menu'">
-        <strong desc="포틀릿 순서변경">{{
-          GetMainLanguage.hamburger.menu.portletposition
-        }}</strong>
-        <ul class="change clfix">
-          <draggable
-            @change="RealTimeData()"
-            class="list-group"
-            tag="ul"
-            v-model="GetConfig.main.portlet"
-            v-bind="dragOptions"
-            @start="drag = true"
-            @end="drag = false"
-          >
-            <transition-group
-              type="transition"
-              :name="!drag ? 'flip-list' : null"
-            >
-              <template v-for="(value, name) in GetConfig.main.portlet">
-                <li v-if="value.service" :key="value.key">
-                  <em>{{ numSort(value, name) + 1 }}.</em>
-                  <span>{{
-                    GetMainLanguage.portlet.portletposition[value.key]
-                  }}</span>
-                </li>
-              </template>
-            </transition-group>
-          </draggable>
-        </ul>
-      </div>
-    </div>
-    <!-- 햄버거 -->
-
-    <div class="main_tabmenu">
-      <ul class="main_menu clfix">
-        {{
-          this.Category
-        }}
-        <li
-          :class="[
-            { active: Category === 'my' || Category === 'myicon' },
-            { tab: Category === 'my' || Category === 'myicon' },
-          ]"
-        >
-          <router-link to="my" v-if="this.GetConfig.display == 'menu'"
-            >MY</router-link
-          >
-          <router-link
-            to="myicon"
-            v-else-if="this.GetConfig.display == 'portal'"
-            des="main2"
-            >MY</router-link
-          >
-        </li>
-        <li
-          :class="[
-            { active: Category === value.key },
-            { tab: Category === value.key },
-          ]"
-          v-for="(value, name) in GetConfig.main.menuportlet"
-          :key="name"
-        >
-          <router-link :to="`/${MenuRouter(value.key)}`">{{
-            GetMainLanguage.header[value.key]
-          }}</router-link>
-        </li>
-      </ul>
-    </div>
-    <!-- <ul class="list-group drag p20">
+      <!-- <ul class="list-group drag p20">
         <draggable :list="items" class="dragArea"
                     :options="{animation:300, handle:'.handle'}">
             <li class="list-group-item"
@@ -217,8 +231,8 @@
             </li>
         </draggable>
     </ul> -->
-    <router-view :key="$route.fullPath"></router-view>
-    <!-- <ul class="quick" v-if="this.GetConfig.display == 'menu'">
+      <router-view :key="$route.fullPath"></router-view>
+      <!-- <ul class="quick" v-if="this.GetConfig.display == 'menu'">
       <li>
         <a>{{ GetMainLanguage.footer.home }}</a>
       </li>
@@ -232,7 +246,7 @@
         <a>{{ GetMainLanguage.footer.logout }}</a>
       </li>
     </ul> -->
-    <!-- <div
+      <!-- <div
       class="quickmenu2"
       v-else-if="this.GetConfig.display == 'portal'"
       des="main2"
@@ -253,12 +267,19 @@
         </li>
       </ul>
     </div> -->
-    <div class="logout" v-if="this.GetConfig.display == 'portal'" des="main2">
-      <span @click="logout"><a>로그아웃</a></span>
+      <div
+        class="logout"
+        v-if="
+          this.GetConfig.display == 'portal' ||
+          this.GetConfig.display == 'potal'
+        "
+        des="main2"
+      >
+        <span @click="logout"><a>로그아웃</a></span>
+      </div>
+      <div class="top_btn"></div>
+      <Org :modalon="modalon" @ModalOff="ModalOff"></Org>
     </div>
-    <div class="top_btn"></div>
-    <Org :modalon="modalon" @ModalOff="ModalOff"></Org>
-  </div>
   </div>
 </template>
 <script src="//cdnjs.cloudflare.com/ajax/libs/vue/2.5.2/vue.min.js"></script>
@@ -272,6 +293,7 @@ import SearchHeader from "./SearchHeader.vue";
 import $ from "jquery";
 import draggable from "vuedraggable";
 import Org from "./Org.vue";
+import { CategoryList } from "../api/index.js";
 export default {
   components: {
     SearchHeader,
@@ -287,20 +309,14 @@ export default {
       oncategory: "my",
       modalAutoOrg: 0,
       modalon: false,
+      mainmenu: [],
     };
   },
   computed: {
-    ...mapState("mainjs",["main"]),
-    ...mapGetters([
-      "GetMainLanguage",
-    ]),
-    ...mapGetters("mainjs",[
-      "GetMyInfo",
-    ]),
-    ...mapGetters("configjs",[
-      "GetConfig",
-      "GetSystemColor",
-    ]),
+    ...mapState("mainjs", ["main"]),
+    ...mapGetters(["GetMainLanguage", "GetCategory"]),
+    ...mapGetters("mainjs", ["GetMyInfo"]),
+    ...mapGetters("configjs", ["GetConfig", "GetSystemColor"]),
     // 사용자가 설정한 display color
     color() {
       if (this.GetSystemColor === "dark") {
@@ -336,7 +352,10 @@ export default {
     // 현재 url에 따른 카테고리 값
     Category() {
       // console.log(this.$route.path.split("/")[1])
-      return this.$route.path.split("/")[1];
+      return this.$route.name;
+    },
+    Type() {
+      return this.$route.params["type"];
     },
   },
   created() {
@@ -357,15 +376,30 @@ export default {
       $("html").removeClass("normal");
       $("html").addClass("mar15");
     }
-    console.log(this.$route.fullPath,"fullPath")
-    if(this.$route.fullPath == "/"||this.$route.fullPath == "/my"||this.$route.fullPath == "/myicon"){
-      console.log(this.GetConfig.display,"display")
-      if ((this.GetConfig.display == "portal"||this.GetConfig.display == "potal") && this.$route.path !== "/myicon") {
-        this.$router.push("myicon");
-      } else if (this.GetConfig.display == "menu" && this.$route.path !== "/my") {
-        this.$router.push("my");
-      }
+    this.InitMenu();
+    console.log("왜 보드 크리에이티드는 안하냐")
+    
 
+
+    if (
+      this.$route.name == "main" ||
+      this.$route.name == "root" ||
+      this.$route.name == "My" ||
+      this.$route.name == "MyIcon"
+    ) {
+      console.log(this.GetConfig.display, "display");
+      if (
+        (this.GetConfig.display == "portal" ||
+          this.GetConfig.display == "potal") &&
+        this.$route.name !== "MyIcon"
+      ) {
+        this.$router.push({ name: "MyIcon" });
+      } else if (
+        this.GetConfig.display == "menu" &&
+        this.$route.name !== "My"
+      ) {
+        this.$router.push({ name: "My" });
+      }
     }
   },
   mounted() {
@@ -373,9 +407,27 @@ export default {
     $(".wrap").css("font-family", this.GetConfig.font.font);
   },
   methods: {
-    logout(){
+    MainGo(value) {
+      this.$router.replace({
+        name: `main${value.category}`,
+        params: { type: value.lnbid },
+      }).catch(error => {
+        if(error.name != "NavigationDuplicated" ){
+          throw error;
+        }
+      });
+    },
+    MoreGo(value) {},
+    InitMenu() {
+      CategoryList("").then((res) => {
+        for (let key in res.data) {
+          this.mainmenu[key] = res.data[key];
+        }
+      });
+    },
+    logout() {
       this.$store.dispatch("logout");
-      this.$router.push("/login");
+      this.$router.push({ name: "login" });
     },
     ModalOff() {
       this.modalon = false;
@@ -383,19 +435,19 @@ export default {
     orgClick(to) {
       this.modalon = true;
     },
-    MenuGo(isNotEdit,value){
-      if(isNotEdit){
-        this.$router.replace(`/${value.key}_more`);
-
+    MenuGo(isNotEdit, value) {
+      if (isNotEdit) {
+        this.$router.push({
+          name: `${value.category}`,
+          params: { type: value.lnbid },
+        });
       }
-
     },
-    MenuRouter(key){
-      if(key==="schedule"){
-        return `${key}_more`
+    MenuRouter(key) {
+      if (key === "schedule") {
+        return `${key}_more`;
       }
       return key;
-
     },
     // 메뉴 관리 편집 후 완료 버튼 누르지 않아도 data vind 으로 변경이 되어 있어 hamberger button click 시 다시 사용자 설정값 가져옴
     clickHam() {
@@ -441,7 +493,7 @@ export default {
       var result = this.isOn(item, index);
       if (result) {
         this.menuposition = this.menuposition.filter(
-          (element) => element.key !== item.key
+          (element) => element.lnbid !== item.lnbid || element.category !== item.category
         );
       } else {
         this.menuposition.push(item);
@@ -496,22 +548,27 @@ export default {
         setting: "portlet",
       });
     },
+    setCategory(value) {
+      this.Category = value.category;
+    },
     url(sabun) {
       return this.main.photo.replace(/@/g, sabun);
     },
     isOn(value, name) {
       // console.log(this.menuposition,value,name)
       if (
-        this.menuposition.findIndex((element) => element.key === value.key) !==
-        -1
+        this.menuposition.findIndex(
+          (element) => element.lnbid === value.lnbid
+        ) !== -1 && this.menuposition.findIndex(
+          (element) => element.category === value.category
+        ) !== -1
       ) {
         return true;
       }
       return false;
     },
-    GoHome(){
-      console.log("여기는 들어오오?")
-      this.$router.push("/")
+    GoHome() {
+      this.$router.push({ name: "root" });
     },
   },
 };

@@ -64,7 +64,7 @@ export default {
     GoEmail() {
       this.$store.commit("OrgPointer","SendTo");
       this.$store.commit("OrgData",this.item);
-      this.$router.replace("/mail_more/write_mail").catch(error => {
+      this.$router.replace({name:'WriteMail'}).catch(error => {
         if(error.name != "NavigationDuplicated" ){
           throw error;
         }

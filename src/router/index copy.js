@@ -166,15 +166,10 @@ const router = new Router({
                 next();
               },
             }, {
-              path: 'board/:type',
+              path: 'board',
               component: board,
               name:'mainboard',
               beforeEnter: (to, from, next) => {
-                console.log("beforeenter안오냐 근데 여기선 아무짝에도 쓸모 없음 created로 가셔 해야함")
-                // store.dispatch("CategoryList",to.params.type)
-                // .then((res) => {
-                //   console.log(res,"CategoryList");
-                // });
                 store.dispatch("mainjs/GetBoard", {
                   boardtype: "notice",
                   category: "more",
@@ -196,11 +191,6 @@ const router = new Router({
             }, {
               path: 'person',
               component: person
-            },
-            {
-              path: 'schedule',
-              name:'mainschedule',
-              redirect:'../schedule_more'
             }
           ]
     
@@ -337,7 +327,7 @@ const router = new Router({
         },
         {
           path: 'mail_more',
-          name:'mail',
+          name:'mailmore',
           component: MailList,
           beforeEnter: (to, from, next) => {
     
@@ -472,7 +462,7 @@ const router = new Router({
               name: 'Custom',
               component: InboxDetail,
               beforeEnter: (to, from, next) => {
-                console.log("custom 폴더로 왔다")
+                // 
                 store.dispatch("mailjs/GetMailDetail", { mailtype: "custom", folderId: to.params.folderId });
                 // store.dispatch("GetMailDetail", { mailtype: "custom",folderId:this.customFolder });
                 next();
@@ -543,7 +533,7 @@ const router = new Router({
           redirect: 'mailconfig/set_config',
           children: [
             {
-              name:'mailsetconfig',
+              name:'setconfig',
               path: 'set_config',
               component: set_config,
               beforeEnter: (to, from, next) => {
@@ -687,7 +677,7 @@ const router = new Router({
         },
         {
           path: 'schedule_more',
-          name:'schedule',
+          name:'calmore',
           component: Calendar,
           redirect: 'schedule_more/month',
           beforeEnter: (to, from, next) => {
@@ -762,7 +752,7 @@ const router = new Router({
         },
         {
           path: 'approval_more',
-          name:'approval',
+          name:'appmore',
           component: Approve,
           redirect: 'approval_more/approve',
           beforeEnter: (to, from, next) => {
@@ -916,7 +906,7 @@ const router = new Router({
         {
     
           path: 'board_more',
-          name:'board',
+          name:'boardmore',
           component: Board,
           redirect: 'board_more/notice',
           beforeEnter: (to, from, next) => {
@@ -1012,6 +1002,7 @@ router.beforeEach((to, from, next) => {
   // let isLogged = ... 
   // /login URL은 로그인 페이지 
   // to.meta.isLogged && !isLogged ? next({ path: '/login', replace: true }) : next() 
+  console.log("beforeEach", to, from)
   if (to.name === 'login') {
     next();
     return;

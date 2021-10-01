@@ -25,7 +25,7 @@
             <h2>{{ this.GetLanguageConfig.allim.setallim }}</h2>
             <ul>
               <li>
-                <router-link :to="`/setting/alarm`"
+                <router-link :to="{ name: 'setalarm'}"
                   ><strong>{{
                     this.GetLanguageConfig.allim.menuallim
                   }}</strong>
@@ -46,7 +46,7 @@
                 class="slideup"
                 :class="{ active: this.GetConfig.etiquette.use }"
               >
-                <router-link :to="`/setting/etiq`">
+                <router-link :to="{ name: 'setetiq'}">
                   <strong
                     ><em class="start">{{
                       time(this.GetConfig.etiquette.starttime)
@@ -77,7 +77,7 @@
             <h2>{{ this.GetLanguageConfig.display.setdisplay }}</h2>
             <ul>
               <li>
-                <router-link :to="`/setting/screen`">
+                <router-link :to="{ name: 'setscreen'}">
                   <strong>{{
                     this.GetLanguageConfig.display.maindisplay
                   }}</strong>
@@ -89,7 +89,7 @@
                 </router-link>
               </li>
               <li>
-                <router-link :to="`/setting/num`">
+                <router-link :to="{ name: 'setnum'}">
                   <strong>{{
                     this.GetLanguageConfig.display.listcount
                   }}</strong>
@@ -112,14 +112,14 @@
             <h2>{{ this.GetLanguageConfig.style.setstyle }}</h2>
             <ul>
               <li>
-                <router-link :to="`/setting/font`">
+                <router-link :to="{ name: 'setfont'}">
                   <strong>{{
                     this.GetLanguageConfig.style.setfont
                   }}</strong>
                 </router-link>
               </li>
               <li>
-                <router-link :to="`/setting/dark`">
+                <router-link :to="{ name: 'setdark'}">
                   <strong>{{
                     this.GetLanguageConfig.style.setdark
                   }}</strong>

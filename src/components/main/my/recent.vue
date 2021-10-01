@@ -11,7 +11,7 @@
         >
       </li>
     </ul>
-    <span class="m_more"><router-link to="/board_more"></router-link></span>
+    <span class="m_more"><router-link :to="{name:'board'}"></router-link></span>
   </div>
 </template>
 

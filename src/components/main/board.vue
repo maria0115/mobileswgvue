@@ -16,7 +16,7 @@
         </li>
       </ul>
       <span class="m_more"
-        ><router-link :to="`/board_more/${key}`"></router-link
+        ><router-link :to="`/mobile_index/board_more/${key}`"></router-link
       ></span>
     </div>
   </div>
@@ -31,6 +31,18 @@ export default {
     ...mapState("mainjs", ["main"]),
   },
   created() {
+    this.$store.dispatch("CategoryList",this.$route.params.type)
+    .then(res=>{
+      console.log(res)
+      this.categories = res;
+      console.log("이제 여기서 목록들 가져오기하면됨")
+    });
+  },
+  data() {
+    return {
+      categories:[],
+
+    }
   },
   methods: {
     Read(value, menu) {

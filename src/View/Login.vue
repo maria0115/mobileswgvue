@@ -60,7 +60,7 @@ export default {
       };
       this.$store.dispatch("login", data).then((res) => {
         if (res.success) {
-          this.$router.push("/");
+          this.$router.push({name:'root'});
           console.log("router 가기");
         } else {
           alert("로그인 실패, reason = > " + res.message);

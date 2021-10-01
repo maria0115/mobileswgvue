@@ -22,7 +22,7 @@
       </div>
       <ul>
         <li v-for="(key) in Object.keys(GetBoard)" :key="key">
-          <h3><router-link :to="`/board_more/${key}`">{{key}}</router-link></h3>
+          <h3><router-link :to="`/mobile_index/board_more/${key}`">{{key}}</router-link></h3>
         </li>
       </ul>
     </div>

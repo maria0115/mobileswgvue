@@ -251,7 +251,7 @@ export default {
     },
     Replay(value) {
       this.$store.commit("mailjs/From", value);
-      this.$router.push("/mail_more/write_mail");
+      this.$router.push({name:'WriteMail'});
     },
     SpamSet() {
       var data = {};
@@ -302,7 +302,7 @@ export default {
         data.body = this.editor.getHTML();
         data.unid = this.GetMailDetail.unid;
         this.$store.dispatch("mailjs/FollowupSet", data);
-        this.$router.push("/mail_more/read_mail");
+        this.$router.push({name:'ReadMail'});
       }
     },
     followUse() {

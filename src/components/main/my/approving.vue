@@ -73,7 +73,7 @@
         </div>
       </VueSlickCarousel>
     </div>
-    <router-link to="/approval_more/ing"
+    <router-link :to="{name:'apping'}"
       ><span class="m_more"><a></a></span
     ></router-link>
   </div>
@@ -159,7 +159,7 @@ export default {
     Read(value, where) {
       value.where = where;
       this.$store.commit("approjs/AppSaveUnid", { unid: value.unid ,openurl:value.openurl});
-      this.$router.push(`/approval_more/${where}`);
+      this.$router.push(`approval/${where}`);
     },
   },
 };

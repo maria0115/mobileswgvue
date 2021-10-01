@@ -23,11 +23,11 @@
       </div>
       <ul @click="CloseHam">
         <li>
-          <h3><router-link to="docform">결재 양식함</router-link></h3>
+          <h3><router-link :to="{name:'appform'}">결재 양식함</router-link></h3>
         </li>
         <li>
           <h3>
-            <router-link to="draft"
+            <router-link :to="{name:'appdraft'}"
               >작성중 문서
               <span>{{ this.GetApproval.draft.data.cnt }}</span></router-link
             >
@@ -35,7 +35,7 @@
         </li>
         <li>
           <h3>
-            <router-link to="approve"
+            <router-link :to="{name:'apptodolist'}"
               >결재할 문서
               <span>{{ this.GetApproval.approve.data.cnt }}</span></router-link
             >
@@ -43,7 +43,7 @@
         </li>
         <li>
           <h3>
-            <router-link to="ing"
+            <router-link :to="{name:'apping'}"
               >결재중 문서
               <span>{{
                 this.GetApproval.approving.data.cnt
@@ -53,7 +53,7 @@
         </li>
         <li>
           <h3>
-            <router-link to="reject"
+            <router-link :to="{name:'appreject'}"
               >반려된 문서
               <span>{{ this.GetApproval.reject.data.cnt }}</span></router-link
             >
@@ -61,7 +61,7 @@
         </li>
         <li>
           <h3>
-            <router-link to="success_date"
+            <router-link :to="{name:'successdate'}"
               >완료된 문서
               <span>{{
                 this.GetApproval.success_date.data.cnt
@@ -70,7 +70,7 @@
           </h3>
           <ul>
             <li>
-              <router-link to="success_my"
+              <router-link :to="{name:'successmy'}"
                 >개인
                 <em
                   >({{ this.GetApproval.success_my.data.cnt }})</em
@@ -78,14 +78,14 @@
               >
             </li>
             <li>
-              <router-link to="success_dept"
+              <router-link :to="{name:'successdept'}"
                 >부서
                 <em
                   >({{ this.GetApproval.success_dept.data.cnt }})</em
                 ></router-link
               >
             </li>
-            <li><router-link to="success_date">일자별</router-link></li>
+            <li><router-link :to="{name:'successdate'}">일자별</router-link></li>
           </ul>
         </li>
       </ul>

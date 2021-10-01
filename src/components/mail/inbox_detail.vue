@@ -108,7 +108,7 @@
             </div>
             <div slot="error">
               Error message, click
-              <router-link to="/mail_more">here</router-link> to retry
+              <router-link :to="{name:'mail'}">here</router-link> to retry
             </div>
           </infinite-loading>
         </ul>
@@ -175,7 +175,7 @@
             <span class="more_plus"></span>
             <ul>
                 <li><a>맨 위로</a></li>
-                <li><router-link to="write_mail">메일 작성</router-link></li>
+                <li><router-link :to="{name:'WriteMail'}">메일 작성</router-link></li>
             </ul>
         </div>
 <!-- <BtnPlus :menu="morePlus"></BtnPlus> -->
@@ -234,7 +234,7 @@ export default {
     ...mapGetters("configjs", ["GetConfig"]),
     path() {
       if (this.$route.path.indexOf("custom") === -1) {
-        return this.$route.path.substring(this.$route.path.indexOf("/", 1) + 1);
+        return this.$route.path.split('/').reverse()[0];
       } else {
         return "custom";
       }

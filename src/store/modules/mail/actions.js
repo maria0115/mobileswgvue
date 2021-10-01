@@ -138,7 +138,7 @@ export default {
                 } else {
                     // 
                     commit("MailOrgDataInit")
-                    router.push(`/mail_more/sent_detail`);
+                    router.push({name:'sent'});
 
                 }
 

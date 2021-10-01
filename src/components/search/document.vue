@@ -30,7 +30,7 @@
             </div>
             <div slot="error">
               Error message, click
-              <router-link to="/search">here</router-link> to retry
+              <router-link :to="{name:'search'}">here</router-link> to retry
             </div>
           </infinite-loading>
         </ul>

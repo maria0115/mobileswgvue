@@ -65,7 +65,7 @@
             </div>
             <div slot="error">
               Error message, click
-              <router-link to="/board_more">here</router-link> to retry
+              <router-link :to="{name:'board'}">here</router-link> to retry
             </div>
           </infinite-loading>
         </ul>
@@ -77,7 +77,7 @@
     <div class="ac_btns">
             <span class="more_plus"></span>
             <ul>
-                <li><router-link to="/board_more/write">게시판 작성</router-link></li>
+                <li><router-link :to="{name:'boardwrite'}">게시판 작성</router-link></li>
             </ul>
         </div>
   </div>
@@ -93,6 +93,7 @@ import { mapState, mapGetters } from "vuex";
 export default {
   created() {
     this.infiniteId += 1;
+    console.log("this.path",this.path)
   },
   beforeRouteLeave(to, from, next) {
     this.infiniteId += 1;
@@ -116,7 +117,7 @@ export default {
     ...mapGetters("configjs", ["GetConfig"]),
     path() {
       // if (this.$route.path.indexOf("custom") === -1) {
-      return this.$route.path.substring(this.$route.path.indexOf("/", 1) + 1);
+      return this.$route.name;
       // } else {
       //   return "custom";
       // }

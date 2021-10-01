@@ -387,7 +387,7 @@ export default {
         where: "week",
       });
       // await this.$store.dispatch("CalDetail",{data:value,path:this.$route.path,which:"week"});
-      this.$router.push("/schedule_more/read");
+      this.$router.push({name:'calread'});
     },
     haveem(v, index, value, i) {
       if (this.GetSchedule.calList.week[v]) {

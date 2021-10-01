@@ -1,5 +1,23 @@
 import axios from 'axios';
-// /api/approval?type=write
+function ListOfCategory(data) {
+    return axios({
+        method: 'get',
+        url: `/api/${data.category}?type=${data.type}&ingid=${data.lnbid}&size=${data.size}&page=${data.page}`,
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+}
+// /api/navigation?category=
+function CategoryList(id) {
+    return axios({
+        method: 'get',
+        url: `/api/navigation?category=${id}`,
+        headers: {
+            "Content-Type": "application/json"
+        }
+    })
+}
 function AppWrite(data) {
     return axios({
         method: 'post',
@@ -557,6 +575,8 @@ function Board(data) {
         }
     })
 }
+
+
 // 전자결재 데이터
 // approvaltype이 approving이면 결재중 문서 approve면 결재할 문서
 function Approval(data) {
@@ -734,5 +754,7 @@ export {
     Login,
     agreeNreject,
     Authority,
-    AppWrite
+    AppWrite,
+    CategoryList,
+    ListOfCategory,
 }

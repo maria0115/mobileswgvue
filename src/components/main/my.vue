@@ -23,19 +23,19 @@
               <dd class="mar30">
                 <span
                   >{{ GetMainLanguage.myinfo.mail }}
-                  <router-link to="/mail_more"
+                  <router-link :to="{name:'mail'}"
                     ><b>{{ GetMyInfo.mailCount }}</b></router-link
                   ></span
                 >
                 <span
                   >{{ GetMainLanguage.myinfo.approval }}
-                  <router-link to="/approval_more"
+                  <router-link :to="{name:'approval'}"
                     ><b>{{ GetMyInfo.approvalCount }}</b></router-link
                   ></span
                 >
                 <span
                   >{{ GetMainLanguage.myinfo.schedule }}
-                  <router-link to="/schedule_more"
+                  <router-link :to="{name:'schedule'}"
                     ><b>{{ GetMyInfo.scheduleCount }}</b></router-link
                   ></span
                 >

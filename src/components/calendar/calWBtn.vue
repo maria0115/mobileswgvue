@@ -1,5 +1,5 @@
 <template>
-  <span class="w_cal_btn" @click="isEdit"><router-link to="write"></router-link></span>
+  <span class="w_cal_btn" @click="isEdit"><router-link :to="{name:'calwrite'}"></router-link></span>
 </template>
 
 <script>

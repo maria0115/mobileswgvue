@@ -1,9 +1,9 @@
 <template>
   <div>
     <h2 class="mail_st_header">
-      <router-link to="set_config"><img src="../../mobile/img/wmail_back.png" alt="" /></router-link>
+      <router-link :to="{name:'setconfig'}"><img src="../../mobile/img/wmail_back.png" alt="" /></router-link>
       서명
-      <span><router-link to="addsign">추가</router-link></span>
+      <span><router-link :to="{name:'addsign'}">추가</router-link></span>
     </h2>
     <div class="m_contents06">
       <ul class="cm_list">

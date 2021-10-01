@@ -11,7 +11,7 @@ import VDragged from 'v-dragged'
 Vue.use(VDragged) 
 Vue.config.productionTip = false;
 // import VTooltip from 'v-tooltip'
-Vue.prototype.mainmenu = config.config.main.menuportlet;
+// Vue.prototype.mainmenu = config.config.main.menuportlet;
 Vue.prototype.customFolder = "";
 // Vue.use(VTooltip)
 // import Popover from 'vue-js-popover'

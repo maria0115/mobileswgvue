@@ -159,8 +159,8 @@ export default {
     SearchWord(word) {
       this.allremove();
       this.$store.commit("searchjs/setWord", { word });
-      if (this.$route.path !== "/search/allsearch") {
-        this.$router.push("/search/allsearch");
+      if (this.$route.name !== "allsearch") {
+        this.$router.push({name:'allsearch'});
       } else {
         this.$store.dispatch("searchjs/SearchWord", {
           word,
@@ -230,7 +230,7 @@ export default {
                 word: this.runtimeTranscription,
                 category: this.data.class,
               });
-              this.$router.push("/search/allsearch");
+              this.$router.push({name:'allsearch'});
               this.runtimeTranscription = "";
               recognition.stop();
               alert("검색 성공!");

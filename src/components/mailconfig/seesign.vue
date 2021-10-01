@@ -1,9 +1,9 @@
 <template>
   <div>
     <h2 class="mail_st_header">
-      <router-link to="sign"> <img src="../../mobile/img/wmail_back.png" alt="" /> </router-link
+      <router-link :to="{name:'sign'}"> <img src="../../mobile/img/wmail_back.png" alt="" /> </router-link
       >서명 보기
-      <span><router-link to="modifysign">편집</router-link></span>
+      <span><router-link :to="{name:'modifysign'}">편집</router-link></span>
     </h2>
     <div class="m_contents07">
       <ul>

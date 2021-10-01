@@ -47,7 +47,7 @@
           ></a>
         </li>
       </ul>
-      <router-link to="/mail_more"
+      <router-link :to="{name:'mail'}"
         ><span class="m_more"><a></a></span
       ></router-link>
     </div>
@@ -119,7 +119,7 @@
           </div>
         </div>
       </div>
-      <router-link to="/mail_more/sent_detail"
+      <router-link :to="{name:'sent'}"
         ><span class="m_more"><a></a></span
       ></router-link>
     </div>
@@ -248,7 +248,7 @@ export default {
           data.time = `${this.STime}:${this.SMin}:00`;
           data.body = this.editor.getHTML();
           await this.$store.dispatch("mailjs/FollowupSet", data);
-          this.$router.push("/mail");
+          this.$router.push({name:'mail'});
         }
         this.editor.destroy();
       }

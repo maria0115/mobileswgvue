@@ -1,7 +1,7 @@
 <template>
   <div>
     <h2 class="mail_st_header">
-      <router-link to="sign">
+      <router-link :to="{name:'sign'}">
         <img src="../../mobile/img/wmail_back.png" alt="" /> </router-link
       >서명 등록
       <span class="save" @click="SignAdd"><a>저장</a></span>

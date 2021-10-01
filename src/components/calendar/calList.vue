@@ -90,7 +90,7 @@ export default {
         where: "month",
       });
       // await this.$store.dispatch("CalDetail",{data:value.data,path:this.$route.path,which:"month"});
-      this.$router.push("/schedule_more/read");
+      this.$router.push({name:'calread'});
     },
   },
 };

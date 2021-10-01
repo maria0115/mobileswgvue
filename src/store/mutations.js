@@ -1,5 +1,14 @@
 
 export default {
+    ListOfCategory(state,{id, list}){
+        state.listOfCategory[id] = list;
+    },
+    CategoryList(state,{id,list}) {
+        if(id==""){
+            id="main";
+        }
+        state.store.category[id] = list;
+    },
     OrgDataDelete(state, { data, pointer }) {
         state.org[pointer] = state.org[pointer].filter((element) => element !== data);
     },

@@ -15,9 +15,9 @@
             <div class="cal_list">
                 <li class="cal_type">
                     <ul>
-                        <li class="month"><router-link to="month">월간</router-link></li>
-                        <li class="week"><router-link to="week">주간</router-link></li>
-                        <li class="day"><router-link to="day">일간</router-link></li>
+                        <li class="month"><router-link :to="{name:'calmonth'}">월간</router-link></li>
+                        <li class="week"><router-link :to="{name:'calweek'}">주간</router-link></li>
+                        <li class="day"><router-link :to="{name:'calday'}">일간</router-link></li>
                     </ul>
                 </li>
                 <li class="my_cal" :class="{on:this.myCal}">
