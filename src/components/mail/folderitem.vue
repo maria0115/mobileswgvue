@@ -42,6 +42,7 @@ export default {
   },
   methods: {
     async toggle() {
+      console.log("여긴가?")
       if (this.isFolder > 0) {
         this.isOpen = !this.isOpen;
       } else {
@@ -56,7 +57,7 @@ export default {
             this.item.nodetitle.ko
           );
           this.$router.replace({
-            name: "Custom",
+            name: "custom",
             params: { folderId: this.item.mycode },
           });
         }

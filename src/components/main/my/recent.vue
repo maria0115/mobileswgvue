@@ -11,7 +11,17 @@
         >
       </li>
     </ul>
-    <span class="m_more"><router-link :to="{name:'board'}"></router-link></span>
+    <span class="m_more"><router-link :to="{
+            name: `boardlist`,
+            query: {
+              data: JSON.stringify({
+                lnbid: '',
+                type: 'recent',
+                top: '',
+                title: portlet.board.board,
+              }),
+            },
+          }"></router-link></span>
   </div>
 </template>
 
@@ -20,18 +30,17 @@ import { mapGetters, mapState } from "vuex";
 export default {
   props: ["portlet"],
   created() {
-    console.log(this.GetMain);
   },
   computed: {
     ...mapGetters("mainjs", ["GetMain"]),
   },
   methods: {
     Read(value) {
-      console.log(value);
       if (value.unid) {
         this.$store.dispatch("boardjs/BoardDetail", {
           menu: value.boardType,
           unid: value.unid,
+          type:value.boardType,title:value.category
         });
       }
     },

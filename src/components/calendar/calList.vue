@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="cal_header">
-      <h2 class="today_date">{{ today }}</h2>
+      <h2 class="today_date">{{ dateconvert() }}</h2>
       <em>
         <a @click="RouterBack"
           ><img src="../../mobile/img/m_edit_icon01.png" alt=""
@@ -32,10 +32,7 @@
           </a>
         </li>
       </ul>
-      <div
-        class="no_schedule"
-        v-else
-      >
+      <div class="no_schedule" v-else>
         <div>
           <span></span>
           <p>등록된 일정이 없습니다.<br />일정을 등록하세요</p>
@@ -64,6 +61,9 @@ export default {
       date.day
     )} (${this.days[date.date]})`;
   },
+  mounted() {
+    this.params = JSON.parse(this.$route.query.data);
+  },
   data() {
     return {
       today: "",
@@ -71,6 +71,9 @@ export default {
     };
   },
   methods: {
+    dateconvert() {
+      return `${this.params.date} (${this.days[this.params.day]})`;
+    },
     // 전 url 이동
     RouterBack() {
       this.$router.go(-1);
@@ -90,7 +93,13 @@ export default {
         where: "month",
       });
       // await this.$store.dispatch("CalDetail",{data:value.data,path:this.$route.path,which:"month"});
-      this.$router.push({name:'calread'});
+      this.$router.push({
+        name: "calread",
+        query: {data:JSON.stringify({
+          date: value.data.enddate,
+          time: `${value.data.starttime} ~ ${value.data.endtime}`,
+        })},
+      });
     },
   },
 };

@@ -74,26 +74,34 @@
                     :key="index"
                   >
                     <div class="col_wrap">
-                      <div
-                        class="schedule_wrap"
-                        day-index="0"
-                        v-if="
-                          GetSchedule.calList.week[value] &&
-                          GetSchedule.calList.week[value].timeday
-                        "
-                      >
+                      <div class="schedule_wrap" day-index="0">
+                        <ul class="sec_line">
+                          <!--9월 30일 추가-->
+                          <li
+                            v-for="(timev, timei) in 24"
+                            @click="Write(timei, index)"
+                            :key="timei"
+                          ></li>
+                        </ul>
                         <div
-                          v-for="(v, i) in GetSchedule.calList.week[value]
-                            .timeday"
-                          :key="i"
-                          class="schedule time_schedule"
-                          :style="timeStyle(v)"
-                          @click="Detail(v)"
+                          v-if="
+                            GetSchedule.calList.week[value] &&
+                            GetSchedule.calList.week[value].timeday
+                          "
                         >
-                          <div class="schedule_box">
-                            <p>
-                              <span class="tit">{{ v.subject }}</span>
-                            </p>
+                          <div
+                            v-for="(v, i) in GetSchedule.calList.week[value]
+                              .timeday"
+                            :key="i"
+                            class="schedule time_schedule"
+                            :style="timeStyle(v)"
+                            @click="Detail(v)"
+                          >
+                            <div class="schedule_box">
+                              <p>
+                                <span class="tit">{{ v.subject }}</span>
+                              </p>
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -208,6 +216,15 @@ export default {
     this.Init();
   },
   methods: {
+    Write(time, day) {
+      var thisday = this.thisWeek[day];
+      var datestr = `${thisday.year}-${thisday.month}-${thisday.day}`;
+      this.$store.commit("calendarjs/isEdit", false);
+      this.$router.push({
+        name: "calwrite",
+        query: { data: JSON.stringify({ date: datestr, starttime: time }) },
+      });
+    },
     timeStyle(value) {
       if (!value.allDay) {
         var start = new Date(`${value.startdate}T${value.starttime}`);
@@ -387,7 +404,15 @@ export default {
         where: "week",
       });
       // await this.$store.dispatch("CalDetail",{data:value,path:this.$route.path,which:"week"});
-      this.$router.push({name:'calread'});
+      this.$router.push({
+        name: "calread",
+        query: {
+          data: JSON.stringify({
+            date: value.enddate,
+            time: `${value.starttime} ~ ${value.endtime}`,
+          }),
+        },
+      });
     },
     haveem(v, index, value, i) {
       if (this.GetSchedule.calList.week[v]) {

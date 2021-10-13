@@ -93,12 +93,13 @@ export default {
     },
     MailSave({ state, commit }, { data, menu }) {
 
-        MailSave(data, menu)
+        return MailSave(data, menu)
             .then((res) => {
 
                 if (res.status !== 200) {
                     return false;
                 } else {
+                    return true;
 
                     // commit("MailOrgDataInit")
                     // router.push(`/maillist/sent_detail`);
@@ -124,24 +125,23 @@ export default {
             .then(response => {
                 if (response.status !== 200) {
                     return false;
-                } else { }
+                } else { 
+                    return true;
+                }
             })
 
     },
     MailWrite({ state, commit }, data) {
 
-        MailWrite(data)
+        return MailWrite(data)
             .then((res) => {
 
                 if (res.status !== 200) {
                     return false;
                 } else {
                     // 
-                    commit("MailOrgDataInit")
-                    router.push({name:'sent'});
-
+                    return true;
                 }
-
             })
     },
     async ToMeInfo({ commit }) {
@@ -155,17 +155,20 @@ export default {
         return;
 
     },
-    async ToMe({ commit }) {
-        var result = await ToMe()
+    ToMe({ commit ,rootCommit}) {
+        return ToMe()
             .then((res) => {
+                console.log(res.data)
 
+                commit("ToMe", res.data);
                 return res.data;
 
             })
-        commit("ToMe", result);
+        //     console.log(result)
+        // console.log(commit)
 
-        await commit("MailOrgDataInit");
-        commit("AddOrg", { who: "SendTo", value: result });
+        // await commit("OrgDataInit");
+        // commit("AddOrg", { who: "SendTo", value: result });
         // state.mailorg.SendTo.push(data);
 
     },
@@ -212,7 +215,7 @@ export default {
         // 
         InitOrg(data)
             .then((res) => {
-                console.log(res.data)
+                
                 commit("MailOrgTransData", res.data);
             })
     },
@@ -282,7 +285,7 @@ export default {
                 if (response.status !== 200) {
 
                 } else {
-                    console.log(response.data)
+                    
                     commit("MailDetailData", response.data);
                     return true;
 
@@ -489,6 +492,7 @@ export default {
         var data = {};
         var folderstr = "";
         var checkedNames = state.mail.checkBtn.checkedNames;
+        console.log(checkedNames)
         if (checkedNames.length > 0) {
             for (var i = 0; i < checkedNames.length; i++) {
                 folderstr += `${checkedNames[i].unid},`;
@@ -497,6 +501,7 @@ export default {
             data.ids = folderstr;
             data.viewname = viewname;
             data.folderId = folderId;
+            console.log(data,"data")
             return await MailMove(data)
                 .then(response => {
 

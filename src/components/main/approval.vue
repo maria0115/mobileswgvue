@@ -1,19 +1,13 @@
 <template>
   <div id="app_tab">
-    <div class="in_box01">
+    <div class="in_box01" v-if="this.menuOfCategoryIdx('approve') !== -1">
       <strong desc="결재할 문서"
         >{{ GetMainLanguage.portlet.approval.approve
-        }}<em>{{ main.data.approvaltype.approve.more.cnt }}</em></strong
+        }}<em>{{ approveData.cnt }}</em></strong
       >
       <div class="app_list01 clfix">
-        <p v-show="main.data.approvaltype.approve.more.data.length === 0">
-          결재할 문서가 없습니다.
-        </p>
-        <div
-          v-show="main.data.approvaltype.approve.more.data.length > 0"
-          v-for="(value, name) in main.data.approvaltype.approve.more.data"
-          :key="name"
-        >
+        <p v-if="approveData.data.length === 0">결재할 문서가 없습니다.</p>
+        <div v-else v-for="(value, name) in approveData.data" :key="name">
           <div class="icons">
             <span class="opin"></span>
             <span class="clip"></span>
@@ -21,7 +15,7 @@
           <em>{{ value.category }}</em>
           <strong>{{ value.subject }}</strong>
           <p>{{ transTime(value.created) }}</p>
-          <div class="per_info clfix" @click="Read(value, 'todoview')">
+          <div class="per_info clfix" @click="Read(value, 'approve')">
             <span class="basic_img on">
               <em class="no_img" :style="randomColor()"
                 ><b>{{ value.author.split("")[0] }}</b></em
@@ -42,7 +36,19 @@
       
     </div> -->
       <span class="app_more"
-        ><router-link :to="{name:'apptodolist'}"></router-link
+        ><router-link
+          :to="{
+            name: 'appapprove',
+            query: {
+              data: JSON.stringify({
+                type: this.ThisCategory('approve').type,
+                lnbid: this.ThisCategory('approve').lnbid,
+                top: params.lnbid,
+                title: this.ThisCategory('approve').title,
+              }),
+            },
+          }"
+        ></router-link
       ></span>
     </div>
     <span class="load" @click="addApprove('approve')" v-if="moreList.approve"
@@ -51,29 +57,24 @@
         alt="더보기"
     /></span>
 
-    <div class="in_box02">
+    <div class="in_box02" v-if="menuOfCategoryIdx('approving') !== -1">
       <strong
         >{{ GetMainLanguage.portlet.approval.approving }}
-        <em>{{ main.data.approvaltype.approving.more.cnt }}</em></strong
+        <em>{{ approvingData.cnt }}</em></strong
       >
       <div
         class="app_list01"
-        v-for="(value, name) in main.data.approvaltype.approving.more.data"
+        v-for="(value, name) in approvingData.data"
         :key="name"
       >
         <div>
           <div class="icons">
             <span class="opin"></span>
-            <span
-              class="clip"
-              v-if="
-                value.attach
-              "
-            ></span>
+            <span class="clip" v-if="value.attach"></span>
           </div>
           <em>{{ value.category }}</em>
           <strong>{{ value.subject }}</strong>
-          <div @click="Read(value, 'ingview')" class="per_info clfix">
+          <div @click="Read(value, 'approving')" class="per_info clfix">
             <span class="basic_img on">
               <em class="no_img" :style="randomColor()"
                 ><b>{{ value.approvalinfo[0].author.split("")[0] }}</b></em
@@ -95,7 +96,19 @@
         </div>
       </div>
       <span class="app_more"
-        ><router-link :to="{name:'apping'}"></router-link
+        ><router-link
+          :to="{
+            name: 'appapproving',
+            query: {
+              data: JSON.stringify({
+                type: ThisCategory('approving').type,
+                lnbid: ThisCategory('approving').lnbid,
+                top: params.lnbid,
+                title: ThisCategory('approving').title,
+              }),
+            },
+          }"
+        ></router-link
       ></span>
     </div>
     <span
@@ -119,7 +132,16 @@ export default {
     ...mapGetters("mainjs", ["GetMain", "GetMyInfo"]),
     ...mapGetters(["GetMainLanguage"]),
   },
-  created() {},
+  async created() {
+    this.params = JSON.parse(this.$route.query.data);
+    this.approveData = this.main.data.approvaltype.approve.more;
+    this.approvingData = this.main.data.approvaltype.approving.more;
+    this.categorys = await this.$store.dispatch(
+      "CategoryList",
+      this.params.lnbid
+    );
+    this.$forceUpdate();
+  },
   mounted() {
     if ("ontouchstart" in document.documentElement !== true) {
       this.checkEvent = "mouse";
@@ -138,11 +160,38 @@ export default {
     };
   },
   methods: {
+    menuOfCategoryIdx(menu) {
+      if (this.categorys) {
+        return this.categorys.findIndex(function (item, idx) {
+          return item.category == menu;
+        });
+      }
+      return -1;
+    },
+    ThisCategory(menu) {
+      if (this.categorys) {
+        return this.categorys[this.menuOfCategoryIdx(menu)];
+      }
+      return [];
+    },
     Read(value, where) {
-      console.log(value, where);
       value.where = where;
-      this.$store.commit("approjs/AppSaveUnid", { unid: value.unid ,openurl:value.openurl});
-      this.$router.push(`/approval_more/${where}`);
+      this.$store.commit("approjs/AppSaveUnid", {
+        unid: value.unid,
+        openurl: value.openurl,
+      });
+      console.log(`${where}view`, "view");
+      this.$router.push({
+        name: `${where}view`,
+        query: {
+          data: JSON.stringify({
+            type: this.ThisCategory(where).type,
+            lnbid: this.ThisCategory(where).lnbid,
+            top: this.params.lnbid,
+            title: this.ThisCategory(where).title,
+          }),
+        },
+      });
     },
     // 툴팁 활성화 될 list 확인
     tooltipActive(index) {

@@ -1,8 +1,38 @@
 import axios from 'axios';
+// /api/approval?type=edit
+function AppEdit(data) {
+    return axios({
+        method: 'post',
+        url: `/api/approval?type=edit`,
+        data,
+        headers: {
+            "Content-Type": "multipart/form-data"
+        }
+    })
+}
+function deleteItem(unid) {
+    return axios({
+        method: 'delete',
+        url: `/api/approval?type=deleteItem`,
+        data:{unid:unid},
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+}
+function BoardSearch(data) {
+    return axios({
+        method: 'get',
+        url: `/api/${data.category}?type=${data.type}&size=${data.size}&page=${data.page}&boardType=${data.boardType}&searchType=${data.searchType}&searchword=${data.searchword}&lnbid=${data.lnbid}`,
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+}
 function ListOfCategory(data) {
     return axios({
         method: 'get',
-        url: `/api/${data.category}?type=${data.type}&ingid=${data.lnbid}&size=${data.size}&page=${data.page}`,
+        url: `/api/${data.category}?type=${data.type}&lnbid=${data.lnbid}&size=${data.size}&page=${data.page}`,
         headers: {
             'Content-Type': 'application/json'
         }
@@ -130,9 +160,10 @@ function WriteReply(data) {
     })
 }
 function BoardDetail(data) {
+    console.log(data)
     return axios({
         method: 'get',
-        url: `/api/board?type=detail&boardType=${data.menu}&unid=${data.unid}`,
+        url: `/api/board?type=detail&boardType=${data.menu}&unid=${data.unid}&lnbid=${data.lnbid}`,
         headers: {
             "Content-Type": "application/json"
         }
@@ -757,4 +788,7 @@ export {
     AppWrite,
     CategoryList,
     ListOfCategory,
+    BoardSearch,
+    deleteItem,
+    AppEdit,
 }

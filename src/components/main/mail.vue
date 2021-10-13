@@ -47,7 +47,7 @@
           ></a>
         </li>
       </ul>
-      <router-link :to="{name:'mail'}"
+      <router-link :to="{ name: 'mail' }"
         ><span class="m_more"><a></a></span
       ></router-link>
     </div>
@@ -119,7 +119,7 @@
           </div>
         </div>
       </div>
-      <router-link :to="{name:'sent'}"
+      <router-link :to="{ name: 'sent' }"
         ><span class="m_more"><a></a></span
       ></router-link>
     </div>
@@ -153,6 +153,8 @@ export default {
     ...mapGetters(["GetMainLanguage"]),
   },
   created() {
+    this.params = JSON.parse(this.$route.query.data);
+
     this.editor = new Editor({
       content: "",
     });
@@ -248,7 +250,7 @@ export default {
           data.time = `${this.STime}:${this.SMin}:00`;
           data.body = this.editor.getHTML();
           await this.$store.dispatch("mailjs/FollowupSet", data);
-          this.$router.push({name:'mail'});
+          this.$router.push({ name: "mainmail", query: { data: JSON.stringify(this.params) } });
         }
         this.editor.destroy();
       }

@@ -364,21 +364,24 @@ $(function () {
         
         $(this).toggleClass('active');
     });
-    $('body').on('click','all_sc_check', function() {
+    $('body').on('click','.all_sc_check', function() {
         $(this).toggleClass('active');
+        console.log("sc_check")
         $('.sc_check').removeClass('active');
-        if($('.all_sc_check').hasClass('active')){
-            $('.sc_check').on('click', function() {
-                $('.all_sc_check').removeClass('active');
-            });
-        };
+        // if($('.all_sc_check').hasClass('active')){
+        //     $('.sc_check').on('click', function() {
+        //         $('.all_sc_check').removeClass('active');
+        //     });
+        // };
     });
     $('body').on('click','.sc_more',function(){
-        console.log("more1")
         $('.sc_btm').toggleClass('on');
     });
     $('body').on('click','.sub_search',function(){
         $('.search_con').addClass('active');
+    });
+    $('body').on('click','.search_btn',function(){
+        $('.search_con').removeClass('active');
     });
     $('body').on('click','.back_btn',function(){
         $('.search_con').removeClass('active');

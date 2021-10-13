@@ -1,19 +1,27 @@
 <template>
-  <span class="w_mail_btn"><router-link :to="{name:'boardwrite'}"></router-link></span>
+  <span class="w_mail_btn"
+    ><router-link
+      :to="{
+        name: 'boardwrite',
+        query: {
+          data: JSON.stringify(params),
+        },
+      }"
+    ></router-link
+  ></span>
 </template>
 
 <script>
 export default {
-  methods: {
-    
+  created() {
+    this.params = JSON.parse(this.$route.query.data);
   },
+  methods: {},
   props: {
     path: String,
   },
-
-}
+};
 </script>
 
 <style>
-
 </style>

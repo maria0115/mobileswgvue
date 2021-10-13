@@ -1,5 +1,9 @@
 
 export default {
+    calListOpen(state,value){
+        state.calListOpen = value;
+        
+    },
     isEdit(state, value) {
         state.store.edit = value;
     },
@@ -62,12 +66,12 @@ export default {
             var isadd = [];
             data.forEach((time, i) => {
                 let isOverlap = false;
-                // console.log(option.today, time.enddate, "option")
+                // 
                 var starttime = time.startdate.split('-').join("") + time.starttime.split(':').join("");
                 var endtime = time.enddate.split('-').join("") + time.endtime.split(':').join("");
                 let st1 = parseInt(starttime);
                 let et1 = parseInt(endtime);
-                // console.log(isadd.indexOf(i))
+                // 
                 var rank = 0;
                 if (!time.allDay && isadd.indexOf(i) == -1 && option.today == time.enddate) {
                     var time2arr = [];
@@ -91,18 +95,18 @@ export default {
                         }
                     })
                 }
-                if(!isOverlap && !time.allDay){
+                if (!isOverlap && !time.allDay) {
                     d[rank] = d[rank] || [];
                     d[rank].push(time);
 
-                }else if(time.allDay){
+                } else if (time.allDay) {
                     timeAllObj.push(time);
                 }
             });
             data = {};
             data.data = d;
             data.allday = timeAllObj;
-            console.log(data)
+
 
         }
 

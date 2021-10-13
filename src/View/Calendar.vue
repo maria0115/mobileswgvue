@@ -2,7 +2,7 @@
   <div class="wrap btm_b" :class="{ dark: this.color }">
     <div class="modal_wrap">
     <router-view :key="$route.fullPath"></router-view>
-    <Footer></Footer>
+    <Footer @calListOpen="calListOpen"></Footer>
     </div>
   </div>
 </template>
@@ -45,6 +45,11 @@ export default {
       $("html").addClass("mar15");
     }
   },
+  methods: {
+    calListOpen(e){
+      console.log(e, "혹시 여기로 오니")
+    },
+  }
 };
 </script>
 

@@ -1,22 +1,41 @@
 <template>
   <div id="board_tab">
-    <div
-      :class="`board0${index + 1}`"
-      v-for="(key, index) in Object.keys(GetBoard)"
-      :key="key"
-    >
-      <strong>{{ key }}</strong>
+    <div :class="`board01`" v-for="(key, index) in categories" :key="index">
+      <strong>{{ key.title }}</strong>
       <ul>
         <li
           :class="{ new: boo(value) }"
-          v-for="(value, index) in GetMain.boardtype[key].more.data"
-          :key="index"
+          v-for="(value, i) in listOfCategory[key.lnbid]"
+          :key="i"
         >
-          <a @click="Read(value, key)">{{ value.subject }}</a>
+          <a
+            @click="
+              Read(value, key, {
+                lnbid: key.lnbid,
+                type: key.type,
+                top: top,
+                title: key.title,
+              })
+            "
+            >{{ value.subject }}</a
+          >
         </li>
       </ul>
+
       <span class="m_more"
-        ><router-link :to="`/mobile_index/board_more/${key}`"></router-link
+        ><router-link
+          :to="{
+            name: `${key.category}list`,
+            query: {
+              data: JSON.stringify({
+                lnbid: key.lnbid,
+                type: key.type,
+                top: top,
+                title: key.title,
+              }),
+            },
+          }"
+        ></router-link
       ></span>
     </div>
   </div>
@@ -29,25 +48,46 @@ export default {
     ...mapGetters("mainjs", ["GetMain"]),
     ...mapGetters("boardjs", ["GetBoard"]),
     ...mapState("mainjs", ["main"]),
+    ...mapState(["listOfCategory"]),
   },
-  created() {
-    this.$store.dispatch("CategoryList",this.$route.params.type)
-    .then(res=>{
-      console.log(res)
-      this.categories = res;
-      console.log("이제 여기서 목록들 가져오기하면됨")
-    });
+  async created() {
+    this.params = JSON.parse(this.$route.query.data);
+    console.log(this.params);
+
+    this.top = this.params.lnbid;
+    var res = await this.$store.dispatch("CategoryList", this.top);
+    // .then(res=>{
+    //   console.log(res,"res.datacreated")
+    this.categories = res;
+    for (var i = 0; i < res.length; i++) {
+      res[i].page = 0;
+      res[i].size = 5;
+      res[i].category = "board";
+      res[i].type = this.params.type;
+      var resp = await this.$store.dispatch("ListOfCategory", res[i]);
+      this.listOfCategory[res[i].lnbid] = resp;
+      this.$forceUpdate();
+    }
   },
   data() {
     return {
-      categories:[],
-
-    }
+      categories: [],
+      top: "",
+    };
   },
   methods: {
-    Read(value, menu) {
+    Read(value, menu, data) {
+      console.log(menu, value, "valuemenu");
+
       if (value.unid) {
-        this.$store.dispatch("boardjs/BoardDetail", { menu ,unid:value.unid});
+        console.log("여기아니냐");
+        this.$store.dispatch("boardjs/BoardDetail", {
+          type: menu.type,
+          title: menu.title,
+          menu: menu.type,
+          unid: value.unid,
+          lnbid: menu.lnbid,
+        });
       }
     },
     boo(value) {

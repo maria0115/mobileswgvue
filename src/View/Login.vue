@@ -6,7 +6,12 @@
       </h1>
       <div class="login_input">
         <input type="text" placeholder="아이디" v-model="id" />
-        <input type="password" placeholder="비밀번호" v-model="password" />
+        <input
+          type="password"
+          placeholder="비밀번호"
+          v-model="password"
+          @keyup.enter="login"
+        />
       </div>
       <p class="login_check">
         <span class="check_lf" @click="toggleidSave">
@@ -26,18 +31,26 @@
 <script>
 import config from "../config/config.json";
 import cookie from 'vue-cookie';
+import { mapState, mapGetters } from "vuex";
 export default {
+  computed: {
+    ...mapGetters("configjs", ["GetConfig"]),
+    },
   created() {
     console.log(this.$route.query);
     this.idSave = JSON.parse(localStorage.getItem("idSave"));
-    this.autoLogin = JSON.parse(localStorage.getItem("autoLogin"));
+    this.autoLogin = this.GetConfig.login;
+    // this.autoLogin = JSON.parse(localStorage.getItem("autoLogin"));
     if (this.idSave) {
       this.id = localStorage.getItem(`${config.packageName}id`);
     }
-    if (this.autoLogin) {
+    if (this.autoLogin&&this.GetConfig.login) {
       this.id = localStorage.getItem(`${config.packageName}id`);
       this.password = localStorage.getItem(`${config.packageName}pass`);
-      this.login();
+      if(this.password.length > 0) {
+        this.login();
+
+      }
     }
   },
   data() {
@@ -60,8 +73,8 @@ export default {
       };
       this.$store.dispatch("login", data).then((res) => {
         if (res.success) {
+          this.setConfig();
           this.$router.push({name:'root'});
-          console.log("router 가기");
         } else {
           alert("로그인 실패, reason = > " + res.message);
           localStorage.setItem("autoLogin", false);
@@ -76,6 +89,13 @@ export default {
     },
     toggleautoLogin() {
       this.autoLogin = !this.autoLogin;
+      
+    },
+    setConfig() {
+      this.$store.dispatch("configjs/setConfig", {
+        menu: 'login',
+        value: this.autoLogin,
+      });
     },
   },
 };

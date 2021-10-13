@@ -30,6 +30,7 @@
           <tr v-for="(date, idx) in dates" :key="idx">
             <td v-for="(day, secondIdx) in date" :key="secondIdx">
               <a
+                ref="open"
                 @click.stop="
                   Detail(
                     day,
@@ -138,6 +139,7 @@ export default {
       check: false,
       lastMonth: 0,
       lastYear: 0,
+      islist: false,
     };
   },
   computed: {
@@ -425,11 +427,26 @@ export default {
       result.day = day;
       result.date = yuil;
 
+      var datestr = `${result.year}-${this.fill(2, result.month)}-${this.fill(
+        2,
+        result.day
+      )}`;
+
       await this.$store.commit("calendarjs/SaveScheduleList", {
         data,
         date: result,
       });
-      this.$router.push({name:'callist'});
+      // this.$emit("calListOpen",true);
+      this.$store.commit("calendarjs/calListOpen", {
+        status: true,
+        date: datestr,
+        day: yuil,
+      });
+
+      // this.$router.push({
+      //   name: "callist",
+      //   params: { date: datestr, day: yuil },
+      // });
     },
     oneDetail(value) {
       this.$store.commit("calendarjs/SaveScheduleUnid", {
@@ -437,7 +454,13 @@ export default {
         where: "month",
       });
       // await
-      this.$router.push({name:'calread'});
+      this.$router.push({
+        name: "calread",
+        query: {data:JSON.stringify({
+          date: value.enddate,
+          time: `${value.starttime} ~ ${value.endtime}`,
+        })},
+      });
     },
   },
 };

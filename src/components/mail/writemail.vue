@@ -2,7 +2,7 @@
   <div>
     <div class="wmail_header">
       <h2>
-        <router-link :to="{name:'mail'}"
+        <router-link :to="{ name: 'mail' }"
           ><img src="../../mobile/img/wmail_back.png" alt="" /></router-link
         >메일쓰기
       </h2>
@@ -220,8 +220,7 @@
               >
                 <ul>
                   <li
-                    v-for="(value, index) in this.autosearchorg
-                      .BlindCopyTo"
+                    v-for="(value, index) in this.autosearchorg.BlindCopyTo"
                     @click="AddOrg('BlindCopyTo', value, 'blindcopytosearch')"
                     :key="index"
                   >
@@ -304,7 +303,13 @@
           <li class="mail_edit">
             <label for="mail_wri"></label>
             <!-- <editor-content id="mail_wri" :editor="editor" /> -->
-            <Namo id="mail_wri" :read="false" :editor="Body_Text" ref="editor"></Namo>
+            <Namo
+              id="mail_wri"
+              :read="false"
+              :editor="Body_Text"
+              ref="editor"
+              did="mail"
+            ></Namo>
             <!-- <textarea name="" id="mail_wri" v-model="Body_Text"></textarea> -->
           </li>
         </ul>
@@ -355,11 +360,10 @@ import { mapState, mapGetters } from "vuex";
 import Org from "../../View/Org.vue";
 import { Editor, EditorContent } from "tiptap";
 import configjson from "../../config/config.json";
-import Namo from '../editor/namo.vue';
+import Namo from "../editor/namo.vue";
 // import EditorContent from "../mailconfig/EditorContent.vue";
 export default {
-  created() {
-    console.log("created",this.org)
+  async created() {
     // this.$store.commit("mailjs/MailOrgDataInit");
     this.Body_Text = `${this.GetMail.writeForm.greetings}<p></p><p></p>${this.GetMail.writeForm.signature}<p></p><p></p>`;
     if (this.from == "Relay") {
@@ -370,12 +374,15 @@ export default {
       this.Subject = this.GetMailDetail.subject;
       this.Body_Text += `----------------- 원본메일 ----------------- <p></p>${this.GetMailDetail.body}`;
     }
+
+    this.randomkey = await this.generateRandomCode(32);
   },
   beforeDestroy() {
     clearInterval(this.delay);
     this.editor.destroy();
   },
   mounted() {
+    this.fileinit = this.$refs.file.files;
     this.editor = new Editor({
       content: this.Body_Text,
     });
@@ -384,6 +391,7 @@ export default {
     if (this.GetMailConfig.autosave.config.use) {
       this.delay = setInterval(function () {
         var formData = here.FormSet();
+        formData.append("dockey", this.randomkey);
         here.$store.dispatch("mailjs/MailSave", {
           data: formData,
           menu: "autoSave",
@@ -392,8 +400,8 @@ export default {
     }
   },
   computed: {
-    ...mapState("mailjs", [ "from", "TimeOption"]),
-    ...mapState(["autosearchorg","org"]),
+    ...mapState("mailjs", ["from", "TimeOption"]),
+    ...mapState(["autosearchorg", "org"]),
     ...mapGetters("mailjs", ["GetMailDetail", "GetMail", "GetMailConfig"]),
     isBlock: function () {
       if (this.isOpen) {
@@ -431,9 +439,18 @@ export default {
       sendtosearchkeyword: "",
       modalon: false,
       modalAutoOrg: 0,
+      Detach: [],
+      addAttach: [],
     };
   },
   methods: {
+    generateRandomCode(n) {
+      let str = "";
+      for (let i = 0; i < n; i++) {
+        str += Math.floor(Math.random() * 10);
+      }
+      return str;
+    },
     getExtensionOfFilename(filename) {
       var _fileLen = filename.length;
       var _lastDot = filename.lastIndexOf(".");
@@ -455,7 +472,10 @@ export default {
     ToMe() {
       this.tome = !this.tome;
       if (this.tome) {
-        this.$store.dispatch("mailjs/ToMe");
+        this.$store.dispatch("mailjs/ToMe").then((res) => {
+          this.$store.commit("OrgPointer", "SendTo");
+          this.$store.commit("OrgData", res);
+        });
       } else {
         this.$store.commit("OrgDataInit");
       }
@@ -532,7 +552,8 @@ export default {
       formData.append("ocxBCopyTo", ocxBCopyTo);
       formData.append("Subject", this.Subject);
       // namo editor 본문 내용 받아오기
-      let editorData = this.$refs.editor.$refs.namo.contentWindow.crosseditor.GetBodyValue();
+      let editorData =
+        this.$refs.editor.$refs.namo.contentWindow.crosseditor.GetBodyValue();
       formData.append("Body_Text", editorData);
 
       var impor = 2;
@@ -559,10 +580,38 @@ export default {
       if (this.tome) {
         me = "Y";
       }
-
-      for (var i = 0; i < this.file.length; i++) {
-        formData.append("attach", this.file[i]);
+var docType = "";
+      if (
+        this.from == "Reply" ||
+        this.from == "AllReply" ||
+        this.from == "Relay"
+      ) {
+        docType = "Forward";
+        for (var i = 0; i < this.addAttach.length; i++) {
+          formData.append("attach", this.addAttach[i]);
+        }
+        var Detachstr = "";
+        for (var i = 0; i < this.Detach.length; i++) {
+          if (i == this.Detach.length - 1) {
+            Detachstr += this.Detach[i].name;
+          } else {
+            Detachstr += this.Detach[i].name + ";";
+          }
+        }
+        formData.append("Detach", Detachstr);
+      } else {
+        for (var i = 0; i < this.file.length; i++) {
+          formData.append("attach", this.file[i]);
+        }
       }
+          formData.append("docType", docType);
+      var MailTypeOptionstr = "";
+      if (this.from == "Relay") {
+        MailTypeOptionstr = "Forward";
+      } else if (this.from == "Reply") {
+        MailTypeOptionstr = "Reply";
+      }
+      formData.append("MailTypeOption", MailTypeOptionstr);
 
       formData.append("delaysend_use", delaysend_use);
       formData.append("ToMe", me);
@@ -570,8 +619,6 @@ export default {
       formData.append("STime", this.STime);
       formData.append("SMin", this.SMin);
 
-      for (var fo of formData.values()) {
-      }
       return formData;
     },
     async Send(menu) {
@@ -585,23 +632,43 @@ export default {
         // 사람이 한사람이라도 있으면
         // 전송가능
         if (menu === "send") {
-          this.$store.dispatch("mailjs/MailWrite", formData);
+          this.$store.dispatch("mailjs/MailWrite", formData).then((res) => {
+            
+            if (res) {
+              commit("OrgDataInit");
+              this.$router.push({ name: "sent_detail" });
+            }
+          });
         } else if (menu === "save") {
           // 저장가능
-          this.$store.dispatch("mailjs/MailSave", {
-            data: formData,
-            menu: "draftSave",
-          });
+          this.$store
+            .dispatch("mailjs/MailSave", {
+              data: formData,
+              menu: "draftSave",
+            })
+            .then((res) => {
+              if (res) {
+                commit("OrgDataInit");
+                this.$router.push({ name: "draft" });
+              }
+            });
         }
       } else {
         var formData = this.FormSet();
         // 사람이 한사람이라도 없으면
         if (menu === "save") {
           // 저장가능
-          this.$store.dispatch("mailjs/MailSave", {
-            data: formData,
-            menu: "draftSave",
-          });
+          this.$store
+            .dispatch("mailjs/MailSave", {
+              data: formData,
+              menu: "draftSave",
+            })
+            .then((res) => {
+              if (res) {
+                commit("OrgDataInit");
+                this.$router.push({ name: "draft" });
+              }
+            });
         }
       }
       // }
@@ -641,8 +708,21 @@ export default {
       this.$refs.file.click();
     },
     handleFileUpload() {
-      this.file.push(this.$refs.file.files[0]);
-      // }
+      if (this.$refs.file.files[0]) {
+        var result = this.file.findIndex((element) => {
+          return (
+            element.size === this.$refs.file.files[0].size &&
+            element.name === this.$refs.file.files[0].name
+          );
+        });
+        if (result == -1) {
+          this.file.push(this.$refs.file.files[0]);
+        }
+        if (this.GetEdit) {
+          this.addAttach.push(this.$refs.file.files[0]);
+        }
+      }
+      this.$refs.file.files = this.fileinit;
     },
     toggle(value) {
       if (value.kinds == "Department") {
@@ -671,7 +751,7 @@ export default {
       return `background: ${color[Math.floor(Math.random() * 4)]}`;
     },
     async AddOrg(who, value, what) {
-      await this.$store.commit("AddOrg", { who, value});
+      await this.$store.commit("AddOrg", { who, value });
       this[what] = false;
       this[`${what}keyword`] = "";
       this.$store.commit("SearchOrgInit");
@@ -687,7 +767,17 @@ export default {
       this.modalon = false;
     },
     FileDel(value) {
-      this.file = this.file.filter((element) => element !== value);
+      
+      var result = this.file.filter((element) => {
+        return element !== value;
+      });
+      if(result[0]){
+        this.file = result;
+      }
+      if(result.length==0){
+        this.file = [];
+      }
+      this.Detach.push(value);
     },
     imporCheck() {
       this.Importance = !this.Importance;

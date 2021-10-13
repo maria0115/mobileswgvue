@@ -8,7 +8,7 @@
                     <dd>{{GetMyInfo.info.dept}}</dd>
                 </dl>
                 <div>
-                    <span class="cal_sub_set"><a></a></span>
+                    <!-- <span class="cal_sub_set"><a></a></span> -->
                     <span class="cal_sub_close" @click="$emit('calMenuOff')"></span>
                 </div>
             </div>
@@ -20,12 +20,12 @@
                         <li class="day"><router-link :to="{name:'calday'}">일간</router-link></li>
                     </ul>
                 </li>
-                <li class="my_cal" :class="{on:this.myCal}">
+                <!-- <li class="my_cal" :class="{on:this.myCal}">
                     <strong @click="toggle">개인일정<em></em></strong>
                     <ul>
                         <li ><a>나의 일정</a></li>
                     </ul>
-                </li>
+                </li> -->
             </div>
         </div>
     </div>
@@ -34,6 +34,7 @@
 <script>
 import { mapState, mapGetters } from "vuex";
 export default {
+    created() {},
     props: [
         'calmenu',
     ],

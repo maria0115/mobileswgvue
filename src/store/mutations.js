@@ -38,12 +38,7 @@ export default {
                 }
             }) == idx1;
         });
-
-
-
         state.org[state.org.pointer] = result;
-        console.log(state.org)
-
 
     },
     AddOrg(state, { who, value, menu }) {

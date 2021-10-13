@@ -1,84 +1,112 @@
 import {
-    BoardWrite, Board, BoardDetail, WriteReply, DeleteReply, Likeit,DeleteBoard ,BoardEdit
+    BoardSearch, BoardWrite, Board, BoardDetail, WriteReply, DeleteReply, Likeit, DeleteBoard, BoardEdit
 } from '../../../api/index';
 import router from '../../../router/index';
 //system 모드이면 무슨 light 인지 dark 인지 감지
 export default {
-    BoardEdit({ state, commit }, data) {
-        BoardEdit(data)
+    BoardSearch({ state, commit }, data) {
+        return BoardSearch(data)
             .then((res) => {
                 if (res.status !== 200) {
                     return false;
                 } else {
-                    router.push(`/board_more/${state.store.board.path}`);
+                    // commit("ListOfCategory", { id: data.lnbid, list: res.data });
+                    return res.data;
+                }
+
+            })
+    },
+    BoardEdit({ state, commit }, data) {
+        return BoardEdit(data)
+            .then((res) => {
+                if (res.status !== 200) {
+                    return false;
+                } else {
+                    // router.push({
+                    //     name: "boardlist",
+                    //     query: {
+                    //         data: JSON.stringify({
+                    //             type: state.store.board.path
+                    //         })
+                    //     }
+                    // });
                     // commit("BoardWrite", { menu: type, data: res.data })
                     return true;
                 }
             })
 
     },
-    EditMode({state,commit},boo){
-        router.replace(`/board_more/write`);
-        commit("EditMode",boo);
+    EditMode({ state, commit }, boo) {
+            // router.replace({name:"boardwrite"});
+        commit("EditMode", boo);
 
     },
-    DeleteBoard({ state, commit }, data){
-        DeleteBoard(data)
-        .then((res) => {
-            if (res.status !== 200) {
-                return false;
-            } else {
-                router.replace(`/board_more/${state.store.board.path}`);
+    DeleteBoard({ state, commit }, data) {
+        return DeleteBoard(data)
+            .then((res) => {
+                if (res.status !== 200) {
+                    return false;
+                } else {
+                    // router.replace({
+                    //     name: "boardlist",
+                    //     query: {
+                    //         data: JSON.stringify({
+                    //             type: state.store.board.path
+                    //         })
+                    //     }
+                    // });
+                    // dispatch("BoardDetail", { menu: undefined, unid: undefined,comment:true });
 
-                // dispatch("BoardDetail", { menu: undefined, unid: undefined,comment:true });
-
-                return true;
-            }
-        })
-
-    },
-    Likeit({ dispatch }, data){
-        Likeit(data)
-        .then((res) => {
-            if (res.status !== 200) {
-                return false;
-            } else {
-                console.log(res.data)
-                dispatch("BoardDetail", { menu: undefined, unid: undefined,comment:true });
-
-                return true;
-            }
-        })
+                    return true;
+                }
+            })
 
     },
-    DeleteReply({ state, commit, dispatch }, data) {
-        DeleteReply(data)
+    Likeit({ dispatch }, data) {
+        console.log("likeit",data)
+        return Likeit(data)
             .then((res) => {
                 if (res.status !== 200) {
                     return false;
                 } else {
                     console.log(res.data)
-                    dispatch("BoardDetail", { menu: undefined, unid: undefined,comment:true });
+
+                    // dispatch("BoardDetail", { menu: undefined, unid: undefined, comment: true });
+
+                    return true;
+                }
+            })
+
+    },
+    DeleteReply({ state, commit, dispatch }, data) {
+        return DeleteReply(data)
+            .then((res) => {
+                if (res.status !== 200) {
+                    return false;
+                } else {
+
+                    // dispatch("BoardDetail", { menu: undefined, unid: undefined, comment: true });
 
                     return true;
                 }
             })
     },
     WriteReply({ state, commit, dispatch }, data) {
-        WriteReply(data)
+        return WriteReply(data)
             .then((res) => {
                 if (res.status !== 200) {
                     return false;
                 } else {
-                    console.log(res.data)
-                    dispatch("BoardDetail", { menu: undefined, unid: undefined,comment:true });
+
+                    // dispatch("BoardDetail", { menu: undefined, unid: undefined, comment: true });
                     return true;
                 }
             })
 
     },
-    BoardDetail({ state, commit }, { menu, unid, comment }) {
+    BoardDetail({ state, commit }, { menu, unid, comment, type, lnbid,title }) {
         var data = {};
+        console.log(menu, unid, comment, type, lnbid,title)
         if (menu) {
             data.menu = menu;
             commit("BoardWritePath", menu);
@@ -91,27 +119,34 @@ export default {
         } else {
             data.unid = state.store.board.unid;
         }
-        BoardDetail(data)
+
+        data.lnbid = lnbid;
+        return BoardDetail(data)
             .then((res) => {
                 if (res.status !== 200) {
                     return false;
                 } else {
-                    if (!comment) {
-                        router.push({name:'boardread'});
-                    }
                     commit("BoardDetailData", res.data)
-                    return true;
+                    if (!comment) {
+                        router.push(
+                            {
+                                name: 'boardread',
+                                query: { data: JSON.stringify({ type, lnbid,title }) }
+                            });
+                            return true;
+                    }
+                    return false;
                 }
             })
 
     },
     BoardWrite({ state, commit }, data) {
-        BoardWrite(data)
+        return BoardWrite(data)
             .then((res) => {
                 if (res.status !== 200) {
                     return false;
                 } else {
-                    router.push(`/board_more/${state.store.board.path}`);
+                    // router.push(`/board_more/${state.store.board.path}`);
                     // commit("BoardWrite", { menu: type, data: res.data })
                     return true;
                 }
@@ -119,8 +154,8 @@ export default {
 
     },
     GetBoardList({ state, commit, rootState }, { type }) {
-        console.log("Get", type)
-        console.log(state)
+
+
         var data = {};
         data.page = 0;
         data.size = rootState.configjs.store.config.listcount;
@@ -131,7 +166,7 @@ export default {
                 if (res.status !== 200) {
                     return false;
                 } else {
-                    console.log("GetBoardList", res.data, type)
+
                     commit("GetBoardList", { menu: type, data: res.data })
                     return true;
 

@@ -4,7 +4,7 @@
       <h2>
         <a @click="Back()"
           ><img src="../../mobile/img/wmail_back.png" alt="" /></a
-        >{{ GetStoreBoard.path }}
+        >{{ this.params.title }}
       </h2>
       <div>
         <span class="save" @click="Send">저장</span>
@@ -119,7 +119,7 @@
         </ul>
         <div class="noti_con">
           <!-- <editor-content :editor="editor" /> -->
-          <Namo :read="false" :editor="Body_Text" ref="editor"></Namo>
+          <Namo :read="false" :editor="Body_Text" did="board" ref="editor"></Namo>
         </div>
       </form>
     </div>
@@ -129,13 +129,14 @@
 <script>
 import { mapState, mapGetters } from "vuex";
 import { Editor, EditorContent } from "tiptap";
-import Namo from '../editor/namo.vue';
+import Namo from "../editor/namo.vue";
 export default {
   computed: {
     ...mapGetters("mainjs", ["GetMyInfo"]),
     ...mapGetters("boardjs", ["GetStoreBoard"]),
   },
   created() {
+    this.params = JSON.parse(this.$route.query.data);
     if (this.GetStoreBoard.path === "congratulate") {
       this.category = "congratulate";
     }
@@ -170,6 +171,7 @@ export default {
     }
   },
   mounted() {
+    this.fileinit = this.$refs.file.files;
     this.editor = new Editor({
       content: this.Body_Text,
     });
@@ -179,7 +181,8 @@ export default {
     this.$store.commit("boardjs/EditMode", false);
   },
   components: {
-    EditorContent, Namo
+    EditorContent,
+    Namo,
   },
   data: function () {
     return {
@@ -190,11 +193,13 @@ export default {
       isAllowReply: 1,
       category: "",
       term: "1M",
+      Detach: [],
+      addAttach: [],
     };
   },
   methods: {
     Back() {
-      this.$router.replace(`${this.GetStoreBoard.path}`);
+      this.$router.go(-1);
     },
     nowTime() {
       var moment = require("moment");
@@ -206,12 +211,33 @@ export default {
       this.$refs.file.click();
     },
     handleFileUpload() {
-      this.file.push(this.$refs.file.files[0]);
-
-      // }
+      if (this.$refs.file.files[0]) {
+        var result = this.file.findIndex((element) => {
+          return (
+            element.size === this.$refs.file.files[0].size &&
+            element.name === this.$refs.file.files[0].name
+          );
+        });
+        if (result == -1) {
+          this.file.push(this.$refs.file.files[0]);
+        }
+        if (this.GetStoreBoard.edit) {
+          this.addAttach.push(this.$refs.file.files[0]);
+        }
+      }
+      this.$refs.file.files = this.fileinit;
     },
     FileDel(value) {
-      this.file = this.file.filter((element) => element !== value);
+      var result = this.file.filter((element) => {
+        return element !== value;
+      });
+      if(result[0]){
+        this.file = result;
+      }
+      if(result.length==0){
+        this.file = [];
+      }
+      this.Detach.push(value);
     },
     fill(width, number) {
       number = number + ""; //number를 문자열로 변환하는 작업
@@ -226,75 +252,103 @@ export default {
       let formData = new FormData();
       formData.append("subject", this.Subject);
 
-      let editorData = this.$refs.editor.$refs.namo.contentWindow.crosseditor.GetBodyValue();
+      let editorData =
+        this.$refs.editor.$refs.namo.contentWindow.crosseditor.GetBodyValue();
 
       formData.append("body", editorData);
       // formData.append("body", this.editor.getHTML());
 
-      if (this.GetStoreBoard.path === "congratulate") {
-        formData.append("category1", this.category);
-      }
-      if (this.GetStoreBoard.path === "notice") {
-        //   this.term;
+      // if (this.GetStoreBoard.path === "congratulate") {
+      formData.append("category1", this.category);
+      // }
+      // if (this.GetStoreBoard.path === "notice") {
+      //   this.term;
 
-        var now = new Date(); //2021-08-23 00:00:00 ZE9 오늘날짜
+      var now = new Date(); //2021-08-23 00:00:00 ZE9 오늘날짜
+      now.setMonth(now.getMonth() + 1);
+      var y = now.getFullYear();
+      var m = this.fill(2, now.getMonth());
+      var d = this.fill(2, now.getDate());
+
+      var FromDate = `${y}-${m}-${d} 00:00:00 ZE9`; //2021-08-23 00:00:00 ZE9 오늘날짜
+      var ToDate = null;
+      var isEtermity = "";
+      if (this.term == "1M") {
         now.setMonth(now.getMonth() + 1);
-        var y = now.getFullYear();
-        var m = this.fill(2,now.getMonth());
-        var d = this.fill(2,now.getDate());
-
-        var FromDate = `${y}-${m}-${d} 00:00:00 ZE9`; //2021-08-23 00:00:00 ZE9 오늘날짜
-        var ToDate = null;
-        var isEtermity = "";
-        if (this.term == "1M") {
-          now.setMonth(now.getMonth() + 1);
-        } else if (this.term == "3M") {
-          now.setMonth(now.getMonth() + 3);
-        } else if (this.term == "6M") {
-          now.setMonth(now.getMonth() + 6);
-        } else if (this.term == "1Y") {
-          now.setFullYear(now.getFullYear() + 1);
-        } else {
-          isEtermity = 1;
-        }
-
-        var y = now.getFullYear();
-        var m = this.fill(2,now.getMonth());
-        var d = this.fill(2,now.getDate());
-        if(m=="00"){
-          m = "01";
-        }
-        ToDate = `${y}-${m}-${d} 00:00:00 ZE9`; //2021-08-23 00:00:00 ZE9 오늘날짜
-
-        formData.append("isEternity", isEtermity);
-        formData.append("FromDate", FromDate);
-        formData.append("ToDate", ToDate);
-        console.log(FromDate,ToDate)
+      } else if (this.term == "3M") {
+        now.setMonth(now.getMonth() + 3);
+      } else if (this.term == "6M") {
+        now.setMonth(now.getMonth() + 6);
+      } else if (this.term == "1Y") {
+        now.setFullYear(now.getFullYear() + 1);
+      } else {
+        isEtermity = 1;
       }
+
+      var y = now.getFullYear();
+      var m = this.fill(2, now.getMonth());
+      var d = this.fill(2, now.getDate());
+      if (m == "00") {
+        m = "01";
+      }
+      ToDate = `${y}-${m}-${d} 00:00:00 ZE9`; //2021-08-23 00:00:00 ZE9 오늘날짜
+
+      formData.append("isEternity", isEtermity);
+      formData.append("FromDate", FromDate);
+      formData.append("ToDate", ToDate);
+      // }
       formData.append("isAllowReply", this.isAllowReply);
 
-      for (var i = 0; i < this.file.length; i++) {
-        formData.append("attach", this.file[i]);
-      }
-
       if (this.GetStoreBoard.edit) {
+        for (var i = 0; i < this.addAttach.length; i++) {
+          formData.append("attach", this.addAttach[i]);
+        }
+        var Detachstr = "";
+        for (var i = 0; i < this.Detach.length; i++) {
+          if (i == this.Detach.length - 1) {
+            Detachstr += this.Detach[i].name;
+          } else {
+            Detachstr += this.Detach[i].name + ";";
+          }
+        }
+        formData.append("Detach", Detachstr);
         formData.append("unid", this.GetStoreBoard.detail.unid);
+      } else {
+        for (var i = 0; i < this.file.length; i++) {
+          formData.append("attach", this.file[i]);
+        }
       }
 
       var result = {};
       result.data = formData;
       result.path = this.GetStoreBoard.path;
       if (this.GetStoreBoard.edit) {
-        this.$store.dispatch("boardjs/BoardEdit", result);
+        this.$store.dispatch("boardjs/BoardEdit", result).then((res) => {
+          if (res) {
+            this.GoList();
+          }
+        });
       } else {
-        this.$store.dispatch("boardjs/BoardWrite", result);
+        this.$store.dispatch("boardjs/BoardWrite", result).then((res) => {
+          if (res) {
+            this.GoList();
+          }
+        });
       }
+    },
+    GoList(){
+      this.$router.push({
+              name: "boardlist",
+              query: {
+                data: JSON.stringify(this.params),
+              },
+            });
     },
     Reply(value) {
       this.isAllowReply = value;
     },
     Cancel() {
-      this.$router.replace(this.GetStoreBoard.path);
+      this.GoList();
     },
   },
 };

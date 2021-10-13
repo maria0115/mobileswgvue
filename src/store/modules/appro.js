@@ -18,6 +18,7 @@ export default {
   state: {
     approval: config.approval,
     detail:{},
+    category:[],
     
   },
   getters: {

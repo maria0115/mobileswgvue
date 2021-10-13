@@ -1,7 +1,7 @@
 <template>
   <div>
     <h2 class="mail_st_header">
-      <router-link :to="{name:'set_config'}"><img src="../../mobile/img/wmail_back.png" alt="" /></router-link
+      <router-link :to="{name:'mailsetconfig'}"><img src="../../mobile/img/wmail_back.png" alt="" /></router-link
       >지연발송
     </h2>
     <div class="m_contents05">

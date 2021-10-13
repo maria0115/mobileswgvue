@@ -56,7 +56,7 @@
             </div>
             <div slot="error">
               Error message, click
-              <router-link :to="{name:'search'}">here</router-link> to retry
+              <router-link :to="{name:this.$route.name}">here</router-link> to retry
             </div>
           </infinite-loading>
         </ul>
@@ -89,9 +89,7 @@ export default {
     },
     // 통합검색의 데이터는 vuex store 하나의 변수로 처리 하게 되는데 router로 이동할 때마다 데이터 값이 제대로 바인딩이 되지 않으면 오류, datacheck
     datacheck() {
-      this.path = this.$route.path.substring(
-        this.$route.path.lastIndexOf("/") + 1
-      );
+      this.path = this.$route.name.split("search")[0];
       var data = this.sortdata[this.path];
       // if (this.sortdata.hasOwnProperty("person")) {
       //   data = this.sortdata.person;

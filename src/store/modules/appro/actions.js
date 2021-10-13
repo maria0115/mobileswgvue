@@ -1,29 +1,41 @@
 import {
-    DocApproval, Approval,AppDetail,agreeNreject,AppWrite
+    DocApproval, Approval,AppDetail,agreeNreject,AppWrite,deleteItem
 } from '../../../api/index';
 import router from '../../../router/index';
 export default {
+    deleteItem({state,commit},data){
+        return deleteItem(data.unid)
+        .then((res) => {
+            console.log(res,"resaction");
+            if (res.status !== 200) {
+                return false;
+            } else {
+                return true;
+            }
+        })
+    },
     AppWrite({state,commit},data){
         AppWrite(data)
         .then((res) => {
             if (res.status !== 200) {
                 return false;
             } else {
-                console.log(res.data,"AppWrite");
+                
             }
         })
     },
     agreeNreject({state,commit},data){
-        agreeNreject(data)
+        console.log(data)
+        return agreeNreject(data)
         .then((res) => {
             if (res.status !== 200) {
                 return false;
             } else {
-                console.log(res.data,"agreeNreject");
+                
                 if(res.data){
                     alert("완료")
                 }
-                
+                return true;
                 // commit("SetDetail",res.data);
                 // // router.push(`/approval_more/${data.where}`);
 
@@ -36,15 +48,16 @@ export default {
     AppDetail({state,commit}){
         var data = {};
         data.openurl = state.store.app.openurl;
+        data.unid = state.store.app.unid;
         data.type = state.store.app.from;
-        console.log(data)
+        
         return AppDetail(data)
         .then((res) => {
 
             if (res.status !== 200) {
                 return false;
             } else {
-                console.log(res.data);
+                
                 
                 commit("SetDetail",res.data);
                 // router.push(`/approval_more/${data.where}`);

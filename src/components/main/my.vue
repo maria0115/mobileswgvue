@@ -23,19 +23,19 @@
               <dd class="mar30">
                 <span
                   >{{ GetMainLanguage.myinfo.mail }}
-                  <router-link :to="{name:'mail'}"
+                  <router-link :to="{ name: 'mailfirst' }"
                     ><b>{{ GetMyInfo.mailCount }}</b></router-link
                   ></span
                 >
                 <span
                   >{{ GetMainLanguage.myinfo.approval }}
-                  <router-link :to="{name:'approval'}"
-                    ><b>{{ GetMyInfo.approvalCount }}</b></router-link
+                  <a @click="MeneGo"
+                    ><b>{{ GetMyInfo.approvalCount }}</b></a
                   ></span
                 >
                 <span
                   >{{ GetMainLanguage.myinfo.schedule }}
-                  <router-link :to="{name:'schedule'}"
+                  <router-link :to="{ name: 'schedulefirst' }"
                     ><b>{{ GetMyInfo.scheduleCount }}</b></router-link
                   ></span
                 >
@@ -93,7 +93,20 @@ import Recent from "./my/recent.vue";
 import $ from "jquery";
 
 export default {
-  created() {},
+  async created() {
+    console.log(this.GetConfig.main.menuportlet);
+    this.menu = this.GetConfig.main.menuportlet;
+    const result = this.menu.findIndex((item) => {
+      return item.category == "approval";
+    });
+    this.top = this.menu[result];
+    if (result !== -1) {
+      this.categorys = await this.$store.dispatch(
+        "CategoryList",
+        this.menu[result].lnbid
+      );
+    }
+  },
   components: {
     Mail,
     Notice,
@@ -172,6 +185,37 @@ export default {
     }
   },
   methods: {
+    menuOfCategoryIdx(menu) {
+      if (this.categorys) {
+        return this.categorys.findIndex(function (item, idx) {
+          return item.category == menu;
+        });
+      }
+      return -1;
+    },
+    ThisCategory(menu) {
+      if (this.categorys) {
+        return this.categorys[this.menuOfCategoryIdx(menu)];
+      }
+      return [];
+    },
+    MeneGo() {
+      var value = this.ThisCategory('approve')
+      // .then(value=>{
+        this.$router.replace({
+          name: `${this.top.category}first`,
+          query: {
+            data: JSON.stringify({
+              type: value.category,
+              lnbid: value.lnbid,
+              top: this.top.lnbid,
+              title: value.title,
+            }),
+          },
+        });
+
+      // });
+    },
     remove(item) {
       this.mockSwipeList = this.mockSwipeList.filter((i) => i !== item);
       //

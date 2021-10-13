@@ -46,7 +46,7 @@ export default {
         this.customFolder = this.item.mycode;
         this.$store.commit("mailjs/MailCustomFolderTitle", this.item.nodetitle.ko);
         this.$router.push({
-          name: "Custom",
+          name: "custom",
           params: { folderId: this.item.mycode },
         });
       }

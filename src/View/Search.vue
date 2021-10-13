@@ -23,7 +23,7 @@
               v-for="(value, name) in this.form"
               :key="name"
             >
-              <router-link :to="`search/${value.name}`"
+              <router-link :to="{name:`${value.name}search`}"
                 ><a>{{ GetSearchLanguage.menu[value.name] }}</a></router-link
               >
             </li>
@@ -104,7 +104,7 @@ export default {
     },
     // 현재 url에 따른 카테고리 값
     Category() {
-      return this.$route.path.split("search/")[1];
+      return this.$route.name.split("search")[0];
     },
   },
   data() {

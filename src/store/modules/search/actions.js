@@ -6,10 +6,8 @@ export default {
     DelKeyword({ state, commit }, { word, index }) {
         var data = {};
         data.searchword = word;
-        console.log(data)
         DelKeyword(data)
             .then(response => {
-                console.log(response)
 
                 commit('DelKeyword', { word, index })
             });
@@ -107,8 +105,9 @@ export default {
 
 
         if (data.class === "allsearch") {
-            data.size = config.search.defaultHomeSize;
+            data.size = config.defaultHomeSize;
         } else {
+            console.log(rootState.configjs.store.config.listcount)
             data.size = rootState.configjs.store.config.listcount;
         }
 
@@ -169,7 +168,7 @@ export default {
         }
 
         // 
-
+console.log(data)
         return Search(data)
             .then(response => {
                 // 

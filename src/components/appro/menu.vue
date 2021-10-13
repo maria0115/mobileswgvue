@@ -17,75 +17,82 @@
           </dl>
         </div>
         <div class="icons">
-          <span class="sub_set"><a></a></span>
+          <!-- <span class="sub_set"><a></a></span> -->
           <span class="sub_close" @click="CloseHam"></span>
         </div>
       </div>
       <ul @click="CloseHam">
-        <li>
-          <h3><router-link :to="{name:'appform'}">결재 양식함</router-link></h3>
-        </li>
-        <li>
+        <li v-for="(value, index) in category" :key="index" :class="value.category">
           <h3>
-            <router-link :to="{name:'appdraft'}"
-              >작성중 문서
-              <span>{{ this.GetApproval.draft.data.cnt }}</span></router-link
-            >
-          </h3>
-        </li>
-        <li>
-          <h3>
-            <router-link :to="{name:'apptodolist'}"
-              >결재할 문서
-              <span>{{ this.GetApproval.approve.data.cnt }}</span></router-link
-            >
-          </h3>
-        </li>
-        <li>
-          <h3>
-            <router-link :to="{name:'apping'}"
-              >결재중 문서
-              <span>{{
-                this.GetApproval.approving.data.cnt
+            <router-link
+              :to="{
+                name: `app${value.category}`,
+                query: {
+                  data: JSON.stringify({
+                    type: value.category,
+                    lnbid: value.lnbid,
+                    top: params.top,
+                    title: value.title,
+                  }),
+                },
+              }"
+              >{{ value.title }}
+              <span v-if="GetApproval[value.category]">{{
+                GetApproval[value.category].data.cnt
               }}</span></router-link
             >
           </h3>
-        </li>
-        <li>
-          <h3>
-            <router-link :to="{name:'appreject'}"
-              >반려된 문서
-              <span>{{ this.GetApproval.reject.data.cnt }}</span></router-link
-            >
-          </h3>
-        </li>
-        <li>
-          <h3>
-            <router-link :to="{name:'successdate'}"
-              >완료된 문서
-              <span>{{
-                this.GetApproval.success_date.data.cnt
-              }}</span></router-link
-            >
-          </h3>
-          <ul>
+          <ul v-if="value.category == 'success_date'">
             <li>
-              <router-link :to="{name:'successmy'}"
+              <router-link
+                :to="{
+                  name: 'appsuccess_my',
+                  query: {
+                    data: JSON.stringify({
+                      type: value.category,
+                      lnbid: value.lnbid,
+                      top: params.top,
+                      title: value.title,
+                    }),
+                  },
+                }"
                 >개인
-                <em
-                  >({{ this.GetApproval.success_my.data.cnt }})</em
-                ></router-link
+                <em>({{ GetApproval.success_my.data.cnt }})</em></router-link
               >
             </li>
             <li>
-              <router-link :to="{name:'successdept'}"
+              <router-link
+                :to="{
+                  name: 'appsuccess_dept',
+                  query: {
+                    data: JSON.stringify({
+                      type: value.category,
+                      lnbid: value.lnbid,
+                      top: params.top,
+                      title: value.title,
+                    }),
+                  },
+                }"
                 >부서
-                <em
-                  >({{ this.GetApproval.success_dept.data.cnt }})</em
-                ></router-link
+                <em>({{ GetApproval.success_dept.data.cnt }})</em></router-link
               >
             </li>
-            <li><router-link :to="{name:'successdate'}">일자별</router-link></li>
+            <li>
+              <router-link
+                :to="{
+                  name: 'appsuccess_date',
+                  query: {
+                    data: JSON.stringify({
+                      type: value.category,
+                      lnbid: value.lnbid,
+                      top: params.top,
+                      title: value.title,
+                    }),
+                  },
+                }"
+                >일자별</router-link
+              >
+            </li>
           </ul>
         </li>
       </ul>
@@ -96,19 +103,30 @@
 <script>
 import { mapState, mapGetters } from "vuex";
 export default {
-  created(){
+  created() {
+    this.params = JSON.parse(this.$route.query.data);
+    this.category = this.GetCategory[this.params.top];
     this.$store.dispatch("approjs/GetApprovalList", { type: "draft" });
-        this.$store.dispatch("approjs/GetApprovalList", { type: "approve" });
-        this.$store.dispatch("approjs/GetApprovalList", { type: "approving" });
-        this.$store.dispatch("approjs/GetApprovalList", { type: "reject" });
-        this.$store.dispatch("approjs/GetApprovalList", { type: "success_date" });
-        this.$store.dispatch("approjs/GetApprovalList", { type: "success_my" });
-        this.$store.dispatch("approjs/GetApprovalList", { type: "success_dept" });
+    this.$store.dispatch("approjs/GetApprovalList", { type: "approve" });
+    this.$store.dispatch("approjs/GetApprovalList", { type: "approving" });
+    this.$store.dispatch("approjs/GetApprovalList", { type: "reject" });
+    this.$store.dispatch("approjs/GetApprovalList", { type: "success_date" });
+    this.$store.dispatch("approjs/GetApprovalList", { type: "success_my" });
+    this.$store.dispatch("approjs/GetApprovalList", { type: "success_dept" });
   },
   props: {
     isOpen: Boolean,
   },
   methods: {
+    isMenu(menu) {
+      var result = this.category.findIndex(function (item, idx) {
+        return item.category == menu;
+      });
+      if (result !== -1) {
+        return true;
+      }
+      return false;
+    },
     CloseHam() {
       this.$emit("CloseHam");
     },
@@ -119,8 +137,9 @@ export default {
     },
   },
   computed: {
-    ...mapGetters("mainjs",["GetMyInfo"]),
-    ...mapGetters("approjs",["GetApproval"]),
+    ...mapGetters(["GetCategory"]),
+    ...mapGetters("mainjs", ["GetMyInfo"]),
+    ...mapGetters("approjs", ["GetApproval"]),
   },
 };
 </script>

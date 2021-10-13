@@ -70,7 +70,6 @@ export default {
     };
   },
   beforeDestroy() {
-    console.log("orgfooterdestroy");
     this.$store.commit("mailjs/From", "");
     // this.$store.commit("OrgDataInit");
   },
@@ -84,7 +83,6 @@ export default {
       this.createdOrg=false;
     },
     OpenCard(item){
-      console.log(item);
       this.$emit("CardOpen",item);
 
     },

@@ -13,7 +13,6 @@
                 multiple
                 style="display: none"
                 type="file"
-                id="file"
                 ref="file"
                 v-on:change="handleFileUpload()"
               />
@@ -56,7 +55,7 @@
               <span @click="rClick('regular')">
                 <em :class="{ click: !rereclick }"></em>일반
               </span>
-              <span  class="rere_btn" @click="RBtn"
+              <span class="rere_btn" @click="RBtn"
                 ><!--클래스명 추가됨 8월 12일 -->
                 <em :class="{ click: rereclick }"></em>반복예약
               </span>
@@ -190,8 +189,7 @@
                 <div class="add_search" :class="{ active: this.copytosearch }">
                   <ul>
                     <li
-                      v-for="(value, index) in this.autosearchorg
-                        .CopyTo"
+                      v-for="(value, index) in this.autosearchorg.CopyTo"
                       :key="index"
                       @click="AddOrg('CopyTo', value, 'copytosearch')"
                     >
@@ -265,8 +263,7 @@
                 >
                   <ul>
                     <li
-                      v-for="(value, index) in this.autosearchorg
-                        .BlindCopyTo"
+                      v-for="(value, index) in this.autosearchorg.BlindCopyTo"
                       @click="AddOrg('BlindCopyTo', value, 'blindcopytosearch')"
                       :key="index"
                     >
@@ -295,9 +292,11 @@
           <li class="att_file">
             <strong>첨부파일</strong>
             <div>
-              <ul class="file_list">
+              {{ this.file }}
+              <ul v-if="this.file.length > 0" class="file_list">
                 <li v-for="(value, index) in this.file" :key="index">
-                  {{ value.name }}<span class="att_del"></span>
+                  {{ value.name
+                  }}<span class="att_del" @click="FileDel(value)"></span>
                 </li>
               </ul>
             </div>
@@ -305,7 +304,13 @@
           <li class="cal_memo">
             <strong>메모</strong>
             <div>
-              <Namo id="memo_t" :read="false" :editor="Body_Text" ref="editor"></Namo>
+              <Namo
+                id="memo_t"
+                :read="false"
+                did="calendar"
+                :editor="Body_Text"
+                ref="editor"
+              ></Namo>
               <!-- <EditorContent id="memo_t" :editor="editor" /> -->
               <!-- <textarea id="memo_t" v-model="Body_Text"></textarea> -->
             </div>
@@ -450,49 +455,60 @@ import { mapState, mapGetters } from "vuex";
 import Org from "../../View/Org.vue";
 import CalHeader from "./calHeader.vue";
 import { Editor, EditorContent } from "tiptap";
-import Namo from '../editor/namo.vue';
+import Namo from "../editor/namo.vue";
 export default {
   created() {
+    var params = JSON.parse(this.$route.query.data);
+
     if (this.GetEdit) {
       this.editData =
         this.GetSchedule.calDetail[this.GetSaveSchedule.detail.where];
-      
+
       this.Body_Text = this.editData.body;
       this.date = this.editData.startdate;
       this.onCategory = this.editData.categoryVal;
       this.place = this.editData.place;
       this.open = this.editData.secretVal;
       this.Subject = this.editData.subject;
-      console.log(this.editData)
-      this.endTime = `${this.editData.endtime.split(":")[0]}:${this.editData.endtime.split(":")[1]}`;
-      this.startTime = `${this.editData.starttime.split(":")[0]}:${this.editData.starttime.split(":")[1]}`;
-
-      
-    }else{
+      this.endTime = `${this.editData.endtime.split(":")[0]}:${
+        this.editData.endtime.split(":")[1]
+      }`;
+      this.startTime = `${this.editData.starttime.split(":")[0]}:${
+        this.editData.starttime.split(":")[1]
+      }`;
+    } else {
+      var moment = require("moment");
       var dates = new Date();
       var hour = dates.getHours();
       var minute = dates.getMinutes();
-      this.startTime = `${hour}:${minute}`;
-      this.endTime = `${hour + 1}:${minute}`;
-  
-      var moment = require("moment");
+      this.startTime = `${this.fill(2, hour)}:${this.fill(2, minute)}`;
+
+      this.endTime = `${this.fill(2, hour + 1)}:${this.fill(2, minute)}`;
+      this.date = moment().format("YYYY-MM-DD");
       this.RepeatStartDate = moment().utc().format("YYYYMMDDTHHmmss");
       this.RepeatUntil = moment().format("YYYYMMDD");
-      this.date = moment().format("YYYY-MM-DD");
+    }
 
+    if (params.date && params.date.length > 0) {
+      this.date = params.date;
+    }
+    if (params.starttime && params.starttime !== "") {
+      this.startTime = `${this.fill(2, parseInt(params.starttime))}:00`;
+      this.endTime = `${this.fill(2, parseInt(params.starttime) + 1)}:00`;
     }
     // RepeatStartDate: "20210817T150000",
     //   RepeatHow: "U",
     //   RepeatUntil: "20210831",
   },
   mounted() {
+    this.fileinit = this.$refs.file.files;
     this.editor = new Editor({
       content: this.Body_Text,
     });
   },
   beforeDestroy() {
     this.editor.destroy();
-        this.$store.commit("calendarjs/isEdit",false);
+    this.$store.commit("calendarjs/isEdit", false);
     this.$store.commit("OrgDataInit");
   },
   data() {
@@ -541,10 +557,12 @@ export default {
       field: {},
       editor: null,
       ReData: {},
+      Detach: [],
+      addAttach: [],
     };
   },
   computed: {
-    ...mapState(["org","autosearchorg"]),
+    ...mapState(["org", "autosearchorg"]),
     ...mapGetters("mailjs", ["GetMail"]),
     ...mapGetters("calendarjs", [
       "GetEdit",
@@ -604,13 +622,24 @@ export default {
       this.$refs.file.click();
     },
     handleFileUpload() {
-      this.file = [];
-      this.file.push(this.$refs.file.files[0]);
-      // }
+      if (this.$refs.file.files[0]) {
+        var result = this.file.findIndex((element) => {
+          return (
+            element.size === this.$refs.file.files[0].size &&
+            element.name === this.$refs.file.files[0].name
+          );
+        });
+        if (result == -1) {
+          this.file.push(this.$refs.file.files[0]);
+        }
+        if (this.GetEdit) {
+          this.addAttach.push(this.$refs.file.files[0]);
+        }
+      }
+      this.$refs.file.files = this.fileinit;
     },
     RBtn() {
-      if(!this.GetEdit){
-
+      if (!this.GetEdit) {
         this.rmodalon = true;
       }
     },
@@ -676,10 +705,8 @@ export default {
       this.$router.go(-1);
     },
     Send() {
-      console.log("Send")
       let formData = new FormData();
       formData.append("subject", this.Subject);
-      console.log(this.org.SendTo)
       var SendTo = "";
       for (var i = 0; i < this.org.SendTo.length; i++) {
         if (i == this.org.SendTo.length - 1) {
@@ -704,11 +731,10 @@ export default {
           BlindCopyTo += this.org.BlindCopyTo[i].id + ";";
         }
       }
+      console.log(SendTo,CopyTo,BlindCopyTo,"BlindCopyTo")
       formData.append("sendTo", SendTo);
       formData.append("copyTo", CopyTo);
       formData.append("blindCopyTo", BlindCopyTo);
-
-      console.log(this.date, "this.date");
 
       var moment = require("moment");
       var start = moment(`${this.date} ${this.startTime}`).format(
@@ -717,16 +743,33 @@ export default {
       var end = moment(`${this.date} ${this.endTime}`).format(
         "YYYYMMDDTHHmmss"
       );
-      console.log(start, end);
+      console.log(start,"start")
       formData.append("startDate", start);
       formData.append("endDate", end);
       formData.append("location", this.place);
       // namo 에디터 본문 내용 받아오기
-      let editorData = this.$refs.editor.$refs.namo.contentWindow.crosseditor.GetBodyValue();
+      // let editorData = "회의";
+      let editorData =
+        this.$refs.editor.$refs.namo.contentWindow.crosseditor.GetBodyValue();
       formData.append("body", editorData);
       // formData.append("body", this.editor.getHTML());
-      for (var i = 0; i < this.file.length; i++) {
-        formData.append("attach", this.file[i]);
+      if (this.GetEdit) {
+        for (var i = 0; i < this.addAttach.length; i++) {
+          formData.append("attach", this.addAttach[i]);
+        }
+        var Detachstr = "";
+        for (var i = 0; i < this.Detach.length; i++) {
+          if (i == this.Detach.length - 1) {
+            Detachstr += this.Detach[i].name;
+          } else {
+            Detachstr += this.Detach[i].name + ";";
+          }
+        }
+        formData.append("Detach", Detachstr);
+      } else {
+        for (var i = 0; i < this.file.length; i++) {
+          formData.append("attach", this.file[i]);
+        }
       }
       formData.append("category", this.onCategory);
       formData.append("private", !this.open);
@@ -744,12 +787,25 @@ export default {
       var type = "write";
       if (this.GetEdit) {
         type = "edit";
-        formData.append("unid",this.editData.unid);
+        formData.append("unid", this.editData.unid);
       }
       this.$store.dispatch("calendarjs/CalWrite", {
         data: formData,
         type,
       });
+    },
+    FileDel(value) {
+      var result = this.file.filter((element) => {
+        return element !== value;
+      });
+      if (result[0]) {
+        this.file = result;
+      }
+      if (result.length == 0) {
+        this.file = [];
+      }
+
+      this.Detach.push(value);
     },
     Title() {
       if (this.GetEdit) {

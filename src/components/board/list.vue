@@ -2,7 +2,7 @@
   <div>
     <div class="sub_header noti">
       <div class="basic_header on">
-        <h2>{{ path }}</h2>
+        <h2>{{ Title }}</h2>
         <div>
           <span class="e_edit"></span
           ><!--관리자 모드일때 노출되어야함-->
@@ -28,9 +28,9 @@
     <div class="m_contents02">
       <form action="">
         <ul class="board_list">
-          <li v-for="(value, index) in GetBoard[path].data" :key="index">
+          <li v-for="(value, index) in lists" :key="index">
             <a @click="Read(value)">
-              <span class="basic_img on">
+              <span class="basic_img on" v-if="value.author">
                 <!-- <img src="../../mobile/img/img01.png" alt=""> -->
                 <em class="no_img" :style="randomColor()"
                   ><b>{{ value.author.split("")[0] }}</b></em
@@ -40,12 +40,14 @@
               <dl>
                 <dt>
                   <span :class="{ new: boo(value) }"></span
-                  ><em class="bul_tit">{{ value.category }}</em
+                  ><em class="bul_tit" v-if="value.category">{{
+                    value.category
+                  }}</em
                   >{{ value.subject }}
                 </dt>
                 <dd>
                   {{ value.author }}<span>{{ transTime(value.created) }}</span
-                  ><em class="like">{{ value.readcnt }}</em>
+                  ><em class="like">{{ value.likecnt }}</em>
                 </dd>
               </dl>
               <span :class="{ clip: value.attach }"></span>
@@ -65,21 +67,31 @@
             </div>
             <div slot="error">
               Error message, click
-              <router-link :to="{name:'board'}">here</router-link> to retry
+              <router-link :to="{ name: 'board' }">here</router-link> to retry
             </div>
           </infinite-loading>
         </ul>
       </form>
     </div>
     <SubMenu :isOpen="isOpen" @CloseHam="CloseHam"></SubMenu>
-    <Search></Search>
+    <Search @SetSearchWord="SetSearchWord"></Search>
     <WBtn :path="path"></WBtn>
     <div class="ac_btns">
-            <span class="more_plus"></span>
-            <ul>
-                <li><router-link :to="{name:'boardwrite'}">게시판 작성</router-link></li>
-            </ul>
-        </div>
+      <span class="more_plus"></span>
+      <ul>
+        <li>
+          <router-link
+            :to="{
+              name: 'boardwrite',
+              query: {
+                data: JSON.stringify(params),
+              },
+            }"
+            >게시판 작성</router-link
+          >
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 
@@ -88,12 +100,28 @@ import SubMenu from "./menu.vue";
 import Search from "./search.vue";
 import WBtn from "./BtnW.vue";
 import InfiniteLoading from "vue-infinite-loading";
-import { Board } from "../../api/index.js";
+import { BoardSearch, ListOfCategory } from "../../api/index.js";
 import { mapState, mapGetters } from "vuex";
 export default {
   created() {
-    this.infiniteId += 1;
-    console.log("this.path",this.path)
+    this.Init();
+    this.params = {};
+    if (this.$route.query.data) {
+      this.params = JSON.parse(this.$route.query.data);
+    }
+    this.$store.commit("boardjs/BoardWritePath", this.params.type);
+    this.option.page = this.page;
+    this.option.category = "board";
+    this.option.size = this.GetConfig.listcount;
+    this.option.type = this.params.type;
+    this.option.lnbid = this.params.lnbid;
+    this.option.boardType = this.params.type;
+    this.option.searchword = "";
+    this.option.searchType = "0";
+    this.$store.dispatch("ListOfCategory", this.option).then((res) => {
+      this.lists = res;
+      this.$forceUpdate();
+    });
   },
   beforeRouteLeave(to, from, next) {
     this.infiniteId += 1;
@@ -109,26 +137,66 @@ export default {
     return {
       isOpen: false,
       infiniteId: 0,
+      lists: [],
+      page: 0,
+      option: {},
     };
   },
   computed: {
     ...mapState("mainjs", ["main"]),
     ...mapGetters("boardjs", ["GetBoard"]),
     ...mapGetters("configjs", ["GetConfig"]),
+    ...mapGetters(["GetCategory"]),
+    ...mapState(["listOfCategory"]),
+
     path() {
       // if (this.$route.path.indexOf("custom") === -1) {
-      return this.$route.name;
+      return this.params.type;
       // } else {
       //   return "custom";
       // }
     },
+    Title() {
+      return this.params.title;
+    },
   },
   methods: {
+    Init() {
+      this.infiniteId += 1;
+      this.page = 0;
+      return;
+    },
+    SetSearchWord({ searchfield, searchword }) {
+      this.option.searchword = searchword;
+      this.option.searchType = searchfield;
+      this.option.page = 0;
+      if (searchword.length > 0) {
+        this.option.type = "search";
+
+        this.$store.dispatch("boardjs/BoardSearch", this.option).then((res) => {
+          console.log(res);
+          this.lists = res;
+          this.$forceUpdate();
+          this.Init();
+        });
+      } else {
+        this.option.type = this.params.type;
+
+        this.$store.dispatch("ListOfCategory", this.option).then((res) => {
+          this.lists = res;
+          this.$forceUpdate();
+          this.Init();
+        });
+      }
+    },
     Read(value) {
       if (value.unid) {
         this.$store.dispatch("boardjs/BoardDetail", {
           menu: undefined,
           unid: value.unid,
+          type: this.params.type,
+          lnbid: this.params.lnbid,
+          title: this.params.title,
         });
       }
     },
@@ -156,36 +224,69 @@ export default {
     },
     // 스크롤 페이징
     infiniteHandler($state) {
-      this.GetBoard[this.path].page = String(
-        parseInt(this.GetBoard[this.path].page) + 1
-      );
+      this.page++;
       // this.GetMail['inbox_detail'].size+= 1;
-      var option = {};
+      this.option.page = this.page;
 
-      option = this.GetBoard[this.path];
-      option.size = this.GetConfig.listcount;
-      option.boardtype = this.path;
-      this.GetData(option, $state);
+      if (this.option.searchword.length > 0) {
+        this.option.type = "search";
+
+        this.SearchData(this.option, $state);
+      } else {
+        this.option.type = this.params.type;
+
+        this.GetData(this.option, $state);
+      }
     },
-    GetData(option, $state) {
-      Board(option)
+    SearchData(option, $state) {
+      BoardSearch(option)
         .then((response) => {
-          return response.data.data;
+          return response.data;
         })
         .then((data) => {
           setTimeout(() => {
             if (data) {
-              if (Object.keys(this.GetBoard[this.path].data.data).length > 0) {
-                this.GetBoard[this.path].data.data =
-                  this.GetBoard[this.path].data.data.concat(data);
+              if (this.lists.length > 0) {
+                this.lists = this.lists.concat(data);
               } else {
-                this.GetBoard[this.path].data.data = data;
+                this.lists = data;
               }
               $state.loaded();
 
               // 끝 지정(No more data) - 데이터가 EACH_LEN개 미만이면
 
-              if (data.length / this.GetConfig.listcount < 1) {
+              if (data / option.size < 1) {
+                $state.complete();
+              }
+            } else {
+              // 끝 지정(No more data)
+
+              $state.complete();
+            }
+          }, 1000);
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    },
+    GetData(option, $state) {
+      ListOfCategory(option)
+        .then((response) => {
+          return response.data;
+        })
+        .then((data) => {
+          setTimeout(() => {
+            if (data) {
+              if (this.lists.length > 0) {
+                this.lists = this.lists.concat(data);
+              } else {
+                this.lists = data;
+              }
+              $state.loaded();
+
+              // 끝 지정(No more data) - 데이터가 EACH_LEN개 미만이면
+
+              if (data / option.size < 1) {
                 $state.complete();
               }
             } else {

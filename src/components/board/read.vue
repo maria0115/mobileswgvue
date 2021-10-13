@@ -4,7 +4,7 @@
       <h2>
         <a @click="Back()"
           ><img src="../../mobile/img/wmail_back.png" alt="" /></a
-        >{{ GetStoreBoard.path }}
+        >{{ params.title }}
       </h2>
       <div>
         <span class="edit" @click="Edit">수정</span>
@@ -49,7 +49,7 @@
         v-if="GetStoreBoard.detail.attach.length > 0"
       >
         <strong>첨부파일</strong>
-        <ul>
+        <!-- <ul>
           <li
             @click="attachClick(value.path)"
             class="active"
@@ -63,20 +63,33 @@
             /></span>
             <div>
               <p>{{ value.name }}</p>
-              <em>({{value.size}})</em>
+              <em>({{ value.size }})</em>
             </div>
           </li>
-        </ul>
+        </ul> -->
+
+        <Viewer className="" :attaInfo="GetStoreBoard.detail.attach" :attach="true"></Viewer>
       </div>
       <!-- <div class="noti_con" v-html="GetStoreBoard.detail.body"></div> -->
-      <Namo id="memo_t" :read="true" :editor="GetStoreBoard.detail.body" ref="editor"></Namo>
+
+      <Namo
+        id="memo_t"
+        :read="true"
+        :editor="GetStoreBoard.detail.body"
+        did="board"
+        ref="editor"
+      ></Namo>
       <!-- <editor-content class="noti_con" :editor="editor" /> -->
-      <div class="like_btn" @click="Likeit()">
+      <div
+        v-if="GetStoreBoard.detail.useLike"
+        class="like_btn"
+        @click="Likeit()"
+      >
         <span :class="{ active: !GetStoreBoard.detail.isLike }"
           ><em>{{ GetStoreBoard.detail.like_cnt }}</em> LIKE <b></b
         ></span>
       </div>
-      <div v-if="GetStoreBoard.detail.isAllowReply" class="comment">
+      <div v-if="GetStoreBoard.detail.useReply" class="comment">
         <span
           >댓글 <em>{{ this.GetStoreBoard.detail.reply.length }}</em></span
         >
@@ -149,10 +162,17 @@
 import { mapState, mapGetters } from "vuex";
 import { Editor, EditorContent } from "tiptap";
 import configjson from "../../config/config.json";
-import Namo from '../editor/namo.vue';
+import Namo from "../editor/namo.vue";
+import Viewer from '../editor/viewer.vue';
 export default {
   components: {
-    EditorContent,Namo
+    EditorContent,
+    Namo,
+    Viewer
+  },
+  created() {
+    this.params = JSON.parse(this.$route.query.data);
+    console.log(this.GetStoreBoard.detail);
   },
   mounted() {
     this.editor = new Editor({
@@ -197,13 +217,33 @@ export default {
       var data = {};
       data.boardType = this.GetStoreBoard.path;
       data.unid = this.GetStoreBoard.detail.unid;
-      this.$store.dispatch("boardjs/DeleteBoard", data);
+      this.$store.dispatch("boardjs/DeleteBoard", data).then((result) => {
+        if (result) {
+          this.GoList();
+        }
+      });
     },
     Likeit() {
       var data = {};
       data.root_unid = this.GetStoreBoard.detail.root_unid;
       data.boardType = this.GetStoreBoard.path;
-      this.$store.dispatch("boardjs/Likeit", data);
+      this.$store.dispatch("boardjs/Likeit", data).then((res) => {
+        if (res) {
+          this.GetStoreBoard.detail.isLike = true;
+          this.GetStoreBoard.detail.like_ctn++;
+        }
+      });
+    },
+    Read() {
+      console.log(this.params, "this.params");
+      this.$store.dispatch("boardjs/BoardDetail", {
+        menu: undefined,
+        unid: undefined,
+        comment: true,
+        type: this.params.type,
+        lnbid: this.params.lnbid,
+        title: this.params.title,
+      });
     },
     ParentTag(parentUnid) {
       var result = this.GetStoreBoard.parents.filter((p) => {
@@ -269,7 +309,7 @@ export default {
       }`;
     },
     Back() {
-      this.$router.replace(`${this.GetStoreBoard.path}`);
+      this.GoList();
     },
     // utc 시간 to local 시간
     transTime(time) {
@@ -280,6 +320,14 @@ export default {
     },
     attachClick(url) {
       window.open(url);
+    },
+    GoList() {
+      this.$router.push({
+        name: "boardlist",
+        query: {
+          data: JSON.stringify(this.params),
+        },
+      });
     },
     btransTime(time) {
       var moment = require("moment");
@@ -295,7 +343,14 @@ export default {
       return localTime;
     },
     Edit() {
-      this.$store.dispatch("boardjs/EditMode", true);
+      this.$store.commit("boardjs/EditMode", true);
+
+      this.$router.replace({
+        name: "boardwrite",
+        query: {
+          data: JSON.stringify(this.params),
+        },
+      });
     },
     CommentSend(value) {
       var data = {};
@@ -326,7 +381,12 @@ export default {
       }
       data.my_unid = this.Eclicked;
 
-      this.$store.dispatch("boardjs/WriteReply", data);
+      this.$store.dispatch("boardjs/WriteReply", data).then((res) => {
+        console.log(res, "write");
+        if (res) {
+          this.Read();
+        }
+      });
       this.Eclicked = "";
       this.Cclicked = "";
       this.CBody = "";
@@ -337,7 +397,11 @@ export default {
       data.boardType = this.GetStoreBoard.path;
       data.root_unid = value.root_unid;
       data.my_unid = value.my_unid;
-      this.$store.dispatch("boardjs/DeleteReply", data);
+      this.$store.dispatch("boardjs/DeleteReply", data).then((res) => {
+        if (res) {
+          this.Read();
+        }
+      });
     },
   },
 };

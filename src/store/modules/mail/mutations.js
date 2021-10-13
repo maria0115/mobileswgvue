@@ -27,7 +27,7 @@ export default {
 
     },
     AllReply(state, data) {
-        console.log(state.store.maildetail,"AllReply")
+        
         state.mailorg = {
             pointer: "SendTo",
             SendTo: state.store.maildetail.sendTo,
@@ -51,7 +51,7 @@ export default {
                 return item1.id == item2.id
             }) == idx1;
         });
-        console.log(send,copy)
+        
 
         state.mailorg['SendTo'] = send;
         state.mailorg['CopyTo'] = copy;
@@ -64,11 +64,11 @@ export default {
         state.store.mailconfig.view[what] = unid;
     },
     MailDetailUnid(state, unid) {
-        console.log(state,"MailDetailUnid")
+        
         state.store.maildetail.unid = unid;
     },
     MailDetailData(state, data) {
-        console.log(state,"MailDetailData")
+        
         var unid = state.store.maildetail.unid;
         state.store.maildetail = data;
         state.store.maildetail.unid = unid;
@@ -152,11 +152,14 @@ export default {
     // 메일 삭제
     mailDelete(state, { type }) {
         var data = state.mail.data[type].data.data;
-        for (var i = 0; i < state.mail.checkBtn.checkedNames.length; i++) {
-            data = data.filter((element) => element.unid !== state.mail.checkBtn.checkedNames[i].unid);
+        var checked = state.mail.checkBtn.checkedNames;
+        for (var i = 0; i < checked.length; i++) {
+            data = data.filter((element) => element.unid !== checked[i].unid);
         }
         state.mail.data[type].data.data = data;
-        state.mail.checkBtn.checkedNames = [];
+        state.mail.data[type].data.total -= checked.length;
+
+        checked = [];
     },
     // 메일 목록 데이터
     MailDetail(state, { res, mailtype }) {

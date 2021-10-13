@@ -19,8 +19,11 @@
             <span>{{ this.daysSort[this.theDayOfWeek] }}</span>
             <b>{{ this.today }}</b>
           </div>
-          <div v-for="(value, index) in (GetSchedule.calList.day.allday)" :key="index">
-            <p v-if="value.allDay">{{value.subject}}</p>
+          <div
+            v-for="(value, index) in GetSchedule.calList.day.allday"
+            :key="index"
+          >
+            <p v-if="value.allDay">{{ value.subject }}</p>
           </div>
         </div>
         <div class="time_area">
@@ -34,28 +37,44 @@
             </div>
             <div class="row_wrap">
               <div class="row">
-                <div
-                  class="col1"
-                  v-for="(value, index) in (GetSchedule.calList.day.data)"
-                  :key="index"
-                >
+                <div class="col1">
                   <!-- :style="{ width: `calc(100% / ${isToday(GetSchedule.calList.day).length})` }" -->
-                  <div class="col_wrap" >
+                  <div class="col_wrap">
                     <div class="schedule_wrap">
-                      <div class="schedule time_schedule" v-for="(v, i) in isToday(value)"
-                  :key="i" :style="SetStyle(v)">
-                        <div class="schedule_box" v-if="!v.allDay" @click="Detail(v)">
-                          <p>
-                            <em class="time"
-                              >{{ v.starttime.split(":")[0] }}:{{
-                                v.starttime.split(":")[1]
-                              }}
-                              ~ {{ v.endtime.split(":")[0] }}:{{
-                                v.endtime.split(":")[1]
-                              }}</em
-                            >
-                            <span class="con">{{ v.subject }}</span>
-                          </p>
+                      <ul class="sec_line">
+                        <li
+                          v-for="(timev, timei) in 24"
+                          @click="Write(timei)"
+                          :key="timei"
+                        ></li>
+                      </ul>
+                      <div
+                        v-for="(value, index) in GetSchedule.calList.day.data"
+                        :key="index"
+                      >
+                        <div
+                          class="schedule time_schedule"
+                          v-for="(v, i) in isToday(value)"
+                          :key="i"
+                          :style="SetStyle(v)"
+                        >
+                          <div
+                            class="schedule_box"
+                            v-if="!v.allDay"
+                            @click="Detail(v)"
+                          >
+                            <p>
+                              <em class="time"
+                                >{{ v.starttime.split(":")[0] }}:{{
+                                  v.starttime.split(":")[1]
+                                }}
+                                ~ {{ v.endtime.split(":")[0] }}:{{
+                                  v.endtime.split(":")[1]
+                                }}</em
+                              >
+                              <span class="con">{{ v.subject }}</span>
+                            </p>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -96,6 +115,7 @@ import CalWrite from "./calWBtn.vue";
 export default {
   created() {
     this.Init();
+    console.log(this.GetSchedule.calList.day);
   },
   computed: {
     ...mapGetters("calendarjs", ["GetSchedule"]),
@@ -149,6 +169,14 @@ export default {
     };
   },
   methods: {
+    Write(time) {
+      this.$store.commit("calendarjs/isEdit", false);
+      var convdate = this.fulldate.replaceAll(".", "-");
+      this.$router.push({
+        name: "calwrite",
+        query: {data:JSON.stringify({ date: convdate, starttime: time })},
+      });
+    },
     SetStyle(value) {
       // style="top: 60px; height: 90px"
       if (!value.allDay) {
@@ -300,12 +328,19 @@ export default {
       return str;
     },
     async Detail(value) {
+      console.log(value);
       this.$store.commit("calendarjs/SaveScheduleUnid", {
         unid: value.unid,
         where: "day",
       });
       // await
-      this.$router.push({name:'calread'});
+      this.$router.push({
+        name: "calread",
+        query: {data:JSON.stringify({
+          date: value.enddate,
+          time: `${value.starttime} ~ ${value.endtime}`,
+        })},
+      });
     },
   },
 };

@@ -1,7 +1,7 @@
 <template>
   <div>
     <h2 class="mail_st_header">
-      <router-link :to="{name:'mailmore'}"><img src="../../mobile/img/wmail_back.png" alt="" /></router-link>환경설정
+      <router-link :to="{name:'mail'}"><img src="../../mobile/img/wmail_back.png" alt="" /></router-link>환경설정
     </h2>
     <div class="m_contents05">
       <ul class="cm_list">

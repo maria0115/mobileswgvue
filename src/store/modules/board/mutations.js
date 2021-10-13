@@ -4,7 +4,7 @@ export default {
 
     },
     BoardDetailData(state, data) {
-        console.log(data)
+        
         state.store.board.parents = [];
         var reply = data.reply;
         for(var i in reply) {
@@ -19,7 +19,7 @@ export default {
         state.store.board.unid= unid;
     },
     BoardWritePath(state, path) {
-        console.log(state)
+        
         state.store.board.path = path;
 
     },

@@ -15,8 +15,7 @@
         <ul class="clfix">
           <li v-for="(value, name) in GetCategory['main']" :key="name">
             <!-- v-if="value.key !== 'person'" -->
-            <a 
-            @click="MenuGo(value)"
+            <a @click="MenuGo(value)"
               ><span :class="`${value.category}_f_ic`"></span
               >{{ value.title }}</a
             >
@@ -35,6 +34,48 @@
       :item="cardItem"
       :modalon="cardon"
     ></PersonCard>
+    <div class="list_modal" :class="{ active: calListOpen.status }">
+      <div class="list_md_inner">
+        <div class="list_header">
+          <h2 class="today_date">{{ dateconvert() }}</h2>
+          <em class="modal_close" @click="calListClose"></em>
+        </div>
+        <div class="con_body">
+          <ul class="cal_view" v-if="this.GetSaveScheduleList.data.length > 0">
+            <li
+              @click="Detail(value)"
+              v-for="(value, index) in this.GetSaveScheduleList.data"
+              :key="index"
+            >
+              <a>
+                <dl>
+                  <dt v-if="value.data.allDay">종일</dt>
+                  <dt v-else>
+                    {{ value.data.starttime.split(":")[0] }}:{{
+                      value.data.starttime.split(":")[1]
+                    }}
+                    ~ {{ value.data.endtime.split(":")[0] }}:{{
+                      value.data.endtime.split(":")[1]
+                    }}
+                  </dt>
+
+                  <dd>{{ value.data.subject }}</dd>
+                </dl>
+              </a>
+            </li>
+          </ul>
+          <div class="no_schedule" v-else>
+            <div>
+              <span></span>
+              <p>등록된 일정이 없습니다.<br />일정을 등록하세요</p>
+            </div>
+          </div>
+        </div>
+        <div class="con_ft" @click="Write">
+          <span>일정쓰기</span>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -44,13 +85,18 @@ import PersonCard from "./PersonCard.vue";
 import OrgFooter from "./OrgFooter.vue";
 import { CategoryList } from "../api/index.js";
 export default {
-  created() {
+  created() {},
+  beforeDestroy() {
+    this.calListClose();
   },
   computed: {
+    ...mapGetters("calendarjs", ["GetSaveScheduleList"]),
+
     ...mapState("mailjs", ["mail"]),
+    ...mapState("calendarjs", ["calListOpen"]),
     ...mapState(["org"]),
     ...mapGetters("mailjs", ["GetMailDetail", "GetMail", "GetMailConfig"]),
-    ...mapGetters(["GetMainLanguage","GetCategory"]),
+    ...mapGetters(["GetMainLanguage", "GetCategory"]),
     path() {
       return this.$route.path.substring(this.$route.path.lastIndexOf("/") + 1);
     },
@@ -66,23 +112,64 @@ export default {
       cardItem: {},
       cardon: false,
       mainmenu: [],
+      days: ["일", "월", "화", "수", "목", "금", "토"],
     };
   },
 
   methods: {
-    MenuGo(value) {
+    Write() {
       this.$router.push({
-        name: `${value.category}`,
-        params: { type: value.lnbid },
+        name: "calwrite",
+        query: {
+          data: JSON.stringify({ date: this.calListOpen.date, starttime: "" }),
+        },
+      });
+    },
+    async Detail(value) {
+      console.log(value);
+      this.$store.commit("calendarjs/SaveScheduleUnid", {
+        unid: value.data.unid,
+        where: "month",
+      });
+      // await this.$store.dispatch("CalDetail",{data:value.data,path:this.$route.path,which:"month"});
+      this.$router.push({
+        name: "calread",
+        query: {
+          data: JSON.stringify({
+            date: value.data.enddate,
+            time: `${value.data.starttime} ~ ${value.data.endtime}`,
+          }),
+        },
+      });
+    },
+    dateconvert() {
+      var params = this.calListOpen;
+      return `${params.date} (${this.days[params.day]})`;
+    },
+    MenuGo(value) {
+      var name = "";
+      if (value.category == "board") {
+        name = `${value.category}list`;
+      } else {
+        name = `${value.category}first`;
+      }
+      this.$router.push({
+        name: name,
+        query: {
+          data: JSON.stringify({
+            type: value.type,
+            lnbid: value.lnbid,
+            top: value.lnbid,
+            title: value.title,
+          }),
+        },
       });
     },
     InitMenu(id) {
       CategoryList(id).then((res) => {
-        console.log(res,"resres")
         for (let key in res.data) {
           this.mainmenu[key] = res.data[key];
         }
-        console.log(this.mainmenu,"thismainmenu")
       });
     },
     CardOff() {
@@ -115,6 +202,9 @@ export default {
     },
     orgClick(to) {
       this.modalon = true;
+    },
+    calListClose() {
+      this.$store.commit("calendarjs/calListOpen", false);
     },
   },
 };

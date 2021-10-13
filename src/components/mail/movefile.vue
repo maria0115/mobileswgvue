@@ -3,12 +3,12 @@
     <div class="move_bg"></div>
     <ul class="f_list">
       <li>
-        <a @click="moveFolder('$inbox', '/mail_more/inbox_detail')"
+        <a @click="moveFolder('$inbox', 'inbox_detail')"
           >받은 메일</a
         >
       </li>
       <li>
-        <a @click="moveFolder('$trash', '/mail_more/mail_trash')">휴지통</a>
+        <a @click="moveFolder('$trash', 'mail_trash')">휴지통</a>
       </li>
       <li :class="{ drop_menu: isFolder > 0 }">
         <a @click="toggle">기본 폴더</a>
@@ -63,7 +63,7 @@ export default {
       });
 
       if (result) {
-        this.$router.push(path);
+        this.$router.push({name:path});
       }
     },
     toggle: function () {

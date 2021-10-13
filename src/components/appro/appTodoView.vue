@@ -1,15 +1,17 @@
 <template>
   <div>
-    <BackHeader desc="결재할 문서" :title="title"></BackHeader>
+    <BackHeader
+      desc="결재할 문서"
+      :title="`${this.params.title} ${title}`"
+    ></BackHeader>
     <div class="a_contents02">
       <div>
         <div class="line01">
           <em>{{ this.detail.category }}</em>
           <strong>{{ this.detail.subject }}</strong>
           <div class="clfix">
-            <em v-for="(value,index) in this.detail.approvalInfo" :key="index">
-
-            <span v-if="value.approval">{{value.approvalKind}}</span>
+            <em v-for="(value, index) in this.detail.approvalInfo" :key="index">
+              <span v-if="value.approval">{{ value.approvalKind }}</span>
             </em>
             <dl>
               <dt>
@@ -21,35 +23,51 @@
           </div>
         </div>
         <ul class="line02">
-          <li>
-            <h3 :class="{active:appActive}">
-              <a @click="isOpenApp">결재정보 <em>({{this.detail.approvalInfo.length}})</em></a>
+          <li v-if="detail.approvalInfo">
+            <h3 :class="{ active: appActive }">
+              <a @click="isOpenApp"
+                >결재정보 <em>({{ this.detail.approvalInfo.length }})</em></a
+              >
             </h3>
-            <div :class="{active:appActive}">
+            <div :class="{ active: appActive }">
               <ul>
-                <li v-for="(value,index) in this.detail.approvalInfo" :key="index">
-                  <span>{{value.approvalKind}}</span>
+                <li
+                  v-for="(value, index) in this.detail.approvalInfo"
+                  :key="index"
+                >
+                  <span>{{ value.approvalKind }}</span>
                   <div>
-                    <strong>{{value.author}} {{value.authorposition}} / {{value.authordept}}</strong>
-                    <em v-if="value.created.length>0">{{ transTime(value.created) }}</em>
-                    <P v-if="value.body" v-html="value.body"
-                      ></P
+                    <strong
+                      >{{ value.author }} {{ value.authorposition }} /
+                      {{ value.authordept }}</strong
                     >
+                    <em v-if="value.created.length > 0">{{
+                      transTime(value.created)
+                    }}</em>
+                    <P v-if="value.body" v-html="value.body"></P>
                   </div>
                 </li>
               </ul>
             </div>
           </li>
-          <li class="app_file" v-if="this.detail.attachInfo.length>0">>
-            <h3 :class="{active:attActive}">
-              <a @click="isOpenAtt">첨부파일 <em>({{this.detail.attachInfo.length}})</em></a>
+          <li class="app_file" v-if="this.detail.attachInfo.length > 0">
+            >
+            <h3 :class="{ active: attActive }">
+              <a @click="isOpenAtt"
+                >첨부파일 <em>({{ this.detail.attachInfo.length }})</em></a
+              >
             </h3>
-            <div :class="{active:attActive}">
+            <div :class="{ active: attActive }">
               <ul>
-                <li v-for="(value,index) in this.detail.attachInfo" :key="index">
-                  <a>{{value.name}}</a>
+                <li
+                  v-for="(value, index) in this.detail.attachInfo"
+                  :key="index"
+                >
+                  <a>{{ value.name }}</a>
                   <div class="file_btn">
-                    <span class="open_btn" @click="attOpen(value.path)">열기</span>
+                    <span class="open_btn" @click="attOpen(value.path)"
+                      >열기</span
+                    >
                     <span class="save_btn">저장</span>
                   </div>
                 </li>
@@ -64,7 +82,7 @@
           <form>
             <strong>결재의견</strong>
             <div>
-              <input type="text" v-on:input="comment=$event.target.value" />
+              <input type="text" v-on:input="comment = $event.target.value" />
             </div>
           </form>
         </div>
@@ -81,7 +99,12 @@ import BtnPlus from "./btnPlus.vue";
 import { mapState, mapGetters } from "vuex";
 export default {
   created() {
-    console.log(this.detail);
+    this.params = JSON.parse(this.$route.query.data);
+    if (this.detail.status == "mutualing") {
+      this.morePlus = { agree: "협조동의", reject: "반대", view: "원문 보기" };
+    } else if (this.params.type == "success_date") {
+      this.morePlus = { view: "원문 보기" };
+    }
   },
   computed: {
     // ...mapGetters("approjs", ["GetApproval"]),
@@ -94,23 +117,25 @@ export default {
   },
   data() {
     return {
-      morePlus: { agree: "승인" ,reject: "반려"}, 
-      title: "결재할 문서",
-      appActive:false,
-      attActive:false,
-      comment:"",
+      morePlus: { agree: "승인", reject: "반려", view: "원문 보기" },
+      title: "보기",
+      appActive: false,
+      attActive: false,
+      comment: "",
     };
   },
   methods: {
-    BtnClick(e){
-      console.log("BtnClick",e,this.comment);
+    path() {
+      return this.$route.name;
+    },
+    BtnClick(e) {
+      console.log("BtnClick", e, this.comment);
       let formData = new FormData();
       formData.append("openurl", this.detail.openurl);
       formData.append("comment", this.comment);
       formData.append("approve", e);
 
-      this.$store.dispatch("approjs/agreeNreject",formData)
-
+      this.$store.dispatch("approjs/agreeNreject", formData);
     },
     // utc 시간 to local 시간
     transTime(time) {
@@ -119,10 +144,10 @@ export default {
       localTime = moment(localTime).format("YY.MM.DD HH:mm");
       return localTime;
     },
-    isOpenApp(){
+    isOpenApp() {
       this.appActive = !this.appActive;
     },
-    isOpenAtt(){
+    isOpenAtt() {
       this.attActive = !this.attActive;
     },
     attOpen(url) {

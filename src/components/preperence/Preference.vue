@@ -99,13 +99,13 @@
                   >
                 </router-link>
               </li>
-              <li>
+              <!-- <li>
                 <router-link :to="``">
                   <strong>{{
                     this.GetLanguageConfig.display.portlet
                   }}</strong>
                 </router-link>
-              </li>
+              </li> -->
             </ul>
           </li>
           <li>
@@ -175,6 +175,9 @@ export default {
         value = false;
       } else {
         value = true;
+      }
+      if(menu==="login"){
+        this.$router.push({ name: 'login', query: { uuid: "0", locale: "ko" } });
       }
       this.$store.dispatch("configjs/setConfig", {
         menu: menu,

@@ -648,12 +648,12 @@ textarea,input{font-family: 'Apple SD Gothic','Nanum Gothic', sans-serif;}
 .sub_menu01 .icons .sub_close{width:0.93rem;height:0.93rem;background:url(/mobile/img/mail_sub_close.png)center no-repeat;background-size:0.93rem 0.93rem;margin:0.06rem 0 0 0.93rem;}
 .inner01 > ul{border-top:0.06rem solid #f6f6f6;padding:1.37rem 1.25rem 0;}
 .inner01 > ul > li h3 a{display:block;font-size:0.93rem;color:#252525;padding-left:1.56rem;font-weight:normal;}/* 8월 6일 수정함 */
-.inner01 > ul > li:nth-child(1) h3 a{background:url(/mobile/img/app_ic01.png)left center no-repeat;background-size:1rem 0.81rem;} 
-.inner01 > ul > li:nth-child(2) h3 a{background:url(/mobile/img/app_ic02.png)left center no-repeat;background-size:0.87rem 0.93rem;} 
-.inner01 > ul > li:nth-child(3) h3 a{background:url(/mobile/img/app_ic03.png)left center no-repeat;background-size:1rem 1rem;} 
-.inner01 > ul > li:nth-child(4) h3 a{background:url(/mobile/img/app_ic04.png)left center no-repeat;background-size:1rem 1rem;} 
-.inner01 > ul > li:nth-child(5) h3 a{background:url(/mobile/img/app_ic05.png)left center no-repeat;background-size:0.93rem 0.87rem;} 
-.inner01 > ul > li:nth-child(6) h3 a{background:url(/mobile/img/app_ic06.png)left center no-repeat;background-size:0.87rem 0.93rem;} 
+.inner01 > ul > .formList_all h3 a{background:url(/mobile/img/app_ic01.png)left center no-repeat;background-size:1rem 0.81rem;} 
+.inner01 > ul > .draft h3 a{background:url(/mobile/img/app_ic02.png)left center no-repeat;background-size:0.87rem 0.93rem;} 
+.inner01 > ul > .approve h3 a{background:url(/mobile/img/app_ic03.png)left center no-repeat;background-size:1rem 1rem;} 
+.inner01 > ul > .approving h3 a{background:url(/mobile/img/app_ic04.png)left center no-repeat;background-size:1rem 1rem;} 
+.inner01 > ul > .reject h3 a{background:url(/mobile/img/app_ic05.png)left center no-repeat;background-size:0.93rem 0.87rem;} 
+.inner01 > ul > .success_date h3 a{background:url(/mobile/img/app_ic06.png)left center no-repeat;background-size:0.87rem 0.93rem;} 
 .inner01 > ul > li + li{margin-top:1.68rem;}
 .inner01 > ul > li h3 a span{margin-left:0.31rem;font-size:0.87rem;color:#ff743c;}
 .inner01 > ul > li ul{padding-top:0.68rem;}
@@ -674,7 +674,7 @@ textarea,input{font-family: 'Apple SD Gothic','Nanum Gothic', sans-serif;}
 /* .app_list01 > div:nth-child(2n+3){margin-left:1.06rem;} 7월 20일 삭제됨 */
 .app_list01 > div:nth-child(n+2){margin-top:0.5rem;} /* 7월 29일 수정됨*/
 .app_list01 .icons{position:absolute;top:0.93rem;right:0.81rem;}/* 7월 29일 수정함*/
-.app_list01 > p{display:none;font-size:1.12rem;color:#000;text-align:center;}/* display:none; 퍼블만적용 */
+.app_list01 > p{font-size:1.12rem;color:#000;text-align:center;}/* display:none; 퍼블만적용 */
 /* .icons{position:absolute;top:0;right:0;} 7월 20일 삭제됨  */ 
 .app_list01 > div > em{display:inline-block;padding: 0 0.31rem;height:1.25rem;border-radius:0.12rem;border:0.06rem solid #ff743c;font-size:0.87rem;color:#ff743c;vertical-align:top;}/* 8월 10일 수정됨*/
 .app_list01 > div > strong{display:inline-block;height:1.25rem;font-size:1rem;color:#000;text-overflow:ellipsis;overflow:hidden;line-height:1.2;font-weight:600;white-space:nowrap;width:calc(100% - 5.62rem);padding-left:0.31rem;vertical-align:top;} /*8월 10일 수정됨*/
@@ -1558,7 +1558,7 @@ app04->파일명 mob_app_ docform로 변경됨 7월 29일 전체 수정 */
 .cal_img01 img{position:absolute;top:50%;left:50%;width:100%;height:100%;transform:translate(-50%,-50%);}
 .cal_img01 em{display:inline-block;width:2.5rem;height:2.5rem;line-height:2.5rem;text-align:center;border-radius:50%;}
 .cal_img01 em b{font-size:1.25rem;color:#fff;font-weight:400;}
-.m_contents08{width:100%;background:#fff;height:100%/*calc(100vh - 6.25rem)*/;position:relative;}/*8월 25일 수정*/
+.m_contents08{width:100%;background:#fff;min-height:calc(100vh - 6.25rem);position:relative;}/*9월 29일 수정*/
 .srl{overflow-y:scroll;}
 .m_contents08 table{width:100%;table-layout:fixed;}
 .m_contents08 table thead tr{height:1.25rem;font-size:0.75rem;color:#fff;text-align:center;background:#7c76da;}
@@ -1577,6 +1577,19 @@ app04->파일명 mob_app_ docform로 변경됨 7월 29일 전체 수정 */
 .m_contents08 table tbody tr td span.all_day{background:#3b68bb;}
 .m_contents08 table tbody tr td span.time_day{background:#d0e1ff;color:#000;}
 .m_contents08 table tbody tr td span.time_day:after{position:absolute;top:0;left:0;width:0.18rem;height:100%;content:"";background:#3b68bb;}
+
+/* 9월 30일 추가 */
+.list_modal{display:none;position:fixed;top:0;left:0;right:0;max-width:1080px;margin:0 auto;height:100vh;background:rgba(0,0,0,.6);z-index:11;}
+.list_modal.active{display:block;}
+.list_md_inner{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:calc(100% - 40px);height:calc(100vh - 180px);background:#fff;border-radius:5px;}
+.list_md_inner .con_body{width:100%;background:#fff;position:relative;height:calc(100% - 120px);overflow-y:scroll;}
+.list_header{height:3.75rem;position:relative;}
+.list_header .today_date{font-size:1.25rem;color:#7c76da;padding-left:1.25rem;font-weight:normal;line-height:3.75rem;}
+.list_header .modal_close{position:absolute;top:1.31rem;right:0.93rem;width:1.06rem;height:1.06rem;background:url(../img/modal_close.png)center no-repeat;background-size:0.75rem 0.75rem;cursor:pointer;}
+.con_body .cal_view li{border-top:0.06rem solid #f4f4f4;}
+.con_body .no_schedule{height:100%;border-top:0.06rem solid #f4f4f4;}
+.con_ft{height:60px;position:relative;border-top:0.06rem solid #f4f4f4;}
+.con_ft span{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:16px;color:#fff;background:#655da7;padding:0 10px;height:35px;line-height:35px;}
 
 
 /* 주간 */
@@ -1609,6 +1622,8 @@ app04->파일명 mob_app_ docform로 변경됨 7월 29일 전체 수정 */
 .row > div{position: relative;display:table-cell;height:100%;}
 .col_wrap{height:100%;}
 .schedule_wrap{height:100%;}
+.schedule_wrap .sec_line{position:absolute;top:0;left:0;width:100%;z-index:2;}/* 9월 30일 추가 */
+.schedule_wrap .sec_line li{height:60px;}/* 9월 30일 추가 */
 .schedule{background:#3b68bb;height:100%;position:absolute;left:0;width:100%;padding:5px;z-index:2;}
 .schedule_box p .tit{font-size:10px;color:#fff;margin-top:0;line-height:1.2;overflow:hidden;display:block;}
 

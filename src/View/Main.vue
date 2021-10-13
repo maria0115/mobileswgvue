@@ -3,7 +3,7 @@
     class="wrap m_wrap"
     :class="[
       { dark: this.color },
-      { style2: this.GetConfig.display == 'portal' },
+      { style2: this.GetConfig.display == 'menu' },
     ]"
     des="main2"
   >
@@ -126,7 +126,7 @@
             </ul>
           </div>
         </div>
-        <div class="menu02" des="main2" v-if="this.GetConfig.display == 'menu'">
+        <div class="menu02" des="main2" v-if="this.GetConfig.display == 'portal'||this.GetConfig.display == 'potal'">
           <strong desc="포틀릿 서비스">{{
             GetMainLanguage.hamburger.menu.portlet
           }}</strong>
@@ -140,7 +140,7 @@
             </li>
           </ul>
         </div>
-        <div class="menu03" des="main2" v-if="this.GetConfig.display == 'menu'">
+        <div class="menu03" des="main2" v-if="this.GetConfig.display == 'portal'||this.GetConfig.display == 'potal'">
           <strong desc="포틀릿 순서변경">{{
             GetMainLanguage.hamburger.menu.portletposition
           }}</strong>
@@ -183,12 +183,12 @@
             class="tab"
           >
             <router-link
-              :to="{ name: 'My' }"
+              :to="{ name: 'MyIcon' }"
               v-if="this.GetConfig.display == 'menu'"
               >MY</router-link
             >
             <router-link
-              :to="{ name: 'MyIcon' }"
+              :to="{ name: 'My' }"
               v-else-if="
                 this.GetConfig.display == 'portal' ||
                 this.GetConfig.display == 'potal'
@@ -201,7 +201,7 @@
             :class="[
               {
                 active:
-                  Category === `main${value.category}` && value.lnbid == Type,
+                  Category === `main${value.category}` && value.type == Type,
               },
             ]"
             class="tab"
@@ -211,7 +211,6 @@
             <!-- <router-link :to="`${MenuRouter(value.key)}`">{{
             GetMainLanguage.header[value.key]
           }}</router-link> -->
-
             <a @click="MainGo(value)">{{ value.title }}</a>
           </li>
         </ul>
@@ -267,12 +266,12 @@
         </li>
       </ul>
     </div> -->
+        <!-- v-if="
+          this.GetConfig.display == 'menu' ||
+          this.GetConfig.display == 'menu'
+        " -->
       <div
         class="logout"
-        v-if="
-          this.GetConfig.display == 'portal' ||
-          this.GetConfig.display == 'potal'
-        "
         des="main2"
       >
         <span @click="logout"><a>로그아웃</a></span>
@@ -351,11 +350,11 @@ export default {
     },
     // 현재 url에 따른 카테고리 값
     Category() {
-      // console.log(this.$route.path.split("/")[1])
       return this.$route.name;
     },
     Type() {
-      return this.$route.params["type"];
+      var params = JSON.parse(this.$route.query.data);
+      return params["type"];
     },
   },
   created() {
@@ -377,9 +376,6 @@ export default {
       $("html").addClass("mar15");
     }
     this.InitMenu();
-    console.log("왜 보드 크리에이티드는 안하냐")
-    
-
 
     if (
       this.$route.name == "main" ||
@@ -387,47 +383,59 @@ export default {
       this.$route.name == "My" ||
       this.$route.name == "MyIcon"
     ) {
-      console.log(this.GetConfig.display, "display");
       if (
         (this.GetConfig.display == "portal" ||
           this.GetConfig.display == "potal") &&
-        this.$route.name !== "MyIcon"
-      ) {
-        this.$router.push({ name: "MyIcon" });
-      } else if (
-        this.GetConfig.display == "menu" &&
         this.$route.name !== "My"
       ) {
-        this.$router.push({ name: "My" });
+        this.$router.replace({ name: "My" });
+      } else if (
+        this.GetConfig.display == "menu" &&
+        this.$route.name !== "MyIcon"
+      ) {
+        this.$router.replace({ name: "MyIcon" });
       }
     }
   },
   mounted() {
     // dom이 생성된 후 font setting
     $(".wrap").css("font-family", this.GetConfig.font.font);
+    this.params = {};
+    if(this.$route.query.data){
+      this.params = JSON.parse(this.$route.query.data);
+    }
+    
   },
   methods: {
     MainGo(value) {
-      this.$router.replace({
-        name: `main${value.category}`,
-        params: { type: value.lnbid },
-      }).catch(error => {
-        if(error.name != "NavigationDuplicated" ){
-          throw error;
-        }
-      });
+      if (value.category == "schedule") {
+        this.$router.push({ name: `${value.category}first` });
+      } else {
+        this.$router
+          .push({
+            name: `main${value.category}`,
+            query: {data:JSON.stringify({
+            type: value.type,
+            lnbid: value.lnbid,
+          })},
+          })
+          .catch((error) => {
+            if (error.name != "NavigationDuplicated") {
+              throw error;
+            }
+          });
+      }
+
     },
     MoreGo(value) {},
     InitMenu() {
-      CategoryList("").then((res) => {
-        for (let key in res.data) {
-          this.mainmenu[key] = res.data[key];
-        }
-      });
+      for (let key in this.GetCategory["main"]) {
+        this.mainmenu[key] = this.GetCategory["main"][key];
+      }
     },
     logout() {
       this.$store.dispatch("logout");
-      this.$router.push({ name: "login" });
+      this.$router.push({ name: "login" ,query:{uuid:"0",locale:'ko'}});
     },
     ModalOff() {
       this.modalon = false;
@@ -437,10 +445,27 @@ export default {
     },
     MenuGo(isNotEdit, value) {
       if (isNotEdit) {
+        if (value.category == "board") {
         this.$router.push({
-          name: `${value.category}`,
-          params: { type: value.lnbid },
+          name: `${value.category}list`,
+          // list/:type/:lnbid/:top/:title
+          query: {data:JSON.stringify({
+            type: value.type,
+            lnbid: value.lnbid,
+            top: value.lnbid,
+            title: value.title,
+          })},
         });
+      } else {
+        this.$router.replace({ name: `${value.category}first`,
+        query: {data:JSON.stringify({
+            type: value.type,
+            lnbid: value.lnbid,
+            top: value.lnbid,
+            title: value.title,
+          })}, 
+          });
+      }
       }
     },
     MenuRouter(key) {
@@ -493,7 +518,8 @@ export default {
       var result = this.isOn(item, index);
       if (result) {
         this.menuposition = this.menuposition.filter(
-          (element) => element.lnbid !== item.lnbid || element.category !== item.category
+          (element) =>
+            element.lnbid !== item.lnbid || element.category !== item.category
         );
       } else {
         this.menuposition.push(item);
@@ -505,7 +531,6 @@ export default {
     // 메뉴관리 초기화
     resetItem() {
       let menuportlet = [];
-      // console.log("누름",this.mainmenu)
       for (let key in this.mainmenu) {
         menuportlet[key] = this.mainmenu[key];
       }
@@ -555,11 +580,11 @@ export default {
       return this.main.photo.replace(/@/g, sabun);
     },
     isOn(value, name) {
-      // console.log(this.menuposition,value,name)
       if (
         this.menuposition.findIndex(
           (element) => element.lnbid === value.lnbid
-        ) !== -1 && this.menuposition.findIndex(
+        ) !== -1 &&
+        this.menuposition.findIndex(
           (element) => element.category === value.category
         ) !== -1
       ) {

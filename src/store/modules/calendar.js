@@ -18,6 +18,7 @@ export default {
   mutations,
   state: {
     schedule: config.schedule,
+    calListOpen:{status:false,date:"",day:""},
   },
   getters: {
     GetSchedule: (state) => {

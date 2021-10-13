@@ -20,27 +20,21 @@
             <span class="opin"></span>
             <span
               class="clip"
-              v-if="
-                checkEvent === 'mouse' &&
-                value.attach
-              "
+              v-if="checkEvent === 'mouse' && value.attach"
               @mousedown="onOpen($event, value)"
               @mouseup="onClose($event, value)"
             >
             </span>
             <span
               class="clip"
-              v-else-if="
-                checkEvent === 'touch' &&
-                value.attach
-              "
+              v-else-if="checkEvent === 'touch' && value.attach"
               @touchstart="onOpen($event, value)"
               @touchend="onClose($event, value)"
             >
             </span>
           </div>
           <em>{{ value.category }}</em>
-          <strong>{{ value.subject }}</strong>
+          <strong>{{ value.subject }}{{TopIdx()}}</strong>
           <div class="per_info clfix">
             <span class="basic_img on">
               <em class="no_img" :style="randomColor()"
@@ -73,7 +67,18 @@
         </div>
       </VueSlickCarousel>
     </div>
-    <router-link :to="{name:'apping'}"
+    <router-link
+      :to="{
+        name: 'appapproving',
+        query: {
+          data: JSON.stringify({
+            type: 'approving',
+            lnbid: '',
+            top: this.GetCategory['main'][TopIdx()].lnbid,
+            title: portlet.approval.approving,
+          }),
+        },
+      }"
       ><span class="m_more"><a></a></span
     ></router-link>
   </div>
@@ -85,12 +90,14 @@ import VueSlickCarousel from "vue-slick-carousel";
 // import "vue-slick-carousel/dist/vue-slick-carousel-theme.css";
 // import Slick from "vue-slick";
 
-import { mapState } from "vuex";
+import { mapState,mapGetters } from "vuex";
 export default {
-  created() {},
+  created() {
+  },
   components: { VueSlickCarousel },
   computed: {
     ...mapState("mainjs", ["main"]),
+    ...mapGetters(["GetCategory"])
   },
   mounted() {
     // 모바일인지 확인
@@ -113,6 +120,11 @@ export default {
   },
   props: ["portlet"],
   methods: {
+    TopIdx(){
+      return this.GetCategory['main'].findIndex(function(item,idx){
+        return item.category === "approval";
+      })
+    },
     // 현재 결재 대상자
     nowApprover(value) {
       var info = value.approvalinfo;
@@ -158,8 +170,32 @@ export default {
     },
     Read(value, where) {
       value.where = where;
-      this.$store.commit("approjs/AppSaveUnid", { unid: value.unid ,openurl:value.openurl});
-      this.$router.push(`approval/${where}`);
+      this.$store.commit("approjs/AppSaveUnid", {
+        unid: value.unid,
+        openurl: value.openurl,
+      });
+      this.$router.push({
+        name: "approvingview",
+        query: {
+          data: JSON.stringify({
+            title: this.portlet.approval.approving,
+          }),
+        },
+      });
+    },
+    menuOfCategoryIdx(menu) {
+      if (this.categorys) {
+        return this.categorys.findIndex(function (item, idx) {
+          return item.category == menu;
+        });
+      }
+      return -1;
+    },
+    ThisCategory(menu) {
+      if (this.categorys) {
+        return this.categorys[this.menuOfCategoryIdx(menu)];
+      }
+      return [];
     },
   },
 };

@@ -10,7 +10,7 @@
           <dd>{{ this.GetMyInfo.info.dept }}</dd>
         </dl>
         <div>
-          <router-link :to="{name:'mailconfig'}"
+          <router-link :to="{ name: 'mailconfig' }"
             ><span class="mail_sub_set"><a></a></span
           ></router-link>
           <span class="mail_sub_close"><a></a></span>
@@ -22,30 +22,30 @@
           <ul class="list_menu">
             <li>
               <h3>
-                <router-link :to="{name:'unread'}">{{
+                <router-link :to="{ name: 'mail_unread' }">{{
                   GetMailLanguage.title.mail_unread
                 }}</router-link>
               </h3>
             </li>
             <li>
               <h3>
-                <router-link :to="{name:'inbox'}">{{
+                <router-link :to="{ name: 'inbox_detail' }">{{
                   GetMailLanguage.title.inbox_detail
                 }}</router-link>
                 <em @click="depthDown($event, $parent)" class="down_m"></em>
               </h3>
               <ul class="depth02">
-                <router-link :to="{name:'inner'}"
+                <router-link :to="{ name: 'mail_inner' }"
                   ><li>
                     <a>{{ GetMailLanguage.title.mail_inner }}</a>
                   </li></router-link
                 >
-                <router-link :to="{name:'outer'}"
+                <router-link :to="{ name: 'mail_outer' }"
                   ><li>
                     <a>{{ GetMailLanguage.title.mail_outer }}</a>
                   </li></router-link
                 >
-                <router-link :to="{name:'attach'}"
+                <router-link :to="{ name: 'mail_attach' }"
                   ><li>
                     <a>{{ GetMailLanguage.title.mail_attach }}</a>
                   </li></router-link
@@ -54,7 +54,7 @@
             </li>
             <li>
               <h3>
-                <router-link :to="{name:'sent'}">{{
+                <router-link :to="{ name: 'sent_detail' }">{{
                   GetMailLanguage.title.sent_detail
                 }}</router-link>
               </h3>
@@ -64,18 +64,18 @@
             </li>
             <li>
               <h3>
-                <router-link :to="{name:'draft'}">{{
+                <router-link :to="{ name: 'mail_autoSave' }">{{
                   GetMailLanguage.title.mail_save
                 }}</router-link>
                 <em @click="depthDown($event, $parent)" class="down_m"></em>
               </h3>
               <ul class="depth02">
-                <router-link :to="{name:'draft'}"
+                <router-link :to="{ name: 'mail_draft' }"
                   ><li>
                     <a>{{ GetMailLanguage.title.mail_draft }}</a>
                   </li></router-link
                 >
-                <router-link :to="{name:'autosave'}"
+                <router-link :to="{ name: 'mail_autoSave' }"
                   ><li>
                     <a>{{ GetMailLanguage.title.mail_autoSave }}</a>
                   </li></router-link
@@ -84,18 +84,21 @@
             </li>
             <li>
               <h3>
-                <router-link :to="{name:'mailbook'}">{{
+                <router-link :to="{ name: 'mail_reservation' }">{{
                   GetMailLanguage.title.mail_reservation
                 }}</router-link>
                 <em @click="depthDown($event, $parent)" class="down_m"></em>
               </h3>
               <ul class="depth02">
-                <li><a href="">발송대기</a></li>
-                <li><a href="">예약메일</a></li>
+                <li>
+                  <router-link :to="{ name: 'mail_reservation' }">{{
+                    GetMailLanguage.title.mail_reservation
+                  }}</router-link>
+                </li>
               </ul>
             </li>
             <li>
-              <router-link :to="{name:'mailmy'}"
+              <router-link :to="{ name: 'mail_my' }"
                 ><h3>
                   <a>{{ GetMailLanguage.title.mail_my }}</a>
                 </h3></router-link
@@ -106,7 +109,7 @@
               </ul>
             </li>
             <li>
-              <router-link :to="{name:'followup'}"
+              <router-link :to="{ name: 'mail_followup' }"
                 ><h3>
                   <a>{{ GetMailLanguage.title.mail_importance }}</a>
                 </h3></router-link
@@ -114,7 +117,7 @@
               <em @click="depthDown($event, $parent)" class="down_m"></em>
             </li>
             <li>
-              <router-link :to="{name:'trash'}"
+              <router-link :to="{ name: 'mail_trash' }"
                 ><h3>
                   <a>{{ GetMailLanguage.title.mail_trash }}</a>
                 </h3></router-link
@@ -163,9 +166,9 @@ export default {
   },
   computed: {
     ...mapState("mailjs", ["mail"]),
-    ...mapGetters("mailjs",["GetMail"]),
-    ...mapGetters("mainjs",["GetMyInfo"]),
-    ...mapGetters("configjs",["GetSystemColor", "GetConfig"]),
+    ...mapGetters("mailjs", ["GetMail"]),
+    ...mapGetters("mainjs", ["GetMyInfo"]),
+    ...mapGetters("configjs", ["GetSystemColor", "GetConfig"]),
     ...mapGetters(["GetMailLanguage"]),
     color() {
       if (this.GetSystemColor === "dark") {

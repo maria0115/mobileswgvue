@@ -16,8 +16,10 @@ export default {
     },
     // 전자결재 데이터
     Approval(state, { res, approvaltype, category }) {
-        state.main.data.approvaltype[approvaltype][category].data = res.data;
-        state.main.data.approvaltype[approvaltype][category].cnt = res.cnt;
+        if(res.length > 0 || Object.keys(res).length>0){
+            state.main.data.approvaltype[approvaltype][category].data = res.data;
+            state.main.data.approvaltype[approvaltype][category].cnt = res.cnt;
+        }
     },
     
     // 목록이 더 있는지 확인

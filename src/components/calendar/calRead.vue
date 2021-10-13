@@ -12,69 +12,54 @@
       </div>
     </div>
     <div class="m_contents08 srl">
-      <div class="con_body_top">
-        <span>{{
-          GetSchedule.calDetail[this.GetSaveSchedule.detail.where].subject
-        }}</span>
+      <div class="con_body_top">{{calData}}
+        <span>{{ calData.subject }}</span>
         <em
-          ><b class="cate">{{
-            GetSchedule.calDetail[this.GetSaveSchedule.detail.where].category
-          }}</b>
+          ><b class="cate">{{ calData.category }}</b>
           /
-          <b class="open">{{
-            GetSchedule.calDetail[this.GetSaveSchedule.detail.where].secret
-          }}</b></em
+          <b class="open">{{ calData.secret }}</b></em
         >
       </div>
       <ul class="rd_list">
         <li>
           <span>일자</span>
-          <div>{{ today }}</div>
+          <div>{{ this.params.date }}</div>
         </li>
         <li
-          v-if="
-            !(
-              GetSchedule.calDetail[this.GetSaveSchedule.detail.where]
-                .category == '기념일' ||
-              GetSchedule.calDetail[this.GetSaveSchedule.detail.where]
-                .category == '행사'
-            )
-          "
+          v-if="!(calData.category == '기념일' || calData.category == '행사')"
         >
           <span>시간</span>
-          <div>{{ TransTime() }}</div>
+          <div>{{ this.params.time }}</div>
         </li>
         <li>
           <span>위치</span>
           <div>
-            {{
-              this.GetSchedule.calDetail[this.GetSaveSchedule.detail.where]
-                .place
-            }}
+            {{ this.calData.place }}
           </div>
         </li>
-        <li
-          v-if="
-            GetSchedule.calDetail[this.GetSaveSchedule.detail.where].attachInfo
-              .length > 0
-          "
-        >
+        <li v-if="calData.attachInfo.length > 0">
           <span>첨부파일</span>
-          <ul class="file_list">
+          <!-- <ul class="file_list">
             <li
               @click="attachClick(value.url)"
-              v-for="(value, index) in GetSchedule.calDetail[
-                this.GetSaveSchedule.detail.where
-              ].attachInfo"
+              v-for="(value, index) in calData.attachInfo"
               :key="index"
             >
               {{ value.name }}
             </li>
-          </ul>
+          </ul> -->
+        <Viewer className="file_list" :attaInfo="calData.attachInfo" :attach="true"></Viewer>
+
         </li>
       </ul>
       <!-- <div class="cal_info" v-html="GetSchedule.calDetail[GetSaveSchedule.detail.where].body"></div> -->
-      <Namo id="memo_t" :read="true" :editor="GetSchedule.calDetail[GetSaveSchedule.detail.where].body" ref="editor"></Namo>
+      <Namo
+        id="memo_t"
+        :read="true"
+        did="calendar"
+        :editor="GetSchedule.calDetail[GetSaveSchedule.detail.where].body"
+        ref="editor"
+      ></Namo>
       <!-- <editor-content class="cal_info" :editor="editor" /> -->
     </div>
   </div>
@@ -83,18 +68,21 @@
 <script>
 import { mapState, mapGetters } from "vuex";
 import { Editor, EditorContent } from "tiptap";
-import Namo from '../editor/namo.vue';
+import Namo from "../editor/namo.vue";
 export default {
   created() {
-    var date =
-      this.GetSchedule.calDetail[this.GetSaveSchedule.detail.where].startdate;
+    this.calData =
+      this.GetSchedule.calDetail[this.GetSaveSchedule.detail.where];
+    var date = this.calData.startdate;
     var currentDay = new Date(date.replaceAll("-", "/"));
     var theDayOfWeek = currentDay.getDay();
+    this.params = JSON.parse(this.$route.query.data);
 
     this.today = date.replaceAll("-", ".") + `(${this.daysSort[theDayOfWeek]})`;
   },
   components: {
-    EditorContent,Namo
+    EditorContent,
+    Namo,
   },
   computed: {
     ...mapGetters("calendarjs", [
@@ -112,8 +100,7 @@ export default {
   },
   mounted() {
     this.editor = new Editor({
-      content:
-        this.GetSchedule.calDetail[this.GetSaveSchedule.detail.where].body,
+      content: this.calData.body,
       editable: false,
     });
   },
@@ -135,38 +122,28 @@ export default {
       data.unid = this.GetSaveSchedule.detail.unid;
 
       await this.$store.dispatch("calendarjs/CalDelete", data);
-      this.$router.push(`schedule_more/${this.GetSaveSchedule.detail.where}`);
+      this.$router.push({name:`cal${this.GetSaveSchedule.detail.where}`});
     },
     // 전 url 이동
     RouterBack() {
-      this.$router.replace(`${this.GetSaveSchedule.detail.where}`);
+      this.$router.go(-1);
     },
     TransTime() {
       // 15:00 ~ 16:00
       var end =
-        this.GetSchedule.calDetail[
-          this.GetSaveSchedule.detail.where
-        ].endtime.split(":")[0] +
+        this.calData.endtime.split(":")[0] +
         ":" +
-        this.GetSchedule.calDetail[
-          this.GetSaveSchedule.detail.where
-        ].endtime.split(":")[1];
+        this.calData.endtime.split(":")[1];
       var start =
-        this.GetSchedule.calDetail[
-          this.GetSaveSchedule.detail.where
-        ].starttime.split(":")[0] +
+        this.calData.starttime.split(":")[0] +
         ":" +
-        this.GetSchedule.calDetail[
-          this.GetSaveSchedule.detail.where
-        ].starttime.split(":")[1];
+        this.calData.starttime.split(":")[1];
       return `${start} ~ ${end}`;
     },
     TransDate() {
       // 2021-05-24(월)
-      var end =
-        this.GetSchedule.calDetail[this.GetSaveSchedule.detail.where].enddate;
-      var start =
-        this.GetSchedule.calDetail[this.GetSaveSchedule.detail.where].startdate;
+      var end = this.calData.enddate;
+      var start = this.calData.startdate;
 
       var day = "";
 
@@ -176,7 +153,7 @@ export default {
           end +
           `(${
             this.daysSort[
-              new Date(arrend[0], arrend[1] - 1, arrend[2],0,0,0).getDay()
+              new Date(arrend[0], arrend[1] - 1, arrend[2], 0, 0, 0).getDay()
             ]
           })`;
       } else {
@@ -185,13 +162,20 @@ export default {
           start +
           `(${
             this.daysSort[
-              new Date(arrstart[0], arrstart[1] - 1, arrstart[2],0,0,0).getDay()
+              new Date(
+                arrstart[0],
+                arrstart[1] - 1,
+                arrstart[2],
+                0,
+                0,
+                0
+              ).getDay()
             ]
           })` +
           end +
           `(${
             this.daysSort[
-              new Date(arrend[0], arrend[1] - 1, arrend[2],0,0,0).getDay()
+              new Date(arrend[0], arrend[1] - 1, arrend[2], 0, 0, 0).getDay()
             ]
           })`;
       }
@@ -202,7 +186,14 @@ export default {
     },
     Edit() {
       this.$store.commit("calendarjs/isEdit", true);
-      this.$router.push({name:'calwrite'});
+      console.log(this.calData.enddate);
+      this.$router.push({
+        name: "calwrite",
+        query: {data:JSON.stringify({
+          date: this.params.date,
+          starttime: this.calData.starttime.split(":")[0],
+        })},
+      });
     },
   },
 };

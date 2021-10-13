@@ -144,7 +144,7 @@
         </div>
         <div class="add_file clfix">
           <strong>첨부파일</strong>
-          <ul>
+          <!-- <ul>
             <li
               v-for="(value, index) in GetMailDetail.attach"
               :key="index"
@@ -161,12 +161,27 @@
                 <em>({{ value.size }})</em>
               </div>
             </li>
-          </ul>
+          </ul> -->
+          <Viewer
+            className=""
+            :attaInfo="GetMailDetail.attach"
+            :attach="true"
+          ></Viewer>
         </div>
-        <div class="rdm_edit" v-html="GetMailDetail.body">
+        <!-- <div class="rdm_edit" v-html="GetMailDetail.body">
           안녕하세요. 디자인 팀 안지영 입니다. 2021년 사내업무 및 유지 보수 내역
           보내드립니다. 감사합니다.
+        </div> -->
+        <div class="rdm_edit">
+          <Namo
+            id="memo_t"
+            :read="true"
+            :editor="GetMailDetail.body"
+            did="mail"
+            ref="editor"
+          ></Namo>
         </div>
+
         <!-- <editor-content
           class="rdm_edit"
           :editor="editor"
@@ -182,10 +197,12 @@ import { mapState, mapGetters } from "vuex";
 import MoveFile from "./movefile.vue";
 import { Editor, EditorContent } from "tiptap";
 import configjson from "../../config/config.json";
+import Namo from "../editor/namo.vue";
 export default {
   components: {
     MoveFile,
     EditorContent,
+    Namo,
   },
   beforeDestroy() {
     this.editor.destroy();
@@ -251,7 +268,7 @@ export default {
     },
     Replay(value) {
       this.$store.commit("mailjs/From", value);
-      this.$router.push({name:'WriteMail'});
+      this.$router.push({ name: "WriteMail" });
     },
     SpamSet() {
       var data = {};
@@ -302,7 +319,7 @@ export default {
         data.body = this.editor.getHTML();
         data.unid = this.GetMailDetail.unid;
         this.$store.dispatch("mailjs/FollowupSet", data);
-        this.$router.push({name:'ReadMail'});
+        this.$router.push({ name: "ReadMail" });
       }
     },
     followUse() {

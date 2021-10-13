@@ -37,6 +37,7 @@
               {{ transTime(value.created)
               }}<span
                 class="star"
+                :class="{ active: value.followup }"
                 @click="followUp(value.unid)"
                 :src="`/mobile/img/star${important(value.followup)}.png`"
                 alt="중요메일"

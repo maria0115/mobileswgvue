@@ -20,10 +20,38 @@
           <span class="sub_close" @click="CloseHam"></span>
         </div>
       </div>
+      <!-- class="depth02" -->
       <ul>
-        <li v-for="(key) in Object.keys(GetBoard)" :key="key">
-          <h3><router-link :to="`/mobile_index/board_more/${key}`">{{key}}</router-link></h3>
-        </li>
+        <div v-for="(value, index) in GetCategory['main']" :key="index">
+          <li v-if="value.category == 'board'">
+            <h3>{{ value.title }}
+            </h3>
+            <div
+              v-if="value.category == 'board'"
+              @click="OpenFolder(value, index)"
+            >
+              열기
+            </div>
+            <ul>
+              <li v-for="(v, i) in child(value)" :key="i">
+                <router-link
+                  :to="{
+                    name: `boardlist`,
+                    query: {
+                      data: JSON.stringify({
+                        lnbid: v.lnbid,
+                        type: value.type,
+                        title: v.title,
+                      }),
+                    },
+                  }"
+                  >{{ v.title }}</router-link
+                >
+              </li>
+            </ul>
+          </li>
+        </div>
+        <!-- <FolderTree :item="value" v-if="value.category=='board'"></FolderTree> -->
       </ul>
     </div>
   </div>
@@ -31,13 +59,28 @@
 
 <script>
 import { mapState, mapGetters } from "vuex";
+import FolderTree from "./folderTree.vue";
 export default {
+  created() {},
+  components: {
+    FolderTree,
+  },
   props: {
     isOpen: Boolean,
   },
   methods: {
-    Path(){
-      this.$store.commit("boardjs/BoardWritePath",this.path);
+    async OpenFolder(value, index) {
+      if (this.GetCategory["main"][index].children.length == 0) {
+        this.GetCategory["main"][index].children = await this.$store.dispatch(
+          "CategoryList",
+          value.lnbid
+        );
+
+        this.$forceUpdate();
+      }
+    },
+    Path() {
+      this.$store.commit("boardjs/BoardWritePath", this.path);
     },
     CloseHam() {
       this.$emit("CloseHam");
@@ -47,10 +90,16 @@ export default {
       const color = ["#bcbbdd", "#bbcbdd", "#bbddd7", "#d0d0d0"];
       return `background: ${color[Math.floor(Math.random() * 4)]}`;
     },
+    child(item) {
+      item.children = item.children || [];
+
+      return item.children;
+    },
   },
   computed: {
-    ...mapGetters("mainjs",["GetMyInfo"]),
-    ...mapGetters("boardjs",["GetBoard" ]),
+    ...mapGetters("mainjs", ["GetMyInfo"]),
+    ...mapGetters("boardjs", ["GetBoard"]),
+    ...mapGetters(["GetCategory"]),
   },
 };
 </script>

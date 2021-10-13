@@ -7,14 +7,13 @@
         <b>{{ changeDate().day }}</b>
       </span>
       <div class="ri_info">
-        <div  v-for="(value, name) in sliceDate()"
-            :key="name">
-        <div v-if="value.allDay" class="all_cal" >
+        <div v-for="(value, name) in sliceDate()" :key="name">
+          <div v-if="value.allDay" class="all_cal">
             <a href="#">
-                <em>종일 일정</em>
-                <p>[{{ value.category }}]{{ value.subject }}</p>
+              <em>종일 일정</em>
+              <p>[{{ value.category }}]{{ value.subject }}</p>
             </a>
-        </div>
+          </div>
         </div>
         <ul class="c_list" v-if="sliceDate().length > 0">
           <li
@@ -23,7 +22,7 @@
             :key="name"
           >
             <a v-if="!value.allDay" @click="Detail(value)">
-              <em>{{value.time}}</em>
+              <em>{{ value.time }}</em>
               <p>{{ value.subject }}</p>
             </a>
           </li>
@@ -33,7 +32,9 @@
         </ul>
       </div>
     </div>
-    <span class="m_more"><router-link :to="{name:'schedule'}"></router-link></span>
+    <span class="m_more"
+      ><router-link :to="{ name: 'schedule' }"></router-link
+    ></span>
   </div>
 </template>
 
@@ -48,7 +49,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters("mainjs",["GetMain"]),
+    ...mapGetters("mainjs", ["GetMain"]),
   },
   methods: {
     // 오늘의 모든 일정을 노드에서 가져온 후의 현재 시간 이후의 데이터를 색출
@@ -64,7 +65,6 @@ export default {
             moment(date[i].startdate + "T" + date[i].endtime).format("HHmmss")
           ) > parseInt(moment().format("HHmmss"))
         ) {
-          
           var time = `${moment(
             date[i].startdate + "T" + date[i].starttime
           ).format("HH:mm")}~${moment(
@@ -79,7 +79,7 @@ export default {
 
           date[i].time = time;
           result.push(date[i]);
-          if(result.length === this.GetMain.scheduletype.recent.my.size){
+          if (result.length === this.GetMain.scheduletype.recent.my.size) {
             break;
           }
         }
@@ -96,11 +96,21 @@ export default {
       // }
       return result;
     },
-    async Detail(value){
-      this.$store.commit("calendarjs/SaveScheduleUnid",{unid:value.unid,where:"month"});
+    async Detail(value) {
+      this.$store.commit("calendarjs/SaveScheduleUnid", {
+        unid: value.unid,
+        where: "month",
+      });
       // await this.$store.dispatch("CalDetail",{data:value.data,path:this.$route.path,which:"month"});
-      this.$router.push({name:"calread"});
-
+      this.$router.push({
+        name: "calread",
+        query: {
+          data: JSON.stringify({
+            date: value.enddate,
+            time: `${value.starttime} ~ ${value.endtime}`,
+          }),
+        },
+      });
     },
   },
 };

@@ -1,6 +1,11 @@
 <template>
   <div>
-    <Header desc="결재할 문서" :title="this.path" :cnt="GetApproval[this.path].data.cnt" @OpenHam="OpenHam"></Header>
+    <Header
+      desc="결재할 문서"
+      :title="this.path"
+      :cnt="GetApproval[this.path].data.cnt"
+      @OpenHam="OpenHam"
+    ></Header>
     <SubMenu :isOpen="isOpen" @CloseHam="CloseHam"></SubMenu>
     <div class="a_contents06">
       <form action="">
@@ -64,13 +69,27 @@
             </div>
             <div slot="error">
               Error message, click
-              <router-link :to="{name:'appmore'}">here</router-link> to retry
+              <router-link
+                :to="{
+                  name: `appapprove`,
+                  query: {
+                    data: JSON.stringify({
+                      type: params.type,
+                      lnbid: params.lnbid,
+                      top: params.top,
+                      title: params.title,
+                    }),
+                  },
+                }"
+                >here</router-link
+              >
+              to retry
             </div>
           </infinite-loading>
         </ul>
       </form>
     </div>
-    <BtnPlus :menu="morePlus"></BtnPlus>
+    <BtnPlus :menu="morePlus" @BtnClick="BtnClick"></BtnPlus>
     <Search></Search>
   </div>
 </template>
@@ -89,7 +108,7 @@ import "vue-swipe-actions/dist/vue-swipe-actions.css";
 export default {
   created() {
     this.infiniteId += 1;
-    console.log(this.path,"path")
+    this.params = JSON.parse(this.$route.query.data);
   },
   components: {
     InfiniteLoading,
@@ -101,7 +120,7 @@ export default {
     BtnPlus,
   },
   beforeRouteLeave(to, from, next) {
-    this.infiniteId += 1;
+    // this.infiniteId += 1;
     next();
   },
   computed: {
@@ -109,8 +128,8 @@ export default {
     ...mapGetters("configjs", ["GetConfig"]),
     path() {
       // if (this.$route.path.indexOf("custom") === -1) {
-        
-      return this.$route.path.substring(this.$route.path.lastIndexOf("/")+1);
+
+      return this.$route.path.substring(this.$route.path.lastIndexOf("/") + 1);
       // } else {
       //   return "custom";
       // }
@@ -125,7 +144,7 @@ export default {
         { dept: "기안부서" },
         { date: "기안일자" },
       ],
-      morePlus: { write: "결재 작성",view: "원문 보기" },
+      morePlus: { write: "결재 작성" },
       isOpen: false,
       infiniteId: 0,
       enabled: true,
@@ -133,12 +152,31 @@ export default {
     };
   },
   methods: {
+    BtnClick(value) {
+      if (value == "write") {
+        this.$router.push({
+          name: "appformList_all",
+          query: { data: JSON.stringify(this.params) },
+        });
+      }
+    },
     Read(value) {
       value.where = "todoview";
-      console.log(value)
-      this.$store.commit("approjs/AppSaveUnid",{unid:value.unid,openurl:value.openurl});
-      this.$router.push({name:'apptodoview'});
-
+      this.$store.commit("approjs/AppSaveUnid", {
+        unid: value.unid,
+        openurl: value.openurl,
+      });
+      this.$router.push({
+        name: "approveview",
+        query: {
+          data: JSON.stringify({
+            type: this.params.type,
+            lnbid: this.params.lnbid,
+            top: this.params.top,
+            title: this.params.title,
+          }),
+        },
+      });
     },
     // 스크롤 페이징
     infiniteHandler($state) {
@@ -156,11 +194,15 @@ export default {
     GetData(option, $state) {
       Approval(option)
         .then((response) => {
-          return response.data.data;
+          if (response.data.data) {
+            return response.data.data;
+          } else {
+            return [];
+          }
         })
         .then((data) => {
           setTimeout(() => {
-            if (data) {
+            if (this.GetApproval[this.path].data.data) {
               if (
                 Object.keys(this.GetApproval[this.path].data.data).length > 0
               ) {
@@ -224,7 +266,15 @@ export default {
   background: #ff743c url(/mobile/img/edit_check.png) center no-repeat;
   background-size: 1.5rem 0.87rem;
 }
-.app06_list li{height:5.43rem;position:relative;padding:0.62rem 1.06rem 0 3.93rem;}
-.app06_list li a{display:block;}
-.swipeout-list-item + .swipeout-list-item{border-top:0.06rem solid #e6e6e6;}
+.app06_list li {
+  height: 5.43rem;
+  position: relative;
+  padding: 0.62rem 1.06rem 0 3.93rem;
+}
+.app06_list li a {
+  display: block;
+}
+.swipeout-list-item + .swipeout-list-item {
+  border-top: 0.06rem solid #e6e6e6;
+}
 </style>

@@ -1,5 +1,5 @@
 import {
-    OrgAutoSearch, GetLanguage, Login, InitOrg, Org,CategoryList
+    OrgAutoSearch, GetLanguage, Login, InitOrg, Org,CategoryList,ListOfCategory
 } from '../api/index.js';
 import axios from 'axios';
 import cookie from 'vue-cookie';
@@ -7,14 +7,13 @@ import $, { data } from "jquery";
 import config from '../config/config.json';
 export default {
     ListOfCategory({ state, commit }, data){
-        ListOfCategory(data)
+        return ListOfCategory(data)
         .then((res) => {
 
             if (res.status !== 200) {
                 return false;
             } else {
-                commit("ListOfCategory", { id, list: res.data });
-                console.log(res.data);
+                commit("ListOfCategory", { id:data.lnbid, list: res.data });
                 return res.data;
 
             }
@@ -28,6 +27,7 @@ export default {
             if (res.status !== 200) {
                 return false;
             } else {
+                console.log(res.data,"categorylist action")
                 commit("CategoryList", { id, list: res.data });
                 return res.data;
 
@@ -36,7 +36,7 @@ export default {
         })
     },
     logout() {
-        console.log("logout")
+        
         if (!JSON.parse(localStorage.getItem("idSave"))) {
             localStorage.setItem(`${config.packageName}id`, "");
         }
@@ -49,16 +49,16 @@ export default {
         const autoLogin = localStorage.getItem("autoLogin");
     },
     login({ commit }, credentials) {
-        console.log(credentials)
+        
         return Login(credentials)
             .then((res) => {
                 if (res.data.success) {
                     var keys = Object.keys(res.data.cookies);
                     for (var i = 0; i < keys.length; i++) {
                         var key = keys[i];
-                        console.log(key, res.data.cookies[key], "res.data.cookies[key]")
+                        
                         const encookie = escape(res.data.cookies[key]);
-                        console.log(encookie)
+                        
                         cookie.set(key, res.data.cookies[key]);
 
                     }
@@ -90,7 +90,7 @@ export default {
                 if (res.status !== 200) {
                     return false;
                 } else {
-                    console.log(res.data)
+                    
                     commit("AutoSearchOrg", { data: res.data, menu: data })
 
                 }
@@ -117,7 +117,7 @@ export default {
                 if (res.status !== 200) {
                     return false;
                 } else {
-                    console.log(res.data, "ModalOrgAutoSearch");
+                    
 
                 }
 

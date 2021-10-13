@@ -38,6 +38,7 @@ export default {
 
         Approval(data)
             .then(response => {
+                console.log(response.data)
                 result.data = response.data;
                 commit('Approval', { res: response.data, approvaltype, category })
             });

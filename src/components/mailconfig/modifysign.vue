@@ -24,7 +24,7 @@
             </div>
           </li>
           <li>
-            <Namo :editor="body" :read="false" ref="editor"></Namo>
+            <Namo :editor="body" did="sign" :read="false" ref="editor"></Namo>
             <!-- <textarea v-model="GetSignView.body">
 ---------------------------------------------------------
 이정인 책임연구원

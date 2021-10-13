@@ -49,8 +49,14 @@
                     :class="{ active: v.approval }"
                   >
                     <em>{{ v.approvalKind }}</em>
-                    <span class="basic_img on">
-                      <img src="../../mobile/img/img01.png" alt="" />
+                    <span class="basic_img on"
+                      >{{ v }}
+                      <img :src="v.photo"
+                    @error="$event.target.src = '../../mobile/img/img03.png'"
+                    alt=""/>
+                      <!-- :src="v.photo"
+                    @error="$event.target.src = '../../mobile/img/img03.png'"
+                    alt="" -->
                       <!-- <img :src="url(item.photo)"
                 @error="photoError(index)"
                 v-if="item.photoerror" alt="" /> -->
@@ -68,9 +74,9 @@
                       <p v-if="v.approval">
                         <i>(결재중)</i>
                       </p>
-                      <em v-else-if="v.created&&v.created.length>0">
-                        <p>{{transDate(v.created)}}</p>
-                        <p>{{transTime(v.created)}}</p></em
+                      <em v-else-if="v.created && v.created.length > 0">
+                        <p>{{ transDate(v.created) }}</p>
+                        <p>{{ transTime(v.created) }}</p></em
                       >
                       <p v-else><i>(대기중)</i></p>
                     </div>
@@ -95,7 +101,17 @@
             </div>
             <div slot="error">
               Error message, click
-              <router-link :to="{name:'apping'}">here</router-link> to retry
+              <router-link :to="{
+                name: `appapproving`,
+                query: {
+                  data: JSON.stringify({
+                    type: params.type,
+                    lnbid: params.lnbid,
+                    top: params.top,
+                    title: params.title,
+                  }),
+                },
+              }">here</router-link> to retry
             </div>
           </infinite-loading>
         </ul>
@@ -116,6 +132,7 @@ import InfiniteLoading from "vue-infinite-loading";
 import { Approval } from "../../api/index.js";
 export default {
   created() {
+    this.params = JSON.parse(this.$route.query.data);
     this.infiniteId += 1;
   },
   beforeRouteLeave(to, from, next) {
@@ -150,8 +167,7 @@ export default {
         { currentapprover: "현재결재자" },
         { date: "기안일자" },
       ],
-      morePlus: 
-        { return: "회수",view: "원문 보기", write: "결재 작성"  },
+      morePlus: { write: "결재 작성" },
       isOpen: false,
       title: "결재중 문서",
       infiniteId: 0,
@@ -187,7 +203,11 @@ export default {
     GetData(option, $state) {
       Approval(option)
         .then((response) => {
-          return response.data.data;
+          if (response.data.data) {
+            return response.data.data;
+          } else {
+            return [];
+          }
         })
         .then((data) => {
           setTimeout(() => {
@@ -219,13 +239,13 @@ export default {
           console.error(err);
         });
     },
-    transDate(created){
+    transDate(created) {
       var moment = require("moment");
       var localTime = moment.utc(created).toDate();
       localTime = moment(localTime).format("YYYY.MM.DD");
       return localTime;
     },
-    transTime(created){
+    transTime(created) {
       var moment = require("moment");
       var localTime = moment.utc(created).toDate();
       localTime = moment(localTime).format("HH:mm");
@@ -233,10 +253,16 @@ export default {
     },
     Read(value) {
       value.where = "ingview";
-      console.log(value)
-      this.$store.commit("approjs/AppSaveUnid",{unid:value.unid,openurl:value.openurl});
-      this.$router.push("/approval_more/ingview");
-
+      this.$store.commit("approjs/AppSaveUnid", {
+        unid: value.unid,
+        openurl: value.openurl,
+      });
+      this.$router.push({
+        name: "approvingview",
+        query: {
+          data: JSON.stringify(this.params),
+        },
+      });
     },
   },
 };

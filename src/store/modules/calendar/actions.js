@@ -14,8 +14,9 @@ export default {
                 if (response.status !== 200) {
                     return false;
                 } else {
-
-                    router.push(`/schedule_more/${state.store.schedule.detail.where}`);
+                    console.log(router)
+                    var where = state.store.schedule.detail.where;
+                    router.push({ name: `cal${where}` });
                     return true;
                 }
             })

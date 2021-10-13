@@ -19,13 +19,13 @@ export default {
     // 사용자가 설정한 환경설정을 프로그램 시작할 때 적용
     // 비동기 처리로 dom을 전부 구성하고 나서 css를 적용 
     async setMode({ state, commit }) {
-        console.log(state)
         // 배포용
         if (process.env.NODE_ENV !== 'development') {
             //엘라스틱에서 사용자 설정값 가져와라
             await PSearch()
                 .then(response => {
                     state.store.config = response.data;
+                    console.log(state.store.config)
                     commit("SettingCreated", response.data);
                     if (response.data.mode === "system") {
                         state.store.systemcolor = whatcolor.fetch(response.data.mode);
@@ -48,7 +48,7 @@ export default {
                 commit("Color", { color: state.store.systemcolor })
             }
         }
-        return state.store.config.display;
+        return state.store.config;
     },
     // 환경설정 update
     setConfig({ state, commit }, { menu, value, setting }) {

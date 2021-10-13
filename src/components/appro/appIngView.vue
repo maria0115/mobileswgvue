@@ -1,15 +1,17 @@
 <template>
   <div>
-    <BackHeader desc="결재중 문서" :title="title"></BackHeader>
+    <BackHeader
+      desc="결재중 문서"
+      :title="`${this.params.title} ${title}`"
+    ></BackHeader>
     <div class="a_contents02">
       <div>
         <div class="line01">
           <em>{{ this.detail.category }}</em>
           <strong>{{ this.detail.subject }}</strong>
           <div class="clfix">
-            <em v-for="(value,index) in this.detail.approvalInfo" :key="index">
-
-            <span v-if="value.approval">{{value.approvalKind}}</span>
+            <em v-for="(value, index) in detail.approvalInfo" :key="index">
+              <span v-if="value.approval">{{ value.approvalKind }}</span>
             </em>
             <dl>
               <dt>
@@ -21,35 +23,51 @@
           </div>
         </div>
         <ul class="line02">
-          <li>
-            <h3 :class="{active:appActive}">
-              <a @click="isOpenApp">결재정보 <em>({{this.detail.approvalInfo.length}})</em></a>
+          <li v-if="detail.approvalInfo">
+            <h3 :class="{ active: appActive }">
+              <a @click="isOpenApp"
+                >결재정보 <em>({{ detail.approvalInfo.length }})</em></a
+              >
             </h3>
-            <div :class="{active:appActive}">
+            <div :class="{ active: appActive }">
               <ul>
-                <li v-for="(value,index) in this.detail.approvalInfo" :key="index">
-                  <span>{{value.approvalKind}}</span>
+                <li
+                  v-for="(value, index) in this.detail.approvalInfo"
+                  :key="index"
+                >
+                  <span>{{ value.approvalKind }}</span>
                   <div>
-                    <strong>{{value.author}} {{value.authorposition}} / {{value.authordept}}</strong>
-                    <em  v-if="value.created.length>0">{{ transTime(value.created) }}</em>
-                    <P v-html="value.body"
-                      ></P
+                    <strong
+                      >{{ value.author }} {{ value.authorposition }} /
+                      {{ value.authordept }}</strong
                     >
+                    <em v-if="value.created.length > 0">{{
+                      transTime(value.created)
+                    }}</em>
+                    <P v-html="value.body"></P>
                   </div>
                 </li>
               </ul>
             </div>
           </li>
-          <li class="app_file" v-if="this.detail.attachInfo.length>0">>
-            <h3 :class="{active:attActive}">
-              <a @click="isOpenAtt">첨부파일 <em>({{this.detail.attachInfo.length}})</em></a>
+          <li class="app_file" v-if="this.detail.attachInfo.length > 0">
+            >
+            <h3 :class="{ active: attActive }">
+              <a @click="isOpenAtt"
+                >첨부파일 <em>({{ this.detail.attachInfo.length }})</em></a
+              >
             </h3>
-            <div :class="{active:attActive}">
+            <div :class="{ active: attActive }">
               <ul>
-                <li v-for="(value,index) in this.detail.attachInfo" :key="index">
-                  <a>{{value.name}}</a>
+                <li
+                  v-for="(value, index) in this.detail.attachInfo"
+                  :key="index"
+                >
+                  <a>{{ value.name }}</a>
                   <div class="file_btn">
-                    <span class="open_btn" @click="attOpen(value.path)">열기</span>
+                    <span class="open_btn" @click="attOpen(value.path)"
+                      >열기</span
+                    >
                     <span class="save_btn">저장</span>
                   </div>
                 </li>
@@ -57,11 +75,11 @@
             </div>
           </li>
         </ul>
-        <div class="line03" >
+        <div class="line03">
           <a v-html="detail.body"></a>
         </div>
       </div>
-      <BtnPlus :menu="morePlus"></BtnPlus>
+      <BtnPlus :menu="morePlus" @BtnClick="BtnClick"></BtnPlus>
     </div>
   </div>
 </template>
@@ -73,7 +91,7 @@ import BtnPlus from "./btnPlus.vue";
 import { mapState, mapGetters } from "vuex";
 export default {
   created() {
-    console.log(this.detail);
+    this.params = JSON.parse(this.$route.query.data);
   },
   computed: {
     // ...mapGetters("approjs", ["GetApproval"]),
@@ -86,17 +104,49 @@ export default {
   },
   data() {
     return {
-      morePlus: 
-        { circulate: "회람",modify: "편집",remove: "삭제",  uppercancle: "상신취소"},
+      morePlus: {
+        edit: "편집",
+        deleteItem: "삭제",
+        agreeNreject: "회수",
+        view: "원문 보기",
+      },
       isOpen: false,
-      title: "결재중 문서 보기",
+      title: "보기",
       body: "",
-      appActive:false,
-      attActive:false,
+      appActive: false,
+      attActive: false,
     };
   },
   methods: {
-    attOpen(path){
+    BtnClick(value) {
+      console.log(this.detail,"this.detail")
+      var data = undefined;
+      if (value == "edit") {
+        this.params.isedit = 1;
+        console.log("여기서 폼코드 알아야함")
+        this.$router.push({
+          name: "appwrite",
+          query: { data: JSON.stringify(this.params), form: "name" },
+        });
+        return;
+      } else if (value === "deleteItem") {
+        data = this.detail;
+      } else if (value == "agreeNreject") {
+        let formData = new FormData();
+        formData.append("openurl", this.detail.openurl);
+        formData.append("approve", "recallall");
+        data = formData;
+      }
+      this.$store.dispatch(`approjs/${value}`, data).then((res) => {
+        if (res) {
+          this.$router.push({
+            name: "appapproving",
+            query: { data: JSON.stringify(this.params) },
+          });
+        }
+      });
+    },
+    attOpen(path) {
       window.open(path);
     },
     OpenHam() {
@@ -109,10 +159,10 @@ export default {
       localTime = moment(localTime).format("YY.MM.DD HH:mm");
       return localTime;
     },
-    isOpenApp(){
+    isOpenApp() {
       this.appActive = !this.appActive;
     },
-    isOpenAtt(){
+    isOpenAtt() {
       this.attActive = !this.attActive;
     },
     attOpen(url) {

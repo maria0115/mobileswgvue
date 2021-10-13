@@ -24,7 +24,7 @@
             </div>
           </li>
           <li>
-            <Namo :editor="body" :read="false" ref="editor"></Namo>
+            <Namo :editor="body" :read="false" did="greet" ref="editor"></Namo>
             <!-- <textarea contenteditable="true" :value="GetGreetView.body">
 안녕하세요 디자인팀 홍길동입니다.
                     </textarea

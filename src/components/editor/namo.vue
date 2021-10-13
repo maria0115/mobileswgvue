@@ -1,12 +1,13 @@
 <template>
-    <iframe src="http://m60.saerom.co.kr/dwp/com/sys/gwlib.nsf/crosseditor_mobile?ReadForm" style="width:100%;height:60vh" ref="namo"></iframe>
+    <iframe :src="src" style="width:100%;height:60vh;overflow:hidden;" ref="namo"></iframe>
 </template>
 
 <script>
 export default {
-    props: ['editor','read'],
+    props: ['editor','read','did'],
     created() {
         this.editorData = this.editor;
+        this.src = this.src + this.did;
     },
     mounted() {
         window.addEventListener( 'message', this.receiveMsgFromChild );
@@ -17,6 +18,7 @@ export default {
     data: function () {
         return {
             editorData: "",
+            src: "http://dm60.saerom.co.kr/dwp/com/sys/gwlib.nsf/crosseditor_mobile?ReadForm&did=",
         };
     },
     methods: {
