@@ -476,6 +476,9 @@ export default {
       this.startTime = `${this.editData.starttime.split(":")[0]}:${
         this.editData.starttime.split(":")[1]
       }`;
+      this.org.SendTo=this.editData.sendTo;
+      this.org.CopyTo=this.editData.copyTo;
+
       // console.log(this.editData)
       this.file = this.editData.attachInfo;
     } else {

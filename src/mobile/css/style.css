@@ -929,7 +929,8 @@ app04->파일명 mob_app_ docform로 변경됨 7월 29일 전체 수정 */
 .a_contents05 ul li.file_add > div div{position:absolute;top:0.43rem;right:0.62rem;}
 .a_contents05 ul li.file_add > div div input[type="file"]{position:absolute;width:0;height:0;padding:0;overflow:hidden;border:0;}
 .a_contents05 ul li.file_add > div div label{display:inline-block;width:4.68rem;height:2.18rem;cursor:pointer;font-size:0.87rem;color:#494949;background:#e1e1e1;text-align:center;line-height:2.18rem;}
-
+.file_add .file_list{width:100%;}
+.file_add .file_list .att_del{display:inline-block;vertical-align:-0.06rem;width:0.62rem;height:0.62rem;background:url(../img/close02.png)center no-repeat;margin-left:0.93rem;cursor:pointer;}
 /*결재선 지정*/
 
 .a_organ_modal{display:none;position:fixed;top:0;left:0;right:0;margin:0 auto;width:100%;height:100%;background:rgba(0, 0, 0, 0.6);padding:0 0.62rem;z-index:10;}

@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <!-- {{decodeURIComponent(this.$route.fullPath)}} -->
     <router-view :key="$route.fullPath"></router-view>
     <Footer></Footer>
   </div>

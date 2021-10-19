@@ -71,6 +71,9 @@
                   {{ GetMyInfo.info.position }}
                 </p>
                 <ul>
+                  {{
+                    appPath
+                  }}
                   <li
                     v-for="(value, index) in appPath"
                     @click="Pointer(index)"
@@ -209,10 +212,16 @@
                   v-on:change="handleFileUpload()"
                   ref="file"
                 />
-                <!-- multiple
+              </div>
+              <ul v-if="this.file.length > 0" class="file_list">
+                <li v-for="(value, index) in this.file" :key="index">
+                  {{ value.name
+                  }}<span class="att_del" @click="FileDel(value)"></span>
+                </li>
+              </ul>
+              <!-- multiple
                 ref="file"
                 v-on:change="handleFileUpload()"  -->
-              </div>
             </div>
           </li>
         </ul>
@@ -238,7 +247,15 @@ import { Editor, EditorContent } from "tiptap";
 export default {
   created() {
     this.params = JSON.parse(this.$route.query.data);
-    console.log(this.detail)
+    console.log(this.detail, this.params, "this.detail,this.params");
+    if (this.params.isedit && Object.keys(this.detail).length > 0) {
+      console.log(Object.keys(this.detail).length, "isedit");
+      this.appPath = this.detail.sAppList1.concat(this.detail.sAppList2);
+      console.log(this.appPath);
+      this.file = this.detail.attachInfo;
+      this.Subject = this.detail.subject;
+      this.Body_Text = this.detail.body;
+    }
 
     const date = new Date();
     this.startdate = date;
@@ -248,6 +265,8 @@ export default {
     this.thisform = this.$route.query.form;
   },
   mounted() {
+    this.fileinit = this.$refs.file.files;
+
     this.editor = new Editor({
       content: this.Body_Text,
     });
@@ -320,7 +339,6 @@ export default {
     ...mapGetters("mainjs", ["GetMyInfo"]),
     ...mapGetters("mailjs", ["GetMail"]),
     ...mapState("approjs", ["detail"]),
-
   },
   methods: {
     Send(e) {
@@ -328,25 +346,34 @@ export default {
       var sAppList2 = "";
       var AprTcount1 = 1;
       var AprTcount2 = 0;
-      sAppList1 += this.GetMyInfo.approvalInfo+';';
+      sAppList1 += this.GetMyInfo.approvalInfo + ";";
       for (var i = 0; i < this.appPath.length; i++) {
         if (this.appPath[i].appDept == "sAppList1") {
-          sAppList1 += `${this.appPath[i].appadd}^${AprTcount1+1}^${
+          sAppList1 += `${this.appPath[i].appadd}^${AprTcount1 + 1}^${
             this.appPath[i].approvalInfo.approvalInfo
           };`;
-            AprTcount1++;
+          AprTcount1++;
         } else if (this.appPath[i].appDept == "sAppList2") {
-          sAppList2 += `${this.appPath[i].appadd}^${AprTcount2 }^${
-            this.appPath[i].approvalInfo.approvalInfo
-          };`;
-            AprTcount2++;
+          sAppList2 += `${this.appPath[i].appadd}^${AprTcount2}^${this.appPath[i].approvalInfo.approvalInfo};`;
+          AprTcount2++;
         }
       }
-      
-      if(AprTcount1+AprTcount2<=1){
+      if (this.params.isedit) {
+        var Detachstr = "";
+        for (var i = 0; i < this.Detach.length; i++) {
+          if (i == this.Detach.length - 1) {
+            Detachstr += this.Detach[i].name;
+          } else {
+            Detachstr += this.Detach[i].name + ";";
+          }
+        }
+        console.log(Detachstr,"Detachstr")
+        formData.append("Detach", Detachstr);
+      }
+
+      if (AprTcount1 + AprTcount2 <= 1) {
         alert("결재선 지정하세요");
         return;
-
       }
       let formData = new FormData();
       formData.append("approvalType", e);
@@ -360,7 +387,7 @@ export default {
       formData.append("subject", this.Subject);
       formData.append("body", this.Body_Text);
       formData.append("TmpsComment", this.TmpsComment);
-      
+
       formData.append("DocPeriod", this.pDocPeriod);
       formData.append("DocPermission", this.pDocPermission);
       for (var i = 0; i < this.file.length; i++) {
@@ -372,9 +399,9 @@ export default {
 
       this.$store.dispatch("approjs/AppWrite", formData).then((res) => {
         if (res) {
-          console.log("잘갔다 이제 라우터 보내자",res)
+          console.log("잘갔다 이제 라우터 보내자", res);
           // if(e=="raise"){
-            this.params.type="";
+          this.params.type = "";
           this.$router.push({
             name: "appapproving",
             query: { data: JSON.stringify(this.params) },
@@ -413,11 +440,21 @@ export default {
       this.$refs.file.click();
     },
     handleFileUpload() {
-      this.file = [];
-      this.file.push(this.$refs.file.files[0]);
-      //   this.file.push(this.$refs.file.files[0]);
-
-      // }
+      if (this.$refs.file.files[0]) {
+        var result = this.file.findIndex((element) => {
+          return (
+            element.size === this.$refs.file.files[0].size &&
+            element.name === this.$refs.file.files[0].name
+          );
+        });
+        if (result == -1) {
+          this.file.push(this.$refs.file.files[0]);
+        }
+        if (this.GetEdit) {
+          this.addAttach.push(this.$refs.file.files[0]);
+        }
+      }
+      this.$refs.file.files = this.fileinit;
     },
     ScheduleOrgDataDelete(data, pointer) {
       this.$store.commit("OrgDataDelete", { data, pointer });
@@ -427,6 +464,19 @@ export default {
       this.modalon = true;
       this.appDept = dept;
       console.log(this.appDept);
+    },
+    FileDel(value) {
+      var result = this.file.filter((element) => {
+        return element !== value;
+      });
+      if (result[0]) {
+        this.file = result;
+      }
+      if (result.length == 0) {
+        this.file = [];
+      }
+
+      this.Detach.push(value);
     },
     SendToSearch(who, keyword, value) {
       if (value.length >= 2) {
