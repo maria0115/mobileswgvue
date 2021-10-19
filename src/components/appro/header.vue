@@ -1,6 +1,6 @@
 <template>
   <div class="sub_header">
-        <h2>{{this.params.title}}<em v-if="cnt">({{cnt}})</em></h2>
+        <h2>{{this.title}}<em v-if="cnt">({{cnt}})</em></h2>
         <span class="sub_ham" @click="OpenHam"></span>
         <span class="ap_sub_search" v-if="params.type!=='formList_all'"></span>
     </div>

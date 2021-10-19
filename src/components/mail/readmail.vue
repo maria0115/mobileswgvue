@@ -198,11 +198,14 @@ import MoveFile from "./movefile.vue";
 import { Editor, EditorContent } from "tiptap";
 import configjson from "../../config/config.json";
 import Namo from "../editor/namo.vue";
+import Viewer from "../editor/viewer.vue";
+
 export default {
   components: {
     MoveFile,
     EditorContent,
     Namo,
+    Viewer
   },
   beforeDestroy() {
     this.editor.destroy();

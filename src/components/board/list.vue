@@ -124,7 +124,7 @@ export default {
     });
   },
   beforeRouteLeave(to, from, next) {
-    this.infiniteId += 1;
+    // this.infiniteId += 1;
     next();
   },
   components: {

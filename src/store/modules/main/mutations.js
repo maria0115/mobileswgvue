@@ -27,6 +27,11 @@ export default {
         state.moreList[type] = list;
 
     },
+    MoreListInit(state, { list,type }) {
+        state.moreList.approve = true;
+        state.moreList.approving = true;
+
+    },
     // 일정 데이터
     Schedule(state, { res, scheduletype, category }) {
         state.main.data.scheduletype[scheduletype][category].data = res;

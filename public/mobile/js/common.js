@@ -213,12 +213,15 @@ $(function () {
     //     $('.time_modal').removeClass('active');
     //     $('.time_check').removeClass('active');
     // });
-    $('body').on('click','time_mo_btn',function(){
+    $('body').on('click','.time_mo_btn',function(){
         $('.time_modal').removeClass('active');
     });
     // $('body').on('click','.wm_top textarea',function(){
     //     $(this).parent('li').parent('ul').parent('div').siblings('div.add_search').toggleClass('active');
     // });
+    $('body').on('click','.date_line',function(){
+        $('.d_line').toggleClass('active');
+    });/* 10월 13일 추가됨 */
     $('body').on('click','.rd_more',function(){
         $('.rdmail_icons .more_box').toggleClass('on');
     });
@@ -335,8 +338,9 @@ $(function () {
         var fileName = $("#add_f").val();
         $(".load_name").val(fileName);
     });
-    $('body').on('click','sv_radio',function(){
-        $(this).parent('span').siblings('span').find('.sv_radio').removeClass('active');
+    $('body').on('click','.sv_radio1',function(){
+        $(this).addClass('active');
+        $(this).parent('span').siblings('span').find('.sv_radio1').removeClass('active');
     });
     $('body').on('click','.app_pointer', function() {
         $('.a_organ_modal').addClass('on');
@@ -363,21 +367,24 @@ $(function () {
         
         $(this).toggleClass('active');
     });
-    $('body').on('click','all_sc_check', function() {
+    $('body').on('click','.all_sc_check', function() {
         $(this).toggleClass('active');
+        console.log("sc_check")
         $('.sc_check').removeClass('active');
-        if($('.all_sc_check').hasClass('active')){
-            $('.sc_check').on('click', function() {
-                $('.all_sc_check').removeClass('active');
-            });
-        };
+        // if($('.all_sc_check').hasClass('active')){
+        //     $('.sc_check').on('click', function() {
+        //         $('.all_sc_check').removeClass('active');
+        //     });
+        // };
     });
     $('body').on('click','.sc_more',function(){
-        console.log("more1")
         $('.sc_btm').toggleClass('on');
     });
     $('body').on('click','.sub_search',function(){
         $('.search_con').addClass('active');
+    });
+    $('body').on('click','.search_btn',function(){
+        $('.search_con').removeClass('active');
     });
     $('body').on('click','.back_btn',function(){
         $('.search_con').removeClass('active');

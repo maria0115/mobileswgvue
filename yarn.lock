@@ -9023,6 +9023,11 @@
   "resolved" "https://registry.npmjs.org/tiny-cookie/-/tiny-cookie-1.0.1.tgz"
   "version" "1.0.1"
 
+"tiny-cookie@^2.3.2":
+  "integrity" "sha512-qbymkVh+6+Gc/c9sqnvbG+dOHH6bschjphK3SHgIfT6h/t+63GBL37JXNoXEc6u/+BcwU6XmaWUuf19ouLVtPg=="
+  "resolved" "https://registry.npmjs.org/tiny-cookie/-/tiny-cookie-2.3.2.tgz"
+  "version" "2.3.2"
+
 "tiptap-commands@^1.17.1":
   "integrity" "sha512-CyGvMD/c6fNer5LThWGtrVMXHAqHn93ivGQpqJ58x3HNZFuoIiF9QTWXAiWbY/4QrG0ANYHKCSe9n5afickTqw=="
   "resolved" "https://registry.npmjs.org/tiptap-commands/-/tiptap-commands-1.17.1.tgz"

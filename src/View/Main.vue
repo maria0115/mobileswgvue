@@ -126,7 +126,14 @@
             </ul>
           </div>
         </div>
-        <div class="menu02" des="main2" v-if="this.GetConfig.display == 'portal'||this.GetConfig.display == 'potal'">
+        <div
+          class="menu02"
+          des="main2"
+          v-if="
+            this.GetConfig.display == 'portal' ||
+            this.GetConfig.display == 'potal'
+          "
+        >
           <strong desc="포틀릿 서비스">{{
             GetMainLanguage.hamburger.menu.portlet
           }}</strong>
@@ -140,7 +147,14 @@
             </li>
           </ul>
         </div>
-        <div class="menu03" des="main2" v-if="this.GetConfig.display == 'portal'||this.GetConfig.display == 'potal'">
+        <div
+          class="menu03"
+          des="main2"
+          v-if="
+            this.GetConfig.display == 'portal' ||
+            this.GetConfig.display == 'potal'
+          "
+        >
           <strong desc="포틀릿 순서변경">{{
             GetMainLanguage.hamburger.menu.portletposition
           }}</strong>
@@ -266,14 +280,11 @@
         </li>
       </ul>
     </div> -->
-        <!-- v-if="
+      <!-- v-if="
           this.GetConfig.display == 'menu' ||
           this.GetConfig.display == 'menu'
         " -->
-      <div
-        class="logout"
-        des="main2"
-      >
+      <div class="logout" des="main2">
         <span @click="logout"><a>로그아웃</a></span>
       </div>
       <div class="top_btn"></div>
@@ -401,10 +412,9 @@ export default {
     // dom이 생성된 후 font setting
     $(".wrap").css("font-family", this.GetConfig.font.font);
     this.params = {};
-    if(this.$route.query.data){
+    if (this.$route.query.data) {
       this.params = JSON.parse(this.$route.query.data);
     }
-    
   },
   methods: {
     MainGo(value) {
@@ -414,10 +424,12 @@ export default {
         this.$router
           .push({
             name: `main${value.category}`,
-            query: {data:JSON.stringify({
-            type: value.type,
-            lnbid: value.lnbid,
-          })},
+            query: {
+              data: JSON.stringify({
+                type: value.type,
+                lnbid: value.lnbid,
+              }),
+            },
           })
           .catch((error) => {
             if (error.name != "NavigationDuplicated") {
@@ -425,7 +437,6 @@ export default {
             }
           });
       }
-
     },
     MoreGo(value) {},
     InitMenu() {
@@ -435,7 +446,7 @@ export default {
     },
     logout() {
       this.$store.dispatch("logout");
-      this.$router.push({ name: "login" ,query:{uuid:"0",locale:'ko'}});
+      this.$router.push({ name: "login", query: { uuid: "0", locale: "ko" } });
     },
     ModalOff() {
       this.modalon = false;
@@ -443,29 +454,49 @@ export default {
     orgClick(to) {
       this.modalon = true;
     },
-    MenuGo(isNotEdit, value) {
-      if (isNotEdit) {
-        if (value.category == "board") {
-        this.$router.push({
-          name: `${value.category}list`,
-          // list/:type/:lnbid/:top/:title
-          query: {data:JSON.stringify({
-            type: value.type,
-            lnbid: value.lnbid,
-            top: value.lnbid,
-            title: value.title,
-          })},
+    menuOfCategoryIdx(menu) {
+      if (this.categorys) {
+        return this.categorys.findIndex(function (item, idx) {
+          return item.category == menu;
         });
-      } else {
-        this.$router.replace({ name: `${value.category}first`,
-        query: {data:JSON.stringify({
-            type: value.type,
-            lnbid: value.lnbid,
-            top: value.lnbid,
-            title: value.title,
-          })}, 
-          });
       }
+      return -1;
+    },
+    ThisCategory(menu) {
+      if (this.categorys) {
+        return this.categorys[this.menuOfCategoryIdx(menu)];
+      }
+      return [];
+    },
+    async MenuGo(isNotEdit, value) {
+      if (isNotEdit) {
+        this.categorys = this.GetCategory[value.lnbid];
+        var name = "";
+        value.top = value.lnbid;
+        name = `${value.category}first`;
+        if (value.category == "board") {
+          name = `${value.category}list`;
+        } else if (value.category === "approval") {
+          var approve = this.ThisCategory("approve");
+          this.$router.push({
+            name: name,
+            query: {
+              data: JSON.stringify({
+                title: approve.title,
+                type: approve.category,
+                top: value.top,
+                lnbid: approve.lnbid,
+              }),
+            },
+          });
+          return;
+        }
+        this.$router.push({
+          name: name,
+          query: {
+            data: JSON.stringify(value),
+          },
+        });
       }
     },
     MenuRouter(key) {

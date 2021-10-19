@@ -31,6 +31,7 @@ const dataState = createPersistedState({
         'store.language',
         'store.category',
         'mainjs.store.myinfo',
+        'searchjs.store.data',
     ]
 })
 Vue.use(VueX)

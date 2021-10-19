@@ -19,7 +19,7 @@
         <div>
           <ul class="tab_menu">
             <li
-              :class="[{ active: Category === value.name }]"
+              :class="[{ active: Category === value.name+'search' }]"
               v-for="(value, name) in this.form"
               :key="name"
             >
@@ -90,10 +90,11 @@ export default {
   },
   computed: {
     ...mapState("searchjs",[
-      "data",
       "sortdata",
       "form",
     ]),
+    ...mapGetters("searchjs", ["data"]),
+
     ...mapGetters(["GetSearchLanguage"]),
     ...mapGetters("configjs",["GetSystemColor","GetConfig"]),
     // 사용자가 설정한 display color
@@ -104,7 +105,7 @@ export default {
     },
     // 현재 url에 따른 카테고리 값
     Category() {
-      return this.$route.name.split("search")[0];
+      return this.$route.name;
     },
   },
   data() {
@@ -117,7 +118,7 @@ export default {
     $(".wrap").css("font-family", this.GetConfig.font.font);
   },
   created() {
-    // console.log(this.GetConfig)
+    console.log(this.$route.name)
     // font size setting
     if (this.GetConfig.font.size == "small") {
       $("html").addClass("small");

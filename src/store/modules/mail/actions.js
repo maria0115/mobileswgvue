@@ -247,7 +247,7 @@ export default {
                 if (response.status !== 200) {
                     return false;
                 } else {
-                    router.push(`/mailconfig/${where}`);
+                    router.push({name:where});
 
                 }
             })

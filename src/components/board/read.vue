@@ -68,7 +68,11 @@
           </li>
         </ul> -->
 
-        <Viewer className="" :attaInfo="GetStoreBoard.detail.attach" :attach="true"></Viewer>
+        <Viewer
+          className=""
+          :attaInfo="GetStoreBoard.detail.attach"
+          :attach="true"
+        ></Viewer>
       </div>
       <!-- <div class="noti_con" v-html="GetStoreBoard.detail.body"></div> -->
 
@@ -89,7 +93,7 @@
           ><em>{{ GetStoreBoard.detail.like_cnt }}</em> LIKE <b></b
         ></span>
       </div>
-      <div v-if="GetStoreBoard.detail.useReply" class="comment">
+      <div v-if="GetStoreBoard.detail.isAllowReply&&GetStoreBoard.detail.useReply" class="comment">
         <span
           >댓글 <em>{{ this.GetStoreBoard.detail.reply.length }}</em></span
         >
@@ -163,16 +167,17 @@ import { mapState, mapGetters } from "vuex";
 import { Editor, EditorContent } from "tiptap";
 import configjson from "../../config/config.json";
 import Namo from "../editor/namo.vue";
-import Viewer from '../editor/viewer.vue';
+import Viewer from "../editor/viewer.vue";
 export default {
   components: {
     EditorContent,
     Namo,
-    Viewer
+    Viewer,
   },
   created() {
     this.params = JSON.parse(this.$route.query.data);
     console.log(this.GetStoreBoard.detail);
+    // this.$store.dispatch("boardjs/ReplyInfo")
   },
   mounted() {
     this.editor = new Editor({
@@ -225,25 +230,32 @@ export default {
     },
     Likeit() {
       var data = {};
-      data.root_unid = this.GetStoreBoard.detail.root_unid;
+      var detail = this.GetStoreBoard.detail;
+      data.root_unid = detail.root_unid;
       data.boardType = this.GetStoreBoard.path;
       this.$store.dispatch("boardjs/Likeit", data).then((res) => {
         if (res) {
-          this.GetStoreBoard.detail.isLike = true;
-          this.GetStoreBoard.detail.like_ctn++;
+          if (res.msgcode == "success") {
+            this.GetStoreBoard.detail.like_cnt = parseInt(detail.like_cnt) + 1;
+            this.GetStoreBoard.detail.isLike = false;
+          }
         }
       });
     },
     Read() {
       console.log(this.params, "this.params");
-      this.$store.dispatch("boardjs/BoardDetail", {
-        menu: undefined,
-        unid: undefined,
-        comment: true,
-        type: this.params.type,
-        lnbid: this.params.lnbid,
-        title: this.params.title,
-      });
+      this.$store.dispatch(
+        "boardjs/BoardDetail",
+        {
+          menu: undefined,
+          unid: undefined,
+          comment: true,
+          type: this.params.type,
+          lnbid: this.params.lnbid,
+          title: this.params.title,
+        },
+        -1
+      );
     },
     ParentTag(parentUnid) {
       var result = this.GetStoreBoard.parents.filter((p) => {
@@ -382,9 +394,15 @@ export default {
       data.my_unid = this.Eclicked;
 
       this.$store.dispatch("boardjs/WriteReply", data).then((res) => {
-        console.log(res, "write");
-        if (res) {
-          this.Read();
+        // console.log(res, "write");
+        if (res.msgcode=="success") {
+          var redata = {};
+          redata.type = this.params.type;
+          redata.rootunid = this.GetStoreBoard.detail.root_unid;
+          this.$store.dispatch("boardjs/ReplyInfo", redata).then((response) => {
+            this.GetStoreBoard.detail.reply = response;
+
+          });
         }
       });
       this.Eclicked = "";

@@ -12,7 +12,7 @@
       </div>
     </div>
     <div class="m_contents08 srl">
-      <div class="con_body_top">{{calData}}
+      <div class="con_body_top">
         <span>{{ calData.subject }}</span>
         <em
           ><b class="cate">{{ calData.category }}</b>
@@ -37,6 +37,28 @@
             {{ this.calData.place }}
           </div>
         </li>
+        <li v-if="calData.sendTo.length > 0">
+          <span>참석자</span>
+          <div>
+            <em
+              class="per_item"
+              v-for="(value, index) in calData.sendTo"
+              :key="index"
+              >{{ value.name }}</em
+            >
+          </div>
+        </li>
+        <li v-if="calData.copyTo.length > 0">
+          <span>참조자</span>
+          <div>
+            <em
+              class="per_item"
+              v-for="(value, index) in calData.copyTo"
+              :key="index"
+              >{{ value.name }}</em
+            >
+          </div>
+        </li>
         <li v-if="calData.attachInfo.length > 0">
           <span>첨부파일</span>
           <!-- <ul class="file_list">
@@ -48,8 +70,11 @@
               {{ value.name }}
             </li>
           </ul> -->
-        <Viewer className="file_list" :attaInfo="calData.attachInfo" :attach="true"></Viewer>
-
+          <Viewer
+            className="file_list"
+            :attaInfo="calData.attachInfo"
+            :attach="true"
+          ></Viewer>
         </li>
       </ul>
       <!-- <div class="cal_info" v-html="GetSchedule.calDetail[GetSaveSchedule.detail.where].body"></div> -->
@@ -69,10 +94,12 @@
 import { mapState, mapGetters } from "vuex";
 import { Editor, EditorContent } from "tiptap";
 import Namo from "../editor/namo.vue";
+import Viewer from "../editor/viewer.vue";
 export default {
   created() {
     this.calData =
       this.GetSchedule.calDetail[this.GetSaveSchedule.detail.where];
+    console.log(this.calData);
     var date = this.calData.startdate;
     var currentDay = new Date(date.replaceAll("-", "/"));
     var theDayOfWeek = currentDay.getDay();
@@ -83,6 +110,7 @@ export default {
   components: {
     EditorContent,
     Namo,
+    Viewer,
   },
   computed: {
     ...mapGetters("calendarjs", [
@@ -122,7 +150,7 @@ export default {
       data.unid = this.GetSaveSchedule.detail.unid;
 
       await this.$store.dispatch("calendarjs/CalDelete", data);
-      this.$router.push({name:`cal${this.GetSaveSchedule.detail.where}`});
+      this.$router.push({ name: `cal${this.GetSaveSchedule.detail.where}` });
     },
     // 전 url 이동
     RouterBack() {
@@ -189,10 +217,12 @@ export default {
       console.log(this.calData.enddate);
       this.$router.push({
         name: "calwrite",
-        query: {data:JSON.stringify({
-          date: this.params.date,
-          starttime: this.calData.starttime.split(":")[0],
-        })},
+        query: {
+          data: JSON.stringify({
+            date: this.params.date,
+            starttime: this.calData.starttime.split(":")[0],
+          }),
+        },
       });
     },
   },
@@ -200,4 +230,16 @@ export default {
 </script>
 
 <style>
+.rd_list > li div .per_item {
+  display: inline-block;
+  position: relative;
+  font-size: 0.93rem;
+  color: #444;
+  background: #f3f3f3;
+  border-radius: 0.93rem;
+  text-align: center;
+  padding: 0 0.56rem;
+  line-height: 1.81rem;
+  margin: 0 0.18rem;
+}
 </style>

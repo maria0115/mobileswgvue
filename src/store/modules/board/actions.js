@@ -1,5 +1,5 @@
 import {
-    BoardSearch, BoardWrite, Board, BoardDetail, WriteReply, DeleteReply, Likeit, DeleteBoard, BoardEdit
+    ReplyInfo,BoardSearch, BoardWrite, Board, BoardDetail, WriteReply, DeleteReply, Likeit, DeleteBoard, BoardEdit
 } from '../../../api/index';
 import router from '../../../router/index';
 //system 모드이면 무슨 light 인지 dark 인지 감지
@@ -73,7 +73,7 @@ export default {
 
                     // dispatch("BoardDetail", { menu: undefined, unid: undefined, comment: true });
 
-                    return true;
+                    return res.data;
                 }
             })
 
@@ -99,13 +99,38 @@ export default {
                 } else {
 
                     // dispatch("BoardDetail", { menu: undefined, unid: undefined, comment: true });
-                    return true;
+                    return res.data;
                 }
             })
 
     },
-    BoardDetail({ state, commit }, { menu, unid, comment, type, lnbid,title }) {
+    ReplyInfo({state},data){
+        return ReplyInfo(data)
+        .then((res) => {
+            if (res.status !== 200) {
+                return false;
+            } else {
+                console.log(res.data);
+                return res.data;
+                // commit("BoardReplyInfo", res.data)
+                // if (!comment) {
+                //     router.push(
+                //         {
+                //             name: 'boardread',
+                //             query: { data: JSON.stringify({ type, lnbid,title }) }
+                //         });
+                //         return true;
+                // }
+                // return false;
+            }
+        })
+
+
+        // rootunid
+    },
+    BoardDetail({ state, commit }, { menu, unid, comment, type, lnbid,title },viewcount) {
         var data = {};
+        data.viewcount = 1;
         console.log(menu, unid, comment, type, lnbid,title)
         if (menu) {
             data.menu = menu;
@@ -118,6 +143,11 @@ export default {
             data.unid = unid;
         } else {
             data.unid = state.store.board.unid;
+        }
+
+        if(viewcount){
+            data.viewcount =viewcount;
+
         }
 
         data.lnbid = lnbid;
@@ -148,7 +178,7 @@ export default {
                 } else {
                     // router.push(`/board_more/${state.store.board.path}`);
                     // commit("BoardWrite", { menu: type, data: res.data })
-                    return true;
+                    return res.data;
                 }
             })
 

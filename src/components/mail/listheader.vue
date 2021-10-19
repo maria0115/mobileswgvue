@@ -178,6 +178,7 @@ export default {
         }
         // console.log(this.mail.checkBtn.checkedNames,"this.mail.checkBtn.checkedNames")
         this.$store.commit("mailjs/mailDelete", { type: this.path });
+        this.$store.commit("mailjs/checkedNamesRemove");
       }
     },
     async Search() {

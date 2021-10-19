@@ -2,6 +2,7 @@
 export default {
     GetApprovalList(state,{data,menu}){
         state.approval.data[menu].data = data;
+        return;
     },
     AppSaveUnid(state,{unid,openurl}){
         state.store.app.unid = unid;

@@ -146,22 +146,46 @@ export default {
       var params = this.calListOpen;
       return `${params.date} (${this.days[params.day]})`;
     },
+    menuOfCategoryIdx(menu) {
+      if (this.categorys) {
+        return this.categorys.findIndex(function (item, idx) {
+          return item.category == menu;
+        });
+      }
+      return -1;
+    },
+    ThisCategory(menu) {
+      if (this.categorys) {
+        return this.categorys[this.menuOfCategoryIdx(menu)];
+      }
+      return [];
+    },
     MenuGo(value) {
+      this.categorys = this.GetCategory[value.lnbid];
       var name = "";
+      value.top = value.lnbid;
+      name = `${value.category}first`;
       if (value.category == "board") {
         name = `${value.category}list`;
-      } else {
-        name = `${value.category}first`;
+      } else if (value.category === "approval") {
+        var approve = this.ThisCategory("approve");
+        this.$router.push({
+          name: name,
+          query: {
+            data: JSON.stringify({
+              title: approve.title,
+              type: approve.category,
+              top: value.top,
+              lnbid: approve.lnbid,
+            }),
+          },
+        });
+        return;
       }
       this.$router.push({
         name: name,
         query: {
-          data: JSON.stringify({
-            type: value.type,
-            lnbid: value.lnbid,
-            top: value.lnbid,
-            title: value.title,
-          }),
+          data: JSON.stringify(value),
         },
       });
     },

@@ -69,8 +69,7 @@
           <li
             class="tit_line bullet clfix"
             v-if="
-              GetStoreBoard.path !== 'education' &&
-              GetStoreBoard.path !== 'notice'
+              params.type == 'congratulate'
             "
           >
             <!--교육,업무게시판은 클래스bullet display:none;해주세요-->
@@ -251,7 +250,9 @@ export default {
     Send() {
       let formData = new FormData();
       formData.append("subject", this.Subject);
+      formData.append("lnbid", this.params.lnbid);
 
+      // let editorData = "자유게시판";
       let editorData =
         this.$refs.editor.$refs.namo.contentWindow.crosseditor.GetBodyValue();
 
@@ -331,6 +332,8 @@ export default {
       } else {
         this.$store.dispatch("boardjs/BoardWrite", result).then((res) => {
           if (res) {
+            console.log(res)
+
             this.GoList();
           }
         });

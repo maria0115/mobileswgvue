@@ -5,6 +5,10 @@ export default {
     },
     BoardDetailData(state, data) {
         
+        
+        state.store.board.detail = data;
+    },
+    BoardReplyInfo(state,data){
         state.store.board.parents = [];
         var reply = data.reply;
         for(var i in reply) {
@@ -13,7 +17,7 @@ export default {
             d.data = reply[i];
             state.store.board.parents.push(d);
         }
-        state.store.board.detail = data;
+        state.store.board.detail.reply=data.reply;
     },
     BoardSaveUnid(state,unid) {
         state.store.board.unid= unid;

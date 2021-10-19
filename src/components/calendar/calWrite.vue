@@ -476,6 +476,8 @@ export default {
       this.startTime = `${this.editData.starttime.split(":")[0]}:${
         this.editData.starttime.split(":")[1]
       }`;
+      // console.log(this.editData)
+      this.file = this.editData.attachInfo;
     } else {
       var moment = require("moment");
       var dates = new Date();
@@ -765,6 +767,7 @@ export default {
             Detachstr += this.Detach[i].name + ";";
           }
         }
+        console.log(Detachstr,"Detachstr")
         formData.append("Detach", Detachstr);
       } else {
         for (var i = 0; i < this.file.length; i++) {

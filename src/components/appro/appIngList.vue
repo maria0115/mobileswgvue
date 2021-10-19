@@ -51,9 +51,13 @@
                     <em>{{ v.approvalKind }}</em>
                     <span class="basic_img on"
                       >{{ v }}
-                      <img :src="v.photo"
-                    @error="$event.target.src = '../../mobile/img/img03.png'"
-                    alt=""/>
+                      <img
+                        :src="v.photo"
+                        @error="
+                          $event.target.src = '../../mobile/img/img03.png'
+                        "
+                        alt=""
+                      />
                       <!-- :src="v.photo"
                     @error="$event.target.src = '../../mobile/img/img03.png'"
                     alt="" -->
@@ -101,24 +105,28 @@
             </div>
             <div slot="error">
               Error message, click
-              <router-link :to="{
-                name: `appapproving`,
-                query: {
-                  data: JSON.stringify({
-                    type: params.type,
-                    lnbid: params.lnbid,
-                    top: params.top,
-                    title: params.title,
-                  }),
-                },
-              }">here</router-link> to retry
+              <router-link
+                :to="{
+                  name: `appapproving`,
+                  query: {
+                    data: JSON.stringify({
+                      type: params.type,
+                      lnbid: params.lnbid,
+                      top: params.top,
+                      title: params.title,
+                    }),
+                  },
+                }"
+                >here</router-link
+              >
+              to retry
             </div>
           </infinite-loading>
         </ul>
       </form>
     </div>
-    <BtnPlus :menu="morePlus"></BtnPlus>
-    <Search></Search>
+    <BtnPlus :menu="morePlus" @BtnClick="BtnClick"></BtnPlus>
+    <Search @SetSearchWord="SetSearchWord"></Search>
   </div>
 </template>
 
@@ -129,17 +137,21 @@ import Search from "./search.vue";
 import BtnPlus from "./btnPlus.vue";
 import { mapState, mapGetters } from "vuex";
 import InfiniteLoading from "vue-infinite-loading";
-import { Approval } from "../../api/index.js";
+import { Approval, AppSearch } from "../../api/index.js";
 export default {
   created() {
     this.params = JSON.parse(this.$route.query.data);
-    this.infiniteId += 1;
+    this.category = this.GetCategory[this.params.top];
+    this.Init();
+
   },
   beforeRouteLeave(to, from, next) {
-    this.infiniteId += 1;
+    // this.infiniteId += 1;
     next();
   },
   computed: {
+    ...mapGetters(["GetCategory"]),
+
     ...mapGetters("approjs", ["GetApproval"]),
     ...mapGetters("configjs", ["GetConfig"]),
 
@@ -171,9 +183,51 @@ export default {
       isOpen: false,
       title: "결재중 문서",
       infiniteId: 0,
+      option: {},
     };
   },
   methods: {
+    Init() {
+      this.infiniteId += 1;
+      this.page = 0;
+      return;
+    },
+    SetSearchWord(data) {
+      this.option = data;
+      // this.option.searchType = searchfield;
+      this.option.page = 0;
+      this.option.type = "approving";
+      if (data.keyword.length > 0) {
+        this.$store.dispatch("approjs/AppSearch", this.option).then((res) => {
+          if (res) {
+            this.$forceUpdate();
+            this.Init();
+          }
+        });
+      } else {
+        this.$store.dispatch("approjs/GetApprovalList", this.option).then((res) => {
+          if (res) {
+            this.$forceUpdate();
+            this.Init();
+          }
+        });
+      }
+    },
+    BtnClick(value) {
+      if (value == "write") {
+        var caidx = this.category.findIndex((item, idx) => {
+          return item.category == "formList_all";
+        });
+        this.category[caidx].top = this.params.top;
+        this.category[caidx].type = this.category[caidx].category;
+        this.$router.push({
+          name: "appformList_all",
+          query: {
+            data: JSON.stringify(this.category[caidx]),
+          },
+        });
+      }
+    },
     // utc 시간 to local 시간
     transTime(time) {
       var moment = require("moment");
@@ -189,18 +243,62 @@ export default {
     },
     // 스크롤 페이징
     infiniteHandler($state) {
-      this.GetApproval.approving.page = String(
-        parseInt(this.GetApproval.approving.page) + 1
-      );
+      this.page++;
       // this.GetMail['inbox_detail'].size+= 1;
-      var option = {};
+      this.option.page = this.page;
+      this.option.type = "approving";
+      this.option.size = this.GetConfig.listcount;
 
-      option = this.GetApproval.approving;
-      option.approvaltype = "approving";
-      option.size = this.GetConfig.listcount;
-      this.GetData(option, $state);
+      if (this.option.keyword&&this.option.keyword.length > 0) {
+        // this.option.type = "search";
+        this.SearchData(this.option, $state);
+      } else {
+        // this.option.type = this.params.type;
+
+        this.GetData(this.option, $state);
+      }
+    },
+    SearchData(option, $state) {
+      AppSearch(option)
+        .then((response) => {
+          if (response.data.data) {
+            return response.data.data;
+          } else {
+            return [];
+          }
+        })
+        .then((data) => {
+          setTimeout(() => {
+            if (data) {
+              if (
+                Object.keys(this.GetApproval.approving.data.data).length > 0
+              ) {
+                this.GetApproval.approving.data.data =
+                  this.GetApproval.approving.data.data.concat(data);
+              } else {
+                this.GetApproval.approving.data.data = data;
+              }
+
+              $state.loaded();
+
+              // 끝 지정(No more data) - 데이터가 EACH_LEN개 미만이면
+
+              if (data.length / this.GetConfig.listcount < 1) {
+                $state.complete();
+              }
+            } else {
+              // 끝 지정(No more data)
+
+              $state.complete();
+            }
+          }, 1000);
+        })
+        .catch((err) => {
+          console.error(err);
+        });
     },
     GetData(option, $state) {
+      option.approvaltype = option.type;
       Approval(option)
         .then((response) => {
           if (response.data.data) {

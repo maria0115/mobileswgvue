@@ -160,6 +160,7 @@ const router = new Router({
               name: 'mainapproval',
               component: approval,
               beforeEnter: (to, from, next) => {
+                console.log("여기안들어오나")
                 store.dispatch("mainjs/GetApproval", {
                   approvaltype: "approve",
                   category: "more",

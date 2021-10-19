@@ -20,6 +20,7 @@
     "moment": "^2.29.1",
     "node-sass": "^4.14.0",
     "sass-loader": "^10.1.1",
+    "tiny-cookie": "^2.3.2",
     "tiptap": "^1.32.2",
     "v-dragged": "0.0.5",
     "vue": "^2.6.11",

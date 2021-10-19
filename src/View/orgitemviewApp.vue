@@ -116,6 +116,8 @@ export default {
       
       if (this.item.kinds == "Department" && this.children.length === 0) {
         this.GetChildren();
+      }else{
+        console.log(this.item)
       }
       this.isOpen = !this.isOpen;
     },
@@ -135,6 +137,7 @@ export default {
       }
     },
     GetItem(item) {
+      console.log(item)
       this.$emit("PickItem",item);
     },
   },

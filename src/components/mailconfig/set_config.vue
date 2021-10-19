@@ -7,22 +7,24 @@
       <ul class="cm_list">
         <router-link :to="{name:'autosaveconfig'}"
           ><li>
-            <a>자동저장<span>사용함</span></a>
+            <a>자동저장<span></span></a>
           </li></router-link
         >
         <router-link :to="{name:'sign'}"
           ><li>
-            <a>서명<span>{{this.mail.data.signature.data.use}}사용함</span></a>
+            <a>서명<span></span></a>
           </li></router-link
         >
+        <!-- {{this.mail.data.greetings.data.use}} -->
         <router-link :to="{name:'greet'}"
           ><li>
-            <a>인사말<span>{{this.mail.data.greetings.data.use}}사용함</span></a>
+            <!-- <a>인사말<span>사용함</span></a> -->
+            <a>인사말<span></span></a>
           </li></router-link
         >
         <router-link :to="{name:'delay'}"
           ><li>
-            <a>지연발송<span>사용안함</span></a>
+            <a>지연발송<span></span></a>
           </li></router-link
         >
       </ul>

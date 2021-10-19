@@ -72,7 +72,8 @@ export default {
     // this.$store.dispatch("search/GetLanguage", { app: "search" });
   },
   computed: {
-    ...mapState("searchjs", ["autoList", "data", "recent", "form"]),
+    ...mapState("searchjs", ["autoList","recent", "form"]),
+    ...mapGetters("searchjs", ["data"]),
     ...mapState("configjs", ["config"]),
     ...mapGetters(["GetSearchLanguage"]),
     copyRecent() {

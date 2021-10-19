@@ -4,6 +4,7 @@ import {
 import axios from 'axios';
 import cookie from 'vue-cookie';
 import $, { data } from "jquery";
+import { setRawCookie } from 'tiny-cookie'
 import config from '../config/config.json';
 export default {
     ListOfCategory({ state, commit }, data){
@@ -49,6 +50,7 @@ export default {
         const autoLogin = localStorage.getItem("autoLogin");
     },
     login({ commit }, credentials) {
+        console.log("login")
         
         return Login(credentials)
             .then((res) => {
@@ -57,11 +59,22 @@ export default {
                     for (var i = 0; i < keys.length; i++) {
                         var key = keys[i];
                         
-                        const encookie = escape(res.data.cookies[key]);
-                        
-                        cookie.set(key, res.data.cookies[key]);
+                        // const encookie = escape(res.data.cookies[key]);
+                        // console.log(deltpa,"deltpa")
+                        // if(key=='LtpaToken'){
+                        //     var deltpa = decodeURI(res.data.cookies[key]);
+                        //     console.log(deltpa,"deltpa")
+                        //     deltpa = decodeURI(deltpa);
+                        //     cookie.set(key, deltpa);
+                        //     console.log(deltpa)
+
+                        // }else{
+                            setRawCookie(key, res.data.cookies[key]);
+
+                        // }
 
                     }
+                    // console.log(cookie.get('LtpaToken'),"get")
                     localStorage.setItem("idSave", credentials.idSave);
                     localStorage.setItem("autoLogin", credentials.autoLogin);
 

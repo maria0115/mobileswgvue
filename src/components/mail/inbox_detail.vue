@@ -76,7 +76,7 @@
                   <p>
                     {{ transTime(item.created)
                     }}<em
-                      v-if="item.followup !== undefined"
+                      v-if="item.followup !== undefined && path!=='mail_trash'"
                       class="star"
                       @click="followUp(item.unid)"
                       :class="{ active: item.followup }"
@@ -234,6 +234,7 @@ export default {
     ...mapGetters("configjs", ["GetConfig"]),
     path() {
       if (this.$route.path.indexOf("custom") === -1) {
+        console.log(this.$route.path.split('/').reverse()[0])
         return this.$route.path.split('/').reverse()[0];
       } else {
         return "custom";

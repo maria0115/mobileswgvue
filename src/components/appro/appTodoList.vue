@@ -2,7 +2,7 @@
   <div>
     <Header
       desc="결재할 문서"
-      :title="this.path"
+      :title="params.title"
       :cnt="GetApproval[this.path].data.cnt"
       @OpenHam="OpenHam"
     ></Header>
@@ -90,7 +90,7 @@
       </form>
     </div>
     <BtnPlus :menu="morePlus" @BtnClick="BtnClick"></BtnPlus>
-    <Search></Search>
+    <Search @SetSearchWord="SetSearchWord"></Search>
   </div>
 </template>
 
@@ -101,14 +101,15 @@ import Search from "./search.vue";
 import BtnPlus from "./btnPlus.vue";
 import InfiniteLoading from "vue-infinite-loading";
 import { mapState, mapGetters } from "vuex";
-import { Approval } from "../../api/index.js";
+import { Approval, AppSearch } from "../../api/index.js";
 import { SwipeList, SwipeOut } from "vue-swipe-actions";
 import config from "../../config/config.json";
 import "vue-swipe-actions/dist/vue-swipe-actions.css";
 export default {
   created() {
-    this.infiniteId += 1;
     this.params = JSON.parse(this.$route.query.data);
+    this.category = this.GetCategory[this.params.top];
+    this.Init();
   },
   components: {
     InfiniteLoading,
@@ -124,6 +125,8 @@ export default {
     next();
   },
   computed: {
+    ...mapGetters(["GetCategory"]),
+
     ...mapGetters("approjs", ["GetApproval"]),
     ...mapGetters("configjs", ["GetConfig"]),
     path() {
@@ -149,14 +152,27 @@ export default {
       infiniteId: 0,
       enabled: true,
       title: "결재할 문서",
+      option: {},
     };
   },
   methods: {
+    Init() {
+      this.infiniteId += 1;
+      this.page = 0;
+      return;
+    },
     BtnClick(value) {
       if (value == "write") {
+        var caidx = this.category.findIndex((item, idx) => {
+          return item.category == "formList_all";
+        });
+        this.category[caidx].top = this.params.top;
+        this.category[caidx].type = this.category[caidx].category;
         this.$router.push({
           name: "appformList_all",
-          query: { data: JSON.stringify(this.params) },
+          query: {
+            data: JSON.stringify(this.category[caidx]),
+          },
         });
       }
     },
@@ -169,29 +185,91 @@ export default {
       this.$router.push({
         name: "approveview",
         query: {
-          data: JSON.stringify({
-            type: this.params.type,
-            lnbid: this.params.lnbid,
-            top: this.params.top,
-            title: this.params.title,
-          }),
+          data: JSON.stringify(this.params),
         },
       });
     },
+    SetSearchWord(data) {
+      this.option = data;
+      // this.option.searchType = searchfield;
+      this.option.page = 0;
+      this.option.type = this.path;
+      if (data.keyword.length > 0) {
+        this.$store.dispatch("approjs/AppSearch", this.option).then((res) => {
+          if (res) {
+            this.$forceUpdate();
+            this.Init();
+          }
+        });
+      } else {
+
+        this.$store.dispatch("approjs/GetApprovalList", this.option).then((res) => {
+          if (res) {
+            this.$forceUpdate();
+            this.Init();
+          }
+        });
+      }
+    },
     // 스크롤 페이징
     infiniteHandler($state) {
-      this.GetApproval[this.path].page = String(
-        parseInt(this.GetApproval[this.path].page) + 1
-      );
+      this.page++;
       // this.GetMail['inbox_detail'].size+= 1;
-      var option = {};
+      this.option.page = this.page;
+      this.option.type = this.path;
+      this.option.size = this.GetConfig.listcount;
 
-      option = this.GetApproval[this.path];
-      option.approvaltype = this.path;
-      option.size = this.GetConfig.listcount;
-      this.GetData(option, $state);
+      if (this.option.keyword && this.option.keyword.length > 0) {
+        // this.option.type = "search";
+        this.SearchData(this.option, $state);
+      } else {
+        // this.option.type = this.params.type;
+        this.GetData(this.option, $state);
+      }
+    },
+    SearchData(option, $state) {
+      AppSearch(option)
+        .then((response) => {
+          if (response.data.data) {
+            return response.data.data;
+          } else {
+            return [];
+          }
+        })
+        .then((data) => {
+          setTimeout(() => {
+            if (
+              this.GetApproval[this.path] &&
+              this.GetApproval[this.path].data.data
+            ) {
+              if (
+                Object.keys(this.GetApproval[this.path].data.data).length > 0
+              ) {
+                this.GetApproval[this.path].data.data =
+                  this.GetApproval[this.path].data.data.concat(data);
+              } else {
+                this.GetApproval[this.path].data.data = data;
+              }
+              $state.loaded();
+
+              // 끝 지정(No more data) - 데이터가 EACH_LEN개 미만이면
+
+              if (data.length / this.GetConfig.listcount < 1) {
+                $state.complete();
+              }
+            } else {
+              // 끝 지정(No more data)
+
+              $state.complete();
+            }
+          }, 1000);
+        })
+        .catch((err) => {
+          console.error(err);
+        });
     },
     GetData(option, $state) {
+      option.approvaltype = option.type;
       Approval(option)
         .then((response) => {
           if (response.data.data) {
@@ -202,7 +280,10 @@ export default {
         })
         .then((data) => {
           setTimeout(() => {
-            if (this.GetApproval[this.path].data.data) {
+            if (
+              this.GetApproval[this.path] &&
+              this.GetApproval[this.path].data.data
+            ) {
               if (
                 Object.keys(this.GetApproval[this.path].data.data).length > 0
               ) {

@@ -1,5 +1,5 @@
 import {
-     MyInfo,Mail,Board,Approval,Schedule
+    MyInfo, Mail, Board, Approval, Schedule
 } from '../../../api/index';
 export default {
     // main의 info
@@ -38,19 +38,20 @@ export default {
 
         Approval(data)
             .then(response => {
+                console.log(data, "GetApproval")
                 console.log(response.data)
                 result.data = response.data;
                 commit('Approval', { res: response.data, approvaltype, category })
             });
-        if (approvaltype === "approve") {
+        // if (approvaltype === "approve") {
 
-            dispatch("GetMoreList", { data })
-        }
+        dispatch("GetMoreList", { data })
+        // }
 
 
     },
-     // 해당 페이지 이후 데이터가 더 있는지 확인
-     GetMoreList({ state, commit }, { data }) {
+    // 해당 페이지 이후 데이터가 더 있는지 확인
+    GetMoreList({ state, commit }, { data }) {
 
         var doyouhavemorelist = {};
         doyouhavemorelist.approvaltype = data.approvaltype;
@@ -58,19 +59,21 @@ export default {
         doyouhavemorelist.size = data.size;
         Approval(doyouhavemorelist)
             .then(response => {
+                console.log(response.data, doyouhavemorelist, "then")
                 // 
-                if (response.data.data.length > 0) {
-                    commit("MoreList", { list: true,type:data.approvaltype });
+                if (response.data.data && response.data.data.length > 0) {
+                    commit("MoreList", { list: true, type: data.approvaltype });
                     // 
                 }
                 else {
                     // 
-                    commit("MoreList", { list: false,type:data.approvaltype });
+                    commit("MoreList", { list: false, type: data.approvaltype });
 
                 }
             })
             .catch(e => {
-                commit("MoreList", { list: false,type:data.approvaltype });
+                console.log("catch", e)
+                commit("MoreList", { list: false, type: data.approvaltype });
                 // 
             })
 

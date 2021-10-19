@@ -931,16 +931,19 @@ app04->파일명 mob_app_ docform로 변경됨 7월 29일 전체 수정 */
 .a_contents05 ul li.file_add > div div label{display:inline-block;width:4.68rem;height:2.18rem;cursor:pointer;font-size:0.87rem;color:#494949;background:#e1e1e1;text-align:center;line-height:2.18rem;}
 
 /*결재선 지정*/
+
 .a_organ_modal{display:none;position:fixed;top:0;left:0;right:0;margin:0 auto;width:100%;height:100%;background:rgba(0, 0, 0, 0.6);padding:0 0.62rem;z-index:10;}
 .a_organ_modal.on{display:block;}
-.a_organ_con{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:calc(100% - 1.87rem);background:#fff;overflow:hidden;border-radius:0.31rem;height:calc(100% - 140px);}
+/* .a_organ_con{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:calc(100% - 1.87rem);background:#fff;overflow:hidden;border-radius:0.31rem;height:calc(100% - 140px);} */
+.a_organ_con{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:calc(100% - 1.87rem);background:#fff;overflow:hidden;border-radius:0.31rem;max-height:calc(100vh - 10.62rem);padding-bottom:3.43rem;}
 .a_organ_con form > div{padding:1.25rem 0.62rem 0.62rem;}
 .a_organ_con form > div strong{font-size:1.25rem;color:#7c76da;line-height:1;font-weight:normal;}
 .a_organ_con form > div > div{position:relative;overflow:hidden;margin-top:0.75rem;border-radius:0.31rem;padding-right:3.75rem;border:0.06rem solid #ebebeb;}
 .a_organ_con form > div > div input{height:2.18rem;appearance:none;outline:none;border:0;padding-left:0.75rem;font-size:0.87rem;color:#494949;width:100%;}
 .a_organ_con form > div > div .btns{position:absolute;top:0;right:0.37rem;}
 .a_organ_con form > div > div .btns > span{float:left;width:1.87rem;height:2.18rem;position:relative;}
-.a_organlist{border-top:0.06rem solid #f4f4f4;border-bottom:0.06rem solid #f4f4f4;height:436px;overflow-y:scroll;padding:0.93rem 1.25rem;}
+/* .a_organlist{border-top:0.06rem solid #f4f4f4;border-bottom:0.06rem solid #f4f4f4;height:436px;overflow-y:scroll;padding:0.93rem 1.25rem;} */
+.a_organlist{border-top:0.06rem solid #f4f4f4;height:calc(100vh - 20.62rem);overflow-y:scroll;padding:0.93rem 0;background:#fff;z-index:1;}
 .a_organlist div{display:inline-block;padding:0 1.25rem 0 0;font-size:0.93rem;color:#4d4d4d;position:relative;line-height:2rem;}
 .a_organlist div.on{color:#655da7;}
 .a_organlist div b{display:inline-block;position:relative;width:1.87rem;height:1.87rem;vertical-align:middle;}
@@ -967,7 +970,8 @@ app04->파일명 mob_app_ docform로 변경됨 7월 29일 전체 수정 */
 
 
 .a_organ_modal .modal_close{position:absolute;top:1.25rem;right:1.25rem;width:1.06rem;height:1.06rem;background:url(/mobile/img/modal_close.png)center no-repeat;background-size:0.75rem 0.75rem;cursor:pointer;}
-.a_organ_modal div.a_organ_ft{height:3.43rem;padding:0.62rem 0.81rem 1.18rem;font-size:0;}
+/* .a_organ_modal div.a_organ_ft{height:3.43rem;padding:0.62rem 0.81rem 1.18rem;font-size:0;} */
+.a_organ_modal div.a_organ_ft{height:3.43rem;padding:0.62rem 0.81rem 1.18rem;font-size:0;position:absolute;bottom:0; left:0;width:100%;border-top:0.06rem solid #f4f4f4;}
 .a_organ_modal div.a_organ_ft div{float:left;margin:0;border:0;padding:0;}
 .a_organ_ft div > span{position:relative;display:inline-block;padding-left:1.25rem;font-size:0.87rem;color:#494949;line-height:1.62rem;}
 .a_organ_ft div > span + span{margin-left:0.93rem;}
@@ -1233,11 +1237,17 @@ app04->파일명 mob_app_ docform로 변경됨 7월 29일 전체 수정 */
 .search_con .sc_btm p + p{margin-top:1.37rem;}
 .search_con .sc_btm p span{display:inline-block;width:calc(100% / 4);}
 .search_con .sc_btm p span:nth-child(n+5){margin-top:0.62rem;}
-.search_con .sc_btm input{width:1.12rem;height:1.12rem;background:url(/mobile/img/sc_check.png)center no-repeat;background-size:100% 100%;}
-.search_con .sc_btm input.active{background:url(/mobile/img/sc_check_on.png)center no-repeat;background-size:100% 100%;}
-.search_con .sc_btm label{font-size:0.87rem;color:#333;line-height:1.12rem;vertical-align:top;margin-left:0.43rem;}
+.search_con .sc_btm p input{width:1.12rem;height:1.12rem;background:url(/mobile/img/sc_check.png)center no-repeat;background-size:100% 100%;}
+.search_con .sc_btm p input.active{background:url(/mobile/img/sc_check_on.png)center no-repeat;background-size:100% 100%;}
+.search_con .sc_btm p label{font-size:0.87rem;color:#333;line-height:1.12rem;vertical-align:top;margin-left:0.43rem;}
 .search_con02 .sc_btm p span{display:inline-block;width:calc(100% / 3);}
-
+.search_con02 .sc_btm p em{margin-top:0.62rem;display:block;}
+.search_con02 .sc_btm div{margin-top:0.62rem;display:none;}
+.search_con02 .sc_btm div.d_line.active{display:block;}
+.search_con02 .sc_btm div input[type="date"]{width:47%;font-size:0.87rem;color:#444;height:1.87rem;background:#fff url(../img/app_date.png)right 0.62rem center no-repeat !important;background-size:1.06rem 1rem !important;padding-left:0.31rem;outline:none;border:0.06rem solid #e6e6e6;}
+.search_con02 .sc_btm div input:nth-child(1){float:left;}
+.search_con02 .sc_btm div input:nth-child(3){float:right;}
+.search_con02 .sc_btm div b{display:inline-block;margin:0 5px;font-size:14px;color:#444;vertical-align:-5px;}
 /* 메일쓰기 wmail */
 .m_contents03{background:#fff;height:calc(100vh - 5.62rem);overflow-y:scroll;}
 .wmail_header{background:#fff;position:relative;padding:0 1.31rem;height:3.12rem;border-bottom:0.06rem solid #f2f2f2;}/*8월 24일 변경됨*/

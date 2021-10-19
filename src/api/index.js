@@ -1,5 +1,14 @@
 import axios from 'axios';
 // /api/approval?type=edit
+function AppSearch(data) {
+    return axios({
+        method: 'get',
+        url: `/api/approval?type=${data.type}&size=${data.size}&page=${data.page}&keyword=${data.keyword}&filter=${data.filter}&startDate=${data.startDate}&endDate=${data.endDate}`,
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+}
 function AppEdit(data) {
     return axios({
         method: 'post',
@@ -154,6 +163,15 @@ function WriteReply(data) {
         method: 'post',
         url: `/api/board?type=wrtie_reply`,
         data,
+        headers: {
+            "Content-Type": "application/json"
+        }
+    })
+}
+function ReplyInfo(data) {
+    return axios({
+        method: 'get',
+        url: `/api/board?type=replyInfo&boardType=${data.type}&root_unid=${data.rootunid}`,
         headers: {
             "Content-Type": "application/json"
         }
@@ -791,4 +809,6 @@ export {
     BoardSearch,
     deleteItem,
     AppEdit,
+    AppSearch,
+    ReplyInfo,
 }

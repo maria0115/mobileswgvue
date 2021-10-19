@@ -39,10 +39,10 @@ export default {
             category == "") {
             // empty
         } else {
-            state.data.class = category;
+            state.store.data.class = category;
         }
         state.tf = true;
-        var data = state.data;
+        var data = state.store.data;
         if (word !== undefined) {
             data.searchword = word;
             data.searchwordarr[0] = word;
@@ -54,10 +54,10 @@ export default {
 
         if (data.class === "allsearch") {
             data.size = config.defaultHomeSize;
-            state.data.size = data.size;
+            state.store.data.size = data.size;
         } else {
             data.size = config.search.defaultSize;
-            state.data.size = data.size;
+            state.store.data.size = data.size;
         }
 
         commit('setTime');
@@ -86,10 +86,10 @@ export default {
             category == "") {
             // empty
         } else {
-            state.data.class = category;
+            state.store.data.class = category;
         }
-        state.data.from = 0;
-        var data = state.data;
+        state.store.data.from = 0;
+        var data = state.store.data;
         if (word !== undefined) {
             if (word === "") {
                 data.searchword = "";

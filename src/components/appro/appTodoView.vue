@@ -44,21 +44,20 @@
                     <em v-if="value.created.length > 0">{{
                       transTime(value.created)
                     }}</em>
-                    <P v-if="value.body" v-html="value.body"></P>
+                    <P v-if="value.body&&value.body!=='undefined'" v-html="value.body"></P>
                   </div>
                 </li>
               </ul>
             </div>
           </li>
           <li class="app_file" v-if="this.detail.attachInfo.length > 0">
-            >
             <h3 :class="{ active: attActive }">
               <a @click="isOpenAtt"
                 >첨부파일 <em>({{ this.detail.attachInfo.length }})</em></a
               >
             </h3>
             <div :class="{ active: attActive }">
-              <ul>
+              <!-- <ul>
                 <li
                   v-for="(value, index) in this.detail.attachInfo"
                   :key="index"
@@ -71,7 +70,12 @@
                     <span class="save_btn">저장</span>
                   </div>
                 </li>
-              </ul>
+              </ul> -->
+              <Viewer
+                className=""
+                :attaInfo="this.detail.attachInfo"
+                :attach="true"
+              ></Viewer>
             </div>
           </li>
         </ul>
@@ -97,6 +101,7 @@ import BackHeader from "./backheader.vue";
 import SubMenu from "./menu.vue";
 import BtnPlus from "./btnPlus.vue";
 import { mapState, mapGetters } from "vuex";
+import Viewer from "../editor/viewer.vue";
 export default {
   created() {
     this.params = JSON.parse(this.$route.query.data);
@@ -114,6 +119,7 @@ export default {
     BackHeader,
     SubMenu,
     BtnPlus,
+    Viewer,
   },
   data() {
     return {

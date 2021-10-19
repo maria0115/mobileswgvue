@@ -1,7 +1,7 @@
 <template>
   <div>
     <h2 class="mail_st_header">
-      <router-link :to="{name:'seesign'}">
+      <router-link :to="{name:'SeeSign'}">
         <img src="../../mobile/img/wmail_back.png" alt="" /> </router-link
       >서명 편집
       <div>

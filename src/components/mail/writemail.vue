@@ -42,7 +42,6 @@
                 <li class="new_addr">
                   <label for="toinput" class="blind">받는사람주소</label>
                   <textarea
-                    :disabled="tome"
                     @click="
                       [
                         SendToSearch(
@@ -68,7 +67,9 @@
                 </li>
               </ul>
               <div>
-                <span class="tome" @click="ToMe">내게쓰기</span>
+                <span class="tome" :class="{ active: this.tome }" @click="ToMe"
+                  >내게쓰기</span
+                >
                 <span class="organ" @click="orgClick('SendTo')"></span>
               </div>
             </div>
@@ -117,7 +118,6 @@
                   <li class="new_addr">
                     <label for="referinput" class="blind">참조</label>
                     <textarea
-                      :disabled="tome"
                       @click="
                         [
                           SendToSearch(
@@ -188,7 +188,6 @@
                   <li class="new_addr">
                     <label for="cryinput" class="blind">숨은참조</label>
                     <textarea
-                      :disabled="tome"
                       @click="
                         [
                           SendToSearch(
@@ -271,7 +270,7 @@
                 <div>
                   <p>{{ value.name }}</p>
                   <em v-if="from === ''"
-                    >({{ getReadableByte(value.size) }})</em
+                    >({{ value.size}})</em
                   >
                   <em v-else>({{ value.size }})</em>
                   <span class="file_del" @click="FileDel(value)"></span>
@@ -391,7 +390,7 @@ export default {
     if (this.GetMailConfig.autosave.config.use) {
       this.delay = setInterval(function () {
         var formData = here.FormSet();
-        formData.append("dockey", this.randomkey);
+        formData.append("dockey", here.randomkey);
         here.$store.dispatch("mailjs/MailSave", {
           data: formData,
           menu: "autoSave",
@@ -472,6 +471,8 @@ export default {
     ToMe() {
       this.tome = !this.tome;
       if (this.tome) {
+        this.$store.commit("OrgDataInit");
+
         this.$store.dispatch("mailjs/ToMe").then((res) => {
           this.$store.commit("OrgPointer", "SendTo");
           this.$store.commit("OrgData", res);
@@ -552,6 +553,7 @@ export default {
       formData.append("ocxBCopyTo", ocxBCopyTo);
       formData.append("Subject", this.Subject);
       // namo editor 본문 내용 받아오기
+      // let editorData ="본문";
       let editorData =
         this.$refs.editor.$refs.namo.contentWindow.crosseditor.GetBodyValue();
       formData.append("Body_Text", editorData);
@@ -580,7 +582,7 @@ export default {
       if (this.tome) {
         me = "Y";
       }
-var docType = "";
+      var docType = "";
       if (
         this.from == "Reply" ||
         this.from == "AllReply" ||
@@ -604,7 +606,7 @@ var docType = "";
           formData.append("attach", this.file[i]);
         }
       }
-          formData.append("docType", docType);
+      formData.append("docType", docType);
       var MailTypeOptionstr = "";
       if (this.from == "Relay") {
         MailTypeOptionstr = "Forward";
@@ -633,9 +635,8 @@ var docType = "";
         // 전송가능
         if (menu === "send") {
           this.$store.dispatch("mailjs/MailWrite", formData).then((res) => {
-            
             if (res) {
-              commit("OrgDataInit");
+              this.$store.commit("OrgDataInit");
               this.$router.push({ name: "sent_detail" });
             }
           });
@@ -648,8 +649,8 @@ var docType = "";
             })
             .then((res) => {
               if (res) {
-                commit("OrgDataInit");
-                this.$router.push({ name: "draft" });
+                this.$store.commit("OrgDataInit");
+                this.$router.push({ name: "mail_draft" });
               }
             });
         }
@@ -665,8 +666,8 @@ var docType = "";
             })
             .then((res) => {
               if (res) {
-                commit("OrgDataInit");
-                this.$router.push({ name: "draft" });
+                this.$store.commit("OrgDataInit");
+                this.$router.push({ name: "mail_draft" });
               }
             });
         }
@@ -675,8 +676,8 @@ var docType = "";
     },
     orgClick(to) {
       if (!this.tome) {
-        this.$store.commit("OrgPointer", to);
-        this.modalon = true;
+      this.$store.commit("OrgPointer", to);
+      this.modalon = true;
       }
     },
     timeOk() {
@@ -694,16 +695,16 @@ var docType = "";
       this.dispreserve = true;
       this.timemodal = true;
     },
-    getReadableByte(count, decimal = 2, level = 0) {
-      let unitList = ["Bytes", "KB", "MB", "GB", "TB", "PT"];
+    // getReadableByte(count, decimal = 2, level = 0) {
+    //   let unitList = ["Bytes", "KB", "MB", "GB", "TB", "PT"];
 
-      if (count >= 1024.0 && level + 1 < unitList.length) {
-        return this.getReadableByte(count / 1024, decimal, ++level);
-      }
-      return `${decimal ? count.toFixed(decimal) : Math.round(count)}${
-        unitList[level]
-      }`;
-    },
+    //   if (count >= 1024.0 && level + 1 < unitList.length) {
+    //     return this.getReadableByte(count / 1024, decimal, ++level);
+    //   }
+    //   return `${decimal ? count.toFixed(decimal) : Math.round(count)}${
+    //     unitList[level]
+    //   }`;
+    // },
     submitFile() {
       this.$refs.file.click();
     },
@@ -734,16 +735,18 @@ var docType = "";
       this.$router.go(-1);
     },
     SendToSearch(who, keyword, value) {
-      if (value.length >= 2) {
-        var data = {};
-        data.who = who;
-        data.keyword = value;
+      if (!this.tome) {
+        if (value.length >= 2) {
+          var data = {};
+          data.who = who;
+          data.keyword = value;
 
-        this.$store.dispatch("OrgAutoSearch", data);
+          this.$store.dispatch("OrgAutoSearch", data);
 
-        this.showAddSearch(who);
-      } else {
-        this.removeAddSearch(who);
+          this.showAddSearch(who);
+        } else {
+          this.removeAddSearch(who);
+        }
       }
     },
     randomColor() {
@@ -767,14 +770,13 @@ var docType = "";
       this.modalon = false;
     },
     FileDel(value) {
-      
       var result = this.file.filter((element) => {
         return element !== value;
       });
-      if(result[0]){
+      if (result[0]) {
         this.file = result;
       }
-      if(result.length==0){
+      if (result.length == 0) {
         this.file = [];
       }
       this.Detach.push(value);
@@ -801,4 +803,10 @@ var docType = "";
 </script>
 
 <style>
+.tome.active {
+  font-size: 0.75rem;
+  color: #fff;
+  background: #655da7;
+  border-color: #655da7;
+}
 </style>

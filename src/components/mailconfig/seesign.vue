@@ -10,13 +10,13 @@
         <li>
           <span>제목</span>
           <div>
-            <em>{{GetSignView.subject}}</em>
+            <p>{{GetSignView.subject}}</p>
           </div>
         </li>
         <li>
           <span>설정</span>
           <div v-if="GetSignView.default">
-            <em>기본 서명</em>
+            <p>기본 서명</p>
           </div>
         </li>
         <li class="texteditor">
@@ -70,7 +70,7 @@ export default {
     ...mapGetters("mailjs",["GetSignView"]),
   },
   created(){
-    
+    console.log(this.GetSignView)
   },
   methods: {
     Back() {

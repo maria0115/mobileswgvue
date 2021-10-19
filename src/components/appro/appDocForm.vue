@@ -23,9 +23,21 @@
           </ul>
         </li> -->
         <li>
-          <h3 :class="{active:all}" @click="toggle('all')"><a>서식함</a></h3>
-          <ul :class="{active:all}">
-            <li v-for="(value,name) in formCode" :key="name"><router-link :to="{name:'appwrite',query:{form:name}}">{{value}}</router-link></li>
+          <h3 :class="{ active: all }" @click="toggle('all')"><a>서식함</a></h3>
+          <ul :class="{ active: all }">
+            <li v-for="(value, name) in formCode" :key="name">
+              <router-link
+                :to="{
+                  name: 'appwrite',
+                  query: {
+                    form: name,
+                    formtitle: value,
+                    data: JSON.stringify(params),
+                  },
+                }"
+                >{{ value }}</router-link
+              >
+            </li>
           </ul>
         </li>
       </ul>
@@ -42,8 +54,11 @@ import Search from "./search.vue";
 import BtnPlus from "./btnPlus.vue";
 import { mapState, mapGetters } from "vuex";
 export default {
-    computed: {
-    ...mapGetters("approjs",["GetApproval"]),
+  created() {
+    this.params = JSON.parse(this.$route.query.data);
+  },
+  computed: {
+    ...mapGetters("approjs", ["GetApproval"]),
   },
   components: {
     Header,
@@ -56,12 +71,15 @@ export default {
       checkbox: [{ doc: "양식명" }],
       morePlus: { view: "결제문서 불러오기" },
       isOpen: false,
-      often:false,
-      recent:false,
-      all:false,
-      var:false,
-      title:"결재 양식함",
-      formCode:{"K-SIS_Form601m":"품의서-기본","K-SIS_Form661m":"신청서-기본"},
+      often: false,
+      recent: false,
+      all: false,
+      var: false,
+      title: "결재 양식함",
+      formCode: {
+        "K-SIS_Form601m": "품의서-기본",
+        "K-SIS_Form661m": "신청서-기본",
+      },
     };
   },
   methods: {
@@ -72,7 +90,7 @@ export default {
       this.isOpen = false;
     },
     toggle(value) {
-        this[value] = !this[value];
+      this[value] = !this[value];
     },
   },
 };

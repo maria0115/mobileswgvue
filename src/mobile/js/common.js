@@ -213,12 +213,15 @@ $(function () {
     //     $('.time_modal').removeClass('active');
     //     $('.time_check').removeClass('active');
     // });
-    $('body').on('click','time_mo_btn',function(){
+    $('body').on('click','.time_mo_btn',function(){
         $('.time_modal').removeClass('active');
     });
     // $('body').on('click','.wm_top textarea',function(){
     //     $(this).parent('li').parent('ul').parent('div').siblings('div.add_search').toggleClass('active');
     // });
+    $('body').on('click','.date_line',function(){
+        $('.d_line').toggleClass('active');
+    });/* 10월 13일 추가됨 */
     $('body').on('click','.rd_more',function(){
         $('.rdmail_icons .more_box').toggleClass('on');
     });

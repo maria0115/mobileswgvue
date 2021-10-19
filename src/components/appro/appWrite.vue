@@ -237,9 +237,13 @@ import Org from "../../View/OrgAppro.vue";
 import { Editor, EditorContent } from "tiptap";
 export default {
   created() {
+    this.params = JSON.parse(this.$route.query.data);
+    console.log(this.detail)
+
     const date = new Date();
     this.startdate = date;
     this.enddate = date;
+    this.title = this.$route.query.formtitle;
 
     this.thisform = this.$route.query.form;
   },
@@ -297,7 +301,7 @@ export default {
       daycount: 0,
       startdate: null,
       enddate: null,
-      pDocPeriod:1,
+      pDocPeriod: 1,
       DocPeriod: {
         1: "1년",
         3: "3년",
@@ -308,33 +312,41 @@ export default {
       },
       pathDivision: { sAppList1: "기안", sAppList2: "담당" },
       DocPermission: { H0: "권한자만 공유", H1: "부서공유", H2: "사내공유" },
-      pDocPermission:"H0"
+      pDocPermission: "H0",
     };
   },
   computed: {
     ...mapState(["autosearchorg", "org"]),
     ...mapGetters("mainjs", ["GetMyInfo"]),
     ...mapGetters("mailjs", ["GetMail"]),
+    ...mapState("approjs", ["detail"]),
+
   },
   methods: {
     Send(e) {
-      console.log(this.appPath,this.GetMyInfo,"GetMyInfoGetMyInfoGetMyInfo");
       var sAppList1 = "";
       var sAppList2 = "";
-      var AprTcount1 = 0;
+      var AprTcount1 = 1;
       var AprTcount2 = 0;
+      sAppList1 += this.GetMyInfo.approvalInfo+';';
       for (var i = 0; i < this.appPath.length; i++) {
         if (this.appPath[i].appDept == "sAppList1") {
-          AprTcount1++;
-          sAppList1 += `${this.appPath[i].appadd}^${i + 1}^${
+          sAppList1 += `${this.appPath[i].appadd}^${AprTcount1+1}^${
             this.appPath[i].approvalInfo.approvalInfo
           };`;
+            AprTcount1++;
         } else if (this.appPath[i].appDept == "sAppList2") {
-          AprTcount2++;
-          sAppList2 += `${this.appPath[i].appadd}^${i + 1}^${
+          sAppList2 += `${this.appPath[i].appadd}^${AprTcount2 }^${
             this.appPath[i].approvalInfo.approvalInfo
           };`;
+            AprTcount2++;
         }
+      }
+      
+      if(AprTcount1+AprTcount2<=1){
+        alert("결재선 지정하세요");
+        return;
+
       }
       let formData = new FormData();
       formData.append("approvalType", e);
@@ -347,15 +359,33 @@ export default {
       formData.append("AprTcount2", AprTcount2);
       formData.append("subject", this.Subject);
       formData.append("body", this.Body_Text);
+      formData.append("TmpsComment", this.TmpsComment);
+      
       formData.append("DocPeriod", this.pDocPeriod);
       formData.append("DocPermission", this.pDocPermission);
       for (var i = 0; i < this.file.length; i++) {
         formData.append("attach", this.file[i]);
       }
-      for (var pair of formData.entries())
-       { console.log(pair[0]+ ', ' + pair[1]); }
+      for (var pair of formData.entries()) {
+        console.log(pair[0] + ", " + pair[1]);
+      }
 
-      this.$store.dispatch("approjs/AppWrite",formData);
+      this.$store.dispatch("approjs/AppWrite", formData).then((res) => {
+        if (res) {
+          console.log("잘갔다 이제 라우터 보내자",res)
+          // if(e=="raise"){
+            this.params.type="";
+          this.$router.push({
+            name: "appapproving",
+            query: { data: JSON.stringify(this.params) },
+          });
+
+          // }else if(e=="draft"){
+          // this.$router.push({name:'appdraft',query:{data:JSON.stringify(this.params)}})
+
+          // }
+        }
+      });
       console.log(e);
     },
     AddItem(item) {

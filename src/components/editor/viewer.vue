@@ -33,6 +33,8 @@
 import configjson from "../../config/config.json";
 
 export default {
+  created(){
+  },
   props: ["attaInfo", "attach","className"],
   methods: {
     getMobileView({ surl, sname, sext }) {
@@ -56,7 +58,7 @@ export default {
         objEzX.streamtype.value = "capture";
       }
 
-      objEzX.action = "http://125.7.235.220:81/DG_viewer/viewer/document/docviewer.do/";
+      objEzX.action = configjson.objEzXURL;
       objEzX.target = "_self";
       objEzX.submit();
     },

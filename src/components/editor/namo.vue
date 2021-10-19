@@ -3,6 +3,8 @@
 </template>
 
 <script>
+import configjson from "../../config/config.json";
+
 export default {
     props: ['editor','read','did'],
     created() {
@@ -18,7 +20,7 @@ export default {
     data: function () {
         return {
             editorData: "",
-            src: "http://dm60.saerom.co.kr/dwp/com/sys/gwlib.nsf/crosseditor_mobile?ReadForm&did=",
+            src: configjson.namoURL,
         };
     },
     methods: {

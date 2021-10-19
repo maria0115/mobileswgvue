@@ -1,8 +1,24 @@
 import {
-    DocApproval, Approval,AppDetail,agreeNreject,AppWrite,deleteItem
+    AppSearch,DocApproval, Approval,AppDetail,agreeNreject,AppWrite,deleteItem
 } from '../../../api/index';
 import router from '../../../router/index';
 export default {
+    AppSearch({state,commit,rootState},data){
+        data.size = rootState.configjs.store.config.listcount;
+        AppSearch(data)
+        .then((res) => {
+
+            if (res.status !== 200) {
+                return false;
+            } else {
+                console.log(res.data,"appsearch 됐다!!")
+                commit("GetApprovalList",{menu:data.type,data:res.data})
+                return true;
+
+            }
+
+        })
+    },
     deleteItem({state,commit},data){
         return deleteItem(data.unid)
         .then((res) => {
@@ -15,12 +31,12 @@ export default {
         })
     },
     AppWrite({state,commit},data){
-        AppWrite(data)
+        return AppWrite(data)
         .then((res) => {
             if (res.status !== 200) {
                 return false;
             } else {
-                
+                return true;
             }
         })
     },
@@ -90,13 +106,15 @@ export default {
         data.page = 0;
         data.size = rootState.configjs.store.config.listcount;
         data.approvaltype = type;
-        Approval(data)
+
+        return Approval(data)
         .then((res) => {
 
             if (res.status !== 200) {
                 return false;
             } else {
                 commit("GetApprovalList",{menu:type,data:res.data})
+
                 return true;
 
             }

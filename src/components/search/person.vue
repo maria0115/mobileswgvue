@@ -76,7 +76,9 @@ export default {
   },
   computed: {
     ...mapState([ "langa",]),
-    ...mapState("searchjs",["sortdata",  "data", "searchInfiniteId"]),
+    ...mapState("searchjs",["sortdata", "searchInfiniteId"]),
+    ...mapGetters("searchjs", ["data"]),
+
     ...mapGetters(["GetSearchLanguage"]),
     ...mapGetters("configjs",["GetConfig"]),
     // image 파일을 가지고 있는 url 반환

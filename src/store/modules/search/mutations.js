@@ -2,8 +2,8 @@
 export default {
     // 검색어 초기화
     WordReset(state) {
-        state.data.searchword = "";
-        state.data.searchwordarr = [];
+        state.store.data.searchword = "";
+        state.store.data.searchwordarr = [];
 
     },
     // 모든 최근검색어 삭제
@@ -26,11 +26,11 @@ export default {
         if (word !== undefined) {
 
             if (word === "") {
-                state.data.searchword = "";
-                state.data.searchwordarr = [];
+                state.store.data.searchword = "";
+                state.store.data.searchwordarr = [];
             } else {
-                state.data.searchword = word;
-                state.data.searchwordarr[0] = word;
+                state.store.data.searchword = word;
+                state.store.data.searchwordarr[0] = word;
 
             }
         }
@@ -50,14 +50,14 @@ export default {
         if (word !== undefined && page !== undefined) {
 
             if (word === "") {
-                state.data.searchword = "";
-                state.data.searchwordarr = [];
+                state.store.data.searchword = "";
+                state.store.data.searchwordarr = [];
             } else {
-                state.data.searchword = word;
-                state.data.searchwordarr[0] = word;
+                state.store.data.searchword = word;
+                state.store.data.searchwordarr[0] = word;
 
             }
-            state.data.pagenum = page;
+            state.store.data.pagenum = page;
         }
 
         if ((typeof what !== "undefined" ||
@@ -67,7 +67,7 @@ export default {
                 value !== undefined ||
                 value !== null ||
                 value !== "")) {
-            state.data[what] = value;
+            state.store.data[what] = value;
         }
 
     },
@@ -89,6 +89,6 @@ export default {
     setTime(state) {
         // 지금 이 순간
         var moment = require("moment");
-        state.data.created = moment().utc().format("YYYYMMDDTHHmmss");
+        state.store.data.created = moment().utc().format("YYYYMMDDTHHmmss");
     },
 }

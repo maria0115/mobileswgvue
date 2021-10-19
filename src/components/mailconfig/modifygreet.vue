@@ -1,7 +1,7 @@
 <template>
   <div>
     <h2 class="mail_st_header">
-      <router-link :to="{name:'seegreet'}">
+      <router-link :to="{name:'SeeGreet'}">
         <img src="../../mobile/img/wmail_back.png" alt="" /> </router-link
       >인사말 편집
       <div>
