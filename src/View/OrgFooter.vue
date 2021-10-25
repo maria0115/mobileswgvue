@@ -70,7 +70,7 @@ export default {
     };
   },
   beforeDestroy() {
-    this.$store.commit("mailjs/From", "");
+    // this.$store.commit("mailjs/From", "");
     // this.$store.commit("OrgDataInit");
   },
   methods: {

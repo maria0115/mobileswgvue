@@ -160,7 +160,6 @@ const router = new Router({
               name: 'mainapproval',
               component: approval,
               beforeEnter: (to, from, next) => {
-                console.log("여기안들어오나")
                 store.dispatch("mainjs/GetApproval", {
                   approvaltype: "approve",
                   category: "more",
@@ -176,7 +175,6 @@ const router = new Router({
               component: board,
               name: 'mainboard',
               beforeEnter: (to, from, next) => {
-                console.log("beforeenter안오냐 근데 여기선 아무짝에도 쓸모 없음 created로 가셔 해야함")
                 // store.dispatch("CategoryList",to.params.type)
                 // .then((res) => {
                 //   console.log(res,"CategoryList");
@@ -498,14 +496,12 @@ const router = new Router({
               component: ReadMail,
               beforeEnter: (to, from, next) => {
                 if (to.params.unid) {
-                  console.log(to.params.unid);
                   store.dispatch("mailjs/MailDetail", to.params.unid)
                     .then(() => {
                       store.commit("mailjs/MailDetailUnid", to.params.unid);
                       next();
                     })
                 } else {
-                  console.log(store.state, "readmail")
                   store.dispatch("mailjs/MailDetail", store.state.mailjs.store.maildetail.unid);
                   next();
                 }
@@ -520,21 +516,21 @@ const router = new Router({
                 // store.commit("MailOrgDataInit")
 
                 // .then((r) =>{
-                if (store.state.mailjs.from == "Reply") {
-                  store.commit("OrgData", store.state.mailjs.store.maildetail.author);
-                } else if (store.state.mailjs.from == "AllReply") {
-                  store.dispatch("mailjs/ToMeInfo")
+                  if (store.state.mailjs.from == "Reply") {
+                    store.commit("OrgData", store.state.mailjs.store.maildetail.author);
+                  } else if (store.state.mailjs.from == "AllReply") {
+                    store.dispatch("mailjs/ToMeInfo")
                     .then(() => {
                       store.commit("mailjs/AllReply");
                     })
-                }
-
-                // })
-
-                var data = {};
-                data.menu = "mail";
-                store.dispatch("mailjs/InitOrg", data);
-                store.dispatch("mailjs/writeForm")
+                  }
+                  
+                  // })
+                  
+                  var data = {};
+                  data.menu = "mail";
+                  store.dispatch("mailjs/InitOrg", data);
+                  store.dispatch("mailjs/writeForm")
                   .then((res) => {
                     if (res) {
                       next();
@@ -763,7 +759,6 @@ const router = new Router({
 
                 if (store.state.calendarjs.store.edit) {
                   var which = store.state.calendarjs.store.schedule.detail.where;
-                  // console.log(which,"여기드루왔다")
                   var unid = {};
                   unid.unid = store.state.calendarjs.store.schedule.detail.unid;
 
@@ -913,7 +908,6 @@ const router = new Router({
               path: 'ingview',
               component: appIngView,
               beforeEnter: (to, from, next) => {
-                console.log("여기오니")
                 store.dispatch("approjs/AppDetail")
                   .then(res => {
                     next();
@@ -962,7 +956,6 @@ const router = new Router({
               name: 'boardlist',
               component: BoardList,
               beforeEnter: (to, from, next) => {
-                console.log("여기들어오나")
                 // store.dispatch("boardjs/BoardSearch", { boardType: to.params.type,lnbid:to.params.lnbid});
                 // console.log("boardlist","hey")
 
@@ -1067,7 +1060,6 @@ router.beforeEach((to, from, next) => {
       }
     })
       .then(res => {
-        console.log(res.data);
         // if (!res.data) {
         if (res.data.UserName === "Anonymous") {
           next({ name: 'login', query: { uuid: "0", locale: "ko" } });

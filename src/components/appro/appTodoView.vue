@@ -44,7 +44,10 @@
                     <em v-if="value.created.length > 0">{{
                       transTime(value.created)
                     }}</em>
-                    <P v-if="value.body&&value.body!=='undefined'" v-html="value.body"></P>
+                    <P
+                      v-if="value.body && value.body !== 'undefined'"
+                      v-html="value.body"
+                    ></P>
                   </div>
                 </li>
               </ul>
@@ -105,15 +108,21 @@ import Viewer from "../editor/viewer.vue";
 export default {
   created() {
     this.params = JSON.parse(this.$route.query.data);
+    // this.params = this.GetHeader.menu;
     if (this.detail.status == "mutualing") {
       this.morePlus = { agree: "협조동의", reject: "반대", view: "원문 보기" };
-    } else if (this.params.type == "success_date") {
+    } else if (this.params.type.indexOf("success") !== -1 || this.params.type=="reject") {
       this.morePlus = { view: "원문 보기" };
+    } else if (this.params.type == "draft") {
+      // this.morePlus = { view: "원문 보기",deleteItem: "삭제", };
+      this.morePlus = { view: "원문 보기", };
     }
   },
   computed: {
     // ...mapGetters("approjs", ["GetApproval"]),
     ...mapState("approjs", ["detail"]),
+    ...mapGetters(["GetHeader"]),
+    ...mapGetters("approjs",["GetSaveApproval"]),
   },
   components: {
     BackHeader,
@@ -135,13 +144,34 @@ export default {
       return this.$route.name;
     },
     BtnClick(e) {
-      console.log("BtnClick", e, this.comment);
+      if (e === "deleteItem") {
+        var data = this.detail;
+        console.log(this.detail)
+        data.unid = this.GetSaveApproval.unid;
+        data.deleteType = "draft";
+      this.$store.dispatch(`approjs/${e}`, data).then((res) => {
+        if (res) {
+          // this.SetHeader(this.params);
+          this.$router.go(-1);
+        }
+      });
+      return;
+      }else if(value=='view'){
+        console.log(value,"value")
+        this.OriginView();
+        return;
+
+      }
       let formData = new FormData();
       formData.append("openurl", this.detail.openurl);
       formData.append("comment", this.comment);
       formData.append("approve", e);
 
-      this.$store.dispatch("approjs/agreeNreject", formData);
+      this.$store.dispatch("approjs/agreeNreject", formData).then((res) => {
+        if (res) {
+          this.$router.go(-1);
+        }
+      });
     },
     // utc 시간 to local 시간
     transTime(time) {
@@ -158,6 +188,9 @@ export default {
     },
     attOpen(url) {
       window.open(url);
+    },
+    OriginView(){
+      this.$refs.viewer.goOriginView({url:this.detail.openurl, name:this.detail.subject});
     },
   },
 };

@@ -69,7 +69,6 @@ export default {
     };
   },
   beforeDestroy() {
-    console.log("destroy");
     this.$store.commit("mailjs/From", "");
     this.$store.commit("OrgDataInit");
   },

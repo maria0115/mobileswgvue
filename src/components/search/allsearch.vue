@@ -30,7 +30,7 @@
         <h2>{{GetSearchLanguage.menu.approval}}</h2>
         <ul v-if="this.sortdata.approval !== undefined">
           <li v-for="(value, name) in this.sortdata.approval.data" :key="name">
-            <a href="">
+            <a @click="openView(value)">
               <h3>{{ value.subject }}</h3>
               <div class="clfix">
                 <em>{{ setWord(value.author) }}</em>
@@ -44,13 +44,18 @@
         </ul>
       </div>
     </div>
+    <Viewer :attach="false" ref="viewer"></Viewer>
   </div>
 </template>
 
 <script>
 import { mapState,mapGetters } from "vuex";
+import Viewer from "../editor/viewer.vue";
 import config from "../../config/search.json";
 export default {
+  components: {
+    Viewer,
+  },
   computed: {
     ...mapState([ "langa",]),
     ...mapState("searchjs",["sortdata"]),
@@ -97,6 +102,11 @@ export default {
         }
       }
       return word;
+    },
+    openView(value){
+      if(value.originalurl !== ""){ 
+        this.$refs.viewer.goOriginView({url:value.originalurl, name:value.subject});
+      }
     },
   },
 };

@@ -70,7 +70,6 @@ export default {
     ...mapGetters("mailjs",["GetSignView"]),
   },
   created(){
-    console.log(this.GetSignView)
   },
   methods: {
     Back() {

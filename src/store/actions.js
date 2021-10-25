@@ -1,43 +1,49 @@
 import {
-    OrgAutoSearch, GetLanguage, Login, InitOrg, Org,CategoryList,ListOfCategory
+    OrgAutoSearch, GetLanguage, Login, InitOrg, Org, CategoryList, ListOfCategory
 } from '../api/index.js';
-import axios from 'axios';
-import cookie from 'vue-cookie';
-import $, { data } from "jquery";
-import { setRawCookie } from 'tiny-cookie'
+import { setRawCookie } from 'tiny-cookie';
+import cookie from 'vue-cookies';
 import config from '../config/config.json';
+import router from '../router/index'
 export default {
-    ListOfCategory({ state, commit }, data){
-        return ListOfCategory(data)
-        .then((res) => {
-
-            if (res.status !== 200) {
-                return false;
-            } else {
-                commit("ListOfCategory", { id:data.lnbid, list: res.data });
-                return res.data;
-
-            }
-
-        })
-    },
-    CategoryList({commit},id){
-        return CategoryList(id)
-        .then((res) => {
-
-            if (res.status !== 200) {
-                return false;
-            } else {
-                console.log(res.data,"categorylist action")
-                commit("CategoryList", { id, list: res.data });
-                return res.data;
-
-            }
-
-        })
-    },
-    logout() {
+    SetHeader({dispatch,commit},data) {
         
+        commit("SetHeader",data);
+        console.log("hey",router)
+
+    },
+    ListOfCategory({ state, commit }, data) {
+        return ListOfCategory(data)
+            .then((res) => {
+
+                if (res.status !== 200) {
+                    return false;
+                } else {
+                    commit("ListOfCategory", { id: data.lnbid, list: res.data });
+                    return res.data;
+
+                }
+
+            })
+    },
+    CategoryList({ commit }, id) {
+        return CategoryList(id)
+            .then((res) => {
+
+                if (res.status !== 200) {
+                    return false;
+                } else {
+
+                    commit("CategoryList", { id, list: res.data });
+                    return res.data;
+
+                }
+
+            })
+    },
+    logout(s) {
+        console.log(s)
+        cookie.set("LtpaToken", "");
         if (!JSON.parse(localStorage.getItem("idSave"))) {
             localStorage.setItem(`${config.packageName}id`, "");
         }
@@ -50,31 +56,31 @@ export default {
         const autoLogin = localStorage.getItem("autoLogin");
     },
     login({ commit }, credentials) {
-        console.log("login")
-        
+
+
         return Login(credentials)
             .then((res) => {
                 if (res.data.success) {
                     var keys = Object.keys(res.data.cookies);
                     for (var i = 0; i < keys.length; i++) {
                         var key = keys[i];
-                        
+
                         // const encookie = escape(res.data.cookies[key]);
-                        // console.log(deltpa,"deltpa")
+                        // 
                         // if(key=='LtpaToken'){
                         //     var deltpa = decodeURI(res.data.cookies[key]);
-                        //     console.log(deltpa,"deltpa")
+                        //     
                         //     deltpa = decodeURI(deltpa);
                         //     cookie.set(key, deltpa);
-                        //     console.log(deltpa)
+                        //     
 
                         // }else{
-                            setRawCookie(key, res.data.cookies[key]);
+                        setRawCookie(key, res.data.cookies[key]);
 
                         // }
 
                     }
-                    // console.log(cookie.get('LtpaToken'),"get")
+                    // 
                     localStorage.setItem("idSave", credentials.idSave);
                     localStorage.setItem("autoLogin", credentials.autoLogin);
 
@@ -103,7 +109,7 @@ export default {
                 if (res.status !== 200) {
                     return false;
                 } else {
-                    
+
                     commit("AutoSearchOrg", { data: res.data, menu: data })
 
                 }
@@ -130,7 +136,7 @@ export default {
                 if (res.status !== 200) {
                     return false;
                 } else {
-                    
+
 
                 }
 

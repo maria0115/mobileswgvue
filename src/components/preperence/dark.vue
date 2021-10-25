@@ -48,7 +48,6 @@ export default {
   methods: {
     // click 시 해당 설정값 db에 입력
     setConfig(event, menu) {
-      // console.log(menu, event.target.value);
       this.$store.dispatch("configjs/setConfig", {
         menu: "mode",
         setting: menu,

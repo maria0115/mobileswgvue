@@ -30,14 +30,14 @@
 
 <script>
 import config from "../config/config.json";
-import cookie from 'vue-cookie';
 import { mapState, mapGetters } from "vuex";
+import cookie from 'vue-cookies';
+
 export default {
   computed: {
     ...mapGetters("configjs", ["GetConfig"]),
     },
   created() {
-    console.log(this.$route.query);
     this.idSave = JSON.parse(localStorage.getItem("idSave"));
     this.autoLogin = this.GetConfig.login;
     // this.autoLogin = JSON.parse(localStorage.getItem("autoLogin"));
@@ -80,7 +80,9 @@ export default {
           localStorage.setItem("autoLogin", false);
           localStorage.setItem(`${config.packageName}pass`, "");
           this.password = "";
+          console.log(this)
           cookie.set("LtpaToken", "");
+          // console.log(this.$cookie.get("LtpaToken"))
         }
       });
     },

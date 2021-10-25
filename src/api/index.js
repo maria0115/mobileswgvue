@@ -19,11 +19,11 @@ function AppEdit(data) {
         }
     })
 }
-function deleteItem(unid) {
+function deleteItem(data) {
     return axios({
         method: 'delete',
         url: `/api/approval?type=deleteItem`,
-        data:{unid:unid},
+        data:{unid:data.unid,deleteType:data.deleteType},
         headers: {
             'Content-Type': 'application/json'
         }
@@ -57,10 +57,10 @@ function CategoryList(id) {
         }
     })
 }
-function AppWrite(data) {
+function AppWrite({data,type}) {
     return axios({
         method: 'post',
-        url: `/api/approval?type=write`,
+        url: `/api/approval?type=${type}`,
         data,
         headers: {
             "Content-Type": "multipart/form-data"

@@ -1,14 +1,11 @@
 <template>
   <li>
     <h3>
+      <!-- @click.native="SetHeader(item)" -->
       <router-link
         :to="{
           name: `boardlist`,
-          query: {data:JSON.stringify({
-            lnbid: item.lnbid,
-            type: item.type,
-            title: item.title,
-          })},
+          query: { data: JSON.stringify(item)}
         }"
         >{{ item.title }}</router-link
       >
@@ -30,7 +27,6 @@
 export default {
   name: "TreeItem",
   created() {
-    console.log(this.item);
   },
   props: {
     item: Object,
@@ -71,6 +67,9 @@ export default {
         this.$emit("make-folder", this.item);
         this.isOpen = true;
       }
+    },
+    SetHeader(data) {
+      this.$store.dispatch("SetHeader", data);
     },
   },
 };

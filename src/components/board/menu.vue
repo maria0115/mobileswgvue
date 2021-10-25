@@ -24,20 +24,25 @@
       <ul class="nt_list_menu">
         <div v-for="(value, index) in GetCategory['main']" :key="index">
           <li v-if="value.category == 'board'">
-            <h3>
+            <h3 @click="OpenFolder(value, index, $event, $parent)">
               <a>{{ value.title }}</a>
-              <em
-                @click="OpenFolder(value, index, $event, $parent)"
-                class="down_m"
-              ></em>
+              <em class="down_m"></em>
               <!-- <em @click="depthDown($event, $parent)" class="down_m"></em> -->
             </h3>
             <ul class="depth02">
               <li v-for="(v, i) in child(value)" :key="i">
+                  <!-- @click.native="
+                    SetHeader({
+                      lnbid: v.lnbid,
+                      type: value.type,
+                      title: v.title,
+                    })
+                  " -->
                 <router-link
                   :to="{
                     name: `boardlist`,
                     query: {
+                      type: value.type,
                       data: JSON.stringify({
                         lnbid: v.lnbid,
                         type: value.type,
@@ -112,9 +117,12 @@ export default {
     isOpen: Boolean,
   },
   methods: {
+    SetHeader(data) {
+      this.$store.dispatch("SetHeader", data);
+    },
     async OpenFolder(value, index, e, t) {
-      $(e.currentTarget.parentElement.nextElementSibling).slideToggle();
-      $(e.currentTarget.parentElement).toggleClass("on");
+      $(e.currentTarget.nextElementSibling).slideToggle();
+      $(e.currentTarget).toggleClass("on");
     },
     Path() {
       this.$store.commit("boardjs/BoardWritePath", this.path);
@@ -136,7 +144,7 @@ export default {
   computed: {
     ...mapGetters("mainjs", ["GetMyInfo"]),
     ...mapGetters("boardjs", ["GetBoard"]),
-    ...mapGetters(["GetCategory"]),
+    ...mapGetters(["GetCategory", "GetHeader"]),
   },
 };
 </script>

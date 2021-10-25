@@ -76,7 +76,9 @@
                   <p>
                     {{ transTime(item.created)
                     }}<em
-                      v-if="item.followup !== undefined && path!=='mail_trash'"
+                      v-if="
+                        item.followup !== undefined && path !== 'mail_trash'
+                      "
                       class="star"
                       @click="followUp(item.unid)"
                       :class="{ active: item.followup }"
@@ -108,77 +110,24 @@
             </div>
             <div slot="error">
               Error message, click
-              <router-link :to="{name:'mail'}">here</router-link> to retry
+              <router-link :to="{ name: 'mail' }">here</router-link> to retry
             </div>
           </infinite-loading>
         </ul>
       </form>
     </div>
-    <div class="impor_mail">
-      <!--7월 29일 추가됨 -->
-      <div class="impor_con">
-        <strong>수행 설정</strong>
-        <p>
-          <span
-            ><em
-              class="edit_check"
-              ref="edit_check"
-              @click="followUse"
-              :class="{ active: this.use }"
-            ></em
-            >수행필요로 설정</span
-          >
-        </p>
-        <ul>
-          <li>
-            <em>일자</em>
-            <div>
-              <input type="date" v-model="date" />
-            </div>
-          </li>
-          <li>
-            <em>시간</em>
-            <div>
-              <select name="" id="" v-model="STime">
-                <option
-                  :value="value"
-                  v-for="(value, index) in this.TimeOption.mail.hour"
-                  :key="index"
-                >
-                  {{ value }}
-                </option>
-              </select>
-              :
-              <select name="" id="" v-model="SMin">
-                <option
-                  :value="value"
-                  v-for="(value, index) in this.TimeOption.mail.min"
-                  :key="index"
-                >
-                  {{ value }}
-                </option>
-              </select>
-            </div>
-          </li>
-          <li>
-            <em>수행할 내용</em>
-            <editor-content :editor="editor" />
-          </li>
-        </ul>
-        <div>
-          <span class="impor_mo_btn" @click="followSet">확인</span>
-          <span class="modal_cancel" @click="followCancle">취소</span>
-        </div>
-      </div>
-    </div>
+    <!-- 여기 -->
+    <FollowUp :unid="clickedUnid"></FollowUp>
     <div class="ac_btns">
-            <span class="more_plus"></span>
-            <ul>
-                <li><a>맨 위로</a></li>
-                <li><router-link :to="{name:'WriteMail'}">메일 작성</router-link></li>
-            </ul>
-        </div>
-<!-- <BtnPlus :menu="morePlus"></BtnPlus> -->
+      <span class="more_plus"></span>
+      <ul>
+        <li><a>맨 위로</a></li>
+        <li>
+          <router-link :to="{ name: 'WriteMail' }">메일 작성</router-link>
+        </li>
+      </ul>
+    </div>
+    <!-- <BtnPlus :menu="morePlus"></BtnPlus> -->
     <ListHeader></ListHeader>
     <MoveFile></MoveFile>
     <Folder></Folder>
@@ -196,7 +145,7 @@ import { SwipeList, SwipeOut } from "vue-swipe-actions";
 import ListHeader from "./listheader.vue";
 import MoveFile from "./movefile.vue";
 import Folder from "./folder.vue";
-import { Editor, EditorContent } from "tiptap";
+import FollowUp from "./folloup.vue";
 export default {
   components: {
     InfiniteLoading,
@@ -205,26 +154,23 @@ export default {
     ListHeader,
     MoveFile,
     Folder,
-    EditorContent,
     BtnPlus,
+    FollowUp,
   },
   data() {
     return {
       morePlus: [{ top: "맨 위로" }, { write: "메일 작성" }],
       // path:this.path,
-      editor: null,
+      enabled: true,
       active: false,
       tooltipActiveIndex: -1,
       tooltipText: [""],
       checkEvent: "touch",
       infiniteId: 0,
-      enabled: true,
-      STime: "05",
-      SMin: "50",
-      use: false,
-      date: "",
+
       body: "",
       unid: "",
+      clickedUnid: "",
     };
   },
   computed: {
@@ -234,8 +180,7 @@ export default {
     ...mapGetters("configjs", ["GetConfig"]),
     path() {
       if (this.$route.path.indexOf("custom") === -1) {
-        console.log(this.$route.path.split('/').reverse()[0])
-        return this.$route.path.split('/').reverse()[0];
+        return this.$route.path.split("/").reverse()[0];
       } else {
         return "custom";
       }
@@ -250,15 +195,8 @@ export default {
   },
   created() {
     this.$store.commit("mailjs/Back");
-    var moment = require("moment");
-      var localTime = moment.utc().toDate();
-      this.date = moment(localTime).format("YY-MM-DD");
-     
 
     this.infiniteId += 1;
-    this.editor = new Editor({
-      content: "",
-    });
     if (this.path === "custom") {
       this.$store.dispatch("mailjs/GetMailDetail", {
         mailtype: "custom",
@@ -271,12 +209,11 @@ export default {
       this.checkEvent = "mouse";
     }
   },
-  beforeDestroy() {
-    if (this.editor !== null) {
-      this.editor.destroy();
-    }
-  },
+
   methods: {
+    followUp(unid) {
+      this.clickedUnid = unid;
+    },
     MailDetail(unid) {
       if (!this.mail.checkBtn.editclicked) {
         this.$router.push({ name: "ReadMail", params: { unid } });
@@ -471,59 +408,6 @@ export default {
     // 땔때 툴팁 비활성화
     onClose(e, value, index) {
       this.tooltipActiveIndex = -1;
-    },
-    async followUp(unid) {
-      this.editor.destroy();
-      this.unid = unid;
-      var result = await this.$store.dispatch("mailjs/FollowUpInfo", unid);
-      if (result) {
-        if (this.GetMail.followUpInfo.use) {
-          var followUpInfo = this.GetMail.followUpInfo;
-          this.STime = followUpInfo.time.split(":")[0];
-          this.SMin = followUpInfo.time.split(":")[1];
-          this.use = followUpInfo.use;
-          this.date = followUpInfo.date;
-          this.body = followUpInfo.body;
-
-          this.editor = new Editor({
-            content: this.body,
-          });
-        } else {
-          this.STime = "05";
-          this.SMin = "50";
-          this.use = false;
-          this.body = "";
-          this.editor = new Editor({
-            content: this.body,
-          });
-        }
-      }
-    },
-    followCancle() {
-      if (this.editor) {
-        this.editor.destroy();
-      }
-    },
-    async followSet() {
-      if (this.editor) {
-        console.log("여기")
-        var data = {};
-        if (this.date) {
-          data.use = this.use;
-          data.date = this.date;
-          data.unid = this.unid;
-          data.time = `${this.STime}:${this.SMin}:00`;
-          data.body = this.editor.getHTML();
-
-          await this.$store.dispatch("mailjs/FollowupSet", data);
-          this.$router.push(this.$router.currentRoute);
-        }
-        this.editor.destroy();
-      }
-    },
-    followUse() {
-      var classList = this.$refs.edit_check.classList.contains("active");
-      this.use = !classList;
     },
   },
 };

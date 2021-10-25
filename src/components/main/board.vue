@@ -17,13 +17,22 @@
                 title: key.title,
               })
             "
+            ><strong v-if="value.category">[{{ value.category }}]</strong
             >{{ value.subject }}</a
           >
         </li>
       </ul>
 
-      <span class="m_more"
-        ><router-link
+      <span class="m_more">
+        <!-- @click.native="
+            SetHeader({
+              lnbid: key.lnbid,
+              type: key.type,
+              top: top,
+              title: key.title,
+            })
+          " -->
+        <router-link
           :to="{
             name: `${key.category}list`,
             query: {
@@ -49,15 +58,14 @@ export default {
     ...mapGetters("boardjs", ["GetBoard"]),
     ...mapState("mainjs", ["main"]),
     ...mapState(["listOfCategory"]),
+    ...mapGetters(["GetHeader"]),
   },
   async created() {
+    // this.params = this.GetHeader.menu;
     this.params = JSON.parse(this.$route.query.data);
-    console.log(this.params);
 
     this.top = this.params.lnbid;
     var res = await this.$store.dispatch("CategoryList", this.top);
-    // .then(res=>{
-    //   console.log(res,"res.datacreated")
     this.categories = res;
     for (var i = 0; i < res.length; i++) {
       res[i].page = 0;
@@ -76,11 +84,11 @@ export default {
     };
   },
   methods: {
+    SetHeader(data) {
+      this.$store.dispatch("SetHeader", data);
+    },
     Read(value, menu, data) {
-      console.log(menu, value, "valuemenu");
-
       if (value.unid) {
-        console.log("여기아니냐");
         this.$store.dispatch("boardjs/BoardDetail", {
           type: menu.type,
           title: menu.title,

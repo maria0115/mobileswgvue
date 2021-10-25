@@ -25,7 +25,6 @@ export default {
             await PSearch()
                 .then(response => {
                     state.store.config = response.data;
-                    console.log(state.store.config)
                     commit("SettingCreated", response.data);
                     if (response.data.mode === "system") {
                         state.store.systemcolor = whatcolor.fetch(response.data.mode);

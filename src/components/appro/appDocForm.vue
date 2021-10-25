@@ -4,39 +4,11 @@
     <SubMenu :isOpen="isOpen" @CloseHam="CloseHam"></SubMenu>
     <div class="a_contents04">
       <ul class="a_list">
-        <!-- <li>
-          <h3 :class="{active:often}" @click="toggle('often')"><a>자주 사용하는 서식</a></h3>
-          <ul :class="{active:often}">
-            <li v-for="(value,index) in GetApproval.formList_favorite.data" :key="index"><router-link :to="{name:'appwrite'}">{{value.category}}</router-link></li>
-          </ul>
-        </li>
-        <li>
-          <h3 :class="{active:recent}" @click="toggle('recent')"><a>최근에 사용한 서식</a></h3>
-          <ul :class="{active:recent}">
-            <li v-for="(value,index) in GetApproval.formList_recent.data" :key="index"><router-link :to="{name:'appwrite'}">{{value.category}}</router-link></li>
-          </ul>
-        </li>
-        <li>
-          <h3 :class="{active:all}" @click="toggle('all')"><a>서식함</a></h3>
-          <ul :class="{active:all}">
-            <li  v-for="(value,index) in GetApproval.formList_all.data" :key="index"><router-link :to="{name:'appwrite'}">{{value.category}}</router-link></li>
-          </ul>
-        </li> -->
         <li>
           <h3 :class="{ active: all }" @click="toggle('all')"><a>서식함</a></h3>
           <ul :class="{ active: all }">
             <li v-for="(value, name) in formCode" :key="name">
-              <router-link
-                :to="{
-                  name: 'appwrite',
-                  query: {
-                    form: name,
-                    formtitle: value,
-                    data: JSON.stringify(params),
-                  },
-                }"
-                >{{ value }}</router-link
-              >
+              <a @click="SetHeader(value, name)">{{ value }}</a>
             </li>
           </ul>
         </li>
@@ -56,9 +28,12 @@ import { mapState, mapGetters } from "vuex";
 export default {
   created() {
     this.params = JSON.parse(this.$route.query.data);
+
+    // this.params = this.GetHeader.menu;
   },
   computed: {
     ...mapGetters("approjs", ["GetApproval"]),
+    ...mapGetters(["GetHeader"]),
   },
   components: {
     Header,
@@ -91,6 +66,14 @@ export default {
     },
     toggle(value) {
       this[value] = !this[value];
+    },
+    SetHeader(value, name) {
+      this.params.form = name;
+      this.params.formtitle = value;
+      this.$router.push({
+        name: "appwrite",
+        query: { data: JSON.stringify(this.params) },
+      });
     },
   },
 };

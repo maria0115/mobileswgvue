@@ -43,6 +43,8 @@ export default {
   methods: {
     Read(value, menu) {
       if (value.unid) {
+        this.$store.commit("boardjs/BoardSaveUnid", value.unid);
+
         this.$store.dispatch("boardjs/BoardDetail", {
           menu,
           unid: value.unid,

@@ -8,53 +8,47 @@
     ></Header>
     <SubMenu :isOpen="isOpen" @CloseHam="CloseHam"></SubMenu>
     <div class="a_contents06">
-      <form action="">
+      <form>
         <ul class="app06_list">
-          <swipe-list
-            v-if="GetApproval[this.path].data.data"
-            ref="list"
+          <!-- ref="list"
             class="card"
             :disabled="!enabled"
             :items="GetApproval[this.path].data.data"
-            item-key="id"
+            item-key="id" -->
+          <li
+            v-for="(item, index) in GetApproval[this.path].data.data"
+            :key="index"
           >
-            <template v-slot="{ item, index }">
-              <li :key="index">
-                <a>
-                  <span class="basic_img on">
-                    <!-- v-if="item.photoerror" -->
-                    <img
-                      :src="url(item.photo)"
-                      @error="photoError(index)"
-                      v-if="item.photoerror"
-                      alt=""
-                    />
-                    <em class="no_img" :style="randomColor()" v-if="item.author"
-                      ><b>{{ item.author.split("")[0] }}</b></em
-                    >
-                  </span>
-                  <div class="s_text" @click="Read(item)">
-                    <em>{{ item.category }}</em>
-                    <strong>{{ item.subject }}</strong>
-                    <p class="pd_0">
-                      <em v-if="item.author"
-                        >{{ item.author }} {{ item.authorposition }}/{{
-                          item.authordept
-                        }}</em
-                      ><span>{{ transTime(item.created) }}</span>
-                    </p>
-                  </div>
-                  <div class="icons">
-                    <span class="opin"></span>
-                    <span class="clip" v-if="item.attach"></span>
-                  </div>
-                </a>
-              </li>
-            </template>
-            <template v-slot:right="{}">
-              <span class="trash_can"></span>
-            </template>
-          </swipe-list>
+            <a>
+              <span class="basic_img on">
+                <!-- v-if="item.photoerror" -->
+                <img
+                  :src="url(item.photo)"
+                  @error="photoError(index)"
+                  v-if="item.photoerror"
+                  alt=""
+                />
+                <em class="no_img" :style="randomColor()" v-if="item.author"
+                  ><b>{{ item.author.split("")[0] }}</b></em
+                >
+              </span>
+              <div class="s_text" @click="Read(item)">
+                <em>{{ item.category }}</em>
+                <strong>{{ item.subject }}</strong>
+                <p class="pd_0">
+                  <em v-if="item.author"
+                    >{{ item.author }} {{ item.authorposition }}/{{
+                      item.authordept
+                    }}</em
+                  ><span>{{ transTime(item.created) }}</span>
+                </p>
+              </div>
+              <div class="icons">
+                <span class="opin"></span>
+                <span class="clip" v-if="item.attach"></span>
+              </div>
+            </a>
+          </li>
           <infinite-loading
             @infinite="infiniteHandler"
             :identifier="infiniteId"
@@ -69,17 +63,11 @@
             </div>
             <div slot="error">
               Error message, click
+              <!-- @click.native="SetHeader(params)" -->
               <router-link
                 :to="{
                   name: `appapprove`,
-                  query: {
-                    data: JSON.stringify({
-                      type: params.type,
-                      lnbid: params.lnbid,
-                      top: params.top,
-                      title: params.title,
-                    }),
-                  },
+                  query: { data: JSON.stringify(params) },
                 }"
                 >here</router-link
               >
@@ -108,6 +96,7 @@ import "vue-swipe-actions/dist/vue-swipe-actions.css";
 export default {
   created() {
     this.params = JSON.parse(this.$route.query.data);
+    // this.params = this.GetHeader.menu;
     this.category = this.GetCategory[this.params.top];
     this.Init();
   },
@@ -125,7 +114,7 @@ export default {
     next();
   },
   computed: {
-    ...mapGetters(["GetCategory"]),
+    ...mapGetters(["GetCategory", "GetHeader"]),
 
     ...mapGetters("approjs", ["GetApproval"]),
     ...mapGetters("configjs", ["GetConfig"]),
@@ -156,6 +145,9 @@ export default {
     };
   },
   methods: {
+    SetHeader(data) {
+      this.$store.dispatch("SetHeader", data);
+    },
     Init() {
       this.infiniteId += 1;
       this.page = 0;
@@ -168,11 +160,10 @@ export default {
         });
         this.category[caidx].top = this.params.top;
         this.category[caidx].type = this.category[caidx].category;
+        // this.SetHeader(this.category[caidx]);
         this.$router.push({
           name: "appformList_all",
-          query: {
-            data: JSON.stringify(this.category[caidx]),
-          },
+          query: { data: JSON.stringify(this.category[caidx]) },
         });
       }
     },
@@ -182,11 +173,11 @@ export default {
         unid: value.unid,
         openurl: value.openurl,
       });
+      // this.SetHeader(this.params);
+
       this.$router.push({
         name: "approveview",
-        query: {
-          data: JSON.stringify(this.params),
-        },
+        query: { data: JSON.stringify(this.params) },
       });
     },
     SetSearchWord(data) {
@@ -202,13 +193,14 @@ export default {
           }
         });
       } else {
-
-        this.$store.dispatch("approjs/GetApprovalList", this.option).then((res) => {
-          if (res) {
-            this.$forceUpdate();
-            this.Init();
-          }
-        });
+        this.$store
+          .dispatch("approjs/GetApprovalList", this.option)
+          .then((res) => {
+            if (res) {
+              this.$forceUpdate();
+              this.Init();
+            }
+          });
       }
     },
     // 스크롤 페이징

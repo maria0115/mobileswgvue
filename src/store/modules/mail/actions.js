@@ -125,7 +125,7 @@ export default {
             .then(response => {
                 if (response.status !== 200) {
                     return false;
-                } else { 
+                } else {
                     return true;
                 }
             })
@@ -155,17 +155,16 @@ export default {
         return;
 
     },
-    ToMe({ commit ,rootCommit}) {
+    ToMe({ commit, rootCommit }) {
         return ToMe()
             .then((res) => {
-                console.log(res.data)
+
 
                 commit("ToMe", res.data);
                 return res.data;
 
-            })
-        //     console.log(result)
-        // console.log(commit)
+            })  
+        // 
 
         // await commit("OrgDataInit");
         // commit("AddOrg", { who: "SendTo", value: result });
@@ -215,7 +214,7 @@ export default {
         // 
         InitOrg(data)
             .then((res) => {
-                
+
                 commit("MailOrgTransData", res.data);
             })
     },
@@ -247,7 +246,7 @@ export default {
                 if (response.status !== 200) {
                     return false;
                 } else {
-                    router.push({name:where});
+                    router.push({ name: where });
 
                 }
             })
@@ -285,7 +284,7 @@ export default {
                 if (response.status !== 200) {
 
                 } else {
-                    
+
                     commit("MailDetailData", response.data);
                     return true;
 
@@ -366,9 +365,7 @@ export default {
             // router.push({ name: 'SeeGreet' });
 
         }
-        // .then(response => {
-        //     if(response){
-        //     }
+        // .then(response => {  if(response){  }
         // })
 
     },
@@ -492,7 +489,7 @@ export default {
         var data = {};
         var folderstr = "";
         var checkedNames = state.mail.checkBtn.checkedNames;
-        console.log(checkedNames)
+
         if (checkedNames.length > 0) {
             for (var i = 0; i < checkedNames.length; i++) {
                 folderstr += `${checkedNames[i].unid},`;
@@ -501,7 +498,7 @@ export default {
             data.ids = folderstr;
             data.viewname = viewname;
             data.folderId = folderId;
-            console.log(data,"data")
+
             return await MailMove(data)
                 .then(response => {
 
@@ -515,7 +512,7 @@ export default {
                 });
         }
     },    // 메일 삭제
-    async MailDelete({ state, dispatch }, { datas, type }) {
+    async MailDelete({ state, commit }, { datas, type }) {
         // data는 //unid,unid string
         var datastr = "";
         for (var i = 0; i < datas.length; i++) {
@@ -526,6 +523,7 @@ export default {
             .then(response => {
 
                 if (response.status == 200) {
+                    commit("Back");
                     return true;
                 }
                 return false;

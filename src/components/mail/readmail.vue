@@ -82,65 +82,10 @@
           </ul>
           <span
             class="star"
+            @click="followUp(GetMailDetail.unid)"
             :class="{ active: this.GetMail.followUpInfo.use }"
           ></span>
-          <div class="impor_mail">
-            <!--7월 29일 추가됨 -->
-            <div class="impor_con">
-              <strong>수행 설정</strong>
-              <p>
-                <span
-                  ><em
-                    class="edit_check"
-                    ref="edit_check"
-                    @click="followUse"
-                    :class="{ active: this.use }"
-                  ></em
-                  >수행필요로 설정</span
-                >
-              </p>
-              <ul>
-                <li>
-                  <em>일자</em>
-                  <div>
-                    <input type="date" :value="this.date" />
-                  </div>
-                </li>
-                <li>
-                  <em>시간</em>
-                  <div>
-                    <select name="" id="" v-model="STime">
-                      <option
-                        :value="value"
-                        v-for="(value, index) in this.TimeOption.mail.hour"
-                        :key="index"
-                      >
-                        {{ value }}
-                      </option>
-                    </select>
-                    :
-                    <select name="" id="" v-model="SMin">
-                      <option
-                        :value="value"
-                        v-for="(value, index) in this.TimeOption.mail.min"
-                        :key="index"
-                      >
-                        {{ value }}
-                      </option>
-                    </select>
-                  </div>
-                </li>
-                <li>
-                  <em>수행할 내용</em>
-                  <editor-content :editor="editor" />
-                </li>
-              </ul>
-              <div>
-                <span class="impor_mo_btn" @click="followSet">확인</span>
-                <span class="modal_cancel" @click="followCancle">취소</span>
-              </div>
-            </div>
-          </div>
+          <FollowUp :unid="clickedUnid"></FollowUp>
         </div>
         <div class="add_file clfix">
           <strong>첨부파일</strong>
@@ -199,24 +144,18 @@ import { Editor, EditorContent } from "tiptap";
 import configjson from "../../config/config.json";
 import Namo from "../editor/namo.vue";
 import Viewer from "../editor/viewer.vue";
-
+import FollowUp from "./folloup.vue";
 export default {
   components: {
     MoveFile,
     EditorContent,
     Namo,
-    Viewer
-  },
-  beforeDestroy() {
-    this.editor.destroy();
+    Viewer,
+    FollowUp
   },
   data: function () {
     return {
-      editor: null,
-      STime: "05",
-      SMin: "50",
-      use: false,
-      date: "",
+      clickedUnid: "",
       body: "",
     };
   },
@@ -225,30 +164,15 @@ export default {
     ...mapGetters("mailjs", ["GetMailDetail", "GetMail"]),
   },
   mounted() {
-    var followUpInfo = this.GetMail.followUpInfo;
-
-    if (followUpInfo.use) {
-      this.STime = followUpInfo.time.split(":")[0];
-      this.SMin = followUpInfo.time.split(":")[1];
-      this.use = followUpInfo.use;
-      this.date = followUpInfo.date;
-      this.body = followUpInfo.body;
-      this.editor = new Editor({
-        content: this.body,
-      });
-    } else {
-      var moment = require("moment");
-      this.date = moment().format("YYYY-MM-DD");
-      this.editor = new Editor({
-        content: "",
-      });
-    }
   },
   created() {
     this.$store.dispatch("mailjs/FollowUpInfo", this.GetMailDetail.unid);
     this.$store.commit("mailjs/checkedNamesPush", this.GetMailDetail.unid);
   },
   methods: {
+    followUp(unid) {
+      this.clickedUnid = unid;
+    },
     // 기본이미지 랜덤 색
     randomColor() {
       const color = ["#bcbbdd", "#bbcbdd", "#bbddd7", "#d0d0d0"];
@@ -309,25 +233,6 @@ export default {
       if (result) {
         this.$router.go(-1);
       }
-    },
-    followCancle() {},
-    followSet() {
-      var data = {};
-
-      if (this.date) {
-        data.use = this.use;
-        data.date = this.date;
-        data.unid = this.unid;
-        data.time = `${this.STime}:${this.SMin}:00`;
-        data.body = this.editor.getHTML();
-        data.unid = this.GetMailDetail.unid;
-        this.$store.dispatch("mailjs/FollowupSet", data);
-        this.$router.push({ name: "ReadMail" });
-      }
-    },
-    followUse() {
-      var classList = this.$refs.edit_check.classList.contains("active");
-      this.use = !classList;
     },
   },
 };

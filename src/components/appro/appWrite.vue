@@ -80,7 +80,7 @@
                     :key="index"
                   >
                     <em>{{ index + 1 }}</em
-                    >{{ pathDivision[value.appDept] }}
+                    >{{ pathDivision[value.appDept][value.appadd] }}
                     {{ AppPath(value.approvalInfo) }}
                   </li>
                 </ul>
@@ -195,8 +195,9 @@
           <li class="reason">
             <strong>본문</strong>
             <div>
-              <!-- <editor-content :editor="editor" /> -->
-              <textarea v-model="Body_Text"></textarea>
+              <editor-content :editor="editor" />
+              <!-- {{Body_Text}}
+              <textarea v-html="Body_Text"></textarea> -->
             </div>
           </li>
           <li class="file_add">
@@ -247,22 +248,26 @@ import { Editor, EditorContent } from "tiptap";
 export default {
   created() {
     this.params = JSON.parse(this.$route.query.data);
-    console.log(this.detail, this.params, "this.detail,this.params");
-    if (this.params.isedit && Object.keys(this.detail).length > 0) {
-      console.log(Object.keys(this.detail).length, "isedit");
-      this.appPath = this.detail.sAppList1.concat(this.detail.sAppList2);
-      console.log(this.appPath);
+    // this.params = this.GetHeader.menu;
+    this.params.isedit =
+      this.params.isedit && Object.keys(this.detail).length > 0;
+
+    if (this.params.isedit) {
+      const info = this.detail.approvalInfo;
+      this.currentidx = info.findIndex((item) => item.approval);
+      this.appPath = this.detail.appList.slice(1);
       this.file = this.detail.attachInfo;
       this.Subject = this.detail.subject;
       this.Body_Text = this.detail.body;
+      this.morePlus= { raise: "결재보내기" };
     }
 
     const date = new Date();
     this.startdate = date;
     this.enddate = date;
-    this.title = this.$route.query.formtitle;
+    this.title = this.params.formtitle;
 
-    this.thisform = this.$route.query.form;
+    this.thisform = this.params.form;
   },
   mounted() {
     this.fileinit = this.$refs.file.files;
@@ -283,6 +288,7 @@ export default {
   },
   data() {
     return {
+      currentidx: -1,
       thisform: "",
       appPath: [],
       appDept: "sAppList1",
@@ -298,6 +304,8 @@ export default {
       sendtosearchkeyword: "",
       ExpireDate: "",
       pointer: -1,
+      Detach: [],
+      addAttach: [],
       category: {
         year: "연차휴가",
         prize: "경조/포상",
@@ -329,36 +337,38 @@ export default {
         15: "15년",
         99: "영구",
       },
-      pathDivision: { sAppList1: "기안", sAppList2: "담당" },
+      pathDivision: {
+        sAppList1: { AP: "결재", "AG_S!@AG_M": "협조" },
+        sAppList2: { AP: "담당" },
+      },
       DocPermission: { H0: "권한자만 공유", H1: "부서공유", H2: "사내공유" },
       pDocPermission: "H0",
     };
   },
   computed: {
     ...mapState(["autosearchorg", "org"]),
+    ...mapGetters(["GetHeader"]),
     ...mapGetters("mainjs", ["GetMyInfo"]),
     ...mapGetters("mailjs", ["GetMail"]),
     ...mapState("approjs", ["detail"]),
   },
   methods: {
     Send(e) {
+      if (!(this.Subject.length > 0)) {
+        alert("제목을 입력하세요");
+        return;
+      }
+      let formData = new FormData();
       var sAppList1 = "";
       var sAppList2 = "";
-      var AprTcount1 = 1;
+      var AprTcount1 = 0;
       var AprTcount2 = 0;
-      sAppList1 += this.GetMyInfo.approvalInfo + ";";
-      for (var i = 0; i < this.appPath.length; i++) {
-        if (this.appPath[i].appDept == "sAppList1") {
-          sAppList1 += `${this.appPath[i].appadd}^${AprTcount1 + 1}^${
-            this.appPath[i].approvalInfo.approvalInfo
-          };`;
-          AprTcount1++;
-        } else if (this.appPath[i].appDept == "sAppList2") {
-          sAppList2 += `${this.appPath[i].appadd}^${AprTcount2}^${this.appPath[i].approvalInfo.approvalInfo};`;
-          AprTcount2++;
-        }
-      }
+      var type = "write";
       if (this.params.isedit) {
+        type = "edit";
+        for (var i = 0; i < this.addAttach.length; i++) {
+          formData.append("attach", this.addAttach[i]);
+        }
         var Detachstr = "";
         for (var i = 0; i < this.Detach.length; i++) {
           if (i == this.Detach.length - 1) {
@@ -367,71 +377,93 @@ export default {
             Detachstr += this.Detach[i].name + ";";
           }
         }
-        console.log(Detachstr,"Detachstr")
         formData.append("Detach", Detachstr);
+        formData.append("openurl", this.detail.openurl);
+      } else {
+        for (var i = 0; i < this.file.length; i++) {
+          formData.append("attach", this.file[i]);
+        }
+        AprTcount1++;
+        sAppList1 += this.GetMyInfo.approvalInfo + ";";
       }
-
-      if (AprTcount1 + AprTcount2 <= 1) {
+      for (var i = 0; i < this.appPath.length; i++) {
+        if (this.appPath[i].appDept == "sAppList1") {
+          sAppList1 += `${this.appPath[i].appadd}^${AprTcount1}^${this.appPath[i].approvalInfo.approvalInfo};`;
+          AprTcount1++;
+        } else if (this.appPath[i].appDept == "sAppList2") {
+          sAppList2 += `${this.appPath[i].appadd}^${AprTcount2}^${this.appPath[i].approvalInfo.approvalInfo};`;
+          AprTcount2++;
+        }
+      }
+      if (AprTcount1 <= 1) {
         alert("결재선 지정하세요");
         return;
       }
-      let formData = new FormData();
+
+      if (this.thisform == "K-SIS_Form661m" && AprTcount2 < 1) {
+        alert("주관부서 지정하세요");
+        return;
+      }
+
       formData.append("approvalType", e);
       formData.append("formCode", this.thisform);
       formData.append("From", this.GetMyInfo.info.notesid);
       formData.append("myinfo", this.GetMyInfo.approvalInfo);
+      console.log(sAppList1, sAppList2, AprTcount1, AprTcount2);
       formData.append("sAppList1", sAppList1);
       formData.append("sAppList2", sAppList2);
       formData.append("AprTcount1", AprTcount1);
       formData.append("AprTcount2", AprTcount2);
       formData.append("subject", this.Subject);
-      formData.append("body", this.Body_Text);
+      formData.append("body", this.editor.getHTML());
       formData.append("TmpsComment", this.TmpsComment);
 
       formData.append("DocPeriod", this.pDocPeriod);
       formData.append("DocPermission", this.pDocPermission);
-      for (var i = 0; i < this.file.length; i++) {
-        formData.append("attach", this.file[i]);
-      }
-      for (var pair of formData.entries()) {
-        console.log(pair[0] + ", " + pair[1]);
-      }
+      this.$store
+        .dispatch("approjs/AppWrite", { data: formData, type })
+        .then((res) => {
+          if (res) {
+            // if(e=="raise"){
+            this.params.type = "";
+            // this.SetHeader(this.params);
+            this.$router.push({
+              name: "appapproving",
+              query: { data: JSON.stringify(this.params) },
+            });
 
-      this.$store.dispatch("approjs/AppWrite", formData).then((res) => {
-        if (res) {
-          console.log("잘갔다 이제 라우터 보내자", res);
-          // if(e=="raise"){
-          this.params.type = "";
-          this.$router.push({
-            name: "appapproving",
-            query: { data: JSON.stringify(this.params) },
-          });
+            // }else if(e=="draft"){
+            // this.$router.push({name:'appdraft',query:{data:JSON.stringify(this.params)}})
 
-          // }else if(e=="draft"){
-          // this.$router.push({name:'appdraft',query:{data:JSON.stringify(this.params)}})
-
-          // }
-        }
-      });
-      console.log(e);
+            // }
+          }
+        });
+    },
+    SetHeader(data) {
+      this.$store.dispatch("SetHeader", data);
     },
     AddItem(item) {
-      this.appPath.push(item);
-      var result = this.appPath;
+      if (Object.keys(item.approvalInfo).length > 0) {
+        if (item.appDept == "sAppList2") {
+          item.appadd = "AP";
+        }
+        this.appPath.push(item);
+        var result = this.appPath;
 
-      var result = result.filter(function (item1, idx1) {
-        return (
-          result.findIndex(function (item2, idx) {
-            return (
-              item1.approvalInfo.email == item2.approvalInfo.email &&
-              item1.appadd == item2.appadd &&
-              item1.appDept == item2.appDept
-            );
-          }) == idx1
-        );
-      });
+        var result = result.filter(function (item1, idx1) {
+          return (
+            result.findIndex(function (item2, idx) {
+              return (
+                item1.approvalInfo.email == item2.approvalInfo.email &&
+                item1.appadd == item2.appadd &&
+                item1.appDept == item2.appDept
+              );
+            }) == idx1
+          );
+        });
 
-      this.appPath = result;
+        this.appPath = result;
+      }
     },
     ModalOff() {
       this.modalon = false;
@@ -450,7 +482,7 @@ export default {
         if (result == -1) {
           this.file.push(this.$refs.file.files[0]);
         }
-        if (this.GetEdit) {
+        if (this.params.isedit) {
           this.addAttach.push(this.$refs.file.files[0]);
         }
       }
@@ -463,7 +495,6 @@ export default {
       this.$store.commit("OrgPointer", to);
       this.modalon = true;
       this.appDept = dept;
-      console.log(this.appDept);
     },
     FileDel(value) {
       var result = this.file.filter((element) => {
@@ -534,7 +565,11 @@ export default {
       this.pointer = index;
     },
     Up() {
-      if (this.pointer !== -1 && this.pointer !== 0) {
+      if (
+        this.pointer !== -1 &&
+        this.pointer !== 0 &&
+        this.currentidx < this.pointer
+      ) {
         var list = this.appPath;
         this.appPath = this.changeArrayOrder(list, this.pointer, -1);
         if (this.pointer === 0) {
@@ -545,7 +580,11 @@ export default {
       }
     },
     Down() {
-      if (this.pointer !== -1 && this.pointer !== this.appPath.length - 1) {
+      if (
+        this.pointer !== -1 &&
+        this.pointer !== this.appPath.length - 1 &&
+        this.currentidx <= this.pointer
+      ) {
         var list = this.appPath;
         this.appPath = this.changeArrayOrder(list, this.pointer, 1);
         if (this.pointer === list.length - 1) {
@@ -564,10 +603,13 @@ export default {
       }
     },
     AllDel() {
-      this.appPath = [];
+      // if (!this.params.isedit) {
+        console.log(this.appPath)
+        this.appPath = this.appPath.slice(this.currentidx-1,this.appPath.length);
+
+      // }
     },
     addApprover() {
-      console.log(this.pointer);
       // console.log(autosearchorg.)
     },
   },

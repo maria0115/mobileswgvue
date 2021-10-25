@@ -99,7 +99,6 @@ export default {
   created() {
     this.calData =
       this.GetSchedule.calDetail[this.GetSaveSchedule.detail.where];
-    console.log(this.calData);
     var date = this.calData.startdate;
     var currentDay = new Date(date.replaceAll("-", "/"));
     var theDayOfWeek = currentDay.getDay();

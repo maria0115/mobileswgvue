@@ -42,7 +42,6 @@ export default {
   },
   methods: {
     async toggle() {
-      console.log("여긴가?")
       if (this.isFolder > 0) {
         this.isOpen = !this.isOpen;
       } else {

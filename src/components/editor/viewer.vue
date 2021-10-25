@@ -1,5 +1,5 @@
 <template>
-<!-- 첨부파일 -->
+  <!-- 첨부파일 -->
   <ul v-if="attach" :class="className">
     <li
       v-for="(value, index) in attaInfo"
@@ -26,16 +26,24 @@
     </form>
   </ul>
   <!-- 원문보기 -->
-  <span v-else @click="goOriginView(attaInfo)">111111111111111111111111</span>
+  <span v-else @click="goOriginView(attaInfo)">
+    <form id="uFOCS_AF" action="" method="post">
+      <input type="hidden" name="filepath" value="" />
+      <input type="hidden" name="filename" value="" />
+      <input type="hidden" name="fileext" value="" />
+      <input type="hidden" name="viewerselect" value="image" />
+      <input type="hidden" name="LtpaToken" value="" />
+      <input type="hidden" name="streamtype" value="" />
+    </form>
+  </span>
 </template>
 
 <script>
 import configjson from "../../config/config.json";
 
 export default {
-  created(){
-  },
-  props: ["attaInfo", "attach","className"],
+  created() {},
+  props: ["attaInfo", "attach", "className"],
   methods: {
     getMobileView({ surl, sname, sext }) {
       var objEzX = document.getElementById("uFOCS_AF");
@@ -48,10 +56,10 @@ export default {
       // cookie에서 LtpaToken 값 가져오기
       var cookieArr = document.cookie.split(";");
       for (var i = 0; i < cookieArr.length; i++) {
-          if (cookieArr[i].indexOf("LtpaToken") > -1) {
-              var find = cookieArr[i].split("=");
-              objEzX.LtpaToken.value = find[1];
-          }
+        if (cookieArr[i].indexOf("LtpaToken") > -1) {
+          var find = cookieArr[i].split("=");
+          objEzX.LtpaToken.value = find[1];
+        }
       }
 
       if (sext == "html") {
@@ -64,12 +72,22 @@ export default {
     },
     download(value) {
       var convertUrl = this.getUrl(value.url);
-      var fileExt = value.name.substring(value.name.lastIndexOf(".") + 1, value.name.length).toLowerCase();
-      this.getMobileView({surl: convertUrl, sname: value.name, sext: fileExt});
+      var fileExt = value.name
+        .substring(value.name.lastIndexOf(".") + 1, value.name.length)
+        .toLowerCase();
+      this.getMobileView({
+        surl: convertUrl,
+        sname: value.name,
+        sext: fileExt,
+      });
     },
     goOriginView(value) {
       var convertUrl = this.getUrl(value.url);
-      this.getMobileView({surl: convertUrl, sname: "value.name", sext: "html"});
+      this.getMobileView({
+        surl: convertUrl,
+        sname: value.name,
+        sext: "html",
+      });
     },
     getUrl(url) {
       var port = window.location.port;

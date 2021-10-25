@@ -11,17 +11,29 @@
         >
       </li>
     </ul>
-    <span class="m_more"><router-link :to="{
-            name: `boardlist`,
-            query: {
-              data: JSON.stringify({
-                lnbid: '',
-                type: 'recent',
-                top: '',
-                title: portlet.board.board,
-              }),
-            },
-          }"></router-link></span>
+    <span class="m_more">
+      <!-- @click.native="
+          SetHeader({
+            lnbid: '',
+            type: 'recent',
+            top: '',
+            title: portlet.board.board,
+          })
+        " -->
+      <router-link
+        :to="{
+          name: `boardlist`,
+          query: {
+            data: JSON.stringify({
+              lnbid: '',
+              type: 'recent',
+              top: '',
+              title: portlet.board.board,
+            }),
+          },
+        }"
+      ></router-link
+    ></span>
   </div>
 </template>
 
@@ -29,18 +41,21 @@
 import { mapGetters, mapState } from "vuex";
 export default {
   props: ["portlet"],
-  created() {
-  },
+  created() {},
   computed: {
     ...mapGetters("mainjs", ["GetMain"]),
   },
   methods: {
+    SetHeader(data) {
+      this.$store.dispatch("SetHeader", data);
+    },
     Read(value) {
       if (value.unid) {
         this.$store.dispatch("boardjs/BoardDetail", {
           menu: value.boardType,
           unid: value.unid,
-          type:value.boardType,title:value.category
+          type: value.boardType,
+          title: value.category,
         });
       }
     },

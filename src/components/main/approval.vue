@@ -35,16 +35,24 @@
       /></span>
       
     </div> -->
-      <span class="app_more"
-        ><router-link
+      <span class="app_more">
+        <!-- @click.native="
+            SetHeader({
+              type: ThisCategory('approve').type,
+              lnbid: ThisCategory('approve').lnbid,
+              top: params.lnbid,
+              title: ThisCategory('approve').title,
+            })
+          " -->
+        <router-link
           :to="{
             name: 'appapprove',
             query: {
               data: JSON.stringify({
-                type: this.ThisCategory('approve').type,
-                lnbid: this.ThisCategory('approve').lnbid,
+                type: ThisCategory('approve').type||ThisCategory('approve').category,
+                lnbid: ThisCategory('approve').lnbid,
                 top: params.lnbid,
-                title: this.ThisCategory('approve').title,
+                title: ThisCategory('approve').title,
               }),
             },
           }"
@@ -95,13 +103,21 @@
           </div>
         </div>
       </div>
-      <span class="app_more"
-        ><router-link
+      <span class="app_more">
+        <!-- @click.native="
+            SetHeader({
+              type: ThisCategory('approving').type,
+              lnbid: ThisCategory('approving').lnbid,
+              top: params.lnbid,
+              title: ThisCategory('approving').title,
+            })
+          " -->
+        <router-link
           :to="{
             name: 'appapproving',
             query: {
               data: JSON.stringify({
-                type: ThisCategory('approving').type,
+                type: ThisCategory('approving').type||ThisCategory('approving').category,
                 lnbid: ThisCategory('approving').lnbid,
                 top: params.lnbid,
                 title: ThisCategory('approving').title,
@@ -130,10 +146,17 @@ export default {
   computed: {
     ...mapState("mainjs", ["main", "moreList"]),
     ...mapGetters("mainjs", ["GetMain", "GetMyInfo"]),
-    ...mapGetters(["GetMainLanguage"]),
+    ...mapGetters(["GetMainLanguage", "GetHeader", "GetCategory"]),
   },
   async created() {
-    this.params = JSON.parse(this.$route.query.data);
+    // this.params = JSON.parse(this.$route.query.data);
+    // this.params = this.GetHeader.menu;
+    var main = this.GetCategory["main"];
+    var appidx = main.findIndex(function (item, idx) {
+      return item.category == "approval";
+    });
+    this.params = main[appidx];
+
     this.approveData = this.main.data.approvaltype.approve.more;
     this.approvingData = this.main.data.approvaltype.approving.more;
     this.categorys = await this.$store.dispatch(
@@ -160,6 +183,9 @@ export default {
     };
   },
   methods: {
+    SetHeader(data) {
+      this.$store.dispatch("SetHeader", data);
+    },
     menuOfCategoryIdx(menu) {
       if (this.categorys) {
         return this.categorys.findIndex(function (item, idx) {
@@ -180,12 +206,17 @@ export default {
         unid: value.unid,
         openurl: value.openurl,
       });
-      console.log(`${where}view`, "view");
+      // this.SetHeader({
+      //   type: this.ThisCategory(where).type,
+      //   lnbid: this.ThisCategory(where).lnbid,
+      //   top: this.params.lnbid,
+      //   title: this.ThisCategory(where).title,
+      // });
       this.$router.push({
         name: `${where}view`,
         query: {
           data: JSON.stringify({
-            type: this.ThisCategory(where).type,
+            type: this.ThisCategory(where).type||this.ThisCategory(where).category,
             lnbid: this.ThisCategory(where).lnbid,
             top: this.params.lnbid,
             title: this.ThisCategory(where).title,

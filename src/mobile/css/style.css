@@ -752,7 +752,7 @@ textarea,input{font-family: 'Apple SD Gothic','Nanum Gothic', sans-serif;}
 .a_contents02{margin-top:3.12rem;}
 .a_contents02 > div{background:#fff;border-bottom:0.06rem solid #f0f0f0;}
 .line01{padding:0.81rem 1.25rem;}
-.line01 > em{display:block;width:3.12rem;height:1.25rem;border-radius:0.31rem;border:0.06rem solid #ff743c;font-size:0.81rem;color:#ff743c;text-align:center;line-height:1.12rem;}
+.line01 > em{display:inline-block;height:1.25rem;border-radius:0.18rem;border:0.06rem solid #ff743c;font-size:0.81rem;color:#ff743c;text-align:center;line-height:1.12rem;padding:0 0.37rem;}
 .line01 > strong{display:block;margin-top:0.62rem;font-size:1.06rem;color:#000;line-height:1.2;font-weight:700;text-overflow:ellipsis;overflow:hidden;word-break:break-all;white-space:nowrap;}
 .line01 > div{margin-top:0.43rem;}
 .line01 div em span{float:left;width:2.5rem;height:2.5rem;border-radius:50%;background:#655da7;font-size:0.93rem;color:#fff;text-align:center;line-height:2.5rem;}

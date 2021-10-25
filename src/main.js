@@ -1,14 +1,18 @@
 import Vue from 'vue'
 import App from './App.vue'
+// import { sync } from 'vuex-router-sync';
 import { store } from './store/index.js';
 import router from './router/index.js';
+// import VueCookies from 'vue-cookies';
+
 import jQuery from 'jquery'
 global.$ = jQuery
 import 'babel-polyfill';
 import config from "./config/config.json";
 import VDragged from 'v-dragged'
-
+// sync(store, router, { moduleName: 'header' } )
 Vue.use(VDragged) 
+// Vue.use(VueCookies);
 Vue.config.productionTip = false;
 // import VTooltip from 'v-tooltip'
 // Vue.prototype.mainmenu = config.config.main.menuportlet;

@@ -81,11 +81,14 @@
 </template>
 
 <script>
+import { mapState, mapGetters } from "vuex";
 export default {
+  computed: {
+    ...mapGetters( ["GetHeader"]),
+  },
   created() {
-    console.log(this.$route)
     this.params = JSON.parse(this.$route.query.data);
-    console.log(this.params)
+    // this.params = this.GetHeader.menu;
 
     this.Init();
   },

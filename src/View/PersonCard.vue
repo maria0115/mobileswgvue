@@ -53,6 +53,9 @@
 
 <script>
 export default {
+  created(){
+    // console.log(this.item.photo);
+  },
   props: {
     item: Object,
     modalon: Boolean,

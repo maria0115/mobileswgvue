@@ -118,7 +118,6 @@ export default {
     $(".wrap").css("font-family", this.GetConfig.font.font);
   },
   created() {
-    console.log(this.$route.name)
     // font size setting
     if (this.GetConfig.font.size == "small") {
       $("html").addClass("small");

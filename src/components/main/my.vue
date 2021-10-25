@@ -8,7 +8,7 @@
               ><em
                 ><img
                   v-if="GetMyInfo.photo !== undefined"
-                  :src="url(GetMyInfo.photo)"
+                  :src="GetMyInfo.photo"
                   alt=""
                   @error="
                     $event.target.src = '../../mobile/img/img03.png'
@@ -94,7 +94,6 @@ import $ from "jquery";
 
 export default {
   async created() {
-    console.log(this.GetConfig.main.menuportlet);
     this.menu = this.GetConfig.main.menuportlet;
     const result = this.menu.findIndex((item) => {
       return item.category == "approval";
@@ -199,20 +198,29 @@ export default {
       }
       return [];
     },
+    SetHeader(data) {
+      this.$store.dispatch("SetHeader", data);
+    },
     MeneGo() {
-      var value = this.ThisCategory('approve')
+      var value = this.ThisCategory("approve");
       // .then(value=>{
-        this.$router.replace({
-          name: `${this.top.category}first`,
-          query: {
-            data: JSON.stringify({
-              type: value.category,
-              lnbid: value.lnbid,
-              top: this.top.lnbid,
-              title: value.title,
-            }),
-          },
-        });
+      // this.SetHeader({
+      //   type: value.category,
+      //   lnbid: value.lnbid,
+      //   top: this.top.lnbid,
+      //   title: value.title,
+      // });
+      this.$router.push({
+        name: `${this.top.category}first`,
+        query: {
+          data: JSON.stringify({
+            type: value.category,
+            lnbid: value.lnbid,
+            top: this.top.lnbid,
+            title: value.title,
+          }),
+        },
+      });
 
       // });
     },

@@ -5,5 +5,6 @@ export const dataStore = {
         language: {},  //다국어}
         credentials:{},
         category:{},
+        header:{},
     }
 }

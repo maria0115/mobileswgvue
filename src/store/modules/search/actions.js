@@ -1,4 +1,5 @@
-import {Search, Auto, Recent, AllDelKeyword, DelKeyword, getForm, 
+import {
+    Search, Auto, Recent, AllDelKeyword, DelKeyword, getForm,
 } from '../../../api/index';
 import config from '../../../config/search.json';
 export default {
@@ -76,7 +77,7 @@ export default {
             });
     },
     //검색
-    SearchWord({ state, commit, dispatch,rootState }, { word, category, what, value, kind, paging }) {
+    SearchWord({ state, commit, dispatch, rootState }, { word, category, what, value, kind, paging }) {
         //created :  word: " ",
         // category: "allsearch",
         if (typeof category == "undefined" ||
@@ -107,7 +108,6 @@ export default {
         if (data.class === "allsearch") {
             data.size = config.defaultHomeSize;
         } else {
-            console.log(rootState.configjs.store.config.listcount)
             data.size = rootState.configjs.store.config.listcount;
         }
 
@@ -166,9 +166,6 @@ export default {
             dispatch("GetRecent");
             return;
         }
-
-        // 
-console.log(data)
         return Search(data)
             .then(response => {
                 // 

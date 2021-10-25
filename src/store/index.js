@@ -30,6 +30,7 @@ const dataState = createPersistedState({
         'configjs.store.systemcolor',
         'store.language',
         'store.category',
+        'store.header',
         'mainjs.store.myinfo',
         'searchjs.store.data',
     ]
@@ -94,6 +95,9 @@ export const store = new VueX.Store({
         },
         GetCategory: (state) => {
             return state.store.category;
+        },
+        GetHeader: (state) => {
+            return state.store.header;
         }
     },
     // }

@@ -22,76 +22,32 @@
         </div>
       </div>
       <ul @click="CloseHam">
-        <li v-for="(value, index) in category" :key="index" :class="value.category">
+        <li
+          v-for="(value, index) in category"
+          :key="index"
+          :class="value.category"
+        >
           <h3>
-            <router-link
-              :to="{
-                name: `app${value.category}`,
-                query: {
-                  data: JSON.stringify({
-                    type: value.category,
-                    lnbid: value.lnbid,
-                    top: params.top,
-                    title: value.title,
-                  }),
-                },
-              }"
+            <a @click="SetHeader(value, `app${value.category}`)"
               >{{ value.title }}
               <span v-if="GetApproval[value.category]">{{
                 GetApproval[value.category].data.cnt
-              }}</span></router-link
+              }}</span></a
             >
           </h3>
           <ul v-if="value.category == 'success_date'">
             <li>
-              <router-link
-                :to="{
-                  name: 'appsuccess_my',
-                  query: {
-                    data: JSON.stringify({
-                      type: value.category,
-                      lnbid: value.lnbid,
-                      top: params.top,
-                      title: value.title,
-                    }),
-                  },
-                }"
-                >개인
-                <em>({{ GetApproval.success_my.data.cnt }})</em></router-link
+              <a @click="SetHeader(value, 'appsuccess_my')"
+                >개인 <em>({{ GetApproval.success_my.data.cnt }})</em></a
               >
             </li>
             <li>
-              <router-link
-                :to="{
-                  name: 'appsuccess_dept',
-                  query: {
-                    data: JSON.stringify({
-                      type: value.category,
-                      lnbid: value.lnbid,
-                      top: params.top,
-                      title: value.title,
-                    }),
-                  },
-                }"
-                >부서
-                <em>({{ GetApproval.success_dept.data.cnt }})</em></router-link
+              <a @click="SetHeader(value, 'appsuccess_dept')"
+                >부서 <em>({{ GetApproval.success_dept.data.cnt }})</em></a
               >
             </li>
             <li>
-              <router-link
-                :to="{
-                  name: 'appsuccess_date',
-                  query: {
-                    data: JSON.stringify({
-                      type: value.category,
-                      lnbid: value.lnbid,
-                      top: params.top,
-                      title: value.title,
-                    }),
-                  },
-                }"
-                >일자별</router-link
-              >
+              <a @click="SetHeader(value, 'appsuccess_date')">일자별</a>
             </li>
           </ul>
         </li>
@@ -105,6 +61,7 @@ import { mapState, mapGetters } from "vuex";
 export default {
   created() {
     this.params = JSON.parse(this.$route.query.data);
+    // this.params = this.GetHeader.menu;
     this.category = this.GetCategory[this.params.top];
     this.$store.dispatch("approjs/GetApprovalList", { type: "draft" });
     this.$store.dispatch("approjs/GetApprovalList", { type: "approve" });
@@ -135,9 +92,28 @@ export default {
       const color = ["#bcbbdd", "#bbcbdd", "#bbddd7", "#d0d0d0"];
       return `background: ${color[Math.floor(Math.random() * 4)]}`;
     },
+    SetHeader(value, name) {
+      this.$router.push({
+        name,
+        query: {
+          data: JSON.stringify({
+            type: value.category,
+            lnbid: value.lnbid,
+            top: this.params.top,
+            title: value.title,
+          }),
+        },
+      });
+      // this.$store.dispatch("SetHeader", {
+      //   type: value.category,
+      //   lnbid: value.lnbid,
+      //   top: this.params.top,
+      //   title: value.title,
+      // });
+    },
   },
   computed: {
-    ...mapGetters(["GetCategory"]),
+    ...mapGetters(["GetCategory", "GetHeader"]),
     ...mapGetters("mainjs", ["GetMyInfo"]),
     ...mapGetters("approjs", ["GetApproval"]),
   },

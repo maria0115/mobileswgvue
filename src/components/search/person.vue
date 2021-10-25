@@ -150,7 +150,6 @@ export default {
           return response.data.data;
         })
         .then((data) => {
-          // console.log($router)
           if (data.hasOwnProperty(this.path)) {
             data = data[this.path].data;
           }

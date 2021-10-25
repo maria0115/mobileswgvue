@@ -96,7 +96,7 @@ export default {
     ...mapState("calendarjs", ["calListOpen"]),
     ...mapState(["org"]),
     ...mapGetters("mailjs", ["GetMailDetail", "GetMail", "GetMailConfig"]),
-    ...mapGetters(["GetMainLanguage", "GetCategory"]),
+    ...mapGetters(["GetMainLanguage", "GetCategory", "GetHeader"]),
     path() {
       return this.$route.path.substring(this.$route.path.lastIndexOf("/") + 1);
     },
@@ -126,7 +126,6 @@ export default {
       });
     },
     async Detail(value) {
-      console.log(value);
       this.$store.commit("calendarjs/SaveScheduleUnid", {
         unid: value.data.unid,
         where: "month",
@@ -160,6 +159,9 @@ export default {
       }
       return [];
     },
+    // SetHeader(data) {
+    //   this.$store.commit("SetHeader", data);
+    // },
     MenuGo(value) {
       this.categorys = this.GetCategory[value.lnbid];
       var name = "";
@@ -169,24 +171,27 @@ export default {
         name = `${value.category}list`;
       } else if (value.category === "approval") {
         var approve = this.ThisCategory("approve");
+        // this.SetHeader({
+        //   title: approve.title,
+        //   type: approve.category,
+        //   top: value.top,
+        //   lnbid: approve.lnbid,
+        // });
         this.$router.push({
           name: name,
-          query: {
-            data: JSON.stringify({
-              title: approve.title,
-              type: approve.category,
-              top: value.top,
-              lnbid: approve.lnbid,
-            }),
-          },
+          query:{data:JSON.stringify({
+          title: approve.title,
+          type: approve.category,
+          top: value.top,
+          lnbid: approve.lnbid,
+        }) }
         });
         return;
       }
+      // this.SetHeader(value);
       this.$router.push({
         name: name,
-        query: {
-          data: JSON.stringify(value),
-        },
+        query: {data:JSON.stringify(value)}
       });
     },
     InitMenu(id) {
@@ -206,15 +211,19 @@ export default {
     ModalOff() {
       this.modalon = false;
     },
+    SetHeader(data) {
+      this.$store.commit("SetHeader", data);
+    },
     // 전 url 이동
     RouterBack() {
+      // this.SetHeader(this.GetHeader.prevmenu);
       this.$store.commit("mailjs/Back");
       this.$router.go(-1);
     },
     // 후 url 이동
     RouterGo() {
+      // this.SetHeader(this.GetHeader.prevmenu);
       this.$store.commit("mailjs/Back");
-
       this.$router.go(1);
     },
     // 새로고침

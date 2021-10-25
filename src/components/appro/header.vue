@@ -7,9 +7,15 @@
 </template>
 
 <script>
+import { mapState, mapGetters } from "vuex";
 export default {
+  
+  computed: {
+    ...mapGetters( ["GetHeader"]),
+  },
   created(){
         this.params = JSON.parse(this.$route.query.data);
+        // this.params = this.GetHeader.menu;
 
   },
   methods:{

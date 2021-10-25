@@ -5,7 +5,7 @@
         <h2>{{ GetSearchLanguage.menu[this.path] }}</h2>
         <ul v-if="datacheck">
           <li v-for="(value, name) in this.sortdata[path].data" :key="name">
-            <a href="">
+            <a @click="openView(value)">
               <h3>{{ value.subject }}</h3>
               <div class="clfix">
                 <em>{{ setWord(value.author) }}</em>
@@ -36,17 +36,20 @@
         </ul>
       </div>
     </div>
+    <Viewer :attach="false" ref="viewer"></Viewer>
   </div>
 </template>
 
 <script>
 import { mapState, mapGetters } from "vuex";
 import { Search } from "../../api/index.js";
+import Viewer from "../editor/viewer.vue";
 import InfiniteLoading from "vue-infinite-loading";
 import config from "../../config/search.json";
 export default {
   components: {
     InfiniteLoading,
+    Viewer
   },
   computed: {
     ...mapState([ "langa",]),
@@ -127,7 +130,6 @@ export default {
           return response.data.data;
         })
         .then((data) => {
-          // console.log($router)
           if (data.hasOwnProperty(this.path)) {
             data = data[this.path].data;
           }
@@ -156,6 +158,11 @@ export default {
         .catch((err) => {
           console.error(err);
         });
+    },
+    openView(value){
+      if(value.originalurl !== ""){ 
+        this.$refs.viewer.goOriginView({url:value.originalurl, name:value.subject});
+      }
     },
   },
 };

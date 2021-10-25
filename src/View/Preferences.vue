@@ -31,7 +31,6 @@ export default {
     // .catch(() => {});
   },
   created() {
-    // console.log(this.GetConfig)
     // font size setting
     if (this.GetConfig.font.size == "small") {
       $("html").addClass("small");

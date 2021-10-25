@@ -365,11 +365,11 @@ export default {
   async created() {
     // this.$store.commit("mailjs/MailOrgDataInit");
     this.Body_Text = `${this.GetMail.writeForm.greetings}<p></p><p></p>${this.GetMail.writeForm.signature}<p></p><p></p>`;
-    if (this.from == "Relay") {
+    if (this.from === "Relay") {
       this.file = this.GetMailDetail.attach;
       this.Subject = this.GetMailDetail.subject;
       this.Body_Text += `----------------- 원본메일 ----------------- <p></p>${this.GetMailDetail.body}`;
-    } else if (this.from == "Reply" || this.from == "AllReply") {
+    } else if (this.from === "Reply" || this.from === "AllReply") {
       this.Subject = this.GetMailDetail.subject;
       this.Body_Text += `----------------- 원본메일 ----------------- <p></p>${this.GetMailDetail.body}`;
     }
@@ -484,7 +484,7 @@ export default {
     FormSet() {
       var SendTo = "";
       for (var i = 0; i < this.org.SendTo.length; i++) {
-        if (i == this.org.SendTo.length - 1) {
+        if (i === this.org.SendTo.length - 1) {
           SendTo += this.org.SendTo[i].id;
         } else {
           SendTo += this.org.SendTo[i].id + ";";
@@ -493,7 +493,7 @@ export default {
 
       var inSendTo = "";
       for (var i = 0; i < this.org.SendTo.length; i++) {
-        if (i == this.org.SendTo.length - 1) {
+        if (i === this.org.SendTo.length - 1) {
           inSendTo += this.org.SendTo[i].name;
         } else {
           inSendTo += this.org.SendTo[i].name + ";";
@@ -502,7 +502,7 @@ export default {
 
       var ocxSendTo = "";
       for (var i = 0; i < this.org.SendTo.length; i++) {
-        if (i == this.org.SendTo.length - 1) {
+        if (i === this.org.SendTo.length - 1) {
           ocxSendTo += this.org.SendTo[i].shortname;
         } else {
           ocxSendTo += this.org.SendTo[i].shortname + ";";
@@ -511,7 +511,7 @@ export default {
 
       var CopyTo = "";
       for (var i = 0; i < this.org.CopyTo.length; i++) {
-        if (i == this.org.CopyTo.length - 1) {
+        if (i === this.org.CopyTo.length - 1) {
           CopyTo += this.org.CopyTo[i].id;
         } else {
           CopyTo += this.org.CopyTo[i].id + ";";
@@ -520,7 +520,7 @@ export default {
 
       var ocxCopyTo = "";
       for (var i = 0; i < this.org.CopyTo.length; i++) {
-        if (i == this.org.CopyTo.length - 1) {
+        if (i === this.org.CopyTo.length - 1) {
           ocxCopyTo += this.org.CopyTo[i].shortname;
         } else {
           ocxCopyTo += this.org.CopyTo[i].shortname + ";";
@@ -529,7 +529,7 @@ export default {
 
       var BlindCopyTo = "";
       for (var i = 0; i < this.org.BlindCopyTo.length; i++) {
-        if (i == this.org.BlindCopyTo.length - 1) {
+        if (i === this.org.BlindCopyTo.length - 1) {
           BlindCopyTo += this.org.BlindCopyTo[i].id;
         } else {
           BlindCopyTo += this.org.BlindCopyTo[i].id + ";";
@@ -537,7 +537,7 @@ export default {
       }
       var ocxBCopyTo = "";
       for (var i = 0; i < this.org.BlindCopyTo.length; i++) {
-        if (i == this.org.BlindCopyTo.length - 1) {
+        if (i === this.org.BlindCopyTo.length - 1) {
           ocxBCopyTo += this.org.BlindCopyTo[i].shortname;
         } else {
           ocxBCopyTo += this.org.BlindCopyTo[i].shortname + ";";
@@ -584,9 +584,9 @@ export default {
       }
       var docType = "";
       if (
-        this.from == "Reply" ||
-        this.from == "AllReply" ||
-        this.from == "Relay"
+        this.from === "Reply" ||
+        this.from === "AllReply" ||
+        this.from === "Relay"
       ) {
         docType = "Forward";
         for (var i = 0; i < this.addAttach.length; i++) {
@@ -594,13 +594,14 @@ export default {
         }
         var Detachstr = "";
         for (var i = 0; i < this.Detach.length; i++) {
-          if (i == this.Detach.length - 1) {
+          if (i === this.Detach.length - 1) {
             Detachstr += this.Detach[i].name;
           } else {
             Detachstr += this.Detach[i].name + ";";
           }
         }
         formData.append("Detach", Detachstr);
+        formData.append("unid",this.GetMailDetail.unid);
       } else {
         for (var i = 0; i < this.file.length; i++) {
           formData.append("attach", this.file[i]);
@@ -608,9 +609,9 @@ export default {
       }
       formData.append("docType", docType);
       var MailTypeOptionstr = "";
-      if (this.from == "Relay") {
+      if (this.from === "Relay") {
         MailTypeOptionstr = "Forward";
-      } else if (this.from == "Reply") {
+      } else if (this.from === "Reply") {
         MailTypeOptionstr = "Reply";
       }
       formData.append("MailTypeOption", MailTypeOptionstr);
@@ -716,17 +717,19 @@ export default {
             element.name === this.$refs.file.files[0].name
           );
         });
-        if (result == -1) {
+        if (result === -1) {
           this.file.push(this.$refs.file.files[0]);
         }
-        if (this.GetEdit) {
+        if (this.from === "Reply" ||
+        this.from === "AllReply" ||
+        this.from === "Relay") {
           this.addAttach.push(this.$refs.file.files[0]);
         }
       }
       this.$refs.file.files = this.fileinit;
     },
     toggle(value) {
-      if (value.kinds == "Department") {
+      if (value.kinds === "Department") {
         // this.click = !this.click;
         this.isOpen = !this.isOpen;
       }
@@ -776,7 +779,7 @@ export default {
       if (result[0]) {
         this.file = result;
       }
-      if (result.length == 0) {
+      if (result.length === 0) {
         this.file = [];
       }
       this.Detach.push(value);

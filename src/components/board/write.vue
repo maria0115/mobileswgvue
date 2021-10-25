@@ -68,9 +68,7 @@
           </li>
           <li
             class="tit_line bullet clfix"
-            v-if="
-              params.type == 'congratulate'
-            "
+            v-if="params.type == 'congratulate'"
           >
             <!--교육,업무게시판은 클래스bullet display:none;해주세요-->
             <strong>글머리</strong>
@@ -118,7 +116,12 @@
         </ul>
         <div class="noti_con">
           <!-- <editor-content :editor="editor" /> -->
-          <Namo :read="false" :editor="Body_Text" did="board" ref="editor"></Namo>
+          <Namo
+            :read="false"
+            :editor="Body_Text"
+            did="board"
+            ref="editor"
+          ></Namo>
         </div>
       </form>
     </div>
@@ -133,8 +136,10 @@ export default {
   computed: {
     ...mapGetters("mainjs", ["GetMyInfo"]),
     ...mapGetters("boardjs", ["GetStoreBoard"]),
+    ...mapGetters( ["GetHeader"]),
   },
   created() {
+    // this.params = this.GetHeader.menu;
     this.params = JSON.parse(this.$route.query.data);
     if (this.GetStoreBoard.path === "congratulate") {
       this.category = "congratulate";
@@ -230,10 +235,10 @@ export default {
       var result = this.file.filter((element) => {
         return element !== value;
       });
-      if(result[0]){
+      if (result[0]) {
         this.file = result;
       }
-      if(result.length==0){
+      if (result.length == 0) {
         this.file = [];
       }
       this.Detach.push(value);
@@ -332,20 +337,21 @@ export default {
       } else {
         this.$store.dispatch("boardjs/BoardWrite", result).then((res) => {
           if (res) {
-            console.log(res)
-
             this.GoList();
           }
         });
       }
     },
-    GoList(){
+    GoList() {
+      // this.SetHeader(this.params);
+
       this.$router.push({
-              name: "boardlist",
-              query: {
-                data: JSON.stringify(this.params),
-              },
-            });
+        name: "boardlist",
+        query: {data:JSON.stringify(this.params)}
+      });
+    },
+    SetHeader(data) {
+      this.$store.dispatch("SetHeader", data);
     },
     Reply(value) {
       this.isAllowReply = value;

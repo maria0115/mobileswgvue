@@ -48,63 +48,7 @@
         </a>
       </li>
     </ul>
-    <div class="impor_mail">
-      <!--7월 29일 추가됨 -->
-      <div class="impor_con">
-        <strong>수행 설정</strong>
-        <p>
-          <span
-            ><em
-              class="edit_check"
-              ref="edit_check"
-              @click="followUse"
-              :class="{ active: this.use }"
-            ></em
-            >수행필요로 설정</span
-          >
-        </p>
-        <ul>
-          <li>
-            <em>일자</em>
-            <div>
-              <input type="date" :value="this.date" />
-            </div>
-          </li>
-          <li>
-            <em>시간</em>
-            <div>
-              <select name="" id="" v-model="STime">
-                <option
-                  :value="value"
-                  v-for="(value, index) in this.TimeOption.mail.hour"
-                  :key="index"
-                >
-                  {{ value }}
-                </option>
-              </select>
-              :
-              <select name="" id="" v-model="SMin">
-                <option
-                  :value="value"
-                  v-for="(value, index) in this.TimeOption.mail.min"
-                  :key="index"
-                >
-                  {{ value }}
-                </option>
-              </select>
-            </div>
-          </li>
-          <li>
-            <em>수행할 내용</em>
-            <editor-content :editor="editor" />
-          </li>
-        </ul>
-        <div>
-          <span class="impor_mo_btn" @click="followSet">확인</span>
-          <span class="modal_cancel" @click="followCancle">취소</span>
-        </div>
-      </div>
-    </div>
+    <FollowUp :unid="clickedUnid"></FollowUp>
     <router-link :to="{name:'mail'}"
       ><span class="m_more"><a></a></span
     ></router-link>
@@ -113,17 +57,13 @@
 
 <script>
 import { mapState, mapGetters } from "vuex";
-import { Editor, EditorContent } from "tiptap";
+import FollowUp from "../../../components/mail/folloup.vue";
 export default {
   props: ["portlet"],
   data() {
     return {
       // path:this.path,
-      editor: null,
-      STime: "05",
-      SMin: "50",
-      use: false,
-      date: "",
+      clickedUnid: "",
       body: "",
       unid: "",
     };
@@ -134,18 +74,7 @@ export default {
     ...mapGetters("mailjs", ["GetMail"]),
   },
   components: {
-    EditorContent,
-  },
-  created() {
-    this.editor = new Editor({
-      content: "",
-    });
-    console.log(this.main.data.mailtype.inbox_detail,"main.data.mailtype.inbox_detail")
-  },
-  beforeDestroy() {
-    if (this.editor) {
-      this.editor.destroy();
-    }
+    FollowUp,
   },
   methods: {
     MailDetail(unid) {
@@ -188,58 +117,8 @@ export default {
       localTime = moment(localTime).format("YYYY.MM.DD HH:mm");
       return localTime;
     },
-    async followUp(unid) {
-      this.editor.destroy();
-      this.unid = unid;
-      var result = await this.$store.dispatch("mailjs/FollowUpInfo", unid);
-      if (result) {
-        if (this.GetMail.followUpInfo.use) {
-          var followUpInfo = this.GetMail.followUpInfo;
-          this.STime = followUpInfo.time.split(":")[0];
-          this.SMin = followUpInfo.time.split(":")[1];
-          this.use = followUpInfo.use;
-          this.date = followUpInfo.date;
-          this.body = followUpInfo.body;
-
-          this.editor = new Editor({
-            content: this.body,
-          });
-        } else {
-          this.STime = "05";
-          this.SMin = "50";
-          this.use = false;
-          var moment = require("moment");
-          this.date = moment().format("YYYY-MM-DD");
-          this.body = "";
-          this.editor = new Editor({
-            content: this.body,
-          });
-        }
-      }
-    },
-    followCancle() {
-      if (this.editor) {
-        this.editor.destroy();
-      }
-    },
-    async followSet() {
-      if (this.editor) {
-        var data = {};
-        if (this.date) {
-          data.use = this.use;
-          data.date = this.date;
-          data.unid = this.unid;
-          data.time = `${this.STime}:${this.SMin}:00`;
-          data.body = this.editor.getHTML();
-          await this.$store.dispatch("mailjs/FollowupSet", data);
-          this.$router.push({name:'My'});
-        }
-        this.editor.destroy();
-      }
-    },
-    followUse() {
-      var classList = this.$refs.edit_check.classList.contains("active");
-      this.use = !classList;
+    followUp(unid) {
+      this.clickedUnid = unid;
     },
   },
 };

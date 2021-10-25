@@ -32,7 +32,7 @@
               </select>
             </div>
           </li>
-          <li class="cal_open">
+          <!-- <li class="cal_open">
             <strong>공개여부</strong>
             <div class="repeat_s">
               <span @click="isOpen(true)">
@@ -42,11 +42,11 @@
                 <em :class="{ click: !this.open }"></em>비공개
               </span>
             </div>
-          </li>
+          </li> -->
           <li class="cal_date">
             <strong>일자</strong>
             <div>
-              <input type="date" v-model="date" />
+              <input type="date" :disabled="this.GetEdit" v-model="date" />
             </div>
           </li>
           <li v-if="!this.GetEdit" class="repeat_s">
@@ -304,13 +304,13 @@
           <li class="cal_memo">
             <strong>메모</strong>
             <div>
-              <Namo
+              <!-- <Namo
                 id="memo_t"
                 :read="false"
                 did="calendar"
                 :editor="Body_Text"
                 ref="editor"
-              ></Namo>
+              ></Namo> -->
               <!-- <EditorContent id="memo_t" :editor="editor" /> -->
               <!-- <textarea id="memo_t" v-model="Body_Text"></textarea> -->
             </div>
@@ -476,10 +476,22 @@ export default {
       this.startTime = `${this.editData.starttime.split(":")[0]}:${
         this.editData.starttime.split(":")[1]
       }`;
-      this.org.SendTo=this.editData.sendTo;
-      this.org.CopyTo=this.editData.copyTo;
+      // this.$store.commit("OrgPointer", "SendTo");
+      // for(var i = 0; i <this.editData.sendToInfo.length; i++) {
+      //   this.$store.commit("OrgData", this.editData.sendToInfo[i]);
+      // }
+      // this.$store.commit("OrgPointer", "CopyTo");
+      // for(var i = 0; i <this.editData.copyToInfo.length; i++) {
+      //   this.$store.commit("OrgData", this.editData.copyToInfo[i]);
+      // }
+      // this.$store.commit("OrgPointer", "BlindCopyTo");
+      // for(var i = 0; i <this.editData.bcopyToInfo.length; i++) {
+      //   this.$store.commit("OrgData", this.editData.bcopyToInfo[i]);
+      // }
+      this.org.SendTo = JSON.parse(JSON.stringify(this.editData.sendToInfo));
+      this.org.CopyTo = JSON.parse(JSON.stringify(this.editData.copyToInfo));
+      this.org.BlindCopyTo = JSON.parse(JSON.stringify(this.editData.bcopyToInfo));
 
-      // console.log(this.editData)
       this.file = this.editData.attachInfo;
     } else {
       var moment = require("moment");
@@ -709,56 +721,40 @@ export default {
     RouterBack() {
       this.$router.go(-1);
     },
+
+    Difference(value1, value2) {
+      return value1.filter((x) => {
+        var isidx = value2.findIndex((i) => {
+          return i.scheduleId == x.scheduleId;
+        });
+        console.log(isidx);
+        if (isidx == -1) {
+          return true;
+        }
+        return false;
+      });
+    },
+    StrJoin(arr) {
+      var str = "";
+      for (var i = 0; i < arr.length; i++) {
+        if (i == arr.length - 1) {
+          str += arr[i].scheduleId;
+        } else {
+          str += arr[i].scheduleId + ";";
+        }
+      }
+      return str;
+    },
     Send() {
       let formData = new FormData();
       formData.append("subject", this.Subject);
       var SendTo = "";
-      for (var i = 0; i < this.org.SendTo.length; i++) {
-        if (i == this.org.SendTo.length - 1) {
-          SendTo += this.org.SendTo[i].id;
-        } else {
-          SendTo += this.org.SendTo[i].id + ";";
-        }
-      }
       var CopyTo = "";
-      for (var i = 0; i < this.org.CopyTo.length; i++) {
-        if (i == this.org.CopyTo.length - 1) {
-          CopyTo += this.org.CopyTo[i].id;
-        } else {
-          CopyTo += this.org.CopyTo[i].id + ";";
-        }
-      }
       var BlindCopyTo = "";
-      for (var i = 0; i < this.org.BlindCopyTo.length; i++) {
-        if (i == this.org.BlindCopyTo.length - 1) {
-          BlindCopyTo += this.org.BlindCopyTo[i].id;
-        } else {
-          BlindCopyTo += this.org.BlindCopyTo[i].id + ";";
-        }
-      }
-      console.log(SendTo,CopyTo,BlindCopyTo,"BlindCopyTo")
-      formData.append("sendTo", SendTo);
-      formData.append("copyTo", CopyTo);
-      formData.append("blindCopyTo", BlindCopyTo);
-
-      var moment = require("moment");
-      var start = moment(`${this.date} ${this.startTime}`).format(
-        "YYYYMMDDTHHmmss"
-      );
-      var end = moment(`${this.date} ${this.endTime}`).format(
-        "YYYYMMDDTHHmmss"
-      );
-      console.log(start,"start")
-      formData.append("startDate", start);
-      formData.append("endDate", end);
-      formData.append("location", this.place);
-      // namo 에디터 본문 내용 받아오기
-      // let editorData = "회의";
-      let editorData =
-        this.$refs.editor.$refs.namo.contentWindow.crosseditor.GetBodyValue();
-      formData.append("body", editorData);
-      // formData.append("body", this.editor.getHTML());
+      var tmpRemoveNames = [];
+      var tmpRemoveNamesstr = "";
       if (this.GetEdit) {
+        // 편집시-------------------------
         for (var i = 0; i < this.addAttach.length; i++) {
           formData.append("attach", this.addAttach[i]);
         }
@@ -770,13 +766,72 @@ export default {
             Detachstr += this.Detach[i].name + ";";
           }
         }
-        console.log(Detachstr,"Detachstr")
         formData.append("Detach", Detachstr);
+        var RemoveSend = this.Difference(
+          this.editData.sendToInfo,
+          this.org.SendTo
+        );
+        tmpRemoveNames = tmpRemoveNames.concat(RemoveSend);
+        var RemoveCopy = this.Difference(
+          this.editData.copyToInfo,
+          this.org.CopyTo
+        );
+        tmpRemoveNames = tmpRemoveNames.concat(RemoveCopy);
+
+        var RemoveBCopy = this.Difference(
+          this.editData.bcopyToInfo,
+          this.org.BlindCopyTo
+        );
+        tmpRemoveNames = tmpRemoveNames.concat(RemoveBCopy);
+
+        tmpRemoveNamesstr = this.StrJoin(tmpRemoveNames);
+        formData.append("tmpRemoveNames", tmpRemoveNamesstr);
+
+        console.log(this.org.SendTo, this.editData.sendToInfo);
+
+        this.org.SendTo = this.Difference(
+          this.org.SendTo,
+          this.editData.sendToInfo
+        );
+        this.org.CopyTo = this.Difference(
+          this.org.CopyTo,
+          this.editData.copyToInfo
+        );
+        this.org.BlindCopyTo = this.Difference(
+          this.org.BlindCopyTo,
+          this.editData.bcopyToInfo
+        );
       } else {
+        // 작성시-------------------------
         for (var i = 0; i < this.file.length; i++) {
           formData.append("attach", this.file[i]);
         }
       }
+
+      SendTo = this.StrJoin(this.org.SendTo);
+      CopyTo = this.StrJoin(this.org.CopyTo);
+      BlindCopyTo = this.StrJoin(this.org.BlindCopyTo);
+
+      formData.append("sendTo", SendTo);
+      formData.append("copyTo", CopyTo);
+      formData.append("blindCopyTo", BlindCopyTo);
+
+      var moment = require("moment");
+      var start = moment(`${this.date} ${this.startTime}`).format(
+        "YYYYMMDDTHHmmss"
+      );
+      var end = moment(`${this.date} ${this.endTime}`).format(
+        "YYYYMMDDTHHmmss"
+      );
+      formData.append("startDate", start);
+      formData.append("endDate", end);
+      formData.append("location", this.place);
+      // namo 에디터 본문 내용 받아오기
+      let editorData = "회의";
+      // let editorData =
+      //   this.$refs.editor.$refs.namo.contentWindow.crosseditor.GetBodyValue();
+      formData.append("body", editorData);
+      // formData.append("body", this.editor.getHTML());
       formData.append("category", this.onCategory);
       formData.append("private", !this.open);
 

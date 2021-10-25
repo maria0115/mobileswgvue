@@ -115,7 +115,6 @@ import CalWrite from "./calWBtn.vue";
 export default {
   created() {
     this.Init();
-    console.log(this.GetSchedule.calList.day);
   },
   computed: {
     ...mapGetters("calendarjs", ["GetSchedule"]),
@@ -241,6 +240,7 @@ export default {
       )}`;
       data.end = data.start;
       data.today = data.start;
+      console.log(data,"data")
       this.$store.dispatch("calendarjs/CalList", { data, which: "day" });
       var redate = this.fulldate.replaceAll(".", "/");
       var currentDay = new Date(redate);
@@ -271,11 +271,12 @@ export default {
         2,
         this.today
       )}`;
+      var redate = this.fulldate.replaceAll(".", "/");
 
       var data = {};
-      data.start = this.fulldate;
-      data.end = this.fulldate;
-      data.today = this.fulldate;
+      data.start = redate;
+      data.end = redate;
+      data.today = redate;
       this.$store.dispatch("calendarjs/CalList", { data, which: "day" });
     },
     calendarData(arg) {

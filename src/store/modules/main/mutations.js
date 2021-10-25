@@ -2,8 +2,6 @@
 export default {
     // info data
     MyInfo(state, { res }) {
-        // state.myinfo={};
-        // console.log(state,MyInfo)
         state.store.myinfo = res;
     },
     // 메일 데이터

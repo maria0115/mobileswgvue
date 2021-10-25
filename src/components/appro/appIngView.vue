@@ -75,6 +75,7 @@
                 className=""
                 :attaInfo="this.detail.attachInfo"
                 :attach="true"
+                ref="viewer"
               ></Viewer>
             </div>
           </li>
@@ -97,10 +98,12 @@ import Viewer from "../editor/viewer.vue";
 export default {
   created() {
     this.params = JSON.parse(this.$route.query.data);
+    // this.params = this.GetHeader.menu;
   },
   computed: {
     // ...mapGetters("approjs", ["GetApproval"]),
     ...mapState("approjs", ["detail"]),
+    ...mapGetters( ["GetHeader"]),
   },
   components: {
     BackHeader,
@@ -111,8 +114,8 @@ export default {
   data() {
     return {
       morePlus: {
-        edit: "편집",
-        deleteItem: "삭제",
+        // edit: "편집",
+        // deleteItem: "삭제",
         agreeNreject: "회수",
         view: "원문 보기",
       },
@@ -124,20 +127,24 @@ export default {
     };
   },
   methods: {
+    SetHeader(data) {
+      this.$store.dispatch("SetHeader", data);
+    },
     BtnClick(value) {
+      console.log(value,"value")
       var data = undefined;
       if (value == "edit") {
         this.params.isedit = 1;
+        this.params.form = this.detail.formCode;
+        this.params.formtitle = this.detail.category;
+        // this.SetHeader(this.params);
         this.$router.push({
           name: "appwrite",
-          query: {
-            data: JSON.stringify(this.params),
-            form: this.detail.formCode,
-            formtitle: this.detail.category,
-          },
+          query: { data: JSON.stringify(this.params) },
         });
         return;
       } else if(value=='view'){
+        console.log(value,"value")
         this.OriginView();
         return;
 
@@ -151,6 +158,7 @@ export default {
       }
       this.$store.dispatch(`approjs/${value}`, data).then((res) => {
         if (res) {
+          // this.SetHeader(this.params);
           this.$router.push({
             name: "appapproving",
             query: { data: JSON.stringify(this.params) },
@@ -181,7 +189,7 @@ export default {
       window.open(url);
     },
     OriginView(){
-      console.log(this.detail,"view");
+      this.$refs.viewer.goOriginView({url:this.detail.openurl, name:this.detail.subject});
     },
   },
 };

@@ -43,8 +43,6 @@ export default {
   methods: {
     // click 시 해당 설정 true값 db에 입력
     setConfig(menu) {
-      // console.log(menu, this.$refs[menu][0].classList.length);
-
       var classList = this.$refs[menu][0].classList;
       var value = false;
       for (var i = 0; i < classList.length; i++) {
@@ -53,10 +51,7 @@ export default {
         }else{
           value = false;
         }
-
       }
-
-      // console.log(menu,value);
       this.$store.dispatch("configjs/setConfig", {
         menu: "alarm",
         setting: menu,

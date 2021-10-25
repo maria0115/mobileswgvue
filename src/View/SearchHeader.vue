@@ -225,7 +225,7 @@ export default {
               this.transcription.push(this.runtimeTranscription);
               console.log(
                 this.runtimeTranscription,
-                "ddddddddddddddddddddddddddd"
+                "recognition"
               );
               this.$store.dispatch("searchjs/SearchWord", {
                 word: this.runtimeTranscription,

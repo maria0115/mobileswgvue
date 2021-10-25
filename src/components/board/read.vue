@@ -31,10 +31,10 @@
               >
             </dd>
           </dl>
-          <em class="re_more"></em>
+          <em class="re_more" v-if="params.type !== 'congratulate'"></em>
         </div>
       </div>
-      <div class="posting">
+      <div class="posting" v-if="params.type !== 'congratulate'">
         <p>
           <span>게시기간</span
           ><em v-if="GetStoreBoard.detail.isEternity">영구</em
@@ -93,7 +93,12 @@
           ><em>{{ GetStoreBoard.detail.like_cnt }}</em> LIKE <b></b
         ></span>
       </div>
-      <div v-if="GetStoreBoard.detail.isAllowReply&&GetStoreBoard.detail.useReply" class="comment">
+      <div
+        v-if="
+          GetStoreBoard.detail.isAllowReply && GetStoreBoard.detail.useReply
+        "
+        class="comment"
+      >
         <span
           >댓글 <em>{{ this.GetStoreBoard.detail.reply.length }}</em></span
         >
@@ -175,9 +180,9 @@ export default {
     Viewer,
   },
   created() {
-    this.params = JSON.parse(this.$route.query.data);
-    console.log(this.GetStoreBoard.detail);
-    // this.$store.dispatch("boardjs/ReplyInfo")
+    // this.params = this.GetHeader.menu;
+      this.params = JSON.parse(this.$route.query.data);
+
   },
   mounted() {
     this.editor = new Editor({
@@ -201,6 +206,7 @@ export default {
   computed: {
     ...mapGetters("boardjs", ["GetStoreBoard"]),
     ...mapGetters("mainjs", ["GetMyInfo"]),
+    ...mapGetters( ["GetHeader"]),
   },
   methods: {
     getExtensionOfFilename(filename) {
@@ -243,7 +249,6 @@ export default {
       });
     },
     Read() {
-      console.log(this.params, "this.params");
       this.$store.dispatch(
         "boardjs/BoardDetail",
         {
@@ -334,12 +339,14 @@ export default {
       window.open(url);
     },
     GoList() {
+      // this.SetHeader(this.params);
       this.$router.push({
         name: "boardlist",
-        query: {
-          data: JSON.stringify(this.params),
-        },
+        query:{data:JSON.stringify(this.params)}
       });
+    },
+    SetHeader(data) {
+      this.$store.dispatch("SetHeader", data);
     },
     btransTime(time) {
       var moment = require("moment");
@@ -356,12 +363,11 @@ export default {
     },
     Edit() {
       this.$store.commit("boardjs/EditMode", true);
+      // this.SetHeader(this.params);
 
       this.$router.replace({
         name: "boardwrite",
-        query: {
-          data: JSON.stringify(this.params),
-        },
+        query: {data:JSON.stringify(this.params)}
       });
     },
     CommentSend(value) {
@@ -394,14 +400,12 @@ export default {
       data.my_unid = this.Eclicked;
 
       this.$store.dispatch("boardjs/WriteReply", data).then((res) => {
-        // console.log(res, "write");
-        if (res.msgcode=="success") {
+        if (res.msgcode == "success") {
           var redata = {};
           redata.type = this.params.type;
           redata.rootunid = this.GetStoreBoard.detail.root_unid;
           this.$store.dispatch("boardjs/ReplyInfo", redata).then((response) => {
             this.GetStoreBoard.detail.reply = response;
-
           });
         }
       });

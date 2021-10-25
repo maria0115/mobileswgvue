@@ -40,8 +40,8 @@
         </ul>
         <div class="a_organ_ft" >
             <div v-if="appDept=='sAppList1'">
-              <span><em class="sv_radio1 active" @click="Add('AP')"></em>결재</span>
-              <span><em class="sv_radio1" @click="Add('AG_S!@AG_M')"></em>합의</span>
+              <span><em class="sv_radio1 active" :class="{active:appadd=='AP'}" @click="Add('AP')"></em>결재</span>
+              <span><em class="sv_radio1" :class="{active:appadd=='AG_S!@AG_M'}" @click="Add('AG_S!@AG_M')"></em>합의</span>
             </div>
             <span class="ps_add" @click="AddItem">추가</span>
           </div>
@@ -85,14 +85,16 @@ export default {
   },
   methods: {
     AddItem(){
-      var data = {};
-      data.approvalInfo = this.pickItem;
-      data.appadd = this.appadd;
-      data.appDept = this.appDept;
-console.log(data)
-      this.$emit("AddItem",data);
-      // this.appadd = "AP";
-      this.$emit("ModalOff");
+      if(Object.keys(this.pickItem).length > 0){
+        var data = {};
+        data.approvalInfo = this.pickItem;
+        data.appadd = this.appadd;
+        data.appDept = this.appDept;
+        this.$emit("AddItem",data);
+        // this.appadd = "AP";
+        this.$emit("ModalOff");
+        this.pickItem={};
+      }
 
     },
     Add(value) {

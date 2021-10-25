@@ -105,17 +105,11 @@
             </div>
             <div slot="error">
               Error message, click
+                <!-- @click.native="SetHeader(params)" -->
               <router-link
                 :to="{
                   name: `appapproving`,
-                  query: {
-                    data: JSON.stringify({
-                      type: params.type,
-                      lnbid: params.lnbid,
-                      top: params.top,
-                      title: params.title,
-                    }),
-                  },
+                  query: { data: JSON.stringify(this.params) }
                 }"
                 >here</router-link
               >
@@ -141,16 +135,19 @@ import { Approval, AppSearch } from "../../api/index.js";
 export default {
   created() {
     this.params = JSON.parse(this.$route.query.data);
+    // this.params = this.GetHeader.menu;
+    console.log("created",this.params)
+    
+
     this.category = this.GetCategory[this.params.top];
     this.Init();
-
   },
   beforeRouteLeave(to, from, next) {
     // this.infiniteId += 1;
     next();
   },
   computed: {
-    ...mapGetters(["GetCategory"]),
+    ...mapGetters(["GetCategory","GetHeader"]),
 
     ...mapGetters("approjs", ["GetApproval"]),
     ...mapGetters("configjs", ["GetConfig"]),
@@ -205,12 +202,14 @@ export default {
           }
         });
       } else {
-        this.$store.dispatch("approjs/GetApprovalList", this.option).then((res) => {
-          if (res) {
-            this.$forceUpdate();
-            this.Init();
-          }
-        });
+        this.$store
+          .dispatch("approjs/GetApprovalList", this.option)
+          .then((res) => {
+            if (res) {
+              this.$forceUpdate();
+              this.Init();
+            }
+          });
       }
     },
     BtnClick(value) {
@@ -220,11 +219,10 @@ export default {
         });
         this.category[caidx].top = this.params.top;
         this.category[caidx].type = this.category[caidx].category;
+        // this.SetHeader(this.category[caidx]);
         this.$router.push({
           name: "appformList_all",
-          query: {
-            data: JSON.stringify(this.category[caidx]),
-          },
+          query:{data:JSON.stringify(this.category[caidx])}
         });
       }
     },
@@ -249,7 +247,7 @@ export default {
       this.option.type = "approving";
       this.option.size = this.GetConfig.listcount;
 
-      if (this.option.keyword&&this.option.keyword.length > 0) {
+      if (this.option.keyword && this.option.keyword.length > 0) {
         // this.option.type = "search";
         this.SearchData(this.option, $state);
       } else {
@@ -355,12 +353,15 @@ export default {
         unid: value.unid,
         openurl: value.openurl,
       });
+      // console.log(this.params)
+      // this.SetHeader(this.params);
       this.$router.push({
         name: "approvingview",
-        query: {
-          data: JSON.stringify(this.params),
-        },
+        query:{data:JSON.stringify(this.params) }
       });
+    },
+    SetHeader(data) {
+      this.$store.dispatch("SetHeader", data);
     },
   },
 };

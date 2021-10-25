@@ -67,7 +67,13 @@
             </div>
             <div slot="error">
               Error message, click
-              <router-link :to="{ name: 'board' }">here</router-link> to retry
+              <router-link
+                :to="{
+                  name: `boardlist`,
+                }"
+                >here</router-link
+              >
+              to retry
             </div>
           </infinite-loading>
         </ul>
@@ -80,12 +86,11 @@
       <span class="more_plus"></span>
       <ul>
         <li>
+          <!-- @click.native="SetHeader(params)" -->
           <router-link
             :to="{
               name: 'boardwrite',
-              query: {
-                data: JSON.stringify(params),
-              },
+              query: {data:JSON.stringify(params)}
             }"
             >게시판 작성</router-link
           >
@@ -105,10 +110,11 @@ import { mapState, mapGetters } from "vuex";
 export default {
   created() {
     this.Init();
-    this.params = {};
-    if (this.$route.query.data) {
+    // this.params = this.GetHeader.menu;
+    // this.params = {};
+    // if (this.$route.query.data) {
       this.params = JSON.parse(this.$route.query.data);
-    }
+    // }
     this.$store.commit("boardjs/BoardWritePath", this.params.type);
     this.option.page = this.page;
     this.option.category = "board";
@@ -146,7 +152,7 @@ export default {
     ...mapState("mainjs", ["main"]),
     ...mapGetters("boardjs", ["GetBoard"]),
     ...mapGetters("configjs", ["GetConfig"]),
-    ...mapGetters(["GetCategory"]),
+    ...mapGetters(["GetCategory","GetHeader"]),
     ...mapState(["listOfCategory"]),
 
     path() {
@@ -161,6 +167,9 @@ export default {
     },
   },
   methods: {
+    SetHeader(data) {
+      this.$store.dispatch("SetHeader", data);
+    },
     Init() {
       this.infiniteId += 1;
       this.page = 0;
@@ -174,7 +183,6 @@ export default {
         this.option.type = "search";
 
         this.$store.dispatch("boardjs/BoardSearch", this.option).then((res) => {
-          console.log(res);
           this.lists = res;
           this.$forceUpdate();
           this.Init();

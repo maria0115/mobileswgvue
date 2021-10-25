@@ -47,7 +47,6 @@ export default {
   },
   methods: {
     calListOpen(e){
-      console.log(e, "혹시 여기로 오니")
     },
   }
 };

@@ -34,7 +34,7 @@
             </span>
           </div>
           <em>{{ value.category }}</em>
-          <strong>{{ value.subject }}{{TopIdx()}}</strong>
+          <strong>{{ value.subject }}{{ TopIdx() }}</strong>
           <div class="per_info clfix">
             <span class="basic_img on">
               <em class="no_img" :style="randomColor()"
@@ -67,17 +67,23 @@
         </div>
       </VueSlickCarousel>
     </div>
+      <!-- @click.native="
+        SetHeader({
+          type: 'approving',
+          lnbid: '',
+          top: GetCategory['main'][TopIdx()].lnbid,
+          title: portlet.approval.approving,
+        }) 
+      " -->
     <router-link
       :to="{
         name: 'appapproving',
-        query: {
-          data: JSON.stringify({
-            type: 'approving',
-            lnbid: '',
-            top: this.GetCategory['main'][TopIdx()].lnbid,
-            title: portlet.approval.approving,
-          }),
-        },
+        query: {data:JSON.stringify({
+          type: 'approving',
+          lnbid: '',
+          top: GetCategory['main'][TopIdx()].lnbid,
+          title: portlet.approval.approving,
+        })}
       }"
       ><span class="m_more"><a></a></span
     ></router-link>
@@ -90,14 +96,13 @@ import VueSlickCarousel from "vue-slick-carousel";
 // import "vue-slick-carousel/dist/vue-slick-carousel-theme.css";
 // import Slick from "vue-slick";
 
-import { mapState,mapGetters } from "vuex";
+import { mapState, mapGetters } from "vuex";
 export default {
-  created() {
-  },
+  created() {},
   components: { VueSlickCarousel },
   computed: {
     ...mapState("mainjs", ["main"]),
-    ...mapGetters(["GetCategory"])
+    ...mapGetters(["GetCategory"]),
   },
   mounted() {
     // 모바일인지 확인
@@ -120,10 +125,10 @@ export default {
   },
   props: ["portlet"],
   methods: {
-    TopIdx(){
-      return this.GetCategory['main'].findIndex(function(item,idx){
+    TopIdx() {
+      return this.GetCategory["main"].findIndex(function (item, idx) {
         return item.category === "approval";
-      })
+      });
     },
     // 현재 결재 대상자
     nowApprover(value) {
@@ -174,6 +179,9 @@ export default {
         unid: value.unid,
         openurl: value.openurl,
       });
+      // this.SetHeader({
+      //       title: this.portlet.approval.approving,
+      //     });
       this.$router.push({
         name: "approvingview",
         query: {
@@ -182,6 +190,9 @@ export default {
           }),
         },
       });
+    },
+    SetHeader(data) {
+      this.$store.dispatch("SetHeader", data);
     },
     menuOfCategoryIdx(menu) {
       if (this.categorys) {
