@@ -8,9 +8,11 @@ import {
 } from '../../../api/index';
 import router from '../../../router/index';
 export default {
-    CalWrite({ state, commit }, { data, type }) {
+    CalWrite({ state, commit, rootState }, { data, type }) {
+        rootState.tf = true;
         CalWrite(data, type)
             .then(response => {
+                rootState.tf = false;
                 if (response.status !== 200) {
                     return false;
                 } else {
@@ -20,10 +22,12 @@ export default {
                 }
             })
     },
-    async Holiday({ state, commit }, data) {
+    async Holiday({ state, commit, rootState }, data) {
         state.schedule.data.holiday = {};
+        // rootState.tf = true;
         var result = await Holiday(data)
             .then(response => {
+                rootState.tf = false;
                 if (response.status !== 200) {
                     return false;
                 } else {
@@ -55,7 +59,7 @@ export default {
 
             })
     },
-    CalDetail({ state, commit }, { data, path, which }) {
+    CalDetail({ state, commit, rootState }, { data, path, which }) {
         // 
         return CalDetail(data)
             .then((res) => {
@@ -74,11 +78,11 @@ export default {
 
             })
     },
-    CalList({ state, commit }, { data, which }) {
-
+    CalList({ state, commit, rootState }, { data, which }) {
+        rootState.tf = true;
         CalList(data)
             .then((res) => {
-
+                rootState.tf = false;
                 if (res.status !== 200) {
                     return false;
                 } else {

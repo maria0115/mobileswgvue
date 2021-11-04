@@ -15,10 +15,10 @@
           <h1 class="logo">
             <a @click="GoHome"></a>
           </h1>
-          <div class="allim_btn">
+          <!-- <div class="allim_btn">
             <span class="allim_icon"></span>
             <span class="allim_num">2</span>
-          </div>
+          </div> -->
         </div>
         <SearchHeader></SearchHeader>
       </div>
@@ -29,7 +29,8 @@
             <span class="basic_img on">
               <img
                 v-if="GetMyInfo.photo !== undefined"
-                :src="url(GetMyInfo.photo)"
+                :src="GetMyInfo.photo"
+                
                 alt=""
                 @error="$event.target.src = '/mobile/img/img03.png'"
               />
@@ -287,7 +288,7 @@
       <div class="logout" des="main2">
         <span @click="logout"><a>로그아웃</a></span>
       </div>
-      <div class="top_btn"></div>
+      <div class="top_btn" @click="scrollToTop();"></div>
       <Org :modalon="modalon" @ModalOff="ModalOff"></Org>
     </div>
   </div>
@@ -417,6 +418,21 @@ export default {
     }
   },
   methods: {
+    scrollToTop() {
+      // console.log(this)
+      // if(this.$root.$el.scrollHeight>200){
+      //   console.log(window);
+      //   window.scrollTo(0,0)
+      // }
+      // var timeOut;
+      // console.log(window.pageYOffset);
+      //   if (document.body.scrollTop!=0 || document.documentElement.scrollTop!=0){
+      //     console.log("여기안들어오니")
+      //       window.scrollBy(0,-50);
+      //       timeOut=setTimeout('scrollToTop()',10);
+      //   }
+      //   else clearTimeout(timeOut);
+    },
     MainGo(value) {
       if (value.category == "schedule") {
         this.$router.push({ name: `${value.category}first` });
@@ -446,7 +462,7 @@ export default {
     },
     logout() {
       this.$store.dispatch("logout");
-      this.$router.push({ name: "login", query: { uuid: "0", locale: "ko" } });
+      this.$router.push({ name: "login"});
     },
     ModalOff() {
       this.modalon = false;

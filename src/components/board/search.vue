@@ -8,6 +8,7 @@
             <input
               type="text"
               v-model="searchword"
+              @keypress.enter="Search"
               placeholder="검색어를 입력하세요"
             />
             <span class="search_btn" @click="Search"></span>
@@ -44,6 +45,8 @@
 </template>
 
 <script>
+import $ from "jquery";
+
 export default {
     created() {
     },
@@ -66,6 +69,8 @@ export default {
       }
       data.searchword = this.searchword;
       this.$emit("SetSearchWord",data);
+        $('.search_con').removeClass('active');
+
     },
   },
 };

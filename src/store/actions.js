@@ -1,20 +1,20 @@
 import {
-    OrgAutoSearch, GetLanguage, Login, InitOrg, Org, CategoryList, ListOfCategory
+    OrgAutoSearch, GetLanguage, Login, InitOrg, Org, CategoryList, ListOfCategory, DocView
 } from '../api/index.js';
 import { setRawCookie } from 'tiny-cookie';
 import cookie from 'vue-cookies';
 import config from '../config/config.json';
 import router from '../router/index'
 export default {
-    SetHeader({dispatch,commit},data) {
-        
-        commit("SetHeader",data);
-        console.log("hey",router)
+    SetHeader({ dispatch, commit }, data) {
 
+        commit("SetHeader", data);
     },
     ListOfCategory({ state, commit }, data) {
+        state.tf = true;
         return ListOfCategory(data)
             .then((res) => {
+                state.tf = false;
 
                 if (res.status !== 200) {
                     return false;
@@ -26,9 +26,11 @@ export default {
 
             })
     },
-    CategoryList({ commit }, id) {
+    CategoryList({ state, commit }, id) {
+        state.tf = true;
         return CategoryList(id)
             .then((res) => {
+                state.tf = false;
 
                 if (res.status !== 200) {
                     return false;
@@ -42,7 +44,6 @@ export default {
             })
     },
     logout(s) {
-        console.log(s)
         cookie.set("LtpaToken", "");
         if (!JSON.parse(localStorage.getItem("idSave"))) {
             localStorage.setItem(`${config.packageName}id`, "");
@@ -55,11 +56,13 @@ export default {
         const idSave = localStorage.getItem("idSave");
         const autoLogin = localStorage.getItem("autoLogin");
     },
-    login({ commit }, credentials) {
+    login({ state, commit }, credentials) {
 
 
+        state.tf = true;
         return Login(credentials)
             .then((res) => {
+                state.tf = false;
                 if (res.data.success) {
                     var keys = Object.keys(res.data.cookies);
                     for (var i = 0; i < keys.length; i++) {
@@ -91,20 +94,19 @@ export default {
                     else {
                         localStorage.setItem(`${config.packageName}id`, "");
                         localStorage.setItem(`${config.packageName}pass`, "");
-                    }
-                    if (credentials.idSave) {
-
-                        localStorage.setItem(`${config.packageName}id`, credentials.Username);
-                    } else {
-                        localStorage.setItem(`${config.packageName}id`, "");
+                        if (credentials.idSave) {
+                            localStorage.setItem(`${config.packageName}id`, credentials.Username);
+                        }
                     }
                 }
                 return res.data;
             })
     },
     OrgAutoSearch({ state, commit }, data) {
+        state.tf = true;
         OrgAutoSearch(data)
             .then((res) => {
+                state.tf = false;
 
                 if (res.status !== 200) {
                     return false;
@@ -117,8 +119,10 @@ export default {
             })
     },
     async Org({ state, commit, dispatch }, data) {
+        state.tf = true;
         var chdata = await Org(data)
             .then((res) => {
+                state.tf = false;
                 return res.data;
 
             })
@@ -130,8 +134,10 @@ export default {
     },
     ModalOrgAutoSearch({ state, commit }, data) {
 
+        state.tf = true;
         OrgAutoSearch(data)
             .then((res) => {
+                state.tf = false;
 
                 if (res.status !== 200) {
                     return false;
@@ -141,6 +147,21 @@ export default {
                 }
 
             })
+    },
+    tf({ state }, {data}) {
+        state.tf = data;
+    },
+
+    DocView({ state }, data) {
+        state.tf = true;
+        return DocView(data)
+            .then((res) => {
+                // if (res.status === 200) {
+                //     state.tf = false;
+                // }
+                return res;
+            })
+
     },
 
 

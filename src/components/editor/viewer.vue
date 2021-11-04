@@ -58,7 +58,7 @@ export default {
       for (var i = 0; i < cookieArr.length; i++) {
         if (cookieArr[i].indexOf("LtpaToken") > -1) {
           var find = cookieArr[i].split("=");
-          objEzX.LtpaToken.value = find[1];
+          objEzX.LtpaToken.value = find[1] + (find[2] === "" ? "=" : "");
         }
       }
 
@@ -101,7 +101,8 @@ export default {
       } else {
         port = ":" + port;
       }
-      return `http://${window.location.hostname + port + encodeURI(url)}`;
+
+      return `https://${window.location.hostname + port + url}`;
     },
     getExtensionOfFilename(filename) {
       var _fileLen = filename.length;

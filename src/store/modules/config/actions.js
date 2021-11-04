@@ -105,6 +105,7 @@ export default {
                 state.store.config[menu] = value;
             }
             query.setting = {};
+            // alert(state.store.config[menu],"test");
             query.setting[menu] = state.store.config[menu];
 
             commit("Config", { menu, value, setting })

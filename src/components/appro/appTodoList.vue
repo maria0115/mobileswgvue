@@ -8,19 +8,16 @@
     ></Header>
     <SubMenu :isOpen="isOpen" @CloseHam="CloseHam"></SubMenu>
     <div class="a_contents06">
-      <form>
+      <form @submit.prevent>
         <ul class="app06_list">
           <!-- ref="list"
             class="card"
             :disabled="!enabled"
             :items="GetApproval[this.path].data.data"
             item-key="id" -->
-          <li
-            v-for="(item, index) in GetApproval[this.path].data.data"
-            :key="index"
-          >
+          <li v-for="(item, index) in lists" :key="index">
             <a>
-              <span class="basic_img on">
+              <span class="basic_img on" v-if="item.author">
                 <!-- v-if="item.photoerror" -->
                 <img
                   :src="url(item.photo)"
@@ -28,7 +25,7 @@
                   v-if="item.photoerror"
                   alt=""
                 />
-                <em class="no_img" :style="randomColor()" v-if="item.author"
+                <em class="no_img" :style="randomColor()"
                   ><b>{{ item.author.split("")[0] }}</b></em
                 >
               </span>
@@ -44,7 +41,7 @@
                 </p>
               </div>
               <div class="icons">
-                <span class="opin"></span>
+                <span class="opin" v-if="item.isComment"></span>
                 <span class="clip" v-if="item.attach"></span>
               </div>
             </a>
@@ -94,11 +91,36 @@ import { SwipeList, SwipeOut } from "vue-swipe-actions";
 import config from "../../config/config.json";
 import "vue-swipe-actions/dist/vue-swipe-actions.css";
 export default {
-  created() {
+  async created() {
     this.params = JSON.parse(this.$route.query.data);
     // this.params = this.GetHeader.menu;
+    this.$store.commit("approjs/AppSaveFrom", this.params.type);
+    this.lists = this.GetApproval[this.path].data.data;
     this.category = this.GetCategory[this.params.top];
     this.Init();
+    this.option.page = this.page;
+    this.option.type = this.path;
+    this.option.size = this.GetConfig.listcount;
+    if (this.back.isBacked) {
+      for (var i = 0; i < this.back.page; i++) {
+        this.page++;
+        this.option.page = this.page;
+        var result;
+        if (this.option.keyword && this.option.keyword.length > 0) {
+          result = await AppSearch(this.option);
+          result = result.data.data;
+        } else {
+          this.option.approvaltype = this.option.type;
+          result = await Approval(this.option);
+          result = result.data.data;
+        }
+        this.lists = this.wellconcat(this.lists, result);
+      }
+      this.infiniteId++;
+      this.$store.commit("SetBack", false);
+      window.scroll({ top: this.back.top, behavior: "smooth" });
+      this.$forceUpdate();
+    }
   },
   components: {
     InfiniteLoading,
@@ -111,6 +133,8 @@ export default {
   },
   beforeRouteLeave(to, from, next) {
     // this.infiniteId += 1;
+    this.$store.commit("SetTop", document.documentElement.scrollTop);
+
     next();
   },
   computed: {
@@ -118,6 +142,8 @@ export default {
 
     ...mapGetters("approjs", ["GetApproval"]),
     ...mapGetters("configjs", ["GetConfig"]),
+    ...mapState(["back"]),
+
     path() {
       // if (this.$route.path.indexOf("custom") === -1) {
 
@@ -203,20 +229,31 @@ export default {
           });
       }
     },
+    wellconcat(me, data) {
+      if (me) {
+        return me.concat(data);
+      } else {
+        return data;
+      }
+    },
     // 스크롤 페이징
     infiniteHandler($state) {
-      this.page++;
-      // this.GetMail['inbox_detail'].size+= 1;
-      this.option.page = this.page;
-      this.option.type = this.path;
-      this.option.size = this.GetConfig.listcount;
+      if (!this.back.isBacked) {
+        this.page++;
+        // this.GetMail['inbox_detail'].size+= 1;
+        this.option.page = this.page;
+        // this.option.type = this.path;
+        // this.option.size = this.GetConfig.listcount;
 
-      if (this.option.keyword && this.option.keyword.length > 0) {
-        // this.option.type = "search";
-        this.SearchData(this.option, $state);
+        if (this.option.keyword && this.option.keyword.length > 0) {
+          // this.option.type = "search";
+          this.SearchData(this.option, $state);
+        } else {
+          // this.option.type = this.params.type;
+          this.GetData(this.option, $state);
+        }
       } else {
-        // this.option.type = this.params.type;
-        this.GetData(this.option, $state);
+        $state.complete();
       }
     },
     SearchData(option, $state) {
@@ -230,18 +267,16 @@ export default {
         })
         .then((data) => {
           setTimeout(() => {
-            if (
-              this.GetApproval[this.path] &&
-              this.GetApproval[this.path].data.data
-            ) {
-              if (
-                Object.keys(this.GetApproval[this.path].data.data).length > 0
-              ) {
-                this.GetApproval[this.path].data.data =
-                  this.GetApproval[this.path].data.data.concat(data);
-              } else {
-                this.GetApproval[this.path].data.data = data;
+            if (data) {
+              if (data.length > 0) {
+                this.$store.commit("SetBackPage", option.page);
               }
+              // if (this.lists.length > 0) {
+              this.lists = this.wellconcat(this.lists, data);
+              this.$forceUpdate();
+              // } else {
+              //   this.lists = data;
+              // }
               $state.loaded();
 
               // 끝 지정(No more data) - 데이터가 EACH_LEN개 미만이면
@@ -272,18 +307,17 @@ export default {
         })
         .then((data) => {
           setTimeout(() => {
-            if (
-              this.GetApproval[this.path] &&
-              this.GetApproval[this.path].data.data
-            ) {
-              if (
-                Object.keys(this.GetApproval[this.path].data.data).length > 0
-              ) {
-                this.GetApproval[this.path].data.data =
-                  this.GetApproval[this.path].data.data.concat(data);
-              } else {
-                this.GetApproval[this.path].data.data = data;
+            if (data) {
+              if (data.length > 0) {
+                this.$store.commit("SetBackPage", option.page);
               }
+              // if (this.lists.length > 0) {
+              this.lists = this.wellconcat(this.lists, data);
+
+              this.$forceUpdate();
+              // } else {
+              //   this.lists = data;
+              // }
               $state.loaded();
 
               // 끝 지정(No more data) - 데이터가 EACH_LEN개 미만이면
@@ -310,7 +344,7 @@ export default {
     },
     // 사진이 없으면 기본 이미지
     photoError(index) {
-      this.GetApproval[this.path].data.data[index].photoerror = false;
+      this.lists[index].photoerror = false;
     },
     // utc 시간 to local 시간
     transTime(time) {
@@ -343,7 +377,13 @@ export default {
   height: 5.43rem;
   position: relative;
   padding: 0.62rem 1.06rem 0 3.93rem;
+  border-top: 0.06rem solid #e6e6e6;
+  border-bottom: 0.06rem solid #e6e6e6;
 }
+.app06_list li + li {
+  margin-top: -0.062rem;
+}
+
 .app06_list li a {
   display: block;
 }

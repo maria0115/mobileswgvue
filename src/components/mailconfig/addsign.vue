@@ -7,7 +7,7 @@
       <span class="save" @click="SignAdd"><a>저장</a></span>
     </h2>
     <div class="m_contents06">
-      <form action="">
+      <form @submit.prevent>
         <ul>
           <li>
             <span>제목</span>
@@ -18,7 +18,8 @@
             <div @click="DefaultSign"><em class="sig_check"  :class="{active:this.default}"></em>기본 서명으로 지정</div>
           </li>
           <li>
-            <textarea v-model="body">
+            <Namo :editor="body" :read="false" did="greet" ref="editor"></Namo>
+            <!-- <textarea v-model="body">
 ---------------------------------------------------------
 이정인 책임연구원
 (주)새롬정보시스템/디자인팀
@@ -29,7 +30,7 @@ E-mail : jeongin@saerom.co.kr
 http://www.saerom.co.kr
 ---------------------------------------------------------
                     </textarea
-            >
+            > -->
           </li>
         </ul>
       </form>
@@ -38,8 +39,11 @@ http://www.saerom.co.kr
 </template>
 
 <script>
+import Namo from '../editor/namo.vue';
+
 export default {
   components: {
+    Namo
   },
   data() {
     return {
@@ -57,7 +61,7 @@ export default {
       var data = {};
       data.subject = this.subject;
       data.default = this.default;
-      data.body = this.body;
+      data.body = this.$refs.editor.$refs.namo.contentWindow.crosseditor.GetBodyValue();
       this.$store.dispatch("mailjs/SignAdd",data);
     },
     Back() {

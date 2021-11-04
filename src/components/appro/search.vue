@@ -1,6 +1,6 @@
 <template>
   <div class="search_con search_con02">
-    <form action="">
+    <form @submit.prevent>
       <div>
         <div class="sc_top">
           <span class="back_btn"></span>
@@ -9,6 +9,7 @@
             <input
               type="text"
               v-model="keyword"
+              @keypress.enter="Search"
               placeholder="검색어를 입력하세요"
             />
             <span class="search_btn" @click="Search"></span>
@@ -81,6 +82,8 @@
 </template>
 
 <script>
+import $ from "jquery";
+
 import { mapState, mapGetters } from "vuex";
 export default {
   computed: {
@@ -142,10 +145,13 @@ export default {
       data.startDate = this.startDate;
       data.endDate = this.endDate;
       this.$emit("SetSearchWord",data);
+        $('.search_con').removeClass('active');
+
     },
   },
 };
 </script>
 
 <style>
+/* .back_btn {z-index: 2;} */
 </style>

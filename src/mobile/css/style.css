@@ -5,9 +5,11 @@ img{max-width:100%;}
 .normal{font-size:100%;}
 .large{font-size:113%;}
 
+#app{position:relative;height:100vh;}
+#app{position:relative;}
 textarea,input{font-family: 'Apple SD Gothic','Nanum Gothic', sans-serif;}
-.wrap{position:relative;max-width:1080px;width:100%;margin:0 auto;height:100vh;background:#f0f0f0;font-family:'Apple SD Gothic','Nanum Gothic', sans-serif;font-size:1rem;overflow:hidden;}
-.modal_wrap{overflow-y:scroll;height:100%;}
+.wrap{position:relative;max-width:1080px;width:100%;margin:0 auto;height:auto;font-family:'Apple SD Gothic','Nanum Gothic', sans-serif;font-size:1rem;overflow:hidden;}
+/* .modal_wrap{overflow-y:scroll;height:100%;} */
 /* 메인 header */
 .main_header{height:2.5rem;position:relative;font-size:0;}
 .ham{position:absolute;top:50%;left:0.75rem;transform:translateY(-50%);cursor:pointer;width:1.25rem;height:0.87rem;background:url(/mobile/img/ham_btn.png)center no-repeat;background-size:100% 100%;}
@@ -23,7 +25,7 @@ textarea,input{font-family: 'Apple SD Gothic','Nanum Gothic', sans-serif;}
 /* header 공통부분 */
 .header{position:relative;height:3rem;line-height:3rem;text-align:center;background:#fff;}
 .header h1{font-size:1.12rem;color:#333;}
-.back_btn{position:absolute;top:50%;left:1rem;transform:translateY(-50%);width:1.12rem;height:1rem;}
+.back_btn{cursor:pointer;position:absolute;top:50%;left:1rem;transform:translateY(-50%);width:1.12rem;height:1rem;}
 .back_btn > a{display:block;height:100%;}
 
 /* 하단 공통 버튼 */
@@ -38,7 +40,7 @@ textarea,input{font-family: 'Apple SD Gothic','Nanum Gothic', sans-serif;}
 .btm_organ > a{background:url(/mobile/img/btm_organ.png)center no-repeat;width:1.75rem;height:1.44rem;background-size:100% 100%;}/*8월 31일 수정함
 .btm_allim > a{background:url(/mobile/img/btm_allim.png)center no-repeat;width:1.37rem;height:1.56rem ;background-size:100% 100%;} */
 .btm_btn{position:fixed;bottom:0;left:0;right:0;max-width:1080px;margin:0 auto;height:50px;border-top:1px solid #d7d7d7;background:#f9f9f9;z-index:10;}/*8월 2일 변경됨 */
-.btm_btn > li{position:relative;float:left;width:calc(100% / 6);height:100%;}
+.btm_btn > li{position:relative;float:left;width:calc(100% / 5);height:100%;}
 .btm_btn > li > a{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);}
 .home > a{background:url(/mobile/img/home.png)center no-repeat;width:22px;height:21px;background-size:100% 100%;}
 .back > a{background:url(/mobile/img/btm_btn02.png)center no-repeat;width:21px;height:17px;background-size:100% 100%;}
@@ -65,7 +67,7 @@ textarea,input{font-family: 'Apple SD Gothic','Nanum Gothic', sans-serif;}
 .btm_menu_list .close_btn{top:0.87rem;right:0.93rem;width:0.87rem;height:0.87rem;} */
 .btm_menu_list{display:none;position:fixed;top:0;left:0;right:0;margin:0 auto;max-width:1080px;height:calc(100vh - 50px);background:rgba(0,0,0,.6);z-index:999;}
 .btm_menu_list.active{display:block;}
-.btm_menu_list .list_inner{position:absolute;bottom:0;left:0;width:100%;background:#fff;border-radius:15px 15px 0 0 ;padding:15px;}
+.btm_menu_list .list_inner{position:absolute;bottom:0;left:0;width:100%;background:#fff;border-radius:15px 15px 0 0 ;padding:20px 15px;}
 .btm_menu_list ul li{float:left;width:calc(100% / 3);}
 .btm_menu_list ul li:nth-child(n+4){margin-top:7px;}
 .btm_menu_list ul li a{display:block;line-height:40px;padding-left:40px;position:relative;font-size:14px;color:#000;letter-spacing:-1px;}
@@ -76,7 +78,7 @@ textarea,input{font-family: 'Apple SD Gothic','Nanum Gothic', sans-serif;}
 .btm_menu_list ul .board_f_ic{background:#f1f2f2 url(/mobile/img/btm_list_ic04.png)center no-repeat;background-size:17px 19px;}
 .btm_menu_list ul .reservation_f_ic{background:#f1f2f2 url(/mobile/img/btm_list_ic05.png)center no-repeat;background-size:19px 19px;}
 .btm_menu_list ul .person_f_ic{background:#f1f2f2 url(/mobile/img/btm_list_ic06.png)center no-repeat;background-size:17px 21px;}
-.btm_menu_list .close_btn{top:14px;right:15px;width:14px;height:14px;}
+.btm_menu_list .close_btn{top:10px;right:10px;width:14px;height:14px;z-index: 5;}
 
 
 * 환경셜정 페이지 */
@@ -305,7 +307,7 @@ textarea,input{font-family: 'Apple SD Gothic','Nanum Gothic', sans-serif;}
 #tab05 .con04 > h2:after{position:absolute;top:50%;left:0;transform:translateY(-50%);content:"";width:1.37rem;height:1.25rem;background:url(/mobile/img/mail_icon.png)center no-repeat;background-size:1.31rem 0.87rem;}
 /* 통합검색 페이지 끝 */
 /* 메인 페이지 */
-.m_wrap{background:#f3f3f3;height:100%;padding-bottom:1.43rem;}
+.m_wrap{background:#f3f3f3;height:auto;padding-bottom:1.43rem;}
 .main_tabmenu{position:relative;background:#fff;padding:0.5rem 0.81rem;overflow:hidden;}
 .main_menu{font-size:0;overflow-x:scroll;overflow-y:hidden;white-space:nowrap;}
 .main_menu li{display:inline-block;text-align:center;margin:0 0.62rem;}
@@ -427,16 +429,17 @@ textarea,input{font-family: 'Apple SD Gothic','Nanum Gothic', sans-serif;}
 .mar15 .mar30 span + span{margin-left:0.75rem;}
 
 .m_mail{margin-top:0.62rem;background:#fff;padding:0.93rem 1.25rem;box-shadow:0 0 0.31rem rgba(0,0,0,.05);}/*8월 23일 수정함*/
+.m_mail strong{display:block;font-size:1.25rem;color: #000;line-height:1;}
 .m_mail ul{margin-top:0.62rem;}
-.m_mail ul li{padding:0.75rem 0;overflow:hidden;}
-.m_mail ul li a{display:block;line-height:2.44rem;padding:0 0.31rem;position:relative;}
-.m_mail ul li a dl dt{font-size:0.93rem;color:#444;line-height:1.2;}
+.m_mail ul li{padding:0.75rem 0;overflow:hidden;cursor:pointer;}
+.m_mail ul li a{display:block;line-height:2.44rem;padding:0 0.31rem;position:relative;z-index:1;}
+.m_mail ul li a dl dt{font-size:0.93rem;color:#444;line-height:1.2;cursor:pointer;}
 .m_mail ul li a dl dd{margin-top:0.31rem;font-size:0.93rem;color:#444;line-height:1.2;text-overflow:ellipsis;white-space:nowrap;overflow:hidden;padding-right:1.56rem;}
 .m_mail ul li + li{border-top:0.06rem solid #eee;}
 
 .m_mail ul li.new a dl dd{padding-left:1.3rem;font-weight:600;position:relative;} 
 .m_mail ul li.new a dl dd:after{position:absolute;top:0.06rem;left:0;width:0.93rem;height:0.93rem;border-radius:50%;overflow:hidden;background:#ff743c;content:"N";text-align:center;line-height:0.93rem;color:#fff;font-size:0.5rem;font-weight:600;}
-.m_mail .impor{position:absolute;top:0.18rem;right:0;}/*8월 13일 수정*/
+.m_mail .impor{position:absolute;top:0.18rem;right:0;z-index:2;}/*8월 13일 수정*/
 .m_mail .impor p{font-size:0.81rem;color:#999;line-height:1;letter-spacing:-0.06rem;padding-right:1.68rem;position:relative;}/* 8월 10일 수정함*/
 .m_mail .impor p .star{position:absolute;top:-0.18rem;right:0;width:1.06rem;height:1rem;cursor:pointer;margin:0;}
 .m_mail .impor span{float:right;width:0.93rem;height:1.06rem;margin-top:0.62rem;}/*8월 13일 수정*/
@@ -492,7 +495,7 @@ textarea,input{font-family: 'Apple SD Gothic','Nanum Gothic', sans-serif;}
 /* .app_slide .slick-slide{position:relative;height:6rem;margin:0 0.62rem;border:0.06rem solid #e1e1e1;padding:0.93rem 0.81rem 0.68rem;font-size:0;} */
 .app_slide{margin:0 0.62rem;}
 
-.app_slide .slick-slide{position:relative;height:7.81rem;border:0.06rem solid #e1e1e1;padding:0.93rem 0.81rem 0.68rem;font-size:0;}
+.app_slide .slick-slide{cursor:pointer;position:relative;height:7.81rem;border:0.06rem solid #e1e1e1;padding:0.93rem 0.81rem 0.68rem;font-size:0;}
 .app_slide .slick-slide > em{display:inline-block;padding:0 0.31rem;height:1.25rem;border-radius:0.12rem;border:0.06rem solid #ff743c;font-size:0.87rem;color:#ff743c;vertical-align:top;}
 /* .app_slide .slick-slide > strong{display:inline-block;height:1.25rem;font-size:1rem;color:#000;text-overflow:ellipsis;overflow:hidden;line-height:1.2;font-weight:600;white-space:nowrap;width:calc(100% - 5.62rem);padding-left:0.31rem;vertical-align:top;} */
 .app_slide .slick-slide > strong{display:block;font-size:1rem;color:#000;text-overflow:ellipsis;overflow:hidden;line-height:1.2;font-weight:600;white-space:nowrap;margin-top:0.5rem;}/*8월 30일 수정*/
@@ -523,6 +526,7 @@ textarea,input{font-family: 'Apple SD Gothic','Nanum Gothic', sans-serif;}
 
 
 .m_calendar{margin-top:0.62rem;background:#fff;padding:0.93rem 1.25rem 1.25rem;box-shadow:0 0 0.31rem rgba(0,0,0,.05);}/*8월 23일 수정함*/
+.m_calendar strong{display:block;font-size:1.25rem;color: #000;line-height:1;}
 .m_calendar > div{margin-top:1.5rem;}
 .d_day{float:left;text-align:center;}
 .d_day em{display:block;font-size:0.87rem;color:#5a5a5a;line-height:1;font-weight:600;}
@@ -535,22 +539,23 @@ textarea,input{font-family: 'Apple SD Gothic','Nanum Gothic', sans-serif;}
 
 /* .c_list{border-left:0.06rem solid #d2d2d2;padding-left:0.81rem;margin-left:4.06rem;} */
 .c_list{margin-top:1.56rem;}
-.c_list li{width:100%;}
+.c_list li{width:100%;cursor:pointer;}
 .c_list li + li{margin-top:1.56rem;}
 .c_list li em{display:inline-block;font-size:0.81rem;color:#454545;width:5.31rem;height:1.31rem;border:0.06rem solid #acacac;line-height:1.18rem;text-align:center;border-radius:0.12rem;}
 .c_list li p{color:#454545;font-size:0.87rem;margin-top:0.5rem;text-overflow:ellipsis;overflow:hidden;white-space:nowrap;}
 .c_list li.red em{color:#ed1c24;border-color:#ed1c24;}
 .c_list li.red p{color:#666;}
-
+.all_cal{cursor:pointer;}
 .m_posts{margin-top:0.62rem;background:#fff;padding:0.93rem 1.25rem;box-shadow:0 0 0.31rem rgba(0,0,0,.05);}/*8월 23일 수정함*/
+.m_posts strong{display:block;font-size:1.25rem;color: #000;line-height:1;}
 .m_posts ul{margin-top:0.62rem;}
-.m_posts ul li{height:2.5rem;position:relative;}
+.m_posts ul li{height:2.5rem;position:relative;cursor:pointer;}
 .m_posts ul li a{display:block;line-height:2.5rem;font-size:0.93rem;color:#444;text-overflow:ellipsis;white-space:nowrap;overflow:hidden;}
 .m_posts ul li a em{margin-right:0.31rem;color:#655da7;font-weight:600;}
 .m_posts ul li + li:after{position:absolute;top:0;left:-0.62rem;width:calc(100% + 1.25rem);height:0.06rem;content:"";background:#eee;}
 
 .quick{margin-top:1.37rem;text-align:center;}
-.quick li{display:inline-block;height:1.5rem;border:0.06rem solid #acacac;margin:0 0.18rem;border-radius:0.12rem;}
+.quick li{display:inline-block;height:1.5rem;border:0.06rem solid #acacac;margin:0 0.18rem;border-radius:0.12rem;cursor:pointer;}
 .quick li a{display:block;padding:0 0.62rem;font-size:0.81rem;color:#666;line-height:1.37rem;}
 .top_btn{position:fixed;bottom:1.43rem;left:50%;margin-left:34%;width:2.5rem;height:2.5rem;border-radius:50%;background:#655da7 url(/mobile/img/top_btn.png)center no-repeat;background-size:1rem 1.31rem;cursor:pointer;z-index:2;}
 .mar15 .quick li a{padding:0 0.2rem;}
@@ -635,7 +640,7 @@ textarea,input{font-family: 'Apple SD Gothic','Nanum Gothic', sans-serif;}
 /* 결재 메인  7월 29일 전체 변경*/
 .sub_menu01{display:none;position:fixed;top:0;left:0;right:0;max-width:1080px;width:100%;height:100%;background:rgba(0,0,0,.5);z-index:3;margin:0 auto;}/*8월 23일 수정함*/
 .sub_menu01.on{display:block;}
-.inner01{width:75%;background:#fff;height:100%;}
+.inner01{width:75%;background:#fff;height:100vh;overflow-y:scroll;}
 .in_top{padding:0.68rem 0.93rem;position:relative;}
 .in_top > div > span{float:left;width:2.68rem;height:2.68rem;border-radius:50%;position:static;top:auto;left:auto;transform:translateY(0);}
 .in_top > div > dl{margin-left:3.75rem;}
@@ -646,7 +651,7 @@ textarea,input{font-family: 'Apple SD Gothic','Nanum Gothic', sans-serif;}
 .sub_menu01 .icons .sub_set{width:1.12rem;height:1.12rem;}
 .sub_menu01 .icons .sub_set a{display:block;height:100%;background:url(/mobile/img/set_btn.png)center no-repeat;background-size:1.12rem 1.12rem;}
 .sub_menu01 .icons .sub_close{width:0.93rem;height:0.93rem;background:url(/mobile/img/mail_sub_close.png)center no-repeat;background-size:0.93rem 0.93rem;margin:0.06rem 0 0 0.93rem;}
-.inner01 > ul{border-top:0.06rem solid #f6f6f6;padding:1.37rem 1.25rem 0;}
+.inner01 > ul{border-top:0.06rem solid #f6f6f6;padding:1.37rem 1.25rem 0;height:calc(100% - 4.125rem);}
 .inner01 > ul > li h3 a{display:block;font-size:0.93rem;color:#252525;padding-left:1.56rem;font-weight:normal;}/* 8월 6일 수정함 */
 .inner01 > ul > .formList_all h3 a{background:url(/mobile/img/app_ic01.png)left center no-repeat;background-size:1rem 0.81rem;} 
 .inner01 > ul > .draft h3 a{background:url(/mobile/img/app_ic02.png)left center no-repeat;background-size:0.87rem 0.93rem;} 
@@ -668,7 +673,8 @@ textarea,input{font-family: 'Apple SD Gothic','Nanum Gothic', sans-serif;}
 .in_box01 > strong > em{display:inline-block;padding:0 0.31rem;height:1rem;border-radius:1.25rem;font-size:0.81rem;color:#ff743c;border:0.06rem solid #ff743c;text-align:center;line-height:0.87rem;vertical-align:0.06rem;}/* 8월 23일 수정됨*/
 
 .app_list01{margin-top:1.06rem;}
-.app_list01 > div{position:relative;border:0.06rem solid #e1e1e1;padding:0.93rem 0.81rem 0.68rem;font-size:0;height:6rem;}/*display:none; 퍼블만적용 */
+/*.app_list01 > div{position:relative;border:0.06rem solid #e1e1e1;padding:0.93rem 0.81rem 0.68rem;font-size:0;height:6rem;}display:none; 퍼블만적용 */
+.app_list01 > div{position:relative;border:0.06rem solid #e1e1e1;padding:0.68rem 0.81rem;font-size:0;min-height:6rem;cursor:pointer;}
 .app_list01 > div:before{position:absolute;top:0;left:0;width:0.5rem;height:0.5rem;content:"";background:url(/mobile/img/)center no-repeat;}
 .app_list01 > div:after{position:absolute;bottom:0;right:0;width:0.5rem;height:0.5rem;content:"";background:url(/mobile/img/)center no-repeat;}
 /* .app_list01 > div:nth-child(2n+3){margin-left:1.06rem;} 7월 20일 삭제됨 */
@@ -676,8 +682,11 @@ textarea,input{font-family: 'Apple SD Gothic','Nanum Gothic', sans-serif;}
 .app_list01 .icons{position:absolute;top:0.93rem;right:0.81rem;}/* 7월 29일 수정함*/
 .app_list01 > p{font-size:1.12rem;color:#000;text-align:center;}/* display:none; 퍼블만적용 */
 /* .icons{position:absolute;top:0;right:0;} 7월 20일 삭제됨  */ 
-.app_list01 > div > em{display:inline-block;padding: 0 0.31rem;height:1.25rem;border-radius:0.12rem;border:0.06rem solid #ff743c;font-size:0.87rem;color:#ff743c;vertical-align:top;}/* 8월 10일 수정됨*/
-.app_list01 > div > strong{display:inline-block;height:1.25rem;font-size:1rem;color:#000;text-overflow:ellipsis;overflow:hidden;line-height:1.2;font-weight:600;white-space:nowrap;width:calc(100% - 5.62rem);padding-left:0.31rem;vertical-align:top;} /*8월 10일 수정됨*/
+/* .app_list01 > div > em{display:inline-block;padding: 0 0.31rem;height:1.25rem;border-radius:0.12rem;border:0.06rem solid #ff743c;font-size:0.87rem;color:#ff743c;vertical-align:top;}8월 10일 수정됨 */
+.app_list01 > div > em{display:inline-block;padding:0.25rem 0.31rem;border-radius:0.12rem;border:0.06rem solid #ff743c;font-size:0.87rem;color:#ff743c;line-height:1;}/* 8월 10일 수정됨*/
+/* .app_list01 > div > strong{display:inline-block;height:1.25rem;font-size:1rem;color:#000;text-overflow:ellipsis;overflow:hidden;line-height:1.2;font-weight:600;white-space:nowrap;width:calc(100% - 5.62rem);padding-left:0.31rem;vertical-align:top;} 8월 10일 수정됨 */
+.app_list01 > div > strong{display:block;font-size:1rem;color:#000;text-overflow:ellipsis;overflow:hidden;line-height:1.2;font-weight:600;white-space:nowrap;margin-top:10px;} /*8월 10일 수정됨*/
+
 .app_list01 > div > p{position:absolute;bottom:0.93rem;right:0.81rem;color:#655da7;font-size:0.81rem;font-weight:600;}/*8월 10일 수정함*/
 .app_list01 .per_info{margin-top:0.62rem;}/*7월 29일 수정됨 */
 .app_list01 .per_info > span{position:static;top:auto;left:0;transform:translateY(0);float:left;width:2.37rem;height:2.37rem;border-radius:50%;overflow:hidden;}/*8월 10일 수정됨 */
@@ -685,7 +694,7 @@ textarea,input{font-family: 'Apple SD Gothic','Nanum Gothic', sans-serif;}
 .app_list01 .per_info dl dt{font-size:0.81rem;color:#575757;word-break:break-all;letter-spacing:-0.06rem;line-height:1;text-overflow:ellipsis;white-space:nowrap;overflow:hidden;}/*8월 10일 수정됨 */
 .app_list01 .per_info dl dd{font-size:0.81rem;color:#655da7;line-height:1;margin-top:0.31rem;}/*8월 23일 수정됨 */
 .app_list01 .per_info dl dd em{font-size:0.87rem;}/* 8월 10일 수정됨*/
-.load{display:block;text-align:center;height:2.25rem;line-height:2.25rem;border-top:0.06rem solid #e6e6e6;background:#fff;font-size:0.81rem;color:#787878;}/*7월 29일 수정됨 */
+.load{display:block;text-align:center;height:2.25rem;line-height:2.25rem;border-top:0.06rem solid #e6e6e6;background:#fff;font-size:0.81rem;color:#787878;cursor:pointer;}/*7월 29일 수정됨 */
 .load img{display:inline-block;margin-left:0.62rem;width:0.93rem;height:0.56rem;vertical-align:0;}/*7월 20일 수정됨 */
 .in_box01 .app_more{position:absolute;top:1.37rem;right:1.25rem;width:1.43rem;height:1.43rem;border-radius:50%;background:#655da7 url(/mobile/img/main_more.png)center no-repeat;background-size:0.37rem 0.56rem;}/* 7월 20일 추가됨*/
 .in_box01 .app_more a{display:block;height:100%;} /* 7월 20일 추가됨*/
@@ -696,7 +705,7 @@ textarea,input{font-family: 'Apple SD Gothic','Nanum Gothic', sans-serif;}
 .in_box02 > strong > em{display:inline-block;padding:0 0.31rem;height:1rem;border-radius:1.25rem;font-size:0.81rem;color:#ff743c;border:0.06rem solid #ff743c;text-align:center;line-height:0.87rem;vertical-align:0.06rem;}/* 8월 23일 수정됨*/
 .counter{position:absolute;bottom:0.93rem;right:0.93rem;font-size:1.12rem;color:#d2d2d2;}
 .counter span{display:inline-block;margin-top:0.62rem;font-size:1.12rem;color:#d2d2d2;margin-left:0.18rem;vertical-align:-0.31rem;}
-.counter em{display:inline-block;font-size:1.12rem;color:#d0021b;font-weight:900;vertical-align:top;margin-right:0.18rem;}
+.counter em{display:inline-block;font-size:1.12rem;color:#d0021b;font-weight:900;vertical-align:top;margin-right:0.18rem;border:0 !important;}
 /*
 8월 23일 삭제됨 
 .in_box02{margin-top:0.62rem;background:#fff;padding:1.25rem 0;position:relative;}/* 7월 20일 수정됨 
@@ -804,7 +813,7 @@ li.app_file li .file_btn span{display:inline-block;font-size:0.75rem;color:#1212
 
 /* 결재할 , 중 리스트 7월 29일 전체수정됨*/
 .a_contents06{margin-top:3.12rem;background:#fff;}
-.app06_list > li{height:5.43rem;position:relative;padding:0.62rem 1.06rem 0 3.93rem;}
+.app06_list > li{height:5.43rem;position:relative;padding:0.62rem 1.06rem 0 3.93rem;cursor:pointer;}
 .app06_list > li a{display:block;}
 .app06_list > li + li{border-top:0.06rem solid #e6e6e6;}
 .app06_list .basic_img{position:absolute;top:50%;left:0.93rem;transform:translateY(-50%);width:2.5rem;height:2.5rem;border-radius:50%;overflow:hidden;}
@@ -817,8 +826,8 @@ li.app_file li .file_btn span{display:inline-block;font-size:0.75rem;color:#1212
 .app06_list .s_text p.pd_0{padding-right:0;}
 .app06_list .s_text p span{font-size:0.81rem;color:#474747;letter-spacing:-0.06rem;}
 .app06_list .icons{position:absolute;top:0.75rem;right:1.06rem;}
-.st_more{position:absolute;bottom:1.25rem;right:1.06rem;margin-left:0.31rem;width:0.81rem;height:0.43rem;background:url(/mobile/img/mail_open.png)center no-repeat;background-size:100%;z-index:1;}
-.st_more.active{background:url(/mobile/img/mail_close.png)center no-repeat;background-size:100%;}
+.st_more{cursor:pointer;position:absolute;bottom:1.25rem;right:1.06rem;margin-left:0.31rem;width:2.81rem;height:2.43rem;background:url(/mobile/img/mail_open.png)center no-repeat;background-size:0.93rem 0.5rem;z-index:1;}
+.st_more.active{background:url(/mobile/img/mail_close.png)center no-repeat;background-size:0.93rem 0.5rem;}
 /* 8월 23일 수정됨 */
 .app_status{display:none;position:absolute;top:5.43rem;left:0;width:100%;height:auto;background:#ebebeb;z-index:2;overflow:hidden;padding:0 1.87rem;}/*8월 23일 수정됨*/
 .app_status.active{display:block;}
@@ -839,7 +848,7 @@ li.app_file li .file_btn span{display:inline-block;font-size:0.75rem;color:#1212
 .status_slide > div div{margin-top:0.43rem;}
 .status_slide > div p{font-size:0.81rem;color:#575757;line-height:1.2;height:0.93rem;}
 .status_slide > div p i{font-size:0.81rem;color:#575757;font-style:normal;}
-.close_btn{position:absolute;top:0.93rem;right:0.93rem;width:0.68rem;height:0.68rem;background:url(/mobile/img/mail_sub_close.png)center no-repeat;background-size:100% 100%;z-index:3;}
+.close_btn{cursor:pointer;position:absolute;top:0.93rem;right:0.93rem;width:0.68rem;height:0.68rem;background:url(/mobile/img/mail_sub_close.png)center no-repeat;background-size:100% 100%;z-index:5;}
 
 /* 9월 2일 추가 수정요청건  */
 .status_slide > div.active{padding-top:0;}
@@ -873,7 +882,7 @@ app04->파일명 mob_app_ docform로 변경됨 7월 29일 전체 수정 */
 .a_list > li ul li + li{margin-top:-0.06rem;}
 .a_list > li ul li a{display:block;line-height:2.62rem;padding-left:2.12rem;color:#252525;font-size:0.93rem;font-weight:600;background:url(/mobile/img/app_icon.png)left 0.68rem center no-repeat;background-size:0.87rem 0.93rem;}/*7월 26일 수정*/
 .a_list > li h3.active a{background:url(/mobile/img/app_close.png)right 1.12rem center no-repeat;background-size:0.93rem 0.56rem;}
-.ac_btns{position:fixed;bottom:3.75rem;right:0.62rem;background:none !important;z-index:10;}/*8월 23일 수정됨*/
+.ac_btns{position:fixed;bottom:3.75rem;right:0.62rem;background:none !important;z-index:9;}/*8월 23일 수정됨*/
 .more_plus{display:inline-block;width:3.25rem;height:3.25rem;border-radius:50%;background:#655da7 url(/mobile/img/more_plus.png)center no-repeat;background-size:1.31rem 1.31rem;cursor:pointer;}
 .ac_btns ul{display:none;position:absolute;bottom:4.18rem;right:0;width:7.18rem;}
 .ac_btns ul.active{display:block;}
@@ -1007,7 +1016,7 @@ app04->파일명 mob_app_ docform로 변경됨 7월 29일 전체 수정 */
 #mail_tab > div > strong{display:block;font-size:1.12rem;color:#363636;line-height:1;font-weight:600;}/*8월 23일 수정됨*/
 
 .re_mail ul{margin-top:0.62rem;}
-.re_mail ul li{padding:0.75rem 0;overflow:hidden;}
+.re_mail ul li{padding:0.75rem 0;overflow:hidden;cursor:pointer;}
 .re_mail ul li a{display:block;line-height:2.44rem;padding:0 0.31rem;position:relative;z-index:1;}/*8월 10일 수정됨*/
 .re_mail ul li a dl dt{font-size:0.93rem;color:#444;line-height:1.2;}
 .re_mail ul li a dl dd{margin-top:0.31rem;font-size:0.93rem;color:#444;line-height:1.2;text-overflow:ellipsis;white-space:nowrap;overflow:hidden;padding-right:1.56rem;}/*7월 5일 수정*/
@@ -1028,7 +1037,7 @@ app04->파일명 mob_app_ docform로 변경됨 7월 29일 전체 수정 */
 
 .se_mail{margin-top:0.62rem;position:relative;}
 .se_mail ul{margin-top:0.62rem;}
-.se_mail ul li{height:2.5rem;position:relative;}
+.se_mail ul li{height:2.5rem;position:relative;cursor:pointer;}
 .se_mail ul li + li{border-top:0.06rem solid #eee;}
 .se_mail ul li a{display:block;font-size:0.93rem;color:#444;line-height:2.44rem;text-overflow:ellipsis;white-space:nowrap;overflow:hidden;padding:0 0.62rem;}
 .se_mail ul li.new a{padding-left:1.87rem;position:relative;}
@@ -1037,11 +1046,14 @@ app04->파일명 mob_app_ docform로 변경됨 7월 29일 전체 수정 */
 
 /* 받은메일 리스트 remail */
 .m_contents02{background:#fff;margin-top:3.12rem;}
-.m_contents02 ul li{height:4.37rem;padding:0.75rem;position:relative;}
+.m_contents02 ul li{height:4.37rem;padding:0.75rem;position:relative;cursor:pointer;}
 
 /* 코드추가로 해당 라인 다름  */
-.m_contents02 ul .swipeout-list.card .swipeout-list-item:nth-child(n+2) li{border-top:0.06rem solid hsl(0, 0%, 90%);}
-.m_contents02 ul li + li{border-top:0.06rem solid #e6e6e6;}
+.m_contents02 ul .swipeout-list.card .swipeout-list-item{border-top:0.06rem solid #e6e6e6;border-bottom:0.06rem solid #e6e6e6;}
+.m_contents02 ul .swipeout-list.card .swipeout-list-item + .swipeout-list-item{margin-top:-0.06rem;}
+.m_contents02 ul .swipeout-list.card .swipeout-list-item li{border:0;}
+.m_contents02 ul li{border-top:0.06rem solid #e6e6e6;border-bottom:0.06rem solid #e6e6e6;}
+.m_contents02 ul li + li{margin-top:-0.06rem;}
 /*  */
 
 .m_contents02 ul li dl{float:left;margin-left:3.31rem;width:78%;}
@@ -1129,7 +1141,8 @@ app04->파일명 mob_app_ docform로 변경됨 7월 29일 전체 수정 */
 .mail_sub_set{width:1.12rem;height:1.12rem;}
 .mail_sub_set a{display:block;height:100%;background:url(/mobile/img/set_btn.png)center no-repeat;background-size:1.12rem 1.12rem;}
 .mail_sub_close{width:0.93rem;height:0.93rem;background:url(/mobile/img/mail_sub_close.png)center no-repeat;background-size:0.93rem 0.93rem;margin-left:0.93rem;}
-.mail_box_list01{padding:1.31rem 0;}
+/* .mail_box_list01{padding:1.31rem 0;} */
+.mail_box_list01{padding:1.31rem 0 3.06rem;}
 .mail_box_list01 > div > em{display:block;line-height:1;font-size:0.75rem;color:#999;padding-left:1.31rem;}
 .mail_box_list01 > div > ul{padding:0.56rem 0;}
 
@@ -1163,20 +1176,30 @@ app04->파일명 mob_app_ docform로 변경됨 7월 29일 전체 수정 */
 .mail_box_list01 > div:nth-child(1) > ul li:nth-child(8) h3:after{width:0.87rem;height:0.93rem;content:"";background:url(/mobile/img/mail_icon08.png)center no-repeat;background-size:0.87rem 0.93rem;}
 .mail_box_list01 > div:nth-child(2) > ul li:nth-child(1) h3:after{width:1rem;height:0.81rem;content:"";background:url(/mobile/img/mail_icon09.png)center no-repeat;background-size:1rem 0.81rem;}
 
-.depth02{padding:0.62rem 0 0.62rem 3.12rem;background:#f3f3f3;display:none;overflow-x:scroll;overflow:hidden;}
+/* .depth02{padding:0.62rem 0 0.62rem 3.12rem;background:#f3f3f3;display:none;overflow-x:scroll;overflow:hidden;} */
+.depth02{padding:0.62rem 0 0.62rem 2.25rem;background:#f3f3f3;display:none;overflow-x:scroll;overflow:hidden;}
+
 .depth02 li a{position:relative;display:block;line-height:1.87rem;font-size:0.87rem;color:#444;padding-left:0.62rem;white-space:nowrap;}
-.depth02 li a:after{position:absolute;top:0;left:0;content:"-";font-size:0.87rem;color:#444;}
+/* .depth02 li a:after{position:absolute;top:0;left:0;content:"-";font-size:0.87rem;color:#444;} */
+.depth02 li a .down_m{position:absolute;top:0;right:0.31rem;width:2.5rem;height:2.5rem;}
+.depth02 li a .down_m:after{position:absolute;top:50%;left:50%;width:0.93rem;height:0.56rem;transform:translate(-50%,-50%);content:"";background:url(/mobile/img/mail_open.png)center no-repeat;background-size:0.93rem 0.56rem;}
+.depth02 li h4.on .down_m:after{background:url(/mobile/img/mail_close.png)center no-repeat;background-size:0.93rem 0.56rem;}
+.depth02 li h4:after{position:absolute;top:50%;left:1.31rem;transform:translateY(-50%);line-height:1;}
+
+
 .depth02 ul{padding-left:1.25rem;display:none;}
-.depth02 ul li a{position:relative;display:block;line-height:1.87rem;font-size:0.87rem;color:#444;padding-left:0.62rem;white-space:nowrap;}
-.depth02 ul li a:after{position:absolute;top:0;left:0;content:"-";font-size:0.87rem;color:#444;}
+/* .depth02 ul li a{position:relative;display:block;line-height:1.87rem;font-size:0.87rem;color:#444;padding-left:0.62rem;white-space:nowrap;}
+.depth02 ul li a:after{position:absolute;top:0;left:0;content:"-";font-size:0.87rem;color:#444;} */
 .depth02 li h4 a{font-weight:400;}
 .depth02 ul li h5 a{font-weight:400;}
 .depth02 ul li h6 a{font-weight:400;}
 
 /* 7월 29일 변경됨 */
-.impor_mail{display:none;position:fixed;top:0;left:0;right:0;width:100%;height:calc(100vh - 2.5rem);background:rgba(0, 0, 0, 0.6);padding:0 0.62rem;z-index:10;max-width:1080px;margin:0 auto;}/*8월 9일 수정됨*/
+.impor_mail{display:none;position:fixed;top:0;left:0;right:0;width:100%;height:100%;background:rgba(0, 0, 0, 0.6);padding:0 0.62rem;z-index:10;max-width:1080px;margin:0 auto;}/*8월 9일 수정됨*/
 .impor_mail.active{display:block;}
-.impor_con{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:calc(100% - 1.25rem);height:23.75rem;background:#fff;padding:0.62rem;}
+/* .impor_con{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:calc(100% - 1.25rem);height:calc(100vh - 13.43rem);background:#fff;padding:0.62rem;} */
+.impor_con{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:calc(100% - 1.25rem);height:26.5rem;background:#fff;padding:0.62rem;}
+
 .impor_con > strong{display:block;height:2.5rem;line-height:2.5rem;border-bottom:0.12rem solid #675fa8;font-size:1.12rem;color:#000;padding-left:0.62rem;}
 .impor_con p{margin-top:0.62rem;}
 .impor_con p > span{display:inline-block;position:relative;font-size:0.93rem;color:#333;line-height:3.12rem;padding-left:2.5rem;}
@@ -1185,13 +1208,18 @@ app04->파일명 mob_app_ docform로 변경됨 7월 29일 전체 수정 */
 .impor_con ul{margin-top:0.62rem;}
 .impor_con ul li{height:auto;min-height:3.12rem !important;border-top:0.06rem solid #efefef;border-bottom:0.06rem solid #efefef;display:table;width:100%;padding:0;}
 .impor_con ul li + li{margin-top:-0.06rem;}
-.impor_con ul li em{display:table-cell;width:6.25rem;background:#f6f6f6;padding-left:0.62rem;height:100%;line-height:3rem;font-size:0.93rem;color:#333;font-weight:600;vertical-align:top;}
-.impor_con ul li div{display:table-cell;width:calc(100% - 6.25rem);height:100%;padding:0.31rem 0.98rem;font-size:0.93rem;color:#333;}
+/* .impor_con ul li em{display:table-cell;width:6.25rem;background:#f6f6f6;padding-left:0.62rem;height:100%;line-height:3rem;font-size:0.93rem;color:#333;font-weight:600;vertical-align:top;} */
+.impor_con ul li em{display:table-cell;width:5.62rem;background:#f6f6f6;padding-left:0.62rem;height:100%;line-height:3rem;font-size:0.93rem;color:#333;font-weight:600;vertical-align:top;}
+
+.impor_con ul li > div{display:table-cell;width:calc(100% - 6.25rem);height:100%;padding:0.31rem 0.98rem;font-size:0.93rem;color:#333;}
 .impor_con ul li div input{height:2.5rem;appearance:none;border:0.06rem solid #e6e6e6;outline:none;appearance:none;padding:0 0.43rem 0 0.81rem}
 .impor_con ul li div input[type="date"]{width:100%;background:#fff url(/mobile/img/app_date.png)right 0.43rem center no-repeat;background-size:1.06rem 1.06rem;}
-.impor_con ul li div select{height:2.5rem;appearance:none;border:0.06rem solid #e6e6e6;outline:none;width:calc((100% - 0.81rem)/ 2);appearance:none;padding:0 1.56rem 0 0.81rem;background:#fff;font-size:0.87rem;color:#333;background:url(/mobile/img/more_refer.png)right 0.62rem center no-repeat;background-size:0.56rem 0.37rem;}/*7월 29일 추가됨 */
+.impor_con ul li div select{height:2.5rem;appearance:none;border:0.06rem solid #e6e6e6;outline:none;width:calc((100% - 1rem)/ 2);appearance:none;padding:0 1.56rem 0 0.81rem;background:#fff;font-size:0.87rem;color:#333;background:url(/mobile/img/more_refer.png)right 0.62rem center no-repeat;background-size:0.56rem 0.37rem;}/*7월 29일 추가됨 */
 .impor_con ul li:nth-child(3) div{font-size:0;}
-.impor_con ul li div textarea{width:100%;height:5rem;resize:none;outline:none;padding:0.31rem;border:0.06rem solid #e6e6e6;}
+.impor_con ul li div .ProseMirror{width:100%;height:5rem;resize:none;outline:none;padding:0.31rem;border:0.06rem solid #e6e6e6;margin-top:0 !important;text-align:left;}
+.impor_con ul li div .ProseMirror p{line-height:1.2;margin-top:0 !important;font-size:0.93rem;color:#444;}
+.impor_con ul li div textarea{text-align:center;margin-top:0.93rem;width:100%;height:5rem;resize:none;padding:0.31rem;border:0.06rem solid #e6e6e6;margin-top:0 !important;text-align:left;}
+/* .impor_con ul li div .ProseMirror p{line-height:1.2;margin-top:0 !important;font-size:0.93rem;color:#444;} */
 .impor_con div{text-align:center;font-size:0;margin-top:0.93rem;}
 .impor_con div span{display:inline-block;width:5rem;height:1.87rem;line-height:1.87rem;font-size:0.93rem;text-align:center;vertical-align:top;}
 .impor_mo_btn{background:#655da7;color:#fff;}
@@ -1226,12 +1254,12 @@ app04->파일명 mob_app_ docform로 변경됨 7월 29일 전체 수정 */
 .search_con{display:none;position:fixed;top:0;left:0;right:0;max-width:1080px;width:100%;margin:0 auto;background:rgba(0,0,0,.6);height:100vh;z-index:10;}
 .search_con.active{display:block;}
 .search_con .sc_top{height:3.12rem;background:#655da7;position:relative;padding:0 3.12rem 0 3rem;}
-.search_con .sc_top .back_btn{position:absolute;top:50%;left:0.93rem;transform:translateY(-50%);;width:0.62rem;height:1.18rem;background:url(/mobile/img/m_edit_icon01.png)center no-repeat;background-size:100% 100%;}
+.search_con .sc_top .back_btn{z-index:2;position:absolute;top:50%;left:0.93rem;transform:translateY(-50%);;width:0.62rem;height:1.18rem;background:url(/mobile/img/m_edit_icon01.png)center no-repeat;background-size:100% 100%;}
 .search_con .sc_top div{padding-right:1.18rem;position:relative;}/*8월 9일 추가됨*/
 .search_btn{position:absolute;top:0;right:0;width:1.18rem;height:3.12rem;background: url(/mobile/img/search_icon_w_2.png)center no-repeat;background-size:1.18rem 1.12rem;}/*8월 9일 추가됨 */
 .search_con .sc_top input{width:100%;height:3.12rem;border:0;appearance:none;outline:none;font-size:1rem;color:#fff;line-height:3.12rem;background:none;}
 .search_con .sc_top input::placeholder{font-size:1rem;color:#fff;}
-.search_con .sc_top .sc_more{position:absolute;top:0;right:0;width:3.12rem;height:3.12rem;background:url(/mobile/img/edit_more_icon.png)center no-repeat;background-size:0.18rem 0.93rem;cursor:pointer;}/*8월 9일 수정*/
+.search_con .sc_top .sc_more{cursor:pointer;position:absolute;top:0;right:0;width:3.12rem;height:3.12rem;background:url(/mobile/img/edit_more_icon.png)center no-repeat;background-size:0.18rem 0.93rem;cursor:pointer;}/*8월 9일 수정*/
 .search_con .sc_btm{display:none;background:#fff;padding:1.25rem 0.93rem;}
 .search_con .sc_btm.on{display:block;}
 .search_con .sc_btm p{font-size:0;line-height:1;}
@@ -1293,7 +1321,7 @@ app04->파일명 mob_app_ docform로 변경됨 7월 29일 전체 수정 */
 
 .tit_line > div{padding:0.31rem 2.5rem 0.31rem 0.31rem;position:relative;font-size:0;height:3.12rem;margin-left:6.25rem;}
 .tit_line input[type="text"]{display:inline-block;height:2.43rem;outline:none;border:0;font-size:0.93rem;color:#444;width:100%;padding:0 0.31rem;}
-.tit_clip{position:absolute;top:50%;right:0.62rem;transform:translateY(-50%);width:1rem;height:1rem;background:url(/mobile/img/clip.png)center no-repeat;background-size:1rem 1rem;cursor:pointer;}
+.tit_clip{z-index:3;position:absolute;right:0.62rem;transform:translateY(100%);width:1rem;height:1rem;background:url(/mobile/img/clip.png)center no-repeat;background-size:1rem 1rem;cursor:pointer;}
 .wm_top > li.add_file > strong{float:none;display:block;height:3.12rem;width:100%;}
 .add_file ul{padding:0 1.31rem;}
 .add_file ul li{font-size:0;display:none;}
@@ -1361,7 +1389,7 @@ app04->파일명 mob_app_ docform로 변경됨 7월 29일 전체 수정 */
 .organ_con .last_deps div b:after{display:none;}
 .organ_modal .modal_close{position:absolute;top:0.93rem;right:0.93rem;width:1.06rem;height:1.06rem;background:url(/mobile/img/modal_close.png)center no-repeat;background-size:0.75rem 0.75rem;cursor:pointer;}
 
-.all_organ_modal{display:none;position:absolute;top:0;left:0;right:0;margin:0 auto;width:100%;height:100%;background:rgba(0, 0, 0, 0.6);padding:0 0.62rem;z-index:12;}
+.all_organ_modal{display:none;position:fixed;top:0;left:0;right:0;margin:0 auto;width:100%;height:100%;background:rgba(0, 0, 0, 0.6);padding:0 0.62rem;z-index:12;}
 .all_organ_modal .organ_con{height:550px;}
 .all_organ_modal.on{display:block;}
 .all_organ_modal .modal_close{position:absolute;top:0.93rem;right:0.93rem;width:1.06rem;height:1.06rem;background:url(/mobile/img/modal_close.png)center no-repeat;background-size:0.75rem 0.75rem;cursor:pointer;}
@@ -1420,7 +1448,7 @@ app04->파일명 mob_app_ docform로 변경됨 7월 29일 전체 수정 */
 .m_contents04 .add_file{padding:0 1.25rem;}
 .m_contents04 .add_file strong{display:block;font-size:0.93rem;color:#999;line-height:3.12rem;}
 .m_contents04 .add_file ul{padding:0;}
-.rdm_edit{height:calc(100vh - 25.12rem);padding:1.25rem;overflow-y:scroll;font-size:0.93rem;color:#444;line-height:1.4;}
+.rdm_edit{height:calc(100vh);padding:1.25rem;overflow-y:scroll;font-size:0.93rem;color:#444;line-height:1.4;}
 .rd_top .re_refer_div{display:none;}
 .rd_top .re_refer_div.active{display:block;}
 .rd_top .re_refer_div > li{position:relative;min-height:2.5rem;border-top:0.06rem solid #f2f2f2;}
@@ -1704,7 +1732,7 @@ app04->파일명 mob_app_ docform로 변경됨 7월 29일 전체 수정 */
 
 /* 조직도 상세보기 */
 /* .a_contents09{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:100%;height:100%;background:rgba(0, 0, 0, 0.6);z-index:11;} */
-.con09_inner{z-index: 22;display:none;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);padding:80px 0 32px;background:#fff;text-align:center;width:calc(100% - 1.87rem);border-radius:5px;height:550px;}
+.con09_inner{z-index: 22;display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);padding:80px 0 32px;background:#fff;text-align:center;width:calc(100% - 1.87rem);border-radius:5px;height:550px;}
 .con09_inner.active{display:block;}
 .con09_inner strong{font-size:15px;color:#000;line-height:1;font-weight:normal;}
 .con09_inner strong em{font-size:18px;font-weight:600;margin-right:5px;}
@@ -1846,7 +1874,7 @@ li.att_file .att_del{display:inline-block;vertical-align:-0.06rem;width:0.62rem;
 .rd_list > li div{display:inline-block;width:calc(100% - 5.43rem);font-size:0.93rem;color:#333;line-height:3.06rem;padding-left:0.18rem;vertical-align:top;}
 .cal_info{border-top:0.06rem solid #f2f2f2;font-size:0.93rem;color:#333;line-height:1.6;padding:1.25rem 0.62rem;}
 .file_list{display:inline-block;width:calc(100% - 5.43rem);vertical-align:top;padding:0.62rem 0.18rem;}
-.file_list > li{font-size:0.93rem;color:#3b68bb;line-height:1.81rem;}/*7월 29일 css 수정됨*/
+.file_list > li{font-size:0.93rem;color:#3b68bb;line-height:1.81rem;padding-right:1.875rem;}/*7월 29일 css 수정됨*/
 
 /* 일정 편집 */
 .edcal_header .file_list{display:inline-block;width:calc(100% - 5.43rem);vertical-align:top;padding:0.62rem 0.18rem;}
@@ -1858,21 +1886,21 @@ li.att_file .att_del{display:inline-block;vertical-align:-0.06rem;width:0.62rem;
 #board_tab > div > strong{display:block;font-size:1.12rem;color:#363636;line-height:1;font-weight:600;}
 
 .board01 ul{margin-top:0.62rem;}
-.board01 ul li{height:2.5rem;position:relative;}
+.board01 ul li{height:2.5rem;position:relative;cursor:pointer;}
 .board01 ul li a{display:block;line-height:2.44rem;font-size:0.93rem;color:#444;text-overflow:ellipsis;white-space:nowrap;overflow:hidden;padding:0 0.31rem;}
 .board01 ul li + li{border-top:0.06rem solid #eee;}
 .board01 ul li.new a{padding-left:1.56rem;position:relative;}
 .board01 ul li.new a:after{position:absolute;top:50%;left:0.31rem;transform:translateY(-50%);width:0.93rem;height:0.93rem;border-radius:50%;overflow:hidden;background:#ff743c;content:"N";text-align:center;line-height:0.93rem;color:#fff;font-size:0.5rem;font-weight:600;}
 
 .board02 ul{margin-top:0.62rem;}
-.board02 ul li{height:2.5rem;position:relative;}
+.board02 ul li{height:2.5rem;position:relative;cursor:pointer;}
 .board02 ul li a{display:block;line-height:2.44rem;font-size:0.93rem;color:#444;text-overflow:ellipsis;white-space:nowrap;overflow:hidden;padding:0 0.31rem;}
 .board02 ul li + li{border-top:0.06rem solid #eee;}
 .board02 ul li.new a{padding-left:1.56rem;position:relative;}
 .board02 ul li.new a:after{position:absolute;top:50%;left:0.31rem;transform:translateY(-50%);width:0.93rem;height:0.93rem;border-radius:50%;overflow:hidden;background:#ff743c;content:"N";text-align:center;line-height:0.93rem;color:#fff;font-size:0.5rem;font-weight:600;}
 
 .board03 ul{margin-top:0.62rem;}
-.board03 ul li{height:2.5rem;position:relative;}
+.board03 ul li{height:2.5rem;position:relative;cursor:pointer;}
 .board03 ul li a{display:block;line-height:2.44rem;font-size:0.93rem;color:#444;text-overflow:ellipsis;white-space:nowrap;overflow:hidden;}
 .board03 ul li a em{display:inline-block;position:relative;font-size:0.93rem;color:#655da7;font-weight:600;margin-right:0.31rem;}/* 7월 19일 수정됨 */
 .board03 ul li + li{border-top:0.06rem solid #eee;}
@@ -1886,7 +1914,7 @@ li.att_file .att_del{display:inline-block;vertical-align:-0.06rem;width:0.62rem;
 /* 게시판 리스트  */
 .noti .e_edit{display:none;}
 .noti .edit_header div{right:1.25rem;}
-.board_list li{padding:0.93rem 0.75rem !important;height:auto !important;}
+.board_list li{padding:0.93rem 0.75rem !important;height:auto !important;cursor:pointer;}
 .board_list li a{display:block;height:100%;overflow:hidden;}
 .board_list li a dl dt{font-size:0.93rem;color:#000;text-overflow:ellipsis;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;line-height:1.6;height:3.2em;word-break:break-all;}
 .board_list li a dl dt .bul_tit{display:inline-block;font-size:0.81rem;color:#655da7;border:0.06rem solid #655da7;padding:0.18rem 0.37rem;width:auto;height:auto;margin-right:0.5rem;line-height:1;vertical-align:0.06rem;}
@@ -1899,7 +1927,7 @@ li.att_file .att_del{display:inline-block;vertical-align:-0.06rem;width:0.62rem;
 .board_list .clip{position:absolute;bottom:0.87rem;right:0.75rem;}
 
 /* 게시판 서브메뉴 */
-.noti_sub_menu01{display:none;position:fixed;top:0;left:0;right:0;max-width:1080px;width:100%;height:100%;background:rgba(0,0,0,.5);z-index:2;margin:0 auto;}
+.noti_sub_menu01{display:none;position:fixed;top:0;left:0;right:0;max-width:1080px;width:100%;height:100%;background:rgba(0,0,0,.5);z-index:10;margin:0 auto;}
 .noti_sub_menu01.on{display:block;}
 .inner01{width:75%;background:#fff;height:100%;}
 .in_top{padding:0.68rem 0.93rem;position:relative;}
@@ -1912,7 +1940,7 @@ li.att_file .att_del{display:inline-block;vertical-align:-0.06rem;width:0.62rem;
 .noti_sub_menu01 .icons .sub_set{width:1.12rem;height:1.12rem;}
 .noti_sub_menu01 .icons .sub_set a{display:block;height:100%;background:url(/mobile/img/set_btn.png)center no-repeat;background-size:1.12rem 1.12rem;}
 .noti_sub_menu01 .icons .sub_close{width:0.93rem;height:0.93rem;background:url(/mobile/img/mail_sub_close.png)center no-repeat;background-size:0.93rem 0.93rem;margin:0.06rem 0 0 0.93rem;}
-.noti_sub_menu01 .inner01 > ul{border-top:0.06rem solid #f6f6f6;padding:1.37rem 1.25rem 0;}
+.noti_sub_menu01 .inner01 > ul{border-top:0.06rem solid #f6f6f6;padding:1.37rem 0 3.06rem 0.937rem;}
 .noti_sub_menu01 .inner01 > ul > li h3 a{display:block;font-size:1rem;color:#444;padding-left:1.56rem;background:url(/mobile/img/mail_icon09.png)left center no-repeat;background-size: 1rem 0.81rem}
 .noti_sub_menu01 .inner01 > ul > li + li{margin-top:1.68rem;}
 
@@ -1950,7 +1978,7 @@ li.att_file .att_del{display:inline-block;vertical-align:-0.06rem;width:0.62rem;
 .wn_top > .class_line{padding-right:5.62rem;}/*8월 9일 추가됨*/
 .wn_top > .class_line select{width:100%;height:2.43rem;font-size: 0.87rem;color:#494949;appearance:none;border:0.06rem solid #e6e6e6;padding-left:0.62rem;outline:none;padding-right:2.43rem;background:url(/mobile/img/select_ic.png)right center no-repeat;background-size: 2.43rem 2.18rem;}/*8월 9일 수정*/
 
-.noti_con{border-top:0.06rem solid #f2f2f2;word-break:break-all;height:calc(100vh - 24.68rem);}/*8월 24일 수정*/
+.noti_con{border-top:0.06rem solid #f2f2f2;word-break:break-all;height:16.812rem;}/*8월 24일 수정*/
 .noti_con textarea{resize:none;width:100%;height:100%;font-size:0.93rem;color:#444;word-break:break-all;}/*8월 9일 수정*/
 .wn_top .att_file{display:none;}
 .wn_top .att_file.active{display:block;}
@@ -2124,6 +2152,7 @@ li.cf_w_memo #memo_t{width:100%;height:100%;font-size:0.93rem;color:#444;line-he
 .main_wrap button{display:block;width:17.62rem;height:3.12rem;margin:2.31rem auto 0;border-radius:0.31rem;background:#655da7;line-height:3.12rem;text-align:center;font-size:1rem;color:#fff;font-weight:600;}
 
 /* 다크모드 전환시 */
+#app.dark{background:#000;}
 .wrap.dark{background:#000;}
 .dark .header{background:#000;}
 .dark .header h1{color:#f2f2f2;}
@@ -2194,7 +2223,7 @@ li.cf_w_memo #memo_t{width:100%;height:100%;font-size:0.93rem;color:#444;line-he
 .dark #recommend p em{color:#f2f2f2;}
 .dark #recommend p em + em:after{background:#232323;}
 .dark .item{color:#f2f2f2;}
-.dark .text{color:#f2f2f2;}
+.dark .text{color:#655da7;}
 .dark .search_bar div form{border:0.06rem solid #232323;}
 .dark .search_bar div form input{color:#f2f2f2;}
 .dark .search_bar div form input:focus{background:none;}
@@ -2277,6 +2306,7 @@ li.cf_w_memo #memo_t{width:100%;height:100%;font-size:0.93rem;color:#444;line-he
 .dark #my_tab > div > strong{color:#f2f2f2;}
 .dark .my_info{background:#000;}
 .dark .m_mail{background:#000;}
+.dark .m_mail strong{color:#f2f2f2;}
 .dark .m_mail ul li a{color:#f2f2f2;}
 .dark .m_mail ul li a dl dt{color:#f2f2f2;}
 .dark .m_mail ul li a dl dd{color:#c4c7ca;}
@@ -2292,7 +2322,7 @@ li.cf_w_memo #memo_t{width:100%;height:100%;font-size:0.93rem;color:#444;line-he
 .dark .tooltip:after{border-color:#232323;background:#000;}
 .dark .m_app_ing > div > div{background:#000;}
 .dark .app_slide .slick-slide{border-color:#565656;}
-.dark .app_slide .slick-slide > strong{color:#f2f2f2;}
+.dark .app_slide .slick-slide strong{color:#f2f2f2;}
 .dark .app_slide .slick-slide .per_info dl dt{color:#e5e9ee;}
 .dark .app_slide .slick-slide .per_info dl dd{color:#c4c7ca;}
 
@@ -2304,6 +2334,7 @@ li.cf_w_memo #memo_t{width:100%;height:100%;font-size:0.93rem;color:#444;line-he
 .dark .m_paying em{color:#f2f2f2;}
 
 .dark .m_calendar{background:#000;}
+.dark .m_calendar strong{color:#f2f2f2;}
 .dark .d_day em{color:#e5e9ee;}
 .dark .d_day b{color:#ff743c;}
 .dark .all_cal em{color:#ff743c;border-color:#ff743c;}
@@ -2315,6 +2346,7 @@ li.cf_w_memo #memo_t{width:100%;height:100%;font-size:0.93rem;color:#444;line-he
 .dark .c_list li.red em{color:#ff743c;border-color:#ff743c;}
 .dark .c_list li.red p{color:#e5e9ee;}
 .dark .m_posts{background:#000;}
+.dark .m_posts strong{color:#f2f2f2;}
 .dark .m_posts ul li a{color:#f2f2f2;}
 .dark .m_posts ul li + li:after{background:#232323;}
 /* .dark .quick li{border-color:#e5e9ee;}
@@ -2547,7 +2579,7 @@ li.cf_w_memo #memo_t{width:100%;height:100%;font-size:0.93rem;color:#444;line-he
 .dark .last_deps.active div em.tel{border-color:#999;}
 .dark .organ_con .last-deps li div:after{display:none;}
 .dark .organ_modal .modal_close{position:absolute;top:0.93rem;right:0.93rem;width:1.06rem;height:1.06rem;background:url(/mobile/img/modal_close_d.png)left 0.25rem center no-repeat;background-size:0.75rem 0.75rem;cursor:pointer;}
-.dark .all_organ_modal .modal_close{position:absolute;top:0.93rem;right:0.93rem;width:1.06rem;height:1.06rem;background:url(/mobile/img/modal_close_d.png)left 0.25rem center no-repeat;background-size:0.75rem 0.75rem;cursor:pointer;}
+.dark .all_organ_modal .modal_close{position:fixed;top:0.93rem;right:0.93rem;width:1.06rem;height:1.06rem;background:url(/mobile/img/modal_close_d.png)left 0.25rem center no-repeat;background-size:0.75rem 0.75rem;cursor:pointer;}
 
 /* 예은주임님 css
 .organ_con{background:#232323;}
@@ -2629,6 +2661,8 @@ li.cf_w_memo #memo_t{width:100%;height:100%;font-size:0.93rem;color:#444;line-he
 .dark .more_box li{color:#f2f2f2;}
 .dark .more_box li + li{border-color:#565656;}
 .dark .edit_check.on{border-color:#565656;}
+.dark .swipeout-list-item + .swipeout-list-item{border-top:0.06rem solid #232323 !important;}
+.dark .m_contents02 ul .swipeout-list.card .swipeout-list-item:nth-child(n+2) li{border:0;}
 
 /* 메일 환경설정  dark*/
 .dark .mail_st_header{background:#000;color:#f2f2f2;}
@@ -2699,7 +2733,7 @@ li.cf_w_memo #memo_t{width:100%;height:100%;font-size:0.93rem;color:#444;line-he
 .dark .noti_sub_menu01 .icons .sub_close{background:url(/mobile/img/main_sub_close_d.png)center no-repeat;background-size:0.93rem 0.93rem;}
 .dark .noti_sub_menu01 .inner01 > ul{border-color:#565656;}
 .dark .noti_sub_menu01 .inner01 > ul > li h3 a{color:#f2f2f2;background:url(/mobile/img/mail_icon09.png)left center no-repeat;background-size: 1rem 0.81rem}
-
+.dark .nt_list_menu li h3 a{color:#f2f2f2;}
 /* 게시판쓰기  dark*/
 .dark .wnoti_header{background:#000;border-color:#232323;}
 .dark .wnoti_header h2{color:#f2f2f2;}
@@ -2759,7 +2793,7 @@ li.cf_w_memo #memo_t{width:100%;height:100%;font-size:0.93rem;color:#444;line-he
 .dark .btm_menu_list ul .mail_f_ic{background:#232323 url(/mobile/img/btm_list_ic01.png)center no-repeat;background-size:1.18rem 1.18rem;}
 .dark .btm_menu_list ul .approval_f_ic{background:#232323 url(/mobile/img/btm_list_ic02.png)center no-repeat;background-size:1.18rem 1.18rem;}
 .dark .btm_menu_list ul .schedule_f_ic{background:#232323 url(/mobile/img/btm_list_ic03.png)center no-repeat;background-size:1.31rem 1.25rem;}
-.dark .btm_menu_list ul .board_f_ic a span{background:#232323 url(/mobile/img/btm_list_ic04.png)center no-repeat;background-size:1.06rem 1.18rem;}
+.dark .btm_menu_list ul .board_f_ic{background:#232323 url(/mobile/img/btm_list_ic04.png)center no-repeat;background-size:1.06rem 1.18rem;}
 .dark .btm_menu_list ul .reservation_f_ic{background:#232323 url(/mobile/img/btm_list_ic05.png)center no-repeat;background-size:1.18rem 1.18rem;}
 .dark .btm_menu_list ul .person_f_ic{background:#232323 url(/mobile/img/btm_list_ic06.png)center no-repeat;background-size:1.06rem 1.31rem;}
 .dark .btm_menu_list .close_btn{width:0.87rem;height:0.87rem;background:url(/mobile/img/main_sub_close_d.png)center no-repeat;background-size:100% 100%;}
@@ -2886,9 +2920,42 @@ li.cf_w_memo #memo_t{width:100%;height:100%;font-size:0.93rem;color:#444;line-he
 .dark .a_organ_ft div > span{color:#f2f2f2;}
 .dark .a_organ_ft .sv_radio{border-color:#565656;background:#232323;}
 
+/* 프로필 */
+.dark .con09_inner{background:#232323;}
+.dark .con09_inner strong{color:#f2f2f2;}
 
 
 
+.dark .con09_inner div ul li{color:#f2f2f2;}
+
+.dark .con09_inner > ul li a em{color:#c4c7ca;}
+.dark .con09_inner .modal_close{background:url(/mobile/img/modal_close_d.png)center no-repeat;background-size:0.75rem 0.75rem;cursor:pointer;}
+
+/* 결재의견 모달  */
+.opinion_modal{display:none;position:fixed;top:0;left:0;right:0;width:100%;height:calc(100vh - 3.12rem);background:rgba(0, 0, 0, 0.6);padding:0 0.62rem;z-index:10;max-width:1080px;margin:0 auto;}/*8월 9일 수정됨*/
+.opinion_modal.active{display:block;}
+.opinion_con{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:calc(100% - 1.25rem);height:23.75rem;background:#fff;padding:0.62rem;}
+.opinion_con > strong{display:block;height:2.5rem;line-height:2.5rem;border-bottom:0.12rem solid #675fa8;font-size:1.12rem;color:#000;padding-left:0.62rem;}
+.text_con{margin-top:0.937rem;}
+.text_con textarea{resize:none;padding:0.625rem;height:15.625rem;border:0.06rem solid #efefef;display:block;width:100%;}
+.opinion_con div:nth-child(3){margin:1.25rem auto 0;text-align:center;}
+.opinion_con div span{display:inline-block;width:5rem;height:1.87rem;line-height:1.87rem;font-size:0.93rem;text-align:center;vertical-align:top;}
+.impor_mo_btn{background:#655da7;color:#fff;}
+.modal_cancel{background:#e1e1e1;margin-left:0.31rem;color:#494949;}
+
+/* 결재의견 다크  */
+.dark .opinion_con{background:#232323;}
+.dark .opinion_con > strong{border-color:#565656;color:#f2f2f2;}
+.dark .text_con textarea{border-color:#565656;background:#232323;color:#f2f2f2;}
+
+/* 일정등록 다크 */
+.dark .list_md_inner{background:#232323;}
+.dark .list_md_inner .con_body{background:#232323;}
+.dark .list_header .today_date{color:#f2f2f2;}
+.dark .list_header .modal_close{width:1.06rem;height:1.06rem;background:url(../img/modal_close_d.png)center no-repeat;background-size:0.75rem 0.75rem;}
+.dark .con_body .cal_view li{border-color:#565656;}
+.dark .con_body .no_schedule{border-color:#565656;}
+.dark .con_ft{border-color:#565656;}
 
 
 

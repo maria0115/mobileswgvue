@@ -10,11 +10,14 @@
         <!--7월 6일 추가됨-->
         <span class="tem_save" @click="Send('save')">임시저장</span
         ><!--7월 6일 추가됨-->
-        <span class="mail_send" @click="Send('send')">보내기</span>
+        <span v-if="isDraftEdit()" class="mail_send" @click="$router.go(-1)"
+          >취소</span
+        >
+        <span v-else class="mail_send" @click="Send('send')">보내기</span>
       </div>
     </div>
     <div class="m_contents03">
-      <form action="">
+      <form @submit.prevent>
         <ul class="wm_top">
           <li class="clfix">
             <strong>받는사람 <em class="re_more"></em></strong>
@@ -243,7 +246,6 @@
             <strong>제목</strong>
             <div>
               <input type="text" v-model="Subject" />
-              <span class="tit_clip" @click="submitFile()" />
               <input
                 multiple
                 style="display: none"
@@ -255,7 +257,10 @@
             </div>
           </li>
           <li class="add_file clfix">
-            <strong>파일첨부</strong>
+            <strong
+              >파일첨부<span class="tit_clip" @click="submitFile()"
+            /></strong>
+
             <ul>
               <li
                 class="active"
@@ -269,9 +274,7 @@
                 /></span>
                 <div>
                   <p>{{ value.name }}</p>
-                  <em v-if="from === ''"
-                    >({{ value.size}})</em
-                  >
+                  <em v-if="from === ''">({{ value.size }})</em>
                   <em v-else>({{ value.size }})</em>
                   <span class="file_del" @click="FileDel(value)"></span>
                 </div>
@@ -365,13 +368,18 @@ export default {
   async created() {
     // this.$store.commit("mailjs/MailOrgDataInit");
     this.Body_Text = `${this.GetMail.writeForm.greetings}<p></p><p></p>${this.GetMail.writeForm.signature}<p></p><p></p>`;
+    this.isEdit = this.$route.query.isEdit;
     if (this.from === "Relay") {
       this.file = this.GetMailDetail.attach;
-      this.Subject = this.GetMailDetail.subject;
-      this.Body_Text += `----------------- 원본메일 ----------------- <p></p>${this.GetMailDetail.body}`;
+      this.Subject = this.GetMailDetail.forwardMail.subject;
+      this.Body_Text += `${this.GetMailDetail.forwardMail.body}${this.GetMailDetail.body}`;
     } else if (this.from === "Reply" || this.from === "AllReply") {
+      this.Subject = this.GetMailDetail.replyMail.subject;
+      this.Body_Text += `${this.GetMailDetail.replyMail.body}${this.GetMailDetail.body}`;
+    } else if (this.isDraftEdit()) {
+      this.file = this.GetMailDetail.attach;
       this.Subject = this.GetMailDetail.subject;
-      this.Body_Text += `----------------- 원본메일 ----------------- <p></p>${this.GetMailDetail.body}`;
+      this.Body_Text = this.GetMailDetail.body;
     }
 
     this.randomkey = await this.generateRandomCode(32);
@@ -401,7 +409,12 @@ export default {
   computed: {
     ...mapState("mailjs", ["from", "TimeOption"]),
     ...mapState(["autosearchorg", "org"]),
-    ...mapGetters("mailjs", ["GetMailDetail", "GetMail", "GetMailConfig"]),
+    ...mapGetters("mailjs", [
+      "GetfolderName",
+      "GetMailDetail",
+      "GetMail",
+      "GetMailConfig",
+    ]),
     isBlock: function () {
       if (this.isOpen) {
         return "block";
@@ -443,6 +456,9 @@ export default {
     };
   },
   methods: {
+    isDraftEdit() {
+      return this.GetfolderName.indexOf("draft") !== -1 && this.isEdit;
+    },
     generateRandomCode(n) {
       let str = "";
       for (let i = 0; i < n; i++) {
@@ -586,7 +602,8 @@ export default {
       if (
         this.from === "Reply" ||
         this.from === "AllReply" ||
-        this.from === "Relay"
+        this.from === "Relay" ||
+        this.isDraftEdit()
       ) {
         docType = "Forward";
         for (var i = 0; i < this.addAttach.length; i++) {
@@ -601,19 +618,21 @@ export default {
           }
         }
         formData.append("Detach", Detachstr);
-        formData.append("unid",this.GetMailDetail.unid);
+        formData.append("unid", this.GetMailDetail.unid);
       } else {
         for (var i = 0; i < this.file.length; i++) {
           formData.append("attach", this.file[i]);
         }
       }
-      formData.append("docType", docType);
       var MailTypeOptionstr = "";
       if (this.from === "Relay") {
         MailTypeOptionstr = "Forward";
       } else if (this.from === "Reply") {
         MailTypeOptionstr = "Reply";
+      } else if (this.isDraftEdit()) {
+        MailTypeOptionstr = "Forward";
       }
+      formData.append("docType", docType);
       formData.append("MailTypeOption", MailTypeOptionstr);
 
       formData.append("delaysend_use", delaysend_use);
@@ -642,11 +661,16 @@ export default {
             }
           });
         } else if (menu === "save") {
+          var type = "draftSave";
+
+          if (this.isDraftEdit()) {
+            type = "draft_edit";
+          }
           // 저장가능
           this.$store
             .dispatch("mailjs/MailSave", {
               data: formData,
-              menu: "draftSave",
+              menu: type,
             })
             .then((res) => {
               if (res) {
@@ -677,8 +701,8 @@ export default {
     },
     orgClick(to) {
       if (!this.tome) {
-      this.$store.commit("OrgPointer", to);
-      this.modalon = true;
+        this.$store.commit("OrgPointer", to);
+        this.modalon = true;
       }
     },
     timeOk() {
@@ -720,9 +744,11 @@ export default {
         if (result === -1) {
           this.file.push(this.$refs.file.files[0]);
         }
-        if (this.from === "Reply" ||
-        this.from === "AllReply" ||
-        this.from === "Relay") {
+        if (
+          this.from === "Reply" ||
+          this.from === "AllReply" ||
+          this.from === "Relay"
+        ) {
           this.addAttach.push(this.$refs.file.files[0]);
         }
       }

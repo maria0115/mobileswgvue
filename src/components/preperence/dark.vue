@@ -2,7 +2,7 @@
   <div>
     <Header :header="this.GetStyle.setdark" header_desc="다크모드 설정"></Header>
     <div class="contents02">
-      <form action="">
+      <form @submit.prevent>
         <ul class="dark_menu">
           <li>
             <ul>

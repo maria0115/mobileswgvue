@@ -2,7 +2,7 @@
   <div>
     <BackHeader desc="결재양식함에서 지정" :title="title"></BackHeader>
     <div class="a_contents05">
-      <form action="">
+      <form @submit.prevent>
         <ul>
           <li class="app_tit">
             <strong>제목</strong>
@@ -194,11 +194,11 @@
           </li>
           <li class="reason">
             <strong>본문</strong>
-            <div>
-              <editor-content :editor="editor" />
+            <!-- <div> -->
+              <editor-content :editor="editor"/>
               <!-- {{Body_Text}}
               <textarea v-html="Body_Text"></textarea> -->
-            </div>
+            <!-- </div> -->
           </li>
           <li class="file_add">
             <strong>첨부</strong>
@@ -617,13 +617,13 @@ export default {
 </script>
 
 <style>
-.ProseMirror {
-  width: 100%;
-  height: 8.75rem;
-  appearance: none;
-  outline: none;
-  border: 0.06rem solid #e6e6e6;
-  padding: 0.62rem;
+.ProseMirror{
+  width: 100% !important;
+  height: 8.75rem !important;
+  appearance: none !important;
+  outline: none !important; 
+  border: 0.06rem solid #e6e6e6 !important;
+  padding: 0.62rem !important;
 }
 .a_contents05 ul li.approver div span.app_pointer {
   margin: 0;

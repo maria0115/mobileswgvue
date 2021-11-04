@@ -31,26 +31,26 @@
 <script>
 import config from "../config/config.json";
 import { mapState, mapGetters } from "vuex";
-import cookie from 'vue-cookies';
+import cookie from "vue-cookies";
 
 export default {
   computed: {
     ...mapGetters("configjs", ["GetConfig"]),
-    },
+  },
   created() {
     this.idSave = JSON.parse(localStorage.getItem("idSave"));
     this.autoLogin = this.GetConfig.login;
     // this.autoLogin = JSON.parse(localStorage.getItem("autoLogin"));
-    if (this.idSave) {
-      this.id = localStorage.getItem(`${config.packageName}id`);
-    }
-    if (this.autoLogin&&this.GetConfig.login) {
+    if (this.autoLogin && this.GetConfig.login) {
       this.id = localStorage.getItem(`${config.packageName}id`);
       this.password = localStorage.getItem(`${config.packageName}pass`);
-      if(this.password.length > 0) {
+      if (this.password.length > 0) {
         this.login();
-
+        return;
       }
+    }
+    if (this.idSave) {
+      this.id = localStorage.getItem(`${config.packageName}id`);
     }
   },
   data() {
@@ -64,23 +64,37 @@ export default {
   },
   methods: {
     login() {
+      var query = this.$route.query;
+      if (query && Object.keys(query).length > 0) {
+        localStorage.setItem(
+          `${config.packageName}deviceInformation`,
+          JSON.stringify(query)
+        );
+      } else {
+        query = JSON.parse(
+          localStorage.getItem(`${config.packageName}deviceInformation`)
+        );
+      }
+
       var data = {
         Username: this.id,
         Password: this.password,
         idSave: this.idSave,
         autoLogin: this.autoLogin,
-        data: this.$route.query,
+        data: query,
       };
       this.$store.dispatch("login", data).then((res) => {
         if (res.success) {
           this.setConfig();
-          this.$router.push({name:'root'});
+          this.$router.push({ name: "root" });
         } else {
-          alert("로그인 실패, reason = > " + res.message);
+          if(res.alert){
+            alert("로그인 실패, reason = > " + res.message);
+
+          }
           localStorage.setItem("autoLogin", false);
           localStorage.setItem(`${config.packageName}pass`, "");
           this.password = "";
-          console.log(this)
           cookie.set("LtpaToken", "");
           // console.log(this.$cookie.get("LtpaToken"))
         }
@@ -91,11 +105,10 @@ export default {
     },
     toggleautoLogin() {
       this.autoLogin = !this.autoLogin;
-      
     },
     setConfig() {
       this.$store.dispatch("configjs/setConfig", {
-        menu: 'login',
+        menu: "login",
         value: this.autoLogin,
       });
     },

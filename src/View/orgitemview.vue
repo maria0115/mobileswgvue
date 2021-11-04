@@ -28,6 +28,7 @@
         @OpenFolder="OpenFolder"
         :modalAutoOrg="modalAutoOrg"
         :createdOrg="createdOrg"
+        @setModalOff="ModalOff"
       ></org-item>
     </ul>
   </li>
@@ -38,6 +39,14 @@ import { mapState, mapGetters } from "vuex";
 export default {
   name: "OrgItem",
   async created() {
+    var full = this.GetMyInfo.info.fullOrgCode;
+    var pathidx = full.findIndex((item) => {
+      return item == this.item.mycode;
+    });
+    if (pathidx !== -1) {
+      this.GetChildren();
+      this.OpenFolder();
+    }
     // item이 person이아니고 department면 무조건
     // child 뽑기
     if (this.createdOrg) {
@@ -67,6 +76,8 @@ export default {
   },
   computed: {
     ...mapState(["autosearchorg","org"]),
+    ...mapGetters("mainjs", ["GetMyInfo"]),
+
     // 다른것들을 끌어왔을때 렝스가 1이상이면
     isFolder: function () {
       if (this.item.kinds == "Department") {
@@ -117,9 +128,13 @@ export default {
     async GetChildren() {
       this.children = await this.$store.dispatch("Org", this.item);
     },
+    ModalOff(){
+      this.$emit("setModalOff");
+    },
     MailOrgData() {
       this.$store.commit("OrgData", this.item);
       // this.$store.commit("SearchOrgInit");
+      this.$emit("setModalOff");
       this.clicked = false;
     },
     Or_bg() {

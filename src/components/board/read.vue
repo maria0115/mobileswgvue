@@ -6,7 +6,7 @@
           ><img src="../../mobile/img/wmail_back.png" alt="" /></a
         >{{ params.title }}
       </h2>
-      <div>
+      <div v-if="GetStoreBoard.detail.isWriter||GetStoreBoard.detail.isAdmin">
         <span class="edit" @click="Edit">수정</span>
         <span class="del" @click="DeleteBoard">삭제</span>
       </div>
@@ -39,7 +39,7 @@
           <span>게시기간</span
           ><em v-if="GetStoreBoard.detail.isEternity">영구</em
           ><em v-else
-            >{{ btransTime(GetStoreBoard.detail.startDate) }} ~
+            >{{ btransTime(GetStoreBoard.detail.startDate) }} ~ {{GetStoreBoard.detail}}
             {{ btransTime(GetStoreBoard.detail.endDate) }}</em
           >
         </p>
@@ -49,9 +49,8 @@
         v-if="GetStoreBoard.detail.attach.length > 0"
       >
         <strong>첨부파일</strong>
-        <!-- <ul>
+        <ul>
           <li
-            @click="attachClick(value.path)"
             class="active"
             v-for="(value, index) in GetStoreBoard.detail.attach"
             :key="index"
@@ -62,27 +61,30 @@
                 alt=""
             /></span>
             <div>
-              <p>{{ value.name }}</p>
-              <em>({{ value.size }})</em>
+              <a :href="value.url">
+                <p>{{ value.name }}</p>
+                <em>({{ value.size }})</em>
+              </a>
             </div>
           </li>
-        </ul> -->
+        </ul>
 
-        <Viewer
+        <!-- <Viewer
           className=""
           :attaInfo="GetStoreBoard.detail.attach"
           :attach="true"
-        ></Viewer>
+        ></Viewer> -->
       </div>
       <!-- <div class="noti_con" v-html="GetStoreBoard.detail.body"></div> -->
 
-      <Namo
+      <!-- <Namo
         id="memo_t"
         :read="true"
         :editor="GetStoreBoard.detail.body"
         did="board"
         ref="editor"
-      ></Namo>
+      ></Namo> -->
+      <div class="noti_con" v-html="GetStoreBoard.detail.body"></div>
       <!-- <editor-content class="noti_con" :editor="editor" /> -->
       <div
         v-if="GetStoreBoard.detail.useLike"
@@ -141,7 +143,7 @@
             ></span>
             <span
               class="del_ic"
-              v-if="isMe(value)"
+              v-if="isMe(value)||GetStoreBoard.detail.isAdmin"
               @click="DeleteComment(value)"
             ></span>
           </div>
@@ -171,12 +173,12 @@
 import { mapState, mapGetters } from "vuex";
 import { Editor, EditorContent } from "tiptap";
 import configjson from "../../config/config.json";
-import Namo from "../editor/namo.vue";
+// import Namo from "../editor/namo.vue";
 import Viewer from "../editor/viewer.vue";
 export default {
   components: {
     EditorContent,
-    Namo,
+    // Namo,
     Viewer,
   },
   created() {
@@ -263,6 +265,7 @@ export default {
       );
     },
     ParentTag(parentUnid) {
+      // console.log(parentUnid,this.GetStoreBoard.parents)
       var result = this.GetStoreBoard.parents.filter((p) => {
         return p.unid === parentUnid;
       });

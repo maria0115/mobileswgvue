@@ -59,6 +59,7 @@ import Board from '../View/Board.vue';
 import BoardList from '../components/board/list.vue';
 import BoardRead from '../components/board/read.vue';
 import BoardWrite from '../components/board/write.vue';
+import originalPage from '../View/originalPage.vue';
 
 import { store } from '../store/index.js';
 
@@ -346,11 +347,11 @@ const router = new Router({
           beforeEnter: (to, from, next) => {
 
 
-            store.dispatch("mailjs/GetMailDetail", { mailtype: "folderList" });
-            // store.dispatch("GetLanguage", { app: "mail" })
-            // .then(() => {
-            next();
-            // })
+            store.dispatch("mailjs/GetMailDetail", { mailtype: "folderList" })
+              // store.dispatch("GetLanguage", { app: "mail" })
+              .then(() => {
+                next();
+              })
           },
           redirect: 'mail_more/inbox_detail',
           children: [
@@ -359,8 +360,9 @@ const router = new Router({
               name: 'mailfirst',
               component: InboxDetail,
               beforeEnter: (to, from, next) => {
-                store.dispatch("mailjs/MailSearch", { mailtype: "inbox_detail" });
-                next();
+                store.dispatch("mailjs/MailSearch", { mailtype: "inbox_detail" }).then(() => {
+                  next();
+                })
               },
             },
             {
@@ -368,8 +370,9 @@ const router = new Router({
               name: 'inbox_detail',
               component: InboxDetail,
               beforeEnter: (to, from, next) => {
-                store.dispatch("mailjs/MailSearch", { mailtype: "inbox_detail" });
-                next();
+                store.dispatch("mailjs/MailSearch", { mailtype: "inbox_detail" }).then(() => {
+                  next();
+                })
               },
             },
             {
@@ -377,8 +380,9 @@ const router = new Router({
               component: InboxDetail,
               name: 'mail_inner',
               beforeEnter: (to, from, next) => {
-                store.dispatch("mailjs/MailSearch", { mailtype: "mail_inner" });
-                next();
+                store.dispatch("mailjs/MailSearch", { mailtype: "mail_inner" }).then(() => {
+                  next();
+                })
               },
             },
             {
@@ -386,8 +390,9 @@ const router = new Router({
               component: InboxDetail,
               name: 'mail_attach',
               beforeEnter: (to, from, next) => {
-                store.dispatch("mailjs/MailSearch", { mailtype: "mail_attach" });
-                next();
+                store.dispatch("mailjs/MailSearch", { mailtype: "mail_attach" }).then(() => {
+                  next();
+                })
               },
             },
             {
@@ -395,8 +400,9 @@ const router = new Router({
               component: InboxDetail,
               name: 'mail_outer',
               beforeEnter: (to, from, next) => {
-                store.dispatch("mailjs/MailSearch", { mailtype: "mail_outer" });
-                next();
+                store.dispatch("mailjs/MailSearch", { mailtype: "mail_outer" }).then(() => {
+                  next();
+                })
               },
             },
             {
@@ -404,8 +410,9 @@ const router = new Router({
               component: InboxDetail,
               name: 'sent_detail',
               beforeEnter: (to, from, next) => {
-                store.dispatch("mailjs/MailSearch", { mailtype: "sent_detail" });
-                next();
+                store.dispatch("mailjs/MailSearch", { mailtype: "sent_detail" }).then(() => {
+                  next();
+                })
               },
             },
             {
@@ -413,8 +420,9 @@ const router = new Router({
               name: 'mail_draft',
               component: InboxDetail,
               beforeEnter: (to, from, next) => {
-                store.dispatch("mailjs/MailSearch", { mailtype: "mail_draft" });
-                next();
+                store.dispatch("mailjs/MailSearch", { mailtype: "mail_draft" }).then(() => {
+                  next();
+                })
               },
             },
             {
@@ -422,8 +430,9 @@ const router = new Router({
               name: 'mail_autoSave',
               component: InboxDetail,
               beforeEnter: (to, from, next) => {
-                store.dispatch("mailjs/MailSearch", { mailtype: "mail_autoSave" });
-                next();
+                store.dispatch("mailjs/MailSearch", { mailtype: "mail_autoSave" }).then(() => {
+                  next();
+                })
               },
             },
             {
@@ -431,8 +440,9 @@ const router = new Router({
               name: 'mail_trash',
               component: InboxDetail,
               beforeEnter: (to, from, next) => {
-                store.dispatch("mailjs/MailSearch", { mailtype: "mail_trash" });
-                next();
+                store.dispatch("mailjs/MailSearch", { mailtype: "mail_trash" }).then(() => {
+                  next();
+                })
               },
             },
             {
@@ -440,8 +450,9 @@ const router = new Router({
               name: 'mail_unread',
               component: InboxDetail,
               beforeEnter: (to, from, next) => {
-                store.dispatch("mailjs/GetMailDetail", { mailtype: "mail_unread" });
-                next();
+                store.dispatch("mailjs/GetMailDetail", { mailtype: "mail_unread" }).then(() => {
+                  next();
+                })
               },
             },
             {
@@ -449,8 +460,9 @@ const router = new Router({
               name: 'mail_reservation',
               component: InboxDetail,
               beforeEnter: (to, from, next) => {
-                store.dispatch("mailjs/GetMailDetail", { mailtype: "mail_reservation" });
-                next();
+                store.dispatch("mailjs/GetMailDetail", { mailtype: "mail_reservation" }).then(() => {
+                  next();
+                })
               },
             },
             {
@@ -458,8 +470,9 @@ const router = new Router({
               name: 'mail_my',
               component: InboxDetail,
               beforeEnter: (to, from, next) => {
-                store.dispatch("mailjs/MailSearch", { mailtype: "mail_my" });
-                next();
+                store.dispatch("mailjs/MailSearch", { mailtype: "mail_my" }).then(() => {
+                  next();
+                })
               },
             },
             {
@@ -467,8 +480,9 @@ const router = new Router({
               name: 'mail_importance',
               component: InboxDetail,
               beforeEnter: (to, from, next) => {
-                store.dispatch("mailjs/GetMailDetail", { mailtype: "mail_importance" });
-                next();
+                store.dispatch("mailjs/GetMailDetail", { mailtype: "mail_importance" }).then(() => {
+                  next();
+                })
               },
             },
             {
@@ -476,8 +490,9 @@ const router = new Router({
               name: 'mail_followup',
               component: InboxDetail,
               beforeEnter: (to, from, next) => {
-                store.dispatch("mailjs/MailSearch", { mailtype: "mail_followup" });
-                next();
+                store.dispatch("mailjs/MailSearch", { mailtype: "mail_followup" }).then(() => {
+                  next();
+                })
               },
             },
             {
@@ -485,9 +500,9 @@ const router = new Router({
               name: 'custom',
               component: InboxDetail,
               beforeEnter: (to, from, next) => {
-                store.dispatch("mailjs/GetMailDetail", { mailtype: "custom", folderId: to.params.folderId });
-                // store.dispatch("GetMailDetail", { mailtype: "custom",folderId:this.customFolder });
-                next();
+                store.dispatch("mailjs/GetMailDetail", { mailtype: "custom", folderId: to.params.folderId }).then(() => {
+                  next();
+                })
               },
             },
             {
@@ -516,21 +531,23 @@ const router = new Router({
                 // store.commit("MailOrgDataInit")
 
                 // .then((r) =>{
-                  if (store.state.mailjs.from == "Reply") {
-                    store.commit("OrgData", store.state.mailjs.store.maildetail.author);
-                  } else if (store.state.mailjs.from == "AllReply") {
-                    store.dispatch("mailjs/ToMeInfo")
+                if (store.state.mailjs.from == "Reply") {
+                  store.commit("OrgData", store.state.mailjs.store.maildetail.author);
+                } else if (store.state.mailjs.from == "AllReply"
+                  || (to.query.isEdit
+                    && store.state.mailjs.store.folderName.indexOf("draft") !== -1)) {
+                  store.dispatch("mailjs/ToMeInfo")
                     .then(() => {
-                      store.commit("mailjs/AllReply");
+                      store.commit("AllReply");
                     })
-                  }
-                  
-                  // })
-                  
-                  var data = {};
-                  data.menu = "mail";
-                  store.dispatch("mailjs/InitOrg", data);
-                  store.dispatch("mailjs/writeForm")
+                }
+
+                // })
+
+                var data = {};
+                data.menu = "mail";
+                store.dispatch("mailjs/InitOrg", data);
+                store.dispatch("mailjs/writeForm")
                   .then((res) => {
                     if (res) {
                       next();
@@ -794,12 +811,12 @@ const router = new Router({
               name: 'appdraft',
               component: appTodoList,
               beforeEnter: (to, from, next) => {
-                store.dispatch("approjs/GetApprovalList", { type: "draft" });
                 store.commit("approjs/AppSaveFrom", "")
+                store.dispatch("approjs/GetApprovalList", { type: "draft" })
 
-                // .then(() => {
-                next();
-                // })
+                  .then(() => {
+                    next();
+                  })
               },
 
             },
@@ -808,12 +825,12 @@ const router = new Router({
               name: 'approvalfirst',
               component: appTodoList,
               beforeEnter: (to, from, next) => {
-                store.dispatch("approjs/GetApprovalList", { type: "approve" });
                 store.commit("approjs/AppSaveFrom", "");
+                store.dispatch("approjs/GetApprovalList", { type: "approve" })
 
-                // .then(() => {
-                next();
-                // })
+                  .then(() => {
+                    next();
+                  })
               },
             },
             {
@@ -821,12 +838,12 @@ const router = new Router({
               name: 'appapprove',
               component: appTodoList,
               beforeEnter: (to, from, next) => {
-                store.dispatch("approjs/GetApprovalList", { type: "approve" });
                 store.commit("approjs/AppSaveFrom", "");
+                store.dispatch("approjs/GetApprovalList", { type: "approve" })
 
-                // .then(() => {
-                next();
-                // })
+                  .then(() => {
+                    next();
+                  })
               },
             },
             {
@@ -834,12 +851,12 @@ const router = new Router({
               name: 'appreject',
               component: appTodoList,
               beforeEnter: (to, from, next) => {
-                store.dispatch("approjs/GetApprovalList", { type: "reject" });
                 store.commit("approjs/AppSaveFrom", "");
+                store.dispatch("approjs/GetApprovalList", { type: "reject" })
 
-                // .then(() => {
-                next();
-                // })
+                  .then(() => {
+                    next();
+                  })
               },
             },
             {
@@ -847,11 +864,11 @@ const router = new Router({
               name: 'appsuccess_date',
               component: appTodoList,
               beforeEnter: (to, from, next) => {
-                store.dispatch("approjs/GetApprovalList", { type: "success_date" })
-                // .then(() => {
                 store.commit("approjs/AppSaveFrom", "complete");
-                next();
-                // })
+                store.dispatch("approjs/GetApprovalList", { type: "success_date" })
+                  .then(() => {
+                    next();
+                  })
               },
             },
             {
@@ -859,12 +876,12 @@ const router = new Router({
               name: 'appsuccess_my',
               component: appTodoList,
               beforeEnter: (to, from, next) => {
-                store.dispatch("approjs/GetApprovalList", { type: "success_my" });
                 store.commit("approjs/AppSaveFrom", "complete");
+                store.dispatch("approjs/GetApprovalList", { type: "success_my" })
 
-                // .then(() => {
-                next();
-                // })
+                  .then(() => {
+                    next();
+                  })
               },
             },
             {
@@ -872,12 +889,12 @@ const router = new Router({
               name: 'appsuccess_dept',
               component: appTodoList,
               beforeEnter: (to, from, next) => {
-                store.dispatch("approjs/GetApprovalList", { type: "success_dept" });
                 store.commit("approjs/AppSaveFrom", "complete");
+                store.dispatch("approjs/GetApprovalList", { type: "success_dept" })
 
-                // .then(() => {
-                next();
-                // })
+                  .then(() => {
+                    next();
+                  })
               },
             },
             {
@@ -896,12 +913,12 @@ const router = new Router({
               name: 'appapproving',
               component: appIngList,
               beforeEnter: (to, from, next) => {
-                store.dispatch("approjs/GetApprovalList", { type: "approving" });
                 store.commit("approjs/AppSaveFrom", "");
+                store.dispatch("approjs/GetApprovalList", { type: "approving" })
 
-                // .then(() => {
-                next();
-                // })
+                  .then(() => {
+                    next();
+                  })
               },
             }, {
               name: 'approvingview',
@@ -1036,6 +1053,14 @@ const router = new Router({
             next();
           },
         },
+        {
+          path: 'originalPage',
+          name: 'originalPage',
+          component: originalPage,
+          beforeEnter: (to, from, next) => {
+            next();
+          },
+        },
       ],
 
     },
@@ -1062,7 +1087,7 @@ router.beforeEach((to, from, next) => {
       .then(res => {
         // if (!res.data) {
         if (res.data.UserName === "Anonymous") {
-          next({ name: 'login', query: { uuid: "0", locale: "ko" } });
+          next({ name: 'login' });
 
         } else {
           next();

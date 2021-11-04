@@ -9,6 +9,7 @@ const dataState = createPersistedState({
     'store.greetviewdata',
     'store.maildetail',
     'store.mailCustomFolderTitle',
+    'store.folderName',
     'store.mailconfig'],
   // paths: ['store']
 
@@ -98,6 +99,9 @@ export default {
     },
     GetmailCustomFolderTitle: (state) => {
       return state.store.mailCustomFolderTitle;
+    },
+    GetfolderName: (state) => {
+      return state.store.folderName;
     },
   }
 }

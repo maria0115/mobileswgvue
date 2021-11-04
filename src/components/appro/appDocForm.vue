@@ -48,7 +48,7 @@ export default {
       isOpen: false,
       often: false,
       recent: false,
-      all: false,
+      all: true,
       var: false,
       title: "결재 양식함",
       formCode: {

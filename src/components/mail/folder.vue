@@ -1,5 +1,5 @@
 <template>
-  <div class="mail_sub">
+  <div class="mail_sub" @click="Close">
     <div class="mail_inner">
       <div class="info_tit">
         <span class="mail_img01"></span>
@@ -180,6 +180,12 @@ export default {
     },
   },
   methods: {
+    Close(e) {
+      var LayerPopup = $(".mail_sub");
+      if (LayerPopup.has(e.target).length === 0) {
+        $('.mail_sub').removeClass('active');
+      }
+    },
     makeFolder: function (item) {
       item.children = [];
       this.addItem(item);

@@ -60,42 +60,44 @@
               >
             </h3>
             <div :class="{ active: attActive }">
-              <!-- <ul>
+              <ul>
                 <li
                   v-for="(value, index) in this.detail.attachInfo"
                   :key="index"
                 >
-                  <a>{{ value.name }}</a>
-                  <div class="file_btn">
+                  <a :href="value.url" download>{{ value.name }}</a>
+                  <!-- <div class="file_btn">
                     <span class="open_btn" @click="attOpen(value.path)"
                       >열기</span
                     >
                     <span class="save_btn">저장</span>
-                  </div>
+                  </div> -->
                 </li>
-              </ul> -->
-              <Viewer
+              </ul>
+              <!-- <Viewer
                 className=""
                 :attaInfo="this.detail.attachInfo"
                 :attach="true"
-              ></Viewer>
+              ></Viewer> -->
             </div>
           </li>
         </ul>
         <div class="line03">
           <a v-html="detail.body"></a>
         </div>
-        <div class="line04 clfix">
-          <form>
+        <!-- <div class="line04 clfix">
+          <form @submit.prevent>
             <strong>결재의견</strong>
             <div>
               <input type="text" v-on:input="comment = $event.target.value" />
             </div>
           </form>
-        </div>
+        </div> -->
       </div>
       <BtnPlus :menu="morePlus" @BtnClick="BtnClick"></BtnPlus>
+      <Viewer className="" :attach="false" ref="viewer"></Viewer>
     </div>
+    <Comment :isOpen="agreeNreject" @ModalOff="ModalOff" @AgreeNReject="AgreeNReject"></Comment>
   </div>
 </template>
 
@@ -103,32 +105,34 @@
 import BackHeader from "./backheader.vue";
 import SubMenu from "./menu.vue";
 import BtnPlus from "./btnPlus.vue";
+import Comment from "./Comment.vue";
 import { mapState, mapGetters } from "vuex";
 import Viewer from "../editor/viewer.vue";
 export default {
   created() {
+    if (!this.detail.agreeBtn) {
+      // this.morePlus = { view: "원문 보기",deleteItem: "삭제", };
+      this.morePlus = { view: "원문 보기" };
+      return;
+    }
     this.params = JSON.parse(this.$route.query.data);
     // this.params = this.GetHeader.menu;
     if (this.detail.status == "mutualing") {
       this.morePlus = { agree: "협조동의", reject: "반대", view: "원문 보기" };
-    } else if (this.params.type.indexOf("success") !== -1 || this.params.type=="reject") {
-      this.morePlus = { view: "원문 보기" };
-    } else if (this.params.type == "draft") {
-      // this.morePlus = { view: "원문 보기",deleteItem: "삭제", };
-      this.morePlus = { view: "원문 보기", };
     }
   },
   computed: {
     // ...mapGetters("approjs", ["GetApproval"]),
     ...mapState("approjs", ["detail"]),
     ...mapGetters(["GetHeader"]),
-    ...mapGetters("approjs",["GetSaveApproval"]),
+    ...mapGetters("approjs", ["GetSaveApproval"]),
   },
   components: {
     BackHeader,
     SubMenu,
     BtnPlus,
     Viewer,
+    Comment,
   },
   data() {
     return {
@@ -136,36 +140,41 @@ export default {
       title: "보기",
       appActive: false,
       attActive: false,
-      comment: "",
+      agreeNreject: false,
     };
   },
   methods: {
+    ModalOff() {
+      this.agreeNreject = false;
+    },
     path() {
       return this.$route.name;
     },
     BtnClick(e) {
       if (e === "deleteItem") {
         var data = this.detail;
-        console.log(this.detail)
         data.unid = this.GetSaveApproval.unid;
         data.deleteType = "draft";
-      this.$store.dispatch(`approjs/${e}`, data).then((res) => {
-        if (res) {
-          // this.SetHeader(this.params);
-          this.$router.go(-1);
-        }
-      });
-      return;
-      }else if(value=='view'){
-        console.log(value,"value")
+        this.$store.dispatch(`approjs/${e}`, data).then((res) => {
+          if (res) {
+            // this.SetHeader(this.params);
+            this.$router.go(-1);
+          }
+        });
+        return;
+      } else if (e == "view") {
         this.OriginView();
         return;
-
       }
+
+      this.agreeNreject = true;
+      this.nowBtn = e;
+    },
+    AgreeNReject(comment) {
       let formData = new FormData();
       formData.append("openurl", this.detail.openurl);
-      formData.append("comment", this.comment);
-      formData.append("approve", e);
+      formData.append("comment", comment);
+      formData.append("approve", this.nowBtn);
 
       this.$store.dispatch("approjs/agreeNreject", formData).then((res) => {
         if (res) {
@@ -189,8 +198,18 @@ export default {
     attOpen(url) {
       window.open(url);
     },
-    OriginView(){
-      this.$refs.viewer.goOriginView({url:this.detail.openurl, name:this.detail.subject});
+    OriginView() {
+      // node 원문보기
+      this.$router.push({
+        name: "originalPage",
+        params: { url: this.detail.openurl },
+      });
+      // 첨부변환서버 원문보기
+      // this.$refs.viewer.goOriginView({
+      //   url: this.detail.openurl,
+      //   name: this.detail.subject,
+      // });
+      // this.$refs.viewer.goOriginView({url:this.detail.openurl, name:this.detail.subject});
     },
   },
 };

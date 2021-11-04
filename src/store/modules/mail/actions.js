@@ -21,7 +21,7 @@ import {
 } from '../../../api/index';
 import router from '../../../router/index';
 export default {
-    MailRealDelete({ state, dispatch }, { datas, type }) {
+    MailRealDelete({ state, rootState, dispatch }, { datas, type }) {
         // data는 //unid,unid string
         var datastr = "";
         for (var i = 0; i < datas.length; i++) {
@@ -32,8 +32,10 @@ export default {
             }
         }
         var data = {};
+        rootState.tf = true;
         data.unid = datastr; MailRealDelete(data)
             .then((res) => {
+                rootState.tf = false;
 
                 if (res.status !== 200) {
                     return false;
@@ -45,9 +47,11 @@ export default {
 
             })
     },
-    async FollowUpInfo({ state, commit }, unid) {
+    async FollowUpInfo({ state, rootState, commit }, unid) {
+        rootState.tf = true;
         return await FollowUpInfo(unid)
             .then((res) => {
+                rootState.tf = false;
 
                 if (res.status !== 200) {
                     return false;
@@ -61,7 +65,7 @@ export default {
             })
     },
     // 메일 검색
-    MailSearch({ state, commit, rootState }, { mailtype }) {
+    MailSearch({ state, rootState, commit }, { mailtype }) {
         // var data = state.mail.searchOption;
         state.mail.data[mailtype].page = 0;
         state.mail.data[mailtype].data = [];
@@ -78,23 +82,28 @@ export default {
 
         // 
 
-        MailSearch(data)
+        rootState.tf = true;
+        return MailSearch(data)
             .then((res) => {
+                rootState.tf = false;
 
                 if (res.status !== 200) {
                     return false;
                 } else {
                     commit("MailDetail", { res: res.data, mailtype });
+                    return true;
 
                 }
 
             })
 
     },
-    MailSave({ state, commit }, { data, menu }) {
+    MailSave({ state, rootState, commit }, { data, menu }) {
 
+        rootState.tf = true;
         return MailSave(data, menu)
             .then((res) => {
+                rootState.tf = false;
 
                 if (res.status !== 200) {
                     return false;
@@ -108,7 +117,7 @@ export default {
 
             })
     },
-    writeForm({ state, commit },) {
+    writeForm({ state, rootState, commit },) {
         return writeForm()
             .then(response => {
                 if (response.status !== 200) {
@@ -120,7 +129,7 @@ export default {
                 }
             })
     },
-    SpamSet({ state }, data) {
+    SpamSet({ state, rootState }, data) {
         SpamSet(data)
             .then(response => {
                 if (response.status !== 200) {
@@ -131,10 +140,12 @@ export default {
             })
 
     },
-    MailWrite({ state, commit }, data) {
+    MailWrite({ state, rootState, commit }, data) {
 
+        rootState.tf = true;
         return MailWrite(data)
             .then((res) => {
+                rootState.tf = false;
 
                 if (res.status !== 200) {
                     return false;
@@ -144,9 +155,11 @@ export default {
                 }
             })
     },
-    async ToMeInfo({ commit }) {
+    async ToMeInfo({ commit,rootState }) {
+        rootState.tf = true;
         var result = await ToMe()
             .then((res) => {
+                rootState.tf = false;
 
                 return res.data;
 
@@ -155,9 +168,11 @@ export default {
         return;
 
     },
-    ToMe({ commit, rootCommit }) {
+    ToMe({ commit, rootState }) {
+        rootState.tf = true;
         return ToMe()
             .then((res) => {
+                rootState.tf = false;
 
 
                 commit("ToMe", res.data);
@@ -171,9 +186,11 @@ export default {
         // state.mailorg.SendTo.push(data);
 
     },
-    async Org({ state, commit, dispatch }, data) {
+    async Org({ state, rootState, commit, dispatch }, data) {
+        // rootState.tf = true;
         var chdata = await Org(data)
             .then((res) => {
+                // rootState.tf = false;
                 return res.data;
 
             })
@@ -183,7 +200,7 @@ export default {
         // var result = await tree.fetch(state.mailorg);
         // commit("MailOrgTransData", result)
     },
-    async MoreOrg({ state, commit }, value) {
+    async MoreOrg({ state, rootState, commit }, value) {
 
         for (var i = 0; i < value.length; i++) {
             var data = {};
@@ -195,8 +212,10 @@ export default {
                 data.companycode = value[i].companycode;
             }
             // 
+            rootState.tf = true;
             var chdata = await Org(data)
                 .then((res) => {
+                    rootState.tf = false;
                     return res.data;
 
                 })
@@ -209,34 +228,40 @@ export default {
         }
 
     },
-    InitOrg({ state, commit, dispatch }, data) {
+    InitOrg({ state, rootState, commit, dispatch }, data) {
 
         // 
+        // rootState.tf = true;
         InitOrg(data)
             .then((res) => {
+                // rootState.tf = false;
 
                 commit("MailOrgTransData", res.data);
             })
     },
-    GETMailDelay({ state }) {
+    GETMailDelay({ state, rootState }) {
+        rootState.tf = true;
         GETMailDelay()
             .then((res) => {
+                rootState.tf = false;
                 // 
                 state.store.mailconfig.delay.config = res.data;
 
             })
 
     },
-    GETMailAutoSave({ state }) {
+    GETMailAutoSave({ state, rootState }) {
+        rootState.tf = true;
         GETMailAutoSave()
             .then((res) => {
+                rootState.tf = false;
                 // 
                 state.store.mailconfig.autosave.config = res.data;
 
             })
     },
-    SignGreetDelete({ state, commit }, { where }) {
-        if (router.history.current.fullPath == "/mailconfig/modifygreet") {
+    SignGreetDelete({ state, rootState, commit }, { where }) {
+        if (router.history.current.name == "modifygreet") {
             where = "greet";
         } else {
             where = "sign";
@@ -251,7 +276,7 @@ export default {
                 }
             })
     },
-    SignEdit({ state, commit }, data) {
+    SignEdit({ state, rootState, commit }, data) {
 
         return SignEdit(data)
             .then(response => {
@@ -264,7 +289,7 @@ export default {
             })
 
     },
-    GreetEdit({ state, commit }, data) {
+    GreetEdit({ state, rootState, commit }, data) {
 
         return GreetEdit(data)
             .then(response => {
@@ -277,7 +302,7 @@ export default {
             })
 
     },
-    async MailDetail({ state, commit }, data) {
+    async MailDetail({ state, rootState, commit }, data) {
         return await MailDetail(data)
             .then(response => {
 
@@ -293,7 +318,7 @@ export default {
             });
 
     },
-    FollowupSet({ state, commit }, data) {
+    FollowupSet({ state, rootState, commit }, data) {
 
         return FollowupSet(data)
             .then(response => {
@@ -310,7 +335,7 @@ export default {
                 }
             });
     },
-    MailAutoSave({ state, commit }, data) {
+    MailAutoSave({ state, rootState, commit }, data) {
         MailAutoSave(data)
             .then(response => {
                 if (response.status !== 200) {
@@ -324,7 +349,7 @@ export default {
             });
 
     },
-    MailDelay({ state, commit }, data) {
+    MailDelay({ state, rootState, commit }, data) {
 
         MailDelay(data)
             .then(response => {
@@ -340,7 +365,7 @@ export default {
             });
 
     },
-    async GreetDetail({ state, commit }, { unid }) {
+    async GreetDetail({ state, rootState, commit }, { unid }) {
         var result = await GreetDetail(unid)
             .then(response => {
 
@@ -369,7 +394,7 @@ export default {
         // })
 
     },
-    GreetAdd({ state, commit }, data) {
+    GreetAdd({ state, rootState, commit }, data) {
         GreetAdd(data)
             .then(response => {
                 if (response.status !== 200) {
@@ -391,7 +416,7 @@ export default {
                 }
             });
     },
-    GreetList({ state, commit }) {
+    GreetList({ state, rootState, commit }) {
         var data = {};
         data.page = 0;
         data.size = state.mail.data.greetings.size;
@@ -404,7 +429,7 @@ export default {
                 }
             });
     },
-    async SignDetail({ state, commit }, { unid }) {
+    async SignDetail({ state, rootState, commit }, { unid }) {
         var result = await SignDetail(unid)
             .then(response => {
                 var r = {};
@@ -431,7 +456,7 @@ export default {
         }
 
     },
-    SignAdd({ state, commit }, data) {
+    SignAdd({ state, rootState, commit }, data) {
         SignAdd(data)
             .then(response => {
                 if (response.status !== 200) {
@@ -453,7 +478,7 @@ export default {
                 }
             });
     },
-    SignList({ state, commit }) {
+    SignList({ state, rootState, commit }) {
         var data = {};
         data.page = 0;
         data.size = state.mail.data.signature.size;
@@ -467,7 +492,7 @@ export default {
             });
     },
 
-    ReadFlag({ state }, { datas }) {
+    ReadFlag({ state, rootState }, { datas }) {
         // var datas = state.mail.checkBtn.checkedNames;
         var datastr = "";
         for (var i = 0; i < datas.length; i++) {
@@ -485,7 +510,7 @@ export default {
             });
 
     },
-    async MailMove({ state, commit }, { viewname, folderId }) {
+    async MailMove({ state, rootState, commit }, { viewname, folderId }) {
         var data = {};
         var folderstr = "";
         var checkedNames = state.mail.checkBtn.checkedNames;
@@ -512,7 +537,7 @@ export default {
                 });
         }
     },    // 메일 삭제
-    async MailDelete({ state, commit }, { datas, type }) {
+    async MailDelete({ state, rootState, commit }, { datas, type }) {
         // data는 //unid,unid string
         var datastr = "";
         for (var i = 0; i < datas.length; i++) {
@@ -529,7 +554,20 @@ export default {
                 return false;
             });
     },
+    // ReadFlag({ state, rootState }, unid){
+    //     var data = {};
+    //     data.unid = unid;
 
+    //     ReadFlag(data)
+    //     .then(response => {
+
+    //         if (response.status == 200) {
+    //             return true;
+    //         }
+    //         return false;
+    //     });
+
+    // },
     // maildetail data
     GetMailDetail({ commit, state, rootState }, { mailtype, folderId }) {
         state.mail.data[mailtype].page = 0;
@@ -543,12 +581,14 @@ export default {
             data.FolderId = folderId;
         }
 
-        Mail(data)
+        return Mail(data)
             .then(response => {
                 // 
                 if (response.status == 200) {
                     commit('MailDetail', { res: response.data, mailtype })
+                    return true;
                 } else {
+                    return false;
                 }
             });
     },

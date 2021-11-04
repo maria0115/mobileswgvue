@@ -1,5 +1,5 @@
 <template>
-  <div class="noti_sub_menu01" :class="{ on: isOpen }">
+  <div class="noti_sub_menu01" @click="Close" :class="{ on: isOpen }">
     <div class="inner01">
       <div class="in_top">
         <div class="clfix">
@@ -117,6 +117,12 @@ export default {
     isOpen: Boolean,
   },
   methods: {
+    Close(e){
+      var LayerPopup = $(".noti_sub_menu01");
+        if(LayerPopup.has(e.target).length === 0){
+          this.CloseHam();
+        }
+    },
     SetHeader(data) {
       this.$store.dispatch("SetHeader", data);
     },

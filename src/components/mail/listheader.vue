@@ -47,6 +47,7 @@
             <input
               type="text"
               placeholder="검색어를 입력하세요"
+              @keypress.enter="Search"
               v-model="searchword"
             />
             <span class="search_btn" @click="Search"></span>
@@ -89,6 +90,7 @@
 </template>
 
 <script>
+import $ from "jquery";
 import { mapState, mapGetters } from "vuex";
 export default {
   created() {
@@ -140,7 +142,7 @@ export default {
         this.$store.dispatch("mailjs/MailDetail", unid);
         this.$store.commit("mailjs/MailDetailUnid", unid);
         this.$store.commit("mailjs/From", "Relay");
-        this.$router.push({name:'WriteMail'});
+        this.$router.push({ name: "WriteMail" });
       }
     },
     ReadFlag() {
@@ -199,6 +201,8 @@ export default {
       data.path = this.path;
 
       await this.$store.commit("mailjs/MailSearchOption", data);
+      $(".search_con").removeClass("active");
+
       if (this.mailSearchPath.includes(this.path)) {
         this.$router.push(this.path);
       }

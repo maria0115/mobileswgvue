@@ -47,7 +47,7 @@
             }}</span>
           </li>
           <li>
-            <form action="">
+            <form @submit.prevent>
               <strong>{{ GetSearchLanguage.filter.select }}</strong>
               <p>
                 <input

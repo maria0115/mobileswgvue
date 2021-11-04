@@ -11,7 +11,7 @@
   >
     <div @click="onCard">
       <b @click="toggle" :class="{ on: this.isOpen }"></b>
-      <span 
+      <span
         >{{ item.name }}
         <em v-if="this.item.kinds == 'Person'" class="tel">{{
           item.office
@@ -41,6 +41,14 @@ export default {
   async created() {
     // item이 person이아니고 department면 무조건
     // child 뽑기
+    var full = this.GetMyInfo.info.fullOrgCode;
+    var pathidx = full.findIndex((item) => {
+      return item == this.item.mycode;
+    });
+    if (pathidx !== -1) {
+      this.GetChildren();
+      this.OpenFolder();
+    }
     if (this.createdOrg) {
       this.GetChildren();
       var auto = this.autosearchorg[this.org.pointer];
@@ -67,7 +75,9 @@ export default {
     };
   },
   computed: {
-    ...mapState(["autosearchorg","org"]),
+    ...mapState(["autosearchorg", "org"]),
+    ...mapGetters("mainjs", ["GetMyInfo"]),
+
     // 다른것들을 끌어왔을때 렝스가 1이상이면
     isFolder: function () {
       if (this.item.kinds == "Department") {
@@ -105,8 +115,8 @@ export default {
     },
   },
   methods: {
-    OpenCard(i){
-      this.$emit("OpenCard",i);
+    OpenCard(i) {
+      this.$emit("OpenCard", i);
     },
     OpenFolder() {
       this.$emit("OpenFolder");
@@ -123,7 +133,7 @@ export default {
     },
     onCard() {
       if (this.item.kinds == "Person") {
-        this.$emit("OpenCard",this.item);
+        this.$emit("OpenCard", this.item);
         this.clicked = false;
       }
     },

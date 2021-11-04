@@ -12,7 +12,7 @@
       </div>
     </div>
     <div class="m_contents03">
-      <form action="">
+      <form @submit.prevent>
         <ul class="wn_top">
           <li class="tit_line clfix">
             <strong>작성자</strong>
@@ -33,7 +33,8 @@
             class="tit_line date_ch_t clfix"
             v-if="
               GetStoreBoard.path !== 'education' &&
-              GetStoreBoard.path !== 'congratulate'
+              GetStoreBoard.path !== 'congratulate' &&
+              !doNotChange()
             "
           >
             <strong>게시기간</strong>
@@ -91,19 +92,19 @@
             <strong>제목</strong>
             <div>
               <input type="text" v-model="Subject" />
-              <span class="tit_clip" @click="submitFile()"></span>
-              <input
-                multiple
-                style="display: none"
-                type="file"
-                id="file"
-                ref="file"
-                v-on:change="handleFileUpload()"
-              />
             </div>
           </li>
-          <li class="tit_line att_file active" v-if="file.length > 0">
+          <li class="tit_line att_file active">
             <strong>첨부파일</strong>
+            <span class="tit_clip" @click="submitFile()"></span>
+            <input
+              multiple
+              style="display: none"
+              type="file"
+              id="file"
+              ref="file"
+              v-on:change="handleFileUpload()"
+            />
             <div>
               <ul class="file_list">
                 <li v-for="(value, index) in this.file" :key="index">
@@ -114,7 +115,7 @@
             </div>
           </li>
         </ul>
-        <div class="noti_con">
+        <div class="noti_con" style="padding: 0">
           <!-- <editor-content :editor="editor" /> -->
           <Namo
             :read="false"
@@ -136,7 +137,7 @@ export default {
   computed: {
     ...mapGetters("mainjs", ["GetMyInfo"]),
     ...mapGetters("boardjs", ["GetStoreBoard"]),
-    ...mapGetters( ["GetHeader"]),
+    ...mapGetters(["GetHeader"]),
   },
   created() {
     // this.params = this.GetHeader.menu;
@@ -202,6 +203,13 @@ export default {
     };
   },
   methods: {
+    doNotChange() {
+      console.log(
+        this.GetStoreBoard.edit,
+        this.GetStoreBoard.detail.isEternity
+      );
+      return this.GetStoreBoard.edit && this.GetStoreBoard.detail.isEternity;
+    },
     Back() {
       this.$router.go(-1);
     },
@@ -347,7 +355,7 @@ export default {
 
       this.$router.push({
         name: "boardlist",
-        query: {data:JSON.stringify(this.params)}
+        query: { data: JSON.stringify(this.params) },
       });
     },
     SetHeader(data) {

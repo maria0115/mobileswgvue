@@ -9,7 +9,7 @@
               <div>
                 <span
                   ><img
-                    :src="url[path].url + value.photo"
+                    :src="value.photo"
                     @error="$event.target.src = '../../mobile/img/img03.png'"
                     alt=""
                 /></span>

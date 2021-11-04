@@ -1,5 +1,5 @@
 <template>
-  <div class="sub_menu01" :class="{ on: isOpen }">
+  <div class="sub_menu01" :class="{ on: isOpen }" @click="Close">
     <div class="inner01">
       <div class="in_top">
         <div class="clfix">
@@ -30,24 +30,17 @@
           <h3>
             <a @click="SetHeader(value, `app${value.category}`)"
               >{{ value.title }}
-              <span v-if="GetApproval[value.category]">{{
+              <!-- <span v-if="GetApproval[value.category]">{{
                 GetApproval[value.category].data.cnt
-              }}</span></a
-            >
+              }}</span> -->
+            </a>
           </h3>
-          <ul v-if="value.category == 'success_date'">
-            <li>
-              <a @click="SetHeader(value, 'appsuccess_my')"
-                >개인 <em>({{ GetApproval.success_my.data.cnt }})</em></a
-              >
-            </li>
-            <li>
-              <a @click="SetHeader(value, 'appsuccess_dept')"
-                >부서 <em>({{ GetApproval.success_dept.data.cnt }})</em></a
-              >
-            </li>
-            <li>
-              <a @click="SetHeader(value, 'appsuccess_date')">일자별</a>
+          <ul>
+            <li v-for="(v, i) in value.children" :key="i">
+              <a @click="SetHeader(v, `app${v.category}`)"
+                >{{ v.title }}
+                <!-- <em>({{ GetApproval.success_my.data.cnt }})</em> -->
+              </a>
             </li>
           </ul>
         </li>
@@ -58,23 +51,41 @@
 
 <script>
 import { mapState, mapGetters } from "vuex";
+import $ from "jquery";
+import { CategoryList2 } from "../../api/index.js";
 export default {
   created() {
     this.params = JSON.parse(this.$route.query.data);
     // this.params = this.GetHeader.menu;
-    this.category = this.GetCategory[this.params.top];
-    this.$store.dispatch("approjs/GetApprovalList", { type: "draft" });
-    this.$store.dispatch("approjs/GetApprovalList", { type: "approve" });
-    this.$store.dispatch("approjs/GetApprovalList", { type: "approving" });
-    this.$store.dispatch("approjs/GetApprovalList", { type: "reject" });
-    this.$store.dispatch("approjs/GetApprovalList", { type: "success_date" });
-    this.$store.dispatch("approjs/GetApprovalList", { type: "success_my" });
-    this.$store.dispatch("approjs/GetApprovalList", { type: "success_dept" });
+    // this.category = this.GetCategory[this.params.top];
+    CategoryList2(this.params.top).then((res) => {
+      this.category = res.data;
+    });
+    // this.$store.dispatch("approjs/GetApprovalList", { type: "draft" });
+    // this.$store.dispatch("approjs/GetApprovalList", { type: "approve" });
+    // this.$store.dispatch("approjs/GetApprovalList", { type: "approving" });
+    // this.$store.dispatch("approjs/GetApprovalList", { type: "reject" });
+    // this.$store.dispatch("approjs/GetApprovalList", { type: "success_date" });
+    // this.$store.dispatch("approjs/GetApprovalList", { type: "success_my" });
+    // this.$store.dispatch("approjs/GetApprovalList", { type: "success_dept" });
+  },
+  data() {
+    return {
+      category: [],
+    };
   },
   props: {
     isOpen: Boolean,
   },
   methods: {
+    Close(e) {
+      var LayerPopup = $(".sub_menu01");
+      if (LayerPopup.has(e.target).length === 0) {
+        //   console.log("오긴하니")
+        // LayerPopup.removeClass("on");
+        this.CloseHam();
+      }
+    },
     isMenu(menu) {
       var result = this.category.findIndex(function (item, idx) {
         return item.category == menu;

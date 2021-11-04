@@ -2,7 +2,7 @@
   <div>
     <Header :header="this.GetAllim.ettitime" header_desc="에티켓 시간 설정"></Header>
     <div class="content">
-      <form action="">
+      <form @submit.prevent>
         <ul class="eti_menu">
           <li>
             <ul>

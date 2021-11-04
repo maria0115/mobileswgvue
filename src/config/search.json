@@ -26,28 +26,6 @@
                 "datatype": "document",
                 "name": "mail"
             }
-        ],
-        "category_description": "category 별 uri 사용",
-        "category": {
-            "allsearch": {
-                "id": "allsearch"
-            },
-            "person": {
-                "id": "person",
-                "url": "http://swg60.saerom.co.kr"
-            },
-            "approval": {
-                "id": "approval",
-                "url": "http://kms.saerom.co.kr"
-            },
-            "board": {
-                "id": "board",
-                "url": "http://ktop.saerom.co.kr"
-            },
-            "mail": {
-                "id": "mail",
-                "url": "http://ktop.saerom.co.kr"
-            }
-        }
+        ]
     }
 }

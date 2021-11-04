@@ -2,13 +2,12 @@
   <div>
     <CalHeader :title="Title()" @Send="Send"></CalHeader>
     <div class="m_contents08 srl">
-      <form action="">
+      <form @submit.prevent>
         <ul class="wc_top">
           <li class="cal_title">
             <strong>일정제목</strong>
             <div>
               <input type="text" v-model="Subject" />
-              <span class="tit_clip" @click="submitFile()" />
               <input
                 multiple
                 style="display: none"
@@ -291,8 +290,9 @@
           </li>
           <li class="att_file">
             <strong>첨부파일</strong>
+              <span class="tit_clip" @click="submitFile()" />
+
             <div>
-              {{ this.file }}
               <ul v-if="this.file.length > 0" class="file_list">
                 <li v-for="(value, index) in this.file" :key="index">
                   {{ value.name
@@ -302,15 +302,15 @@
             </div>
           </li>
           <li class="cal_memo">
-            <strong>메모</strong>
+            <!-- <strong>메모</strong> -->
             <div>
-              <!-- <Namo
+              <Namo
                 id="memo_t"
                 :read="false"
                 did="calendar"
                 :editor="Body_Text"
                 ref="editor"
-              ></Namo> -->
+              ></Namo>
               <!-- <EditorContent id="memo_t" :editor="editor" /> -->
               <!-- <textarea id="memo_t" v-model="Body_Text"></textarea> -->
             </div>
@@ -542,10 +542,10 @@ export default {
       sendtosearchkeyword: "",
       ExpireDate: "",
       category: [
-        { 0: "약속" },
-        { 1: "기념일" },
-        { 2: "행사" },
         { 3: "회의" },
+        { 0: "약속" },
+        { 2: "행사" },
+        { 1: "기념일" },
         { 4: "리마인더" },
       ],
       daysSort: ["일", "월", "화", "수", "목", "금", "토"],
@@ -562,7 +562,7 @@ export default {
       RepeatForUnit: "D",
       RepeatWeekends: "D",
       rmodalon: false,
-      onCategory: 0,
+      onCategory: 3,
       place: "",
       file: [],
       Subject: "",
@@ -727,7 +727,6 @@ export default {
         var isidx = value2.findIndex((i) => {
           return i.scheduleId == x.scheduleId;
         });
-        console.log(isidx);
         if (isidx == -1) {
           return true;
         }
@@ -746,7 +745,7 @@ export default {
       return str;
     },
     Send() {
-      let formData = new FormData();
+      var formData = new FormData();
       formData.append("subject", this.Subject);
       var SendTo = "";
       var CopyTo = "";
@@ -787,8 +786,6 @@ export default {
         tmpRemoveNamesstr = this.StrJoin(tmpRemoveNames);
         formData.append("tmpRemoveNames", tmpRemoveNamesstr);
 
-        console.log(this.org.SendTo, this.editData.sendToInfo);
-
         this.org.SendTo = this.Difference(
           this.org.SendTo,
           this.editData.sendToInfo
@@ -827,9 +824,9 @@ export default {
       formData.append("endDate", end);
       formData.append("location", this.place);
       // namo 에디터 본문 내용 받아오기
-      let editorData = "회의";
-      // let editorData =
-      //   this.$refs.editor.$refs.namo.contentWindow.crosseditor.GetBodyValue();
+      // var editorData = "회의";
+      var editorData =
+        this.$refs.editor.$refs.namo.contentWindow.crosseditor.GetBodyValue();
       formData.append("body", editorData);
       // formData.append("body", this.editor.getHTML());
       formData.append("category", this.onCategory);

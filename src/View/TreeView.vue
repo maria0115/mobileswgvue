@@ -1,7 +1,9 @@
 <template>
   <li>
-    <h4 @click="toggle">
-      <a>{{ item.nodetitle.ko }}</a>
+    <h4 @click="toggle"  :class="{on:isOpen}">
+      <a>{{ item.nodetitle.ko }}
+        <em class="down_m" v-if="item.children.length"></em>
+      </a>
     </h4>
     <ul v-if="isFolder" :style="{ display: this.isBlock }">
       <tree-item

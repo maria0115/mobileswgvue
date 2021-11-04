@@ -1,5 +1,49 @@
 
 export default {
+    OrgInit(state) {
+        state.orginit = false;
+    },
+    AllReply(state, data) {
+        state.org = {
+            pointer: "SendTo",
+            SendTo: state.mailjs.store.maildetail.sendTo,
+            CopyTo: state.mailjs.store.maildetail.copyTo,
+            BlindCopyTo: []
+        };
+        state.org.SendTo.push(state.mailjs.store.maildetail.author);
+        state.org['SendTo'] = state.org['SendTo'].filter((element) => element.id !== state.mailjs.mail.data.myinfo.id);
+        state.org['CopyTo'] = state.org['CopyTo'].filter((element) => element.id !== state.mailjs.mail.data.myinfo.id);
+
+        var send = state.org['SendTo'];
+        var copy = state.org['CopyTo'];
+
+        var send = send.filter(function (item1, idx1) {
+            return send.findIndex(function (item2, idx) {
+                return item1.id == item2.id
+            }) == idx1;
+        });
+        var copy = copy.filter(function (item1, idx1) {
+            return copy.findIndex(function (item2, idx) {
+                return item1.id == item2.id
+            }) == idx1;
+        });
+        
+        state.org['SendTo'] = send;
+        state.org['CopyTo'] = copy;
+        console.log(state.org)
+
+    },
+    SetBack(state,value) {
+        state.back.isBacked = value;
+    },
+    SetBackPage(state,num) {
+        state.back.page = num;
+
+    },
+    SetTop(state,num) {
+        state.back.top = num;
+
+    },
     SetHeader(state,data) {
         // state.store.header.prevmenu = state.store.header.menu;
         state.store.header.menu = data;

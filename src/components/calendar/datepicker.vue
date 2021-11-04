@@ -62,7 +62,7 @@ export default {
   },
   methods: {
     fill(width, str) {
-      let n = String(str);
+      var n = String(str);
       return n.length >= width
         ? n
         : new Array(width - n.length + 1).join("0") + n;
@@ -80,6 +80,11 @@ export default {
         onChangeView: function (date) {
         },
         onSelect: function(formattedDate, date, inst){
+          if(!date&&date.length==0){
+            formattedDate=here.date;
+            var redate = formattedDate.replaceAll(".", "/");
+            here.myDatepicker.selectDate(new Date(redate));
+          }
           here.$emit("ChangeDate",formattedDate);
         }
       })

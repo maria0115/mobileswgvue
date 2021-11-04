@@ -26,7 +26,7 @@
       </div>
     </div>
     <div class="m_contents02">
-      <form action="">
+      <form @submit.prevent>
         <ul class="board_list">
           <li v-for="(value, index) in lists" :key="index">
             <a @click="Read(value)">
@@ -85,12 +85,13 @@
     <div class="ac_btns">
       <span class="more_plus"></span>
       <ul>
+        <li class="top"><a>맨 위로</a></li>
         <li>
           <!-- @click.native="SetHeader(params)" -->
           <router-link
             :to="{
               name: 'boardwrite',
-              query: {data:JSON.stringify(params)}
+              query: { data: JSON.stringify(params) },
             }"
             >게시판 작성</router-link
           >
@@ -107,14 +108,11 @@ import WBtn from "./BtnW.vue";
 import InfiniteLoading from "vue-infinite-loading";
 import { BoardSearch, ListOfCategory } from "../../api/index.js";
 import { mapState, mapGetters } from "vuex";
+// import $ from "jquery";
+
 export default {
-  created() {
-    this.Init();
-    // this.params = this.GetHeader.menu;
-    // this.params = {};
-    // if (this.$route.query.data) {
-      this.params = JSON.parse(this.$route.query.data);
-    // }
+  async created() {
+    this.params = JSON.parse(this.$route.query.data);
     this.$store.commit("boardjs/BoardWritePath", this.params.type);
     this.option.page = this.page;
     this.option.category = "board";
@@ -124,13 +122,32 @@ export default {
     this.option.boardType = this.params.type;
     this.option.searchword = "";
     this.option.searchType = "0";
-    this.$store.dispatch("ListOfCategory", this.option).then((res) => {
+    this.Init();
+    if (this.back.isBacked) {
+      var res = await this.$store.dispatch("ListOfCategory", this.option);
+      // this.$store.dispatch("ListOfCategory", this.option).then((res) => {
       this.lists = res;
+      for (var i = 0; i < this.back.page; i++) {
+        this.page++;
+        this.option.page = this.page;
+        var result = await this.$store.dispatch("ListOfCategory", this.option);
+        this.lists = this.lists.concat(result);
+      }
+      this.infiniteId++;
+      window.scroll({ top: this.back.top, behavior: "smooth" });
+      this.$store.commit("SetBack", false);
       this.$forceUpdate();
-    });
+    } else {
+      this.$store.dispatch("ListOfCategory", this.option).then((res) => {
+        // this.Init();
+        this.lists = res;
+        this.$forceUpdate();
+      });
+    }
   },
+  mounted() {},
   beforeRouteLeave(to, from, next) {
-    // this.infiniteId += 1;
+    this.$store.commit("SetTop", document.documentElement.scrollTop);
     next();
   },
   components: {
@@ -152,8 +169,8 @@ export default {
     ...mapState("mainjs", ["main"]),
     ...mapGetters("boardjs", ["GetBoard"]),
     ...mapGetters("configjs", ["GetConfig"]),
-    ...mapGetters(["GetCategory","GetHeader"]),
-    ...mapState(["listOfCategory"]),
+    ...mapGetters(["GetCategory", "GetHeader"]),
+    ...mapState(["listOfCategory", "back"]),
 
     path() {
       // if (this.$route.path.indexOf("custom") === -1) {
@@ -167,6 +184,9 @@ export default {
     },
   },
   methods: {
+    // TopBtn(){
+    //   $('html, body').animate({ scrollTop: 0 }, 400);
+    // },
     SetHeader(data) {
       this.$store.dispatch("SetHeader", data);
     },
@@ -199,10 +219,16 @@ export default {
     },
     Read(value) {
       if (value.unid) {
+        var type = this.params.type;
+        var menu = undefined;
+        if (type == "recent") {
+          type = value.boardType;
+          menu = value.boardType;
+        }
         this.$store.dispatch("boardjs/BoardDetail", {
-          menu: undefined,
+          menu: menu,
           unid: value.unid,
-          type: this.params.type,
+          type: type,
           lnbid: this.params.lnbid,
           title: this.params.title,
         });
@@ -232,18 +258,21 @@ export default {
     },
     // 스크롤 페이징
     infiniteHandler($state) {
-      this.page++;
-      // this.GetMail['inbox_detail'].size+= 1;
-      this.option.page = this.page;
+      if (!this.back.isBacked) {
+        this.page++;
+        // this.GetMail['inbox_detail'].size+= 1;
+        this.option.page = this.page;
+        if (this.option.searchword.length > 0) {
+          this.option.type = "search";
 
-      if (this.option.searchword.length > 0) {
-        this.option.type = "search";
+          this.SearchData(this.option, $state);
+        } else {
+          this.option.type = this.params.type;
 
-        this.SearchData(this.option, $state);
+          this.GetData(this.option, $state);
+        }
       } else {
-        this.option.type = this.params.type;
-
-        this.GetData(this.option, $state);
+        $state.complete();
       }
     },
     SearchData(option, $state) {
@@ -254,6 +283,9 @@ export default {
         .then((data) => {
           setTimeout(() => {
             if (data) {
+              if(data.length > 0) {
+                this.$store.commit("SetBackPage", option.page);
+              }
               if (this.lists.length > 0) {
                 this.lists = this.lists.concat(data);
               } else {
@@ -285,6 +317,9 @@ export default {
         .then((data) => {
           setTimeout(() => {
             if (data) {
+              if(data.length > 0) {
+                this.$store.commit("SetBackPage", option.page);
+              }
               if (this.lists.length > 0) {
                 this.lists = this.lists.concat(data);
               } else {

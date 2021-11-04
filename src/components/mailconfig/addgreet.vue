@@ -7,7 +7,7 @@
       <span class="save" @click="GreetAdd"><a>저장</a></span>
     </h2>
     <div class="m_contents06">
-      <form action="">
+      <form @submit.prevent>
         <ul>
           <li>
             <span>제목</span>
@@ -21,10 +21,11 @@
             </div>
           </li>
           <li>
-            <textarea v-model="body">
+            <Namo :editor="body" :read="false" did="greet" ref="editor"></Namo>
+            <!-- <textarea v-model="body">
 안녕하세요 디자인팀 홍길동입니다.
                     </textarea
-            >
+            > -->
           </li>
         </ul>
       </form>
@@ -33,8 +34,11 @@
 </template>
 
 <script>
+import Namo from '../editor/namo.vue';
+
 export default {
   components: {
+    Namo
   },
   data() {
     return {
@@ -52,7 +56,7 @@ export default {
       var data = {};
       data.subject = this.subject;
       data.default = this.default;
-      data.body = this.body;
+      data.body = this.$refs.editor.$refs.namo.contentWindow.crosseditor.GetBodyValue();
       this.$store.dispatch("mailjs/GreetAdd", data);
     },
     Back() {

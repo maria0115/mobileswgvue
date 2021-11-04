@@ -6,7 +6,7 @@
     "lang": "ko",
     "description_config": "/setting/config 페이지 변수 초기화",
     "noticeSpeed":2.5,
-    "namoURL":"http://m60.saerom.co.kr/dwp/com/sys/gwlib.nsf/crosseditor_mobile?ReadForm&did=",
+    "namoURL":"/dwp/com/sys/gwlib.nsf/crosseditor_mobile?ReadForm&did=",
     "objEzXURL":"http://125.7.235.220:81/DG_viewer/viewer/document/docviewer.do/",
     "config": {
         "login": true,

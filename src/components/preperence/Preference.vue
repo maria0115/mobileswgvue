@@ -3,15 +3,13 @@
     <Header header="설정" header_desc="설정"></Header>
 
     <div class="content01">
-      <form action="">
+      <form @submit.prevent>
         <ul class="st_menu">
           <li>
             <h2>{{ this.GetLanguageConfig.login.setlogin }}</h2>
             <ul>
               <li>
-                <strong>{{
-                  this.GetLanguageConfig.login.autologin
-                }}</strong>
+                <strong>{{ this.GetLanguageConfig.login.autologin }}</strong>
                 <span
                   class="toggle_btn"
                   :class="{ on: this.GetConfig.login }"
@@ -21,20 +19,16 @@
               </li>
             </ul>
           </li>
-          <li>
+          <!-- <li>
             <h2>{{ this.GetLanguageConfig.allim.setallim }}</h2>
             <ul>
               <li>
-                <router-link :to="{ name: 'setalarm'}"
-                  ><strong>{{
-                    this.GetLanguageConfig.allim.menuallim
-                  }}</strong>
+                <router-link :to="{ name: 'setalarm' }"
+                  ><strong>{{ this.GetLanguageConfig.allim.menuallim }}</strong>
                 </router-link>
               </li>
               <li>
-                <strong>{{
-                  this.GetLanguageConfig.allim.ettitime
-                }}</strong>
+                <strong>{{ this.GetLanguageConfig.allim.ettitime }}</strong>
                 <span
                   class="toggle_btn atiq_btn"
                   :class="{ on: this.GetConfig.etiquette.use }"
@@ -46,7 +40,7 @@
                 class="slideup"
                 :class="{ active: this.GetConfig.etiquette.use }"
               >
-                <router-link :to="{ name: 'setetiq'}">
+                <router-link :to="{ name: 'setetiq' }">
                   <strong
                     ><em class="start">{{
                       time(this.GetConfig.etiquette.starttime)
@@ -59,8 +53,8 @@
                 </router-link>
               </li>
             </ul>
-          </li>
-          <li>
+          </li> -->
+          <!-- <li>
             <ul>
               <li>
                 <strong>{{ this.GetLanguageConfig.synch }}</strong>
@@ -72,24 +66,22 @@
                 ></span>
               </li>
             </ul>
-          </li>
+          </li> -->
           <li>
             <h2>{{ this.GetLanguageConfig.display.setdisplay }}</h2>
             <ul>
-              <li>
-                <router-link :to="{ name: 'setscreen'}">
+              <!-- <li>
+                <router-link :to="{ name: 'setscreen' }">
                   <strong>{{
                     this.GetLanguageConfig.display.maindisplay
                   }}</strong>
                   <em>{{
-                    this.GetLanguageConfig.display.main[
-                      this.GetConfig.display
-                    ]
+                    this.GetLanguageConfig.display.main[this.GetConfig.display]
                   }}</em>
                 </router-link>
-              </li>
+              </li> -->
               <li>
-                <router-link :to="{ name: 'setnum'}">
+                <router-link :to="{ name: 'setnum' }">
                   <strong>{{
                     this.GetLanguageConfig.display.listcount
                   }}</strong>
@@ -112,17 +104,13 @@
             <h2>{{ this.GetLanguageConfig.style.setstyle }}</h2>
             <ul>
               <li>
-                <router-link :to="{ name: 'setfont'}">
-                  <strong>{{
-                    this.GetLanguageConfig.style.setfont
-                  }}</strong>
+                <router-link :to="{ name: 'setfont' }">
+                  <strong>{{ this.GetLanguageConfig.style.setfont }}</strong>
                 </router-link>
               </li>
               <li>
-                <router-link :to="{ name: 'setdark'}">
-                  <strong>{{
-                    this.GetLanguageConfig.style.setdark
-                  }}</strong>
+                <router-link :to="{ name: 'setdark' }">
+                  <strong>{{ this.GetLanguageConfig.style.setdark }}</strong>
                   <em></em>
                 </router-link>
               </li>
@@ -143,14 +131,14 @@ export default {
     Header,
   },
   // dom 들이 구성이 된 후 font 설정을 위해 mounted 구간에 font 변경
-  mounted(){
+  mounted() {
     $(".wrap").css("font-family", this.GetConfig.font.font);
   },
   computed: {
-    ...mapGetters("configjs",["GetConfig"]),
+    ...mapGetters("configjs", ["GetConfig"]),
     ...mapGetters(["GetLanguageConfig"]),
     // ...mapState(["systemcolor","config"]),
-    // 알람시간 tranformat XX:XX pm(am) 
+    // 알람시간 tranformat XX:XX pm(am)
     time() {
       return (time) => {
         var ampm = "pm";
@@ -176,15 +164,14 @@ export default {
       } else {
         value = true;
       }
-      if(menu==="login"){
-        this.$router.push({ name: 'login', query: { uuid: "0", locale: "ko" } });
-      }
       this.$store.dispatch("configjs/setConfig", {
         menu: menu,
         value: value,
       });
+      if (menu === "login") {
+        this.$router.push({ name: "login" });
+      }
     },
-   
   },
 };
 </script>

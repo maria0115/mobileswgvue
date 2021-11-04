@@ -1,7 +1,10 @@
 $(function () {
 
 
-    
+    // $('document').on('bind', 'mobileinit', function () {
+    //     
+    //     $.mobile.loader.prototype.options.disabled = true;
+    // });
 
 
     //  라디오버튼 클릭시 이벤트 발생 //
@@ -72,7 +75,7 @@ $(function () {
         $('.recent_search').removeClass('on');
     });
 
-
+    // $.mobile.loader.prototype.options.disabled = true;
     
 
     //메인화면
@@ -88,8 +91,16 @@ $(function () {
     //     arrows: false,
     //     dots: true,
     // });
-    $('body').on('click', '.top_btn', function () {
-        $('html, body').animate({ scrollTop: 0 }, 400);
+    $('body').on('click ', '.top_btn', function () {
+        window.scroll({ top: 0, behavior: "smooth" });
+
+        // $('html, body').animate({ scrollTop: 0 }, 400);
+        return false;
+    });
+    $('body').on('click', '.top', function () {
+        window.scroll({ top: 0, behavior: "smooth" });
+
+        // $('html, body').animate({ scrollTop: 0 }, 400);
         return false;
     });
     $('body').on('click', '.auto_search > p > em:nth-child(1)', function () {
@@ -119,6 +130,14 @@ $(function () {
     $('body').on('click', '.main_sub_close', function () {
         $('.main_sub').removeClass('active');
     });
+
+    // $('body').on('mouseup', '.sub_menu01', function (e) {
+    //     var LayerPopup = $(".sub_menu01");
+    //     if(LayerPopup.has(e.target).length === 0){
+    //         
+    //       LayerPopup.removeClass("on");
+    //     }
+    // });
 
     // $('body').on('click','.e_edit',function(){
     //     $('.edit_header').addClass('on');
@@ -164,7 +183,7 @@ $(function () {
         $(this).siblings('li').removeClass('active');
     });
     // $('.list_menu > li > h3 > a').on('click',function(){
-    //     console.log($(this));
+    //     
     //     $(this).parent('h3').parent('li').find('.depth02').slideToggle(); 
     //     $(this).parent('h3').toggleClass('on');
     // });
@@ -305,7 +324,8 @@ $(function () {
     // $('body').on('click','.c_organ', function() {
     //     $('.organ_modal').addClass('on');
     // });
-    $('body').on('click','.cal_att > strong', function() {
+    $('body').on('click','.cal_att strong', function() {
+        
         $(this).toggleClass('active');
         $('.more_cal_att').slideToggle();
     });
@@ -330,8 +350,14 @@ $(function () {
         $(this).parent('li').find('.app_status').addClass('active');
     });
     $('body').on('click','.close_btn', function() {
-        $(this).parent('div').parent('div').removeClass('active');
-        $(this).parent('div').parent('div').siblings('.st_more').removeClass('active');
+        
+        $('.btm_menu_list').removeClass('active');
+        $(this).parent('div').removeClass('active')
+        // $(this).parent('div').siblings('.s_text').find('.st_more').removeClass('active');
+        $(this).parent('div').siblings('.st_more').removeClass('active');
+        // $(this).parent('div').parent('div').removeClass('active');
+        // $(this).parent('div').parent('div').removeClass('active');
+        // $(this).parent('div').parent('div').siblings('.st_more').removeClass('active');
     });
     // 
     $("body").on('change','#add_f',function(){
@@ -369,7 +395,7 @@ $(function () {
     });
     $('body').on('click','.all_sc_check', function() {
         $(this).toggleClass('active');
-        console.log("sc_check")
+        
         $('.sc_check').removeClass('active');
         // if($('.all_sc_check').hasClass('active')){
         //     $('.sc_check').on('click', function() {
@@ -382,24 +408,21 @@ $(function () {
     });
     $('body').on('click','.sub_search',function(){
         $('.search_con').addClass('active');
+        var inp = $('.search_con').find('.sc_top').find('input');
+        inp[0].focus();
     });
     $('body').on('click','.search_btn',function(){
         $('.search_con').removeClass('active');
     });
     $('body').on('click','.back_btn',function(){
+        
         $('.search_con').removeClass('active');
+        $('.ap_sub_search').removeClass('active');
     });
     $('body').on('click','.ap_sub_search',function(){
         $('.search_con').addClass('active');
-    });
-    $('body').on('click','.back_btn',function(){
-        $('.ap_sub_search').removeClass('active');
-    });
-    $('.ap_sub_search').on('click',function(){
-        $('.search_con').addClass('active');
-    });
-    $('.back_btn').on('click',function(){
-        $('.ap_sub_search').removeClass('active');
+        var inp = $('.search_con').find('.sc_top').find('input');
+        inp[0].focus();
     });
     // 게시판 
     // $('.tit_clip').on('click',function(){
@@ -433,6 +456,7 @@ $(function () {
     // });/*8월 12일 추가됨 */
 
     $('body').on('click','.btm_menu',function(){
+        // alert("btm_menu toggle");
         $('.btm_menu_list').addClass('active');
     });
     // $('body').on('click','.btm_organ',function(){
@@ -443,12 +467,13 @@ $(function () {
         $(this).addClass('on');
         $(this).siblings('li').removeClass('on');
     });
-    $('body').on('click','.close_btn', function() {
-        $(this).parent('div').removeClass('active')
-        // $(this).parent('div').siblings('.s_text').find('.st_more').removeClass('active');
-        $(this).parent('div').siblings('.st_more').removeClass('active');
-        // $(this).parent('div').parent('div').removeClass('active');
-    });
+    // $('body').on('click','.close_btn', function() {
+    //     
+    //     $(this).parent('div').removeClass('active')
+    //     // $(this).parent('div').siblings('.s_text').find('.st_more').removeClass('active');
+    //     $(this).parent('div').siblings('.st_more').removeClass('active');
+    //     // $(this).parent('div').parent('div').removeClass('active');
+    // });
     changeIMG();
     function changeIMG(){
         if ($('.wrap.btm_b').hasClass('dark')){

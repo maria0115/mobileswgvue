@@ -44,7 +44,10 @@
                     <em v-if="value.created.length > 0">{{
                       transTime(value.created)
                     }}</em>
-                    <p v-if="value.body&&value.body!=='undefined'" v-html="value.body"></p>
+                    <p
+                      v-if="value.body && value.body !== 'undefined'"
+                      v-html="value.body"
+                    ></p>
                   </div>
                 </li>
               </ul>
@@ -57,26 +60,25 @@
               >
             </h3>
             <div :class="{ active: attActive }">
-              <!-- <ul>
+              <ul>
                 <li
                   v-for="(value, index) in this.detail.attachInfo"
                   :key="index"
                 >
-                  <a>{{ value.name }}</a>
-                  <div class="file_btn">
+                  <a :href="value.url" download>{{ value.name }}</a>
+                  <!-- <div class="file_btn">
                     <span class="open_btn" @click="attOpen(value.path)"
                       >열기</span
                     >
                     <span class="save_btn">저장</span>
-                  </div>
+                  </div> -->
                 </li>
-              </ul> -->
-              <Viewer
+              </ul>
+              <!-- <Viewer
                 className=""
                 :attaInfo="this.detail.attachInfo"
                 :attach="true"
-                ref="viewer"
-              ></Viewer>
+              ></Viewer> -->
             </div>
           </li>
         </ul>
@@ -85,7 +87,13 @@
         </div>
       </div>
       <BtnPlus :menu="morePlus" @BtnClick="BtnClick"></BtnPlus>
+      <Viewer className="" :attach="false" ref="viewer"></Viewer>
     </div>
+    <Comment
+      :isOpen="agreeNreject"
+      @ModalOff="ModalOff"
+      @AgreeNReject="AgreeNReject"
+    ></Comment>
   </div>
 </template>
 
@@ -93,30 +101,46 @@
 import BackHeader from "./backheader.vue";
 import SubMenu from "./menu.vue";
 import BtnPlus from "./btnPlus.vue";
+import Comment from "./Comment.vue";
+
 import { mapState, mapGetters } from "vuex";
 import Viewer from "../editor/viewer.vue";
 export default {
   created() {
     this.params = JSON.parse(this.$route.query.data);
-    // this.params = this.GetHeader.menu;
+    if (this.detail.isCollect) {
+      this.morePlus.agreeNreject = "회수";
+    }
+    if (this.detail.agreeBtn) {
+      // this.morePlus = { view: "원문 보기",deleteItem: "삭제", };
+      if (this.detail.status == "mutualing") {
+        this.morePlus.agree = "협조동의";
+        this.morePlus.reject = "반대";
+      } else {
+        this.morePlus.agree = "승인";
+        this.morePlus.reject = "반려";
+      }
+    }
   },
   computed: {
     // ...mapGetters("approjs", ["GetApproval"]),
     ...mapState("approjs", ["detail"]),
-    ...mapGetters( ["GetHeader"]),
+    ...mapGetters(["GetHeader"]),
   },
   components: {
     BackHeader,
     SubMenu,
     BtnPlus,
     Viewer,
+    Comment,
+
   },
   data() {
     return {
       morePlus: {
         // edit: "편집",
         // deleteItem: "삭제",
-        agreeNreject: "회수",
+        // agreeNreject: "회수",
         view: "원문 보기",
       },
       isOpen: false,
@@ -124,14 +148,30 @@ export default {
       body: "",
       appActive: false,
       attActive: false,
+      agreeNreject: false,
+
     };
   },
   methods: {
+    ModalOff() {
+      this.agreeNreject = false;
+    },
+    AgreeNReject(comment) {
+      let formData = new FormData();
+      formData.append("openurl", this.detail.openurl);
+      formData.append("comment", comment);
+      formData.append("approve", this.nowBtn);
+
+      this.$store.dispatch("approjs/agreeNreject", formData).then((res) => {
+        if (res) {
+          this.$router.go(-1);
+        }
+      });
+    },
     SetHeader(data) {
       this.$store.dispatch("SetHeader", data);
     },
     BtnClick(value) {
-      console.log(value,"value")
       var data = undefined;
       if (value == "edit") {
         this.params.isedit = 1;
@@ -143,18 +183,19 @@ export default {
           query: { data: JSON.stringify(this.params) },
         });
         return;
-      } else if(value=='view'){
-        console.log(value,"value")
+      } else if (value == "view") {
         this.OriginView();
         return;
-
-      }else if (value === "deleteItem") {
+      } else if (value === "deleteItem") {
         data = this.detail;
-      } else if (value == "agreeNreject") {
-        let formData = new FormData();
-        formData.append("openurl", this.detail.openurl);
-        formData.append("approve", "recallall");
-        data = formData;
+      } else if (value == "agree" || value == "reject") {
+        // let formData = new FormData();
+        // formData.append("openurl", this.detail.openurl);
+        // formData.append("approve", "recallall");
+        // data = formData;
+        this.agreeNreject = true;
+        this.nowBtn = e;
+        return;
       }
       this.$store.dispatch(`approjs/${value}`, data).then((res) => {
         if (res) {
@@ -163,6 +204,18 @@ export default {
             name: "appapproving",
             query: { data: JSON.stringify(this.params) },
           });
+        }
+      });
+    },
+    AgreeNReject(comment) {
+      let formData = new FormData();
+      formData.append("openurl", this.detail.openurl);
+      formData.append("comment", comment);
+      formData.append("approve", this.nowBtn);
+
+      this.$store.dispatch("approjs/agreeNreject", formData).then((res) => {
+        if (res) {
+          this.$router.go(-1);
         }
       });
     },
@@ -188,8 +241,17 @@ export default {
     attOpen(url) {
       window.open(url);
     },
-    OriginView(){
-      this.$refs.viewer.goOriginView({url:this.detail.openurl, name:this.detail.subject});
+    OriginView() {
+      // node 원문보기
+      this.$router.push({
+        name: "originalPage",
+        params: { url: this.detail.openurl },
+      });
+      // 첨부변환서버 원문보기
+      // this.$refs.viewer.goOriginView({
+      //   url: this.detail.openurl,
+      //   name: this.detail.subject,
+      // });
     },
   },
 };

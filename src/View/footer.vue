@@ -4,11 +4,11 @@
       <li class="home"><router-link :to="{ name: 'root' }"></router-link></li>
       <li class="back" @click="RouterBack"><a></a></li>
       <li class="go" @click="RouterGo"><a></a></li>
-      <li class="btm_menu"><a></a></li>
+      <li class="btm_menu" @click="BtmMenu"><a></a></li>
       <li class="btm_organ" @click="orgClick()"><a></a></li>
-      <li class="btm_allim">
+      <!-- <li class="btm_allim">
         <a><em class="allim_num">23</em></a>
-      </li>
+      </li> -->
     </ul>
     <div class="btm_menu_list">
       <div class="list_inner">
@@ -117,6 +117,12 @@ export default {
   },
 
   methods: {
+    Close(e){
+      var LayerPopup = $(".btm_menu_list");
+        if(LayerPopup.has(e.target).length === 0){
+          this.CloseHam();
+        }
+    },
     Write() {
       this.$router.push({
         name: "calwrite",
@@ -196,7 +202,7 @@ export default {
     },
     InitMenu(id) {
       CategoryList(id).then((res) => {
-        for (let key in res.data) {
+        for (var key in res.data) {
           this.mainmenu[key] = res.data[key];
         }
       });
@@ -218,6 +224,7 @@ export default {
     RouterBack() {
       // this.SetHeader(this.GetHeader.prevmenu);
       this.$store.commit("mailjs/Back");
+      this.$store.commit("SetBack",true);
       this.$router.go(-1);
     },
     // 후 url 이동
@@ -238,6 +245,9 @@ export default {
     },
     calListClose() {
       this.$store.commit("calendarjs/calListOpen", false);
+    },
+    BtmMenu(){
+      // alert("jquery 안됨")
     },
   },
 };

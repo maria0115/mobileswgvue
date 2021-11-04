@@ -4,8 +4,10 @@ export const dataStore = {
         greetviewdata: {},
         mailCustomFolderTitle: "",
         maildetail: {
-            unid: ""
+            unid: "",
+            
         },
+        folderName:"",
         mailconfig: {
             beforesave:false,
             view: {

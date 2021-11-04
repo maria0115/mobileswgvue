@@ -2,7 +2,7 @@
   <div class="all_organ_modal" :class="{ on: this.modalon }">
     <!--위치 수정됨-->
     <div class="organ_con">
-      <form>
+      <form @submit.prevent>
         <div>
           <strong>조직도</strong>
           <div>
@@ -12,6 +12,7 @@
               placeholder="검색어를 입력하세요"
               autocomplete="on"
               v-model="keyword"
+              @keypress.enter="SetAutoOrg"
               @keyup="OrgSearch($event.target.value)"
             />
             <div class="btns">
@@ -50,6 +51,7 @@ import OrgItem from "./orgitemviewFooter.vue";
 export default {
   created() {
     var data = {};
+    // console.log(this.GetMyInfo,this.GetMail.org.trans)
     this.$store.dispatch("mailjs/InitOrg", data);
   },
   props: {
@@ -61,6 +63,7 @@ export default {
   computed: {
     ...mapState(["org"]),
     ...mapGetters("mailjs", ["GetMail"]),
+    // ...mapGetters("mainjs", ["GetMyInfo"]),
   },
   data: function () {
     return {

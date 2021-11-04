@@ -5,8 +5,10 @@ import router from '../../../router/index';
 export default {
     AppSearch({ state, commit, rootState }, data) {
         data.size = rootState.configjs.store.config.listcount;
+        rootState.tf = true;
         AppSearch(data)
             .then((res) => {
+                rootState.tf = false;
 
                 if (res.status !== 200) {
                     return false;
@@ -19,9 +21,11 @@ export default {
 
             })
     },
-    deleteItem({ state, commit }, data) {
+    deleteItem({ state, commit, rootState }, data) {
+        rootState.tf = true;
         return deleteItem(data)
             .then((res) => {
+                rootState.tf = false;
 
                 if (res.status !== 200) {
                     return false;
@@ -30,9 +34,11 @@ export default {
                 }
             })
     },
-    AppWrite({ state, commit }, { data, type }) {
+    AppWrite({ state, commit, rootState }, { data, type }) {
+        rootState.tf = true;
         return AppWrite({ data, type })
             .then((res) => {
+                rootState.tf = false;
                 if (res.status !== 200) {
                     return false;
                 } else {
@@ -40,16 +46,18 @@ export default {
                 }
             })
     },
-    agreeNreject({ state, commit }, data) {
+    agreeNreject({ state, commit, rootState }, data) {
 
+        rootState.tf = true;
         return agreeNreject(data)
             .then((res) => {
+                rootState.tf = false;
                 if (res.status !== 200) {
                     return false;
                 } else {
 
                     if (res.data) {
-                        alert("완료")
+                        alert("처리되었습니다.")
                     }
                     return true;
                     // commit("SetDetail",res.data);
@@ -61,14 +69,16 @@ export default {
             })
 
     },
-    AppDetail({ state, commit }) {
+    AppDetail({ state, commit, rootState }) {
         var data = {};
         data.openurl = state.store.app.openurl;
         data.unid = state.store.app.unid;
         data.type = state.store.app.from;
 
+        rootState.tf = true;
         return AppDetail(data)
             .then((res) => {
+                rootState.tf = false;
 
                 if (res.status !== 200) {
                     return false;
@@ -85,10 +95,12 @@ export default {
             })
 
     },
-    DocApproval({ state, commit }, { type }) {
+    DocApproval({ state, commit, rootState }, { type }) {
 
+        rootState.tf = true;
         DocApproval(type)
             .then((res) => {
+                rootState.tf = false;
 
                 if (res.status !== 200) {
                     return false;
@@ -107,8 +119,10 @@ export default {
         data.size = rootState.configjs.store.config.listcount;
         data.approvaltype = type;
 
+        rootState.tf = true;
         return Approval(data)
             .then((res) => {
+                rootState.tf = false;
 
                 if (res.status !== 200) {
                     return false;

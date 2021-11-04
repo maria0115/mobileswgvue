@@ -14,7 +14,7 @@
         <div
           v-for="(value, name) in main.data.approvaltype.approving.my.data"
           :key="name"
-          @click="Read(value, 'ingview')"
+          @click="Read(value, 'approving')"
         >
           <div class="icons">
             <span class="opin"></span>
@@ -35,7 +35,7 @@
           </div>
           <em>{{ value.category }}</em>
           <strong>{{ value.subject }}{{ TopIdx() }}</strong>
-          <div class="per_info clfix">
+          <div v-if="nowApprover(value)" class="per_info clfix">
             <span class="basic_img on">
               <em class="no_img" :style="randomColor()"
                 ><b>{{ nowApprover(value).author.split("")[0] }}</b></em
@@ -98,7 +98,19 @@ import VueSlickCarousel from "vue-slick-carousel";
 
 import { mapState, mapGetters } from "vuex";
 export default {
-  created() {},
+  async created() {
+    var main = this.GetCategory["main"];
+    this.params = main[this.TopIdx()];
+    var categorys = await this.$store.dispatch(
+      "CategoryList",
+      this.params.lnbid
+    );
+    var ingidx = categorys.findIndex(function (item, idx) {
+      return item.category == "approving";
+    });
+    this.approving = categorys[ingidx];
+    this.$forceUpdate();
+  },
   components: { VueSlickCarousel },
   computed: {
     ...mapState("mainjs", ["main"]),
@@ -175,6 +187,8 @@ export default {
     },
     Read(value, where) {
       value.where = where;
+      
+      this.$store.commit("approjs/AppSaveFrom", where);
       this.$store.commit("approjs/AppSaveUnid", {
         unid: value.unid,
         openurl: value.openurl,
@@ -183,10 +197,13 @@ export default {
       //       title: this.portlet.approval.approving,
       //     });
       this.$router.push({
-        name: "approvingview",
+        name: `approvingview`,
         query: {
           data: JSON.stringify({
-            title: this.portlet.approval.approving,
+            type: this.approving.type||this.approving.category,
+            lnbid: this.approving.lnbid,
+            top: this.params.lnbid,
+            title: this.approving.title,
           }),
         },
       });

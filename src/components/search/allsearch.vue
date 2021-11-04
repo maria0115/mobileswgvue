@@ -6,7 +6,7 @@
         <ul class="clfix" v-if="this.sortdata.person !== undefined">
           <li v-for="(value, name) in this.sortdata.person.data" :key="name">
             <a href="">
-              <span><img :src="url.person.url + value.photo" @error="$event.target.src='../../mobile/img/img03.png'" alt="" /></span>
+              <span><img :src="value.photo" @error="$event.target.src='../../mobile/img/img03.png'" alt="" /></span>
               <dl>
                 <dt>
                   <em>{{ value.subject }}</em
@@ -30,7 +30,8 @@
         <h2>{{GetSearchLanguage.menu.approval}}</h2>
         <ul v-if="this.sortdata.approval !== undefined">
           <li v-for="(value, name) in this.sortdata.approval.data" :key="name">
-            <a @click="openView(value)">
+            <!-- <a @click="openView(value)"> -->
+            <a :href="`/dwp/com/portal/main.nsf/wfrmpage?ReadForm&url=${value.originalurl}`">
               <h3>{{ value.subject }}</h3>
               <div class="clfix">
                 <em>{{ setWord(value.author) }}</em>
@@ -105,8 +106,14 @@ export default {
     },
     openView(value){
       if(value.originalurl !== ""){ 
-        this.$refs.viewer.goOriginView({url:value.originalurl, name:value.subject});
+        this.$router.push({
+            name: "originalPage",
+            params: { url: value.originalurl},
+          });
       }
+      // if(value.originalurl !== ""){ 
+      //   this.$refs.viewer.goOriginView({url:value.originalurl, name:value.subject});
+      // }
     },
   },
 };

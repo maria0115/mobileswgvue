@@ -5,7 +5,7 @@
       header_desc="글자 크기 / 글꼴 설정"
     ></Header>
     <div class="content04">
-      <form action="">
+      <form @submit.prevent>
         <ul class="ft_menu">
           <li>
             <p>메신저 로그인 화면 개선안</p>

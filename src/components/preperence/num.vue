@@ -2,7 +2,7 @@
   <div>
     <Header :header="this.GetDisplay.listcount" header_desc="목록 문서 수 설정"></Header>
     <div class="contents05">
-      <form action="">
+      <form @submit.prevent>
         <ul class="num_menu">
           <li>
             <ul>
@@ -48,6 +48,7 @@ export default {
   methods: {
     // click 시 해당 설정값 db에 입력
     setConfig(event) {
+      // alert(event.target.value,"event.target.value")
       this.$store.dispatch("configjs/setConfig", {
         menu: "listcount",
         value: event.target.value,

@@ -5,7 +5,8 @@
         <h2>{{ GetSearchLanguage.menu[this.path] }}</h2>
         <ul v-if="datacheck">
           <li v-for="(value, name) in this.sortdata[path].data" :key="name">
-            <a @click="openView(value)">
+            <!-- <a @click="openView(value)"> -->
+            <a :href="`/dwp/com/portal/main.nsf/wfrmpage?ReadForm&url=${value.originalurl}`">
               <h3>{{ value.subject }}</h3>
               <div class="clfix">
                 <em>{{ setWord(value.author) }}</em>
@@ -161,8 +162,14 @@ export default {
     },
     openView(value){
       if(value.originalurl !== ""){ 
-        this.$refs.viewer.goOriginView({url:value.originalurl, name:value.subject});
+        this.$router.push({
+            name: "originalPage",
+            params: { url: value.originalurl},
+          });
       }
+      // if(value.originalurl !== ""){ 
+      //   this.$refs.viewer.goOriginView({url:value.originalurl, name:value.subject});
+      // }
     },
   },
 };

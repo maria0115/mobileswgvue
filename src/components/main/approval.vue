@@ -7,15 +7,15 @@
       >
       <div class="app_list01 clfix">
         <p v-if="approveData.data.length === 0">결재할 문서가 없습니다.</p>
-        <div v-else v-for="(value, name) in approveData.data" :key="name">
+        <div v-else v-for="(value, name) in approveData.data" :key="name"  @click="Read(value, 'approve')">
           <div class="icons">
-            <span class="opin"></span>
-            <span class="clip"></span>
+            <!-- <span class="opin"></span> -->
+            <span class="clip" v-if="value.attach"></span>
           </div>
           <em>{{ value.category }}</em>
           <strong>{{ value.subject }}</strong>
           <p>{{ transTime(value.created) }}</p>
-          <div class="per_info clfix" @click="Read(value, 'approve')">
+          <div class="per_info clfix">
             <span class="basic_img on">
               <em class="no_img" :style="randomColor()"
                 ><b>{{ value.author.split("")[0] }}</b></em
@@ -74,15 +74,16 @@
         class="app_list01"
         v-for="(value, name) in approvingData.data"
         :key="name"
+         @click="Read(value, 'approving')"
       >
         <div>
           <div class="icons">
-            <span class="opin"></span>
+            <!-- <span class="opin"></span> -->
             <span class="clip" v-if="value.attach"></span>
           </div>
           <em>{{ value.category }}</em>
           <strong>{{ value.subject }}</strong>
-          <div @click="Read(value, 'approving')" class="per_info clfix">
+          <div class="per_info clfix">
             <span class="basic_img on">
               <em class="no_img" :style="randomColor()"
                 ><b>{{ value.approvalinfo[0].author.split("")[0] }}</b></em
@@ -202,6 +203,8 @@ export default {
     },
     Read(value, where) {
       value.where = where;
+      this.$store.commit("approjs/AppSaveFrom", where);
+
       this.$store.commit("approjs/AppSaveUnid", {
         unid: value.unid,
         openurl: value.openurl,

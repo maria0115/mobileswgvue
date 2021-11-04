@@ -7,18 +7,26 @@
       ></em>
       <div class="rdmail_icons">
         <span class="rd_reply" @click="Replay('Reply')">답장</span>
-        <span class="rd_relay" @click="Replay('Relay')">전달</span>
+        <span
+          class="rd_relay"
+          v-if="!isDraft()"
+          @click="Replay('Relay')"
+          >전달</span
+        >
+        <span class="rd_relay" v-else @click="Edit()">편집</span>
         <span class="rd_del" @click="mailDelete">삭제</span>
         <span class="rd_more"></span>
         <ul class="more_box">
           <li class="move">이동</li>
-          <li @click="SpamSet">스팸차단</li>
+          <li @click="SpamSet" v-if="!isDraft()">
+            스팸차단
+          </li>
           <li @click="Replay('AllReply')">전체답장</li>
         </ul>
       </div>
     </div>
     <div class="m_contents04">
-      <form action="">
+      <form @submit.prevent>
         <div class="rd_top">
           <h2 class="mail_tit">{{ GetMailDetail.subject }}</h2>
           <div class="clfix">
@@ -89,11 +97,10 @@
         </div>
         <div class="add_file clfix">
           <strong>첨부파일</strong>
-          <!-- <ul>
+          <ul>
             <li
               v-for="(value, index) in GetMailDetail.attach"
               :key="index"
-              @click="attachClick(value.url)"
               class="active"
             >
               <span
@@ -102,29 +109,32 @@
                   alt=""
               /></span>
               <div>
-                <p>{{ value.name }}</p>
-                <em>({{ value.size }})</em>
+                <a :href="value.url" download>
+                  <p>{{ value.name }}</p>
+                  <em>({{ value.size }})</em>
+                </a>
               </div>
             </li>
-          </ul> -->
-          <Viewer
+          </ul>
+          <!-- <Viewer
             className=""
             :attaInfo="GetMailDetail.attach"
             :attach="true"
-          ></Viewer>
+          ></Viewer> -->
         </div>
         <!-- <div class="rdm_edit" v-html="GetMailDetail.body">
           안녕하세요. 디자인 팀 안지영 입니다. 2021년 사내업무 및 유지 보수 내역
           보내드립니다. 감사합니다.
         </div> -->
         <div class="rdm_edit">
-          <Namo
+          <!-- <Namo
             id="memo_t"
             :read="true"
             :editor="GetMailDetail.body"
             did="mail"
             ref="editor"
-          ></Namo>
+          ></Namo> -->
+          <div v-html="GetMailDetail.body"></div>
         </div>
 
         <!-- <editor-content
@@ -142,16 +152,16 @@ import { mapState, mapGetters } from "vuex";
 import MoveFile from "./movefile.vue";
 import { Editor, EditorContent } from "tiptap";
 import configjson from "../../config/config.json";
-import Namo from "../editor/namo.vue";
+// import Namo from "../editor/namo.vue";
 import Viewer from "../editor/viewer.vue";
 import FollowUp from "./folloup.vue";
 export default {
   components: {
     MoveFile,
     EditorContent,
-    Namo,
+    // Namo,
     Viewer,
-    FollowUp
+    FollowUp,
   },
   data: function () {
     return {
@@ -161,15 +171,23 @@ export default {
   },
   computed: {
     ...mapState("mailjs", ["TimeOption"]),
-    ...mapGetters("mailjs", ["GetMailDetail", "GetMail"]),
+    ...mapGetters("mailjs", ["GetMailDetail", "GetMail", "GetfolderName"]),
+    path() {
+      return this.$route.name;
+    },
   },
-  mounted() {
-  },
+  mounted() {},
   created() {
     this.$store.dispatch("mailjs/FollowUpInfo", this.GetMailDetail.unid);
     this.$store.commit("mailjs/checkedNamesPush", this.GetMailDetail.unid);
   },
   methods: {
+    isDraft(){
+      return this.GetfolderName.indexOf('draft') !== -1;
+    },
+    Edit() {
+      this.$router.push({ name: "WriteMail",query:{isEdit:true} });
+    },
     followUp(unid) {
       this.clickedUnid = unid;
     },

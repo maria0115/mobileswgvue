@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="m_contents02">
-      <form action="">
+      <form @submit.prevent>
         <ul>
           <swipe-list
             v-if="this.mail.data[this.path].data.data"
@@ -50,7 +50,7 @@
                   :value="{ unid: item.unid, key: index }"
                   v-model="mail.checkBtn.checkedNames"
                 />
-                <dl @click="MailDetail(item.unid)">
+                <dl @click="MailDetail(item.unid, item.folderName)">
                   <dt>
                     {{ item.sender }}
                     <div>
@@ -121,7 +121,7 @@
     <div class="ac_btns">
       <span class="more_plus"></span>
       <ul>
-        <li><a>맨 위로</a></li>
+        <li><a class="top">맨 위로</a></li>
         <li>
           <router-link :to="{ name: 'WriteMail' }">메일 작성</router-link>
         </li>
@@ -171,6 +171,7 @@ export default {
       body: "",
       unid: "",
       clickedUnid: "",
+      lists: [],
     };
   },
   computed: {
@@ -178,6 +179,8 @@ export default {
     ...mapState("configjs", ["config", "systemcolor"]),
     ...mapGetters("mailjs", ["GetMail", "GetMailConfig"]),
     ...mapGetters("configjs", ["GetConfig"]),
+    ...mapState(["back"]),
+
     path() {
       if (this.$route.path.indexOf("custom") === -1) {
         return this.$route.path.split("/").reverse()[0];
@@ -188,20 +191,58 @@ export default {
   },
   beforeRouteLeave(to, from, next) {
     // this.$refs.infiniteLoading.$emit('$InfiniteLoading:reset');
+    this.$store.commit("SetTop", document.documentElement.scrollTop);
+
     this.$store.commit("mailjs/MailSearchOptionInit");
     this.$store.commit("mailjs/Back");
-    this.infiniteId += 1;
     next();
   },
-  created() {
-    this.$store.commit("mailjs/Back");
-
-    this.infiniteId += 1;
+  async created() {
+    // this.mail.data[this.path].data.data
+    this.page = 0;
+    // this.infiniteId += 1;
     if (this.path === "custom") {
       this.$store.dispatch("mailjs/GetMailDetail", {
         mailtype: "custom",
         folderId: this.$route.params.folderId,
       });
+    }
+    if (this.back.isBacked) {
+      var option = {};
+      this.GetMail[this.path].page = this.back.page;
+      option.page = this.page;
+      option.mailtype = this.path;
+
+      option.searchType = this.path;
+      option.searchfield = this.GetMailConfig.searchOption.searchfield;
+
+      option.searchword = this.GetMailConfig.searchOption.searchword;
+      option.size = this.GetConfig.listcount;
+      if (this.mailSearchPath.includes(this.path)) {
+        for (var i = 0; i < this.back.page; i++) {
+          this.page++;
+          option.page = this.page;
+          var result = await MailSearch(option);
+          result = result.data.data;
+          if (result) {
+            this.mail.data[this.path].data.data = this.mail.data[this.path].data.data.concat(result);
+          }
+        }
+      } else {
+        for (var i = 0; i < this.back.page; i++) {
+          this.page++;
+          option.page = this.page;
+          var result = await Mail(option);
+          result = result.data.data;
+          if (result) {
+            this.mail.data[this.path].data.data = this.mail.data[this.path].data.data.concat(result);
+          }
+        }
+      }
+      this.infiniteId++;
+      this.$store.commit("SetBack", false);
+      window.scroll({ top: this.back.top, behavior: "smooth" });
+      this.$forceUpdate();
     }
   },
   mounted() {
@@ -214,8 +255,9 @@ export default {
     followUp(unid) {
       this.clickedUnid = unid;
     },
-    MailDetail(unid) {
+    MailDetail(unid, folderName) {
       if (!this.mail.checkBtn.editclicked) {
+        this.$store.commit("mailjs/MailDetailFolder", folderName);
         this.$router.push({ name: "ReadMail", params: { unid } });
       }
     },
@@ -237,39 +279,44 @@ export default {
         });
       }
       this.$store.commit("mailjs/mailDelete", { type: this.path });
+
     },
     remove(item) {
-      this.mail.data[this.path].data.data = this.mail.data[
-        this.path
-      ].data.data.filter((i) => i !== item);
+      this.mail.data[this.path].data.data = this.mail.data[this.path].data.data.filter(
+        (i) => i !== item
+      );
     },
     // 스크롤 페이징
     infiniteHandler($state) {
-      this.GetMail[this.path].page = String(
-        parseInt(this.GetMail[this.path].page) + 1
-      );
-      // this.GetMail['inbox_detail'].size+= 1;
-      var option = {};
+      if (!this.back.isBacked) {
+        this.GetMail[this.path].page = String(
+          parseInt(this.GetMail[this.path].page) + 1
+        );
+        // this.GetMail['inbox_detail'].size+= 1;
+        var option = {};
 
-      if (this.mailSearchPath.includes(this.path)) {
-        option = this.GetMail[this.path];
-        option.mailtype = this.path;
+        if (this.mailSearchPath.includes(this.path)) {
+          option = this.GetMail[this.path];
+          option.mailtype = this.path;
 
-        option.searchType = this.path;
-        option.searchfield = this.GetMailConfig.searchOption.searchfield;
+          option.searchType = this.path;
+          option.searchfield = this.GetMailConfig.searchOption.searchfield;
 
-        option.searchword = this.GetMailConfig.searchOption.searchword;
-        option.size = this.GetConfig.listcount;
+          option.searchword = this.GetMailConfig.searchOption.searchword;
+          option.size = this.GetConfig.listcount;
 
-        this.SearchData(option, $state);
-        //
+          this.SearchData(option, $state);
+          //
+        } else {
+          option = this.GetMail[this.path];
+          option.size = this.GetConfig.listcount;
+
+          this.GetData(option, $state);
+        }
+        // this.SearchData(this.GetMail[this.path],$state);
       } else {
-        option = this.GetMail[this.path];
-        option.size = this.GetConfig.listcount;
-
-        this.GetData(option, $state);
+        $state.complete();
       }
-      // this.SearchData(this.GetMail[this.path],$state);
     },
     GetData(option, $state) {
       Mail(option)
@@ -279,12 +326,12 @@ export default {
         .then((data) => {
           setTimeout(() => {
             if (data) {
-              if (Object.keys(this.mail.data[this.path].data).length > 0) {
-                this.mail.data[this.path].data.data =
-                  this.mail.data[this.path].data.data.concat(data);
-              } else {
-                this.mail.data[this.path].data.data = data;
+              if (data.length > 0) {
+                this.$store.commit("SetBackPage", option.page);
               }
+              // if (Object.keys(this.mail.data[this.path].data).length > 0) {
+              this.mail.data[this.path].data.data = this.mail.data[this.path].data.data.concat(data);
+              // }
               $state.loaded();
 
               // 끝 지정(No more data) - 데이터가 EACH_LEN개 미만이면
@@ -311,12 +358,15 @@ export default {
         .then((data) => {
           setTimeout(() => {
             if (data) {
-              if (Object.keys(this.mail.data[this.path].data).length > 0) {
-                this.mail.data[this.path].data.data =
-                  this.mail.data[this.path].data.data.concat(data);
-              } else {
-                this.mail.data[this.path].data.data = data;
+              if (data.length > 0) {
+                this.$store.commit("SetBackPage", option.page);
               }
+              // if (
+              //   this.mail.data[this.path].data &&
+              //   Object.keys(this.mail.data[this.path].data).length > 0
+              // ) {
+              this.mail.data[this.path].data.data = this.mail.data[this.path].data.data.concat(data);
+              // }
               $state.loaded();
 
               // 끝 지정(No more data) - 데이터가 EACH_LEN개 미만이면
@@ -430,5 +480,8 @@ export default {
   padding: 0 3rem;
   cursor: pointer;
   left: 0;
+}
+.swipeout-list-item + .swipeout-list-item li {
+  border: 0;
 }
 </style>

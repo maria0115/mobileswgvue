@@ -2,7 +2,7 @@
   <div>
     <Header :header="this.GetDisplay.maindisplay" header_desc="메인 화면 설정"></Header>
     <div class="contents06">
-      <form action="">
+      <form @submit.prevent>
         <ul class="sc_menu">
           <li>
             <ul>

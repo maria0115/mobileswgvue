@@ -1,7 +1,7 @@
 <template>
   <div class="a_organ_modal" :class="{ on: this.modalon }">
       <div class="a_organ_con">
-        <form>
+        <form @submit.prevent>
           <div>
             <strong>{{this.title[appDept]}}</strong>
             <div>
@@ -11,6 +11,7 @@
               placeholder="검색어를 입력하세요"
               autocomplete="on"
               v-model="keyword"
+              @keypress.enter="SetAutoOrg"
               @keyup="OrgSearch($event.target.value)"
             />
             <div class="btns">

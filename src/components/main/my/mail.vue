@@ -7,7 +7,7 @@
         v-for="(value, name) in main.data.mailtype.inbox_detail.my.data.data"
         :key="name"
       >
-        <a>
+        <a > 
           <dl @click="MailDetail(value.unid)">
             <dt>
               {{ value.sender }}

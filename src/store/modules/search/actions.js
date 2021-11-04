@@ -4,35 +4,41 @@ import {
 import config from '../../../config/search.json';
 export default {
     // 통합검색 최근검색어 선택 삭제
-    DelKeyword({ state, commit }, { word, index }) {
+    DelKeyword({ state, commit, rootState }, { word, index }) {
         var data = {};
         data.searchword = word;
+        rootState.tf = true;
         DelKeyword(data)
             .then(response => {
+                rootState.tf = false;
 
                 commit('DelKeyword', { word, index })
             });
 
     },
     // 통합검색 최근검색어 전체 삭제
-    AllDelKeyword({ commit }) {
+    AllDelKeyword({ commit, rootState }) {
+        rootState.tf = true;
         AllDelKeyword()
             .then(response => {
+                rootState.tf = false;
 
                 commit('AllDelKeyword');
             });
 
     },
     // 통합검색 최근검색어 data
-    GetRecent({ commit }) {
+    GetRecent({ commit, rootState }) {
+        rootState.tf = true;
         Recent()
             .then(response => {
+                rootState.tf = false;
                 commit('Recent', { recent: response.data });
             });
 
     },
     // 자동완성
-    autoComplete({ commit, state }, { word, category, timeStamp }) {
+    autoComplete({ commit, state, rootState }, { word, category, timeStamp }) {
         state.timeStamp = timeStamp;
         if (typeof category == "undefined" ||
             typeof category == undefined ||
@@ -42,7 +48,7 @@ export default {
         } else {
             state.store.data.class = category;
         }
-        state.tf = true;
+        rootState.tf = true;
         var data = state.store.data;
         if (word !== undefined) {
             data.searchword = word;
@@ -64,8 +70,10 @@ export default {
         commit('setTime');
 
 
+        rootState.tf = true;
         Auto(data)
             .then(response => {
+                rootState.tf = false;
                 if (response.data.Success === false) {
                     // empty
                     state.autoList = {};
@@ -73,11 +81,11 @@ export default {
                     commit('autoList', { relation: response.data });
 
                 }
-                state.tf = false;
+                rootState.tf = false;
             });
     },
     //검색
-    SearchWord({ state, commit, dispatch, rootState }, { word, category, what, value, kind, paging }) {
+    SearchWord({ state, commit, rootState, dispatch }, { word, category, what, value, kind, paging }) {
         //created :  word: " ",
         // category: "allsearch",
         if (typeof category == "undefined" ||
@@ -166,8 +174,10 @@ export default {
             dispatch("GetRecent");
             return;
         }
+        rootState.tf = true;
         return Search(data)
             .then(response => {
+                rootState.tf = false;
                 // 
 
                 commit('SearchData', { res: response.data.data, word: word, page: pagenum, what, value });

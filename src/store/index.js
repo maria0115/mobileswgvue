@@ -26,6 +26,7 @@ const dataState = createPersistedState({
         'mailjs.store.signviewdata',
         'mailjs.store.greetviewdata',
         'mailjs.store.mailconfig',
+        'mailjs.store.folderName',
         'configjs.store.config',
         'configjs.store.systemcolor',
         'store.language',
@@ -50,6 +51,8 @@ export const store = new VueX.Store({
     },
     plugins: [dataState],
     state: {
+        tf: false, // 로딩화면 온오프
+        back:{isBacked: false,page:0,top:0}, // 뒤로가기
 
         langa: { locale: "ko" },    //locale default 설정
 

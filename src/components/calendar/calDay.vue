@@ -173,7 +173,7 @@ export default {
       var convdate = this.fulldate.replaceAll(".", "-");
       this.$router.push({
         name: "calwrite",
-        query: {data:JSON.stringify({ date: convdate, starttime: time })},
+        query: { data: JSON.stringify({ date: convdate, starttime: time }) },
       });
     },
     SetStyle(value) {
@@ -220,6 +220,7 @@ export default {
       // this.nowclientY = e.touches[0].pageY - e.touches[0].target.offsetTop;
     },
     DayChange(arg) {
+      
       var moment = require("moment");
       var redate = this.fulldate.replaceAll(".", "/");
       if (arg > 0) {
@@ -240,7 +241,7 @@ export default {
       )}`;
       data.end = data.start;
       data.today = data.start;
-      console.log(data,"data")
+      // 
       this.$store.dispatch("calendarjs/CalList", { data, which: "day" });
       var redate = this.fulldate.replaceAll(".", "/");
       var currentDay = new Date(redate);
@@ -256,6 +257,8 @@ export default {
       this.calmenu = false;
     },
     Init() {
+      
+
       var currentDay = new Date();
       this.currentYear = currentDay.getFullYear();
       this.currentMonth = currentDay.getMonth() + 1;
@@ -280,6 +283,8 @@ export default {
       this.$store.dispatch("calendarjs/CalList", { data, which: "day" });
     },
     calendarData(arg) {
+      
+
       if (arg < 0) {
         this.month -= 1;
       } else if (arg === 1) {
@@ -309,15 +314,17 @@ export default {
       this.theDayOfWeek = currentDay.getDay();
     },
     changeDate(date) {
-      var currentDay = new Date();
-      var hour = currentDay.getHours(); //시간
-      var min = currentDay.getMinutes(); //분
-      min += hour * 60;
-      this.now = min / 16 + 4.68;
-      this.year = parseInt(date.split(".")[0]);
-      this.month = parseInt(date.split(".")[1]);
-      this.today = parseInt(date.split(".")[2]);
-      this.calendarData();
+      if (date.length > 0) {
+        var currentDay = new Date();
+        var hour = currentDay.getHours(); //시간
+        var min = currentDay.getMinutes(); //분
+        min += hour * 60;
+        this.now = min / 16 + 4.68;
+        this.year = parseInt(date.split(".")[0]);
+        this.month = parseInt(date.split(".")[1]);
+        this.today = parseInt(date.split(".")[2]);
+        this.calendarData();
+      }
     },
     fill(width, number) {
       number = number + ""; //number를 문자열로 변환하는 작업
@@ -329,7 +336,8 @@ export default {
       return str;
     },
     async Detail(value) {
-      console.log(value);
+      
+      // 
       this.$store.commit("calendarjs/SaveScheduleUnid", {
         unid: value.unid,
         where: "day",
@@ -337,10 +345,12 @@ export default {
       // await
       this.$router.push({
         name: "calread",
-        query: {data:JSON.stringify({
-          date: value.enddate,
-          time: `${value.starttime} ~ ${value.endtime}`,
-        })},
+        query: {
+          data: JSON.stringify({
+            date: value.enddate,
+            time: `${value.starttime} ~ ${value.endtime}`,
+          }),
+        },
       });
     },
   },

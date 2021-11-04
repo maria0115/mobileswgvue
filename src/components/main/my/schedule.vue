@@ -26,9 +26,10 @@
               <p>{{ value.subject }}</p>
             </a>
           </li>
+
         </ul>
         <ul class="c_list" v-else>
-          결과가 없습니다.
+          <li><p>결과가 없습니다.</p></li>
         </ul>
       </div>
     </div>

@@ -6,7 +6,7 @@
           ><img src="../../mobile/img/wmail_back.png" alt="" /></a
         >일정</em
       >
-      <div class="rdcal_icons">
+      <div v-if="this.GetMyInfo.info.notesid==this.calData.authorId" class="rdcal_icons">
         <span class="rdcal_edit"><a @click="Edit()">편집</a></span>
         <span class="rdcal_edit_del" @click="Del">삭제</span>
       </div>
@@ -61,30 +61,31 @@
         </li>
         <li v-if="calData.attachInfo.length > 0">
           <span>첨부파일</span>
-          <!-- <ul class="file_list">
+          <ul class="file_list">
             <li
-              @click="attachClick(value.url)"
               v-for="(value, index) in calData.attachInfo"
               :key="index"
-            >
+            ><a :href="value.url" download>
               {{ value.name }}
+              </a>
             </li>
-          </ul> -->
-          <Viewer
+          </ul>
+          <!-- <Viewer
             className="file_list"
             :attaInfo="calData.attachInfo"
             :attach="true"
-          ></Viewer>
+          ></Viewer> -->
         </li>
       </ul>
       <!-- <div class="cal_info" v-html="GetSchedule.calDetail[GetSaveSchedule.detail.where].body"></div> -->
-      <Namo
+      <!-- <Namo
         id="memo_t"
         :read="true"
         did="calendar"
         :editor="GetSchedule.calDetail[GetSaveSchedule.detail.where].body"
         ref="editor"
-      ></Namo>
+      ></Namo> -->
+      <div class="cal_info" v-html="GetSchedule.calDetail[GetSaveSchedule.detail.where].body"></div>
       <!-- <editor-content class="cal_info" :editor="editor" /> -->
     </div>
   </div>
@@ -93,7 +94,7 @@
 <script>
 import { mapState, mapGetters } from "vuex";
 import { Editor, EditorContent } from "tiptap";
-import Namo from "../editor/namo.vue";
+// import Namo from "../editor/namo.vue";
 import Viewer from "../editor/viewer.vue";
 export default {
   created() {
@@ -108,7 +109,7 @@ export default {
   },
   components: {
     EditorContent,
-    Namo,
+    // Namo,
     Viewer,
   },
   computed: {
@@ -117,6 +118,7 @@ export default {
       "GetSaveSchedule",
       "GetSaveScheduleList",
     ]),
+    ...mapGetters("mainjs",["GetMyInfo"]),
   },
   data() {
     return {
@@ -213,7 +215,6 @@ export default {
     },
     Edit() {
       this.$store.commit("calendarjs/isEdit", true);
-      console.log(this.calData.enddate);
       this.$router.push({
         name: "calwrite",
         query: {

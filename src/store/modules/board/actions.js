@@ -4,9 +4,11 @@ import {
 import router from '../../../router/index';
 //system 모드이면 무슨 light 인지 dark 인지 감지
 export default {
-    BoardSearch({ state, commit }, data) {
+    BoardSearch({ state, commit, rootState }, data) {
+        rootState.tf = true;
         return BoardSearch(data)
             .then((res) => {
+                rootState.tf = false;
                 if (res.status !== 200) {
                     return false;
                 } else {
@@ -16,9 +18,11 @@ export default {
 
             })
     },
-    BoardEdit({ state, commit }, data) {
+    BoardEdit({ state, commit, rootState }, data) {
+        rootState.tf = true;
         return BoardEdit(data)
             .then((res) => {
+                rootState.tf = false;
                 if (res.status !== 200) {
                     return false;
                 } else {
@@ -36,14 +40,16 @@ export default {
             })
 
     },
-    EditMode({ state, commit }, boo) {
+    EditMode({ state, commit, rootState }, boo) {
             // router.replace({name:"boardwrite"});
         commit("EditMode", boo);
 
     },
-    DeleteBoard({ state, commit }, data) {
+    DeleteBoard({ state, commit, rootState }, data) {
+        rootState.tf = true;
         return DeleteBoard(data)
             .then((res) => {
+                rootState.tf = false;
                 if (res.status !== 200) {
                     return false;
                 } else {
@@ -62,14 +68,14 @@ export default {
             })
 
     },
-    Likeit({ dispatch }, data) {
-        console.log("likeit",data)
+    Likeit({ dispatch,rootState }, data) {
+        rootState.tf = true;
         return Likeit(data)
             .then((res) => {
+                rootState.tf = false;
                 if (res.status !== 200) {
                     return false;
                 } else {
-                    console.log(res.data)
 
                     // dispatch("BoardDetail", { menu: undefined, unid: undefined, comment: true });
 
@@ -78,9 +84,11 @@ export default {
             })
 
     },
-    DeleteReply({ state, commit, dispatch }, data) {
+    DeleteReply({ state, commit, rootState, dispatch }, data) {
+        rootState.tf = true;
         return DeleteReply(data)
             .then((res) => {
+                rootState.tf = false;
                 if (res.status !== 200) {
                     return false;
                 } else {
@@ -91,9 +99,11 @@ export default {
                 }
             })
     },
-    WriteReply({ state, commit, dispatch }, data) {
+    WriteReply({ state, commit, rootState, dispatch }, data) {
+        rootState.tf = true;
         return WriteReply(data)
             .then((res) => {
+                rootState.tf = false;
                 if (res.status !== 200) {
                     return false;
                 } else {
@@ -104,13 +114,14 @@ export default {
             })
 
     },
-    ReplyInfo({state},data){
+    ReplyInfo({state,rootState},data){
+        rootState.tf = true;
         return ReplyInfo(data)
         .then((res) => {
+            rootState.tf = false;
             if (res.status !== 200) {
                 return false;
             } else {
-                console.log(res.data);
                 return res.data;
                 // commit("BoardReplyInfo", res.data)
                 // if (!comment) {
@@ -128,10 +139,9 @@ export default {
 
         // rootunid
     },
-    BoardDetail({ state, commit }, { menu, unid, comment, type, lnbid,title },viewcount) {
+    BoardDetail({ state, commit, rootState }, { menu, unid, comment, type, lnbid,title },viewcount) {
         var data = {};
         data.viewcount = 1;
-        console.log(menu, unid, comment, type, lnbid,title)
         if (menu) {
             data.menu = menu;
             commit("BoardWritePath", menu);
@@ -151,8 +161,10 @@ export default {
         }
 
         data.lnbid = lnbid;
+        rootState.tf = true;
         return BoardDetail(data)
             .then((res) => {
+                rootState.tf = false;
                 if (res.status !== 200) {
                     return false;
                 } else {
@@ -170,9 +182,11 @@ export default {
             })
 
     },
-    BoardWrite({ state, commit }, data) {
+    BoardWrite({ state, commit, rootState }, data) {
+        rootState.tf = true;
         return BoardWrite(data)
             .then((res) => {
+                rootState.tf = false;
                 if (res.status !== 200) {
                     return false;
                 } else {
@@ -190,8 +204,10 @@ export default {
         data.page = 0;
         data.size = rootState.configjs.store.config.listcount;
         data.boardtype = type;
+        rootState.tf = true;
         Board(data)
             .then((res) => {
+                rootState.tf = false;
 
                 if (res.status !== 200) {
                     return false;

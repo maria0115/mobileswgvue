@@ -1,7 +1,8 @@
 <template>
-  <div id="app">
+  <div id="app" ref="top" :class="{ dark: this.color }">
     <!-- {{decodeURIComponent(this.$route.fullPath)}} -->
     <router-view :key="$route.fullPath"></router-view>
+    <spinner :loading="tf"></spinner>
     <Footer></Footer>
   </div>
 </template>
@@ -12,15 +13,19 @@ import p from "./mobile/js/prefixfreemin.js";
 import slick from "./mobile/js/slick.js";
 import common from "./mobile/js/common.js";
 import { mapState, mapGetters } from "vuex";
+import Spinner from "@/View/Spinner.vue";
 // import $ from "jquery";
 export default {
   components: {
+    Spinner
   },
   computed: {
-    ...mapState(["systemcolor", "config"]),
+    ...mapState([ "tf"]),
+    ...mapGetters("configjs",["GetSystemColor", "GetConfig"]),
+
     ...mapGetters(["GetFont"]),
     color() {
-      if (this.systemcolor === "dark") {
+      if (this.GetSystemColor === "dark") {
         return true;
       }
     },

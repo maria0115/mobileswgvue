@@ -47,6 +47,15 @@ function ListOfCategory(data) {
         }
     })
 }
+function CategoryList2(id) {
+    return axios({
+        method: 'get',
+        url: `/api/folderTree?category=${id}`,
+        headers: {
+            "Content-Type": "application/json"
+        }
+    })
+}
 // /api/navigation?category=
 function CategoryList(id) {
     return axios({
@@ -432,7 +441,6 @@ function GETMailDelay() {
 }
 // 메일 자동저장 GET
 function GETMailAutoSave() {
-    console.log("왜돼")
     return axios({
         method: 'GET',
         url: `/api/mail?type=autoSave`,
@@ -739,6 +747,17 @@ function getForm() {
     })
 }
 
+function DocView(data) {
+    return axios({
+        method: 'post',
+        url: `/convert2image`,
+        data: data,
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+}
+
 
 export {
     PSearch,
@@ -811,4 +830,6 @@ export {
     AppEdit,
     AppSearch,
     ReplyInfo,
+    CategoryList2,
+    DocView,
 }

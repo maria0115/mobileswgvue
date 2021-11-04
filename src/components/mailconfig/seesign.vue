@@ -31,8 +31,8 @@
             http://www.saerom.co.kr<br />
             ---------------------------------------------------------
           </div> -->
-          <Namo :editor="GetSignView.body" :read="true" ref="editor"></Namo>
-          <!-- <div v-html="GetSignView.body"></div> -->
+          <!-- <Namo :editor="GetSignView.body" :read="true" ref="editor"></Namo> -->
+          <div v-html="replace(GetSignView.body)"></div>
           <!-- <editor-content :editor="editor" /> -->
         </li>
       </ul>
@@ -43,10 +43,11 @@
 <script>
 import { mapState, mapGetters } from "vuex";
 import { Editor,EditorContent  } from "tiptap";
-import Namo from '../editor/namo.vue';
+// import Namo from '../editor/namo.vue';
 export default {
   components: {
-    EditorContent,Namo
+    EditorContent,
+    // Namo
   },
   beforeDestroy() {
     this.editor.destroy()
@@ -72,6 +73,9 @@ export default {
   created(){
   },
   methods: {
+    replace(data){
+      return data.replaceAll( "</p><p>", '');
+    },
     Back() {
       this.$router.go(-1);
     },

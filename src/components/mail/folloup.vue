@@ -48,6 +48,9 @@
         <li>
           <em>수행할 내용</em>
           <div><textarea v-model="body"></textarea></div>
+          <!-- <editor-content
+          :editor="editor"
+        /> -->
         </li>
       </ul>
       <div>
@@ -59,7 +62,7 @@
 </template>
 
 <script>
-import { Editor, EditorContent } from "tiptap";
+// import { Editor, EditorContent } from "tiptap";
 import { mapState, mapGetters } from "vuex";
 export default {
   props: {
@@ -70,12 +73,12 @@ export default {
     var localTime = moment.utc().toDate();
     this.date = moment(localTime).format("yyyy-MM-DD");
 
-    this.editor = new Editor({
-      content: "",
-    });
+    // this.editor = new Editor({
+    //   content: "",
+    // });
   },
   components: {
-    EditorContent,
+    // EditorContent,
   },
   computed: {
     ...mapState("mailjs", ["TimeOption"]),
@@ -92,15 +95,16 @@ export default {
       body:"",
     };
   },
-  beforeDestroy() {
-    if (this.editor !== null) {
-      this.editor.destroy();
-    }
-  },
+  // beforeDestroy() {
+  //   if (this.editor !== null) {
+  //     this.editor.destroy();
+  //   }
+  // },
   watch: {
     async unid() {
-      this.editor.destroy();
-      //   this.unid = unid;
+      // this.editor.destroy();
+        // this.unid = unid;
+        // console.log(this.unid)
       var result = await this.$store.dispatch("mailjs/FollowUpInfo", this.unid);
       if (result) {
         if (this.GetMail.followUpInfo.use) {
@@ -111,9 +115,9 @@ export default {
           this.date = followUpInfo.date;
           this.body = followUpInfo.body;
 
-          this.editor = new Editor({
-            content: this.body,
-          });
+          // this.editor = new Editor({
+          //   content: this.body,
+          // });
         } else {
           var moment = require("moment");
           var localTime = moment.utc().toDate();
@@ -122,34 +126,35 @@ export default {
           this.SMin = "50";
           this.use = false;
           this.body = "";
-          this.editor = new Editor({
-            content: this.body,
-          });
+          // this.editor = new Editor({
+          //   content: this.body,
+          // });
         }
       }
     },
   },
   methods: {
     followCancle() {
-      if (this.editor) {
-        this.editor.destroy();
-      }
+      // if (this.editor) {
+      //   this.editor.destroy();
+      // }
     },
     async followSet() {
-      if (this.editor) {
+      // if (this.editor) {
         var data = {};
         if (this.date) {
           data.use = this.use;
           data.date = this.date;
           data.unid = this.unid;
           data.time = `${this.STime}:${this.SMin}:00`;
+          // data.body = this.editor.getHTML();
           data.body = this.body;
 
           await this.$store.dispatch("mailjs/FollowupSet", data);
           this.$router.push(this.$router.currentRoute);
         }
-        this.editor.destroy();
-      }
+        // this.editor.destroy();
+      // }
     },
     followUse() {
       var classList = this.$refs.edit_check.classList.contains("active");

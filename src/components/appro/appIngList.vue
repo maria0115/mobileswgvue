@@ -8,7 +8,7 @@
     ></Header>
     <SubMenu :isOpen="isOpen" @CloseHam="CloseHam"></SubMenu>
     <div class="a_contents06">
-      <form action="">
+      <form @submit.prevent>
         <ul class="app06_list">
           <li
             v-for="(value, index) in GetApproval.approving.data.data"
@@ -105,11 +105,11 @@
             </div>
             <div slot="error">
               Error message, click
-                <!-- @click.native="SetHeader(params)" -->
+              <!-- @click.native="SetHeader(params)" -->
               <router-link
                 :to="{
                   name: `appapproving`,
-                  query: { data: JSON.stringify(this.params) }
+                  query: { data: JSON.stringify(this.params) },
                 }"
                 >here</router-link
               >
@@ -133,24 +133,51 @@ import { mapState, mapGetters } from "vuex";
 import InfiniteLoading from "vue-infinite-loading";
 import { Approval, AppSearch } from "../../api/index.js";
 export default {
-  created() {
+  async created() {
     this.params = JSON.parse(this.$route.query.data);
     // this.params = this.GetHeader.menu;
-    console.log("created",this.params)
-    
-
+    this.$store.commit("approjs/AppSaveFrom", this.params.type);
+    this.lists = this.GetApproval.approving.data.data;
     this.category = this.GetCategory[this.params.top];
     this.Init();
+
+    this.option.page = this.page;
+    this.option.type = "approving";
+    this.option.size = this.GetConfig.listcount;
+    if (this.back.isBacked) {
+      for (var i = 0; i < this.back.page; i++) {
+        this.page++;
+        this.option.page = this.page;
+        var result;
+        if (this.option.keyword && this.option.keyword.length > 0) {
+          result = await AppSearch(this.option);
+          result = result.data.data;
+        } else {
+          this.option.approvaltype = this.option.type;
+          result = await Approval(this.option);
+          result = result.data.data;
+        }
+        this.lists = this.wellconcat(this.lists, result);
+      }
+      this.infiniteId++;
+      this.$store.commit("SetBack", false);
+      console.log(this.back.top);
+      window.scroll({ top: this.back.top, behavior: "smooth" });
+      this.$forceUpdate();
+    }
   },
   beforeRouteLeave(to, from, next) {
     // this.infiniteId += 1;
+    this.$store.commit("SetTop", document.documentElement.scrollTop);
+
     next();
   },
   computed: {
-    ...mapGetters(["GetCategory","GetHeader"]),
+    ...mapGetters(["GetCategory", "GetHeader"]),
 
     ...mapGetters("approjs", ["GetApproval"]),
     ...mapGetters("configjs", ["GetConfig"]),
+    ...mapState(["back"]),
 
     path() {
       // if (this.$route.path.indexOf("custom") === -1) {
@@ -184,6 +211,13 @@ export default {
     };
   },
   methods: {
+    wellconcat(me, data) {
+      if (me) {
+        return me.concat(data);
+      } else {
+        return data;
+      }
+    },
     Init() {
       this.infiniteId += 1;
       this.page = 0;
@@ -193,7 +227,6 @@ export default {
       this.option = data;
       // this.option.searchType = searchfield;
       this.option.page = 0;
-      this.option.type = "approving";
       if (data.keyword.length > 0) {
         this.$store.dispatch("approjs/AppSearch", this.option).then((res) => {
           if (res) {
@@ -222,7 +255,7 @@ export default {
         // this.SetHeader(this.category[caidx]);
         this.$router.push({
           name: "appformList_all",
-          query:{data:JSON.stringify(this.category[caidx])}
+          query: { data: JSON.stringify(this.category[caidx]) },
         });
       }
     },
@@ -241,19 +274,22 @@ export default {
     },
     // 스크롤 페이징
     infiniteHandler($state) {
-      this.page++;
-      // this.GetMail['inbox_detail'].size+= 1;
-      this.option.page = this.page;
-      this.option.type = "approving";
-      this.option.size = this.GetConfig.listcount;
+      if (!this.back.isBacked) {
+        this.page++;
+        // this.GetMail['inbox_detail'].size+= 1;
+        this.option.page = this.page;
+        // this.option.type = this.path;
+        // this.option.size = this.GetConfig.listcount;
 
-      if (this.option.keyword && this.option.keyword.length > 0) {
-        // this.option.type = "search";
-        this.SearchData(this.option, $state);
+        if (this.option.keyword && this.option.keyword.length > 0) {
+          // this.option.type = "search";
+          this.SearchData(this.option, $state);
+        } else {
+          // this.option.type = this.params.type;
+          this.GetData(this.option, $state);
+        }
       } else {
-        // this.option.type = this.params.type;
-
-        this.GetData(this.option, $state);
+        $state.complete();
       }
     },
     SearchData(option, $state) {
@@ -268,14 +304,16 @@ export default {
         .then((data) => {
           setTimeout(() => {
             if (data) {
-              if (
-                Object.keys(this.GetApproval.approving.data.data).length > 0
-              ) {
-                this.GetApproval.approving.data.data =
-                  this.GetApproval.approving.data.data.concat(data);
-              } else {
-                this.GetApproval.approving.data.data = data;
+              if (data.length > 0) {
+                this.$store.commit("SetBackPage", option.page);
               }
+              this.lists = this.wellconcat(this.lists, data);
+
+              this.$forceUpdate();
+
+              // } else {
+              //   this.lists = data;
+              // }
 
               $state.loaded();
 
@@ -308,14 +346,12 @@ export default {
         .then((data) => {
           setTimeout(() => {
             if (data) {
-              if (
-                Object.keys(this.GetApproval.approving.data.data).length > 0
-              ) {
-                this.GetApproval.approving.data.data =
-                  this.GetApproval.approving.data.data.concat(data);
-              } else {
-                this.GetApproval.approving.data.data = data;
+              if (data.length > 0) {
+                this.$store.commit("SetBackPage", option.page);
               }
+              this.lists = this.wellconcat(this.lists, data);
+
+              this.$forceUpdate();
 
               $state.loaded();
 
@@ -349,6 +385,7 @@ export default {
     },
     Read(value) {
       value.where = "ingview";
+
       this.$store.commit("approjs/AppSaveUnid", {
         unid: value.unid,
         openurl: value.openurl,
@@ -357,7 +394,7 @@ export default {
       // this.SetHeader(this.params);
       this.$router.push({
         name: "approvingview",
-        query:{data:JSON.stringify(this.params) }
+        query: { data: JSON.stringify(this.params) },
       });
     },
     SetHeader(data) {

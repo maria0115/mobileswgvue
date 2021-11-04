@@ -2,7 +2,7 @@
   <div>
     <Header :header="this.GetAllim.menuallim" header_desc="메뉴별 알림 설정"></Header>
     <div class="content">
-      <form action="">
+      <form @submit.prevent>
         <ul class="allim_menu">
           <li>
             <ul>

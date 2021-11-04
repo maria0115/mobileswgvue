@@ -2,7 +2,7 @@
   <div class="all_organ_modal" :class="{ on: this.modalon }">
     <!--위치 수정됨-->
     <div class="organ_con">
-      <form>
+      <form @submit.prevent>
         <div>
           <strong>조직도</strong>
           <div>
@@ -12,6 +12,7 @@
               placeholder="검색어를 입력하세요"
               autocomplete="on"
               v-model="keyword"
+              @keypress.enter="SetAutoOrg"
               @keyup="OrgSearch($event.target.value)"
             />
             <div class="btns">
@@ -34,6 +35,7 @@
               @OpenFolder="OpenFolder"
               :createdOrg="createdOrg"
               @SetcreatedOrg="SetcreatedOrg"
+              @setModalOff="ModalOff"
             ></org-item>
           </span>
         </ul>

@@ -10,7 +10,7 @@
       </div>
     </h2>
     <div class="m_contents06">
-      <form action="">
+      <form @submit.prevent>
         <ul>
           <li>
             <span>제목</span>

@@ -46,9 +46,9 @@
                     next_month:
                       dates.length - 1 === idx && nextMonthStart > day,
                     t_day:
-                      day === today &&
-                      month === month &&
-                      year === year &&
+                      day === currenttoday &&
+                      month === currentMonth &&
+                      year === currentYear &&
                       !(dates.length - 1 === idx && nextMonthStart > day) &&
                       !(idx === 0 && day >= lastMonthStart),
                     sat: days.length - 1 === secondIdx,
@@ -153,8 +153,8 @@ export default {
       for (var i = 0; i < calList.length; i++) {
         var startdate = calList[i].startdate.replaceAll("-", "/");
         var enddate = calList[i].enddate.replaceAll("-", "/");
-        let start = Math.floor(+new Date(startdate) / 1000);
-        let end = Math.floor(+new Date(enddate) / 1000);
+        var start = Math.floor(+new Date(startdate) / 1000);
+        var end = Math.floor(+new Date(enddate) / 1000);
 
         var isOneDay = false;
         if (start - end === 0) isOneDay = true;
@@ -168,7 +168,7 @@ export default {
           month -= 1;
         }
         thisdate = `${this.year}/${this.fill(2, month)}/${this.fill(2, day)}`;
-        let current = Math.floor(+new Date(thisdate) / 1000);
+        var current = Math.floor(+new Date(thisdate) / 1000);
         var data = {};
         data.name = "";
         data.boo = false;
@@ -266,10 +266,7 @@ export default {
         this.year += 1;
         this.month = 1;
       }
-      this.fulldate = `${this.year}.${this.fill(2, this.month)}.${this.fill(
-        2,
-        this.today
-      )}`;
+      this.fulldate = `${this.year}.${this.fill(2, this.month)}.01`;
       // alert(this.fulldate)
 
       // this.selectedMonth = moment(`${this.year}/${this.month}`, "yyyyMM");
@@ -296,8 +293,8 @@ export default {
       return [firstDay, lastDate, prevLastDate];
     },
     getMonthOfDays(monthFirstDay, monthLastDate, prevMonthLastDate) {
-      let day = 1;
-      let prevDay = prevMonthLastDate - monthFirstDay + 1;
+      var day = 1;
+      var prevDay = prevMonthLastDate - monthFirstDay + 1;
       var start = "";
       if (monthFirstDay > 0) {
         // 전달거
@@ -311,7 +308,7 @@ export default {
         start = `${this.year}-${this.fill(2, this.month)}-01`;
       }
       const dates = [];
-      let weekOfDays = [];
+      var weekOfDays = [];
       while (day <= monthLastDate) {
         if (day === 1) {
           for (let j = 0; j < monthFirstDay; j += 1) {
@@ -375,6 +372,7 @@ export default {
       this.month = this.currentMonth;
 
       this.today = date.getDate();
+      this.currenttoday = date.getDate();
       this.fulldate = `${this.year}.${this.fill(2, this.month)}.${this.fill(
         2,
         this.today

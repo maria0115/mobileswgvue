@@ -1,10 +1,10 @@
 <template>
   <div>
     <h2 class="mail_st_header">
-      <router-link :to="{name:'greet'}">
+      <router-link :to="{ name: 'greet' }">
         <img src="../../mobile/img/wmail_back.png" alt="" /> </router-link
       >인사말 보기
-      <span><router-link :to="{name:'modifygreet'}">편집</router-link></span>
+      <span><router-link :to="{ name: 'modifygreet' }">편집</router-link></span>
     </h2>
     <div class="m_contents07">
       <ul>
@@ -21,8 +21,8 @@
           </div>
         </li>
         <li class="texteditor">
-          <!-- <div v-html="GetGreetView.body">안녕하세요 디자인팀 홍길동입니다.</div> -->
-          <Namo :editor="GetGreetView.body" :read="true" ref="editor"></Namo>
+          <!-- <Namo :editor="GetGreetView.body" :read="true" ref="editor"></Namo> -->
+          <div v-html="replace(GetGreetView.body)"></div>
           <!-- <editor-content :editor="editor" /> -->
         </li>
       </ul>
@@ -33,10 +33,11 @@
 <script>
 import { mapState, mapGetters } from "vuex";
 import { Editor, EditorContent } from "tiptap";
-import Namo from '../editor/namo.vue';
+// import Namo from "../editor/namo.vue";
 export default {
   components: {
-    EditorContent,Namo
+    EditorContent,
+    // Namo,
   },
   beforeDestroy() {
     this.editor.destroy();
@@ -53,9 +54,12 @@ export default {
     });
   },
   computed: {
-    ...mapGetters("mailjs",["GetGreetView"]),
+    ...mapGetters("mailjs", ["GetGreetView"]),
   },
   methods: {
+    replace(data){
+      return data.replaceAll( "</p><p>", '');
+    },
     Back() {
       this.$router.go(-1);
     },
