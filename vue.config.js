@@ -105,6 +105,13 @@ module.exports = {
           '^/api/login': ''
         }
       },
+      '/api/reservation': {
+        target: 'http://localhost:4001/api/reservation',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/api/reservation': ''
+        }
+      },
       
     }
   },

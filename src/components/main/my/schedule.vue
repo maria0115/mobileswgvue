@@ -1,6 +1,6 @@
 <template>
   <div class="m_calendar">
-    <strong desc="일정">{{ portlet.schedule }}</strong>
+    <strong desc="일정">{{ portlet.title }}</strong>
     <div class="clfix">
       <span class="d_day">
         <em>{{ changeDate().yearmonth }}</em>
@@ -9,8 +9,8 @@
       <div class="ri_info">
         <div v-for="(value, name) in sliceDate()" :key="name">
           <div v-if="value.allDay" class="all_cal">
-            <a href="#">
-              <em>종일 일정</em>
+            <a @click="Detail(value)">
+              <em>{{lang.allday}}</em>
               <p>[{{ value.category }}]{{ value.subject }}</p>
             </a>
           </div>
@@ -26,10 +26,9 @@
               <p>{{ value.subject }}</p>
             </a>
           </li>
-
         </ul>
         <ul class="c_list" v-else>
-          <li><p>결과가 없습니다.</p></li>
+          <li><p>{{lang.result}}</p></li>
         </ul>
       </div>
     </div>
@@ -42,6 +41,9 @@
 <script>
 import { mapGetters } from "vuex";
 export default {
+  created(){
+    this.lang = this.GetMainLanguage.main;
+  },
   props: ["portlet"],
   data() {
     return {
@@ -51,6 +53,7 @@ export default {
   },
   computed: {
     ...mapGetters("mainjs", ["GetMain"]),
+    ...mapGetters( ["GetMainLanguage"]),
   },
   methods: {
     // 오늘의 모든 일정을 노드에서 가져온 후의 현재 시간 이후의 데이터를 색출
@@ -71,13 +74,6 @@ export default {
           ).format("HH:mm")}~${moment(
             date[i].startdate + "T" + date[i].endtime
           ).format("HH:mm")}`;
-
-          time = `${moment(date[i].startdate + "T" + date[i].starttime).format(
-            "HH:mm"
-          )}~${moment(date[i].startdate + "T" + date[i].endtime).format(
-            "HH:mm"
-          )}`;
-
           date[i].time = time;
           result.push(date[i]);
           if (result.length === this.GetMain.scheduletype.recent.my.size) {

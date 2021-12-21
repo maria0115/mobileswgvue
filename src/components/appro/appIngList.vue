@@ -2,7 +2,7 @@
   <div>
     <Header
       desc="결재중 문서"
-      :title="title"
+      :title="this.params.title"
       :cnt="GetApproval.approving.data.cnt"
       @OpenHam="OpenHam"
     ></Header>
@@ -13,7 +13,7 @@
           <li
             v-for="(value, index) in GetApproval.approving.data.data"
             :key="index"
-          >
+          ><div>
             <a>
               <span class="ing_sta">
                 <em
@@ -40,6 +40,8 @@
                 <span class="clip" v-if="value.attach"></span>
               </div>
             </a>
+            <b class="st_more"></b>
+            </div>
             <div class="app_status">
               <div class="status">
                 <div class="status_slide">
@@ -76,20 +78,20 @@
                     </dl>
                     <div>
                       <p v-if="v.approval">
-                        <i>(결재중)</i>
+                        <i>({{language.apping}})</i>
                       </p>
                       <em v-else-if="v.created && v.created.length > 0">
                         <p>{{ transDate(v.created) }}</p>
                         <p>{{ transTime(v.created) }}</p></em
                       >
-                      <p v-else><i>(대기중)</i></p>
+                      <p v-else><i>({{language.wating}})</i></p>
                     </div>
                   </div>
                 </div>
               </div>
               <span class="close_btn"></span>
             </div>
-            <b class="st_more"></b>
+            
           </li>
           <infinite-loading
             @infinite="infiniteHandler"
@@ -98,10 +100,10 @@
             spinner="waveDots"
           >
             <div slot="no-more" style="padding: 10px 0px">
-              목록의 끝입니다 :)
+              {{commonl.end}}
             </div>
             <div slot="no-results" style="padding: 10px 0px">
-              목록의 끝입니다 :)
+              {{commonl.end}}
             </div>
             <div slot="error">
               Error message, click
@@ -132,12 +134,21 @@ import BtnPlus from "./btnPlus.vue";
 import { mapState, mapGetters } from "vuex";
 import InfiniteLoading from "vue-infinite-loading";
 import { Approval, AppSearch } from "../../api/index.js";
+import config from "@/config/config.json";
+import option from "@/config/option.json";
 export default {
   async created() {
+    this.commonl = this.GetCommonL;
+    this.language = this.GetAppL.inglist;
+    this.morePlus = this.language.morePlus;
+    this.title = this.language.title;
+    if(!this.Option()){
+      this.morePlus={}
+    }
     this.params = JSON.parse(this.$route.query.data);
     // this.params = this.GetHeader.menu;
     this.$store.commit("approjs/AppSaveFrom", this.params.type);
-    this.lists = this.GetApproval.approving.data.data;
+    // this.GetApproval.approving.data.data = this.GetApproval.approving.data.data;
     this.category = this.GetCategory[this.params.top];
     this.Init();
 
@@ -157,18 +168,22 @@ export default {
           result = await Approval(this.option);
           result = result.data.data;
         }
-        this.lists = this.wellconcat(this.lists, result);
+        this.GetApproval.approving.data.data = this.wellconcat(this.GetApproval.approving.data.data, result);
       }
       this.infiniteId++;
       this.$store.commit("SetBack", false);
-      console.log(this.back.top);
-      window.scroll({ top: this.back.top, behavior: "smooth" });
       this.$forceUpdate();
+      // window.scroll({ top: this.back.top, behavior: "smooth" });
+      var scrollentity = $('html,body');
+        if (navigator.userAgent.match(/(iPod|iPhone|iPad)/)) { scrollentity = $('html') }
+        scrollentity.animate({ scrollTop: this.back.top }, 500);
     }
   },
+  mounted(){},
   beforeRouteLeave(to, from, next) {
     // this.infiniteId += 1;
-    this.$store.commit("SetTop", document.documentElement.scrollTop);
+    this.$store.commit("SetTop", document.scrollingElement.scrollTop||window.scrollY||window.pageYOffset);
+
 
     next();
   },
@@ -196,21 +211,15 @@ export default {
   },
   data() {
     return {
-      checkbox: [
-        { title: "제목" },
-        { doc: "서식명" },
-        { author: "기안자" },
-        { currentapprover: "현재결재자" },
-        { date: "기안일자" },
-      ],
-      morePlus: { write: "결재 작성" },
       isOpen: false,
-      title: "결재중 문서",
       infiniteId: 0,
       option: {},
     };
   },
   methods: {
+    Option(){
+      return option[config.company].appWrite;
+    },
     wellconcat(me, data) {
       if (me) {
         return me.concat(data);
@@ -227,6 +236,7 @@ export default {
       this.option = data;
       // this.option.searchType = searchfield;
       this.option.page = 0;
+      this.option.type = "approving";
       if (data.keyword.length > 0) {
         this.$store.dispatch("approjs/AppSearch", this.option).then((res) => {
           if (res) {
@@ -293,6 +303,7 @@ export default {
       }
     },
     SearchData(option, $state) {
+      // option.approvaltype = option.type;
       AppSearch(option)
         .then((response) => {
           if (response.data.data) {
@@ -307,12 +318,12 @@ export default {
               if (data.length > 0) {
                 this.$store.commit("SetBackPage", option.page);
               }
-              this.lists = this.wellconcat(this.lists, data);
+              this.GetApproval.approving.data.data = this.wellconcat(this.GetApproval.approving.data.data, data);
 
               this.$forceUpdate();
 
               // } else {
-              //   this.lists = data;
+              //   this.GetApproval.approving.data.data = data;
               // }
 
               $state.loaded();
@@ -349,7 +360,7 @@ export default {
               if (data.length > 0) {
                 this.$store.commit("SetBackPage", option.page);
               }
-              this.lists = this.wellconcat(this.lists, data);
+              this.GetApproval.approving.data.data = this.wellconcat(this.GetApproval.approving.data.data, data);
 
               this.$forceUpdate();
 
@@ -404,5 +415,20 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
+.app06_list li{padding:0 !important;height:auto !important;}
+.app06_list li > div:nth-child(1){height:5.43rem;position:relative;padding:0.62rem 1.06rem 0 3.93rem;}
+.app_status{position:relative;width:100%;height:0;background:#ebebeb;z-index:2;overflow:hidden;padding:0 1.87rem;}
+.app_status.active{height:100%;}
+
+.dark .app_status{background:#232323;}
+.dark .status_slide > div > em:after{border-color:#959595;}
+.dark .status_slide > div.active > em:after{border-color:#ff743c;}
+.dark .status_slide > div dt{color:#c4c7ca;}
+.dark .status_slide > div dt b{color:#f2f2f2;}
+.dark .status_slide > div dd{color:#c4c7ca;}
+.dark .status_slide > div p{color:#c4c7ca;}
+.dark .status_slide > div p i{color:#c4c7ca;}
+.dark .close_btn{background:url(/mobile/img/main_sub_close_d.png)center no-repeat;background-size:100% 100%;}
+
 </style>

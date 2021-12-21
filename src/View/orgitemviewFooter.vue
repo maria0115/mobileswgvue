@@ -99,20 +99,20 @@ export default {
     },
   },
   watch: {
-    async modalAutoOrg() {
-      if (this.item.kinds == "Department" && this.children.length === 0) {
-        this.GetChildren();
-        this.$emit("SetcreatedOrg");
-      }
-      var auto = this.autosearchorg[this.org.pointer];
-      var result = auto.findIndex(
-        (element) => element.shortname === this.item.shortname
-      );
-      if (result !== -1) {
-        this.$emit("OpenFolder");
-        this.clicked = true;
-      }
-    },
+    // async modalAutoOrg() {
+      // if (this.item.kinds == "Department" && this.children.length === 0) {
+      //   this.GetChildren();
+      //   this.$emit("SetcreatedOrg");
+      // }
+      // var auto = this.autosearchorg[this.org.pointer];
+      // var result = auto.findIndex(
+      //   (element) => element.shortname === this.item.shortname
+      // );
+      // if (result !== -1) {
+      //   this.$emit("OpenFolder");
+      //   this.clicked = true;
+      // }
+    // },
   },
   methods: {
     OpenCard(i) {
@@ -129,7 +129,21 @@ export default {
       this.isOpen = !this.isOpen;
     },
     async GetChildren() {
+    //   this.GetMyInfo.info.fullOrgCode;
+    // var pathidx = full.findIndex((item) => {
+    //   return item == this.item.mycode;
       this.children = await this.$store.dispatch("Org", this.item);
+    var full = this.GetMyInfo.info.fullOrgCode;
+    if(full[full.length-1] == this.item.mycode){
+      var meidx = this.children.findIndex(item=>{
+        return item.notesId==this.GetMyInfo.info.notesid;
+      })
+      if(meidx!==-1){
+        this.$store.commit("mainjs/MyInfoMaster",this.children[meidx]);
+
+      }
+
+    }
     },
     onCard() {
       if (this.item.kinds == "Person") {

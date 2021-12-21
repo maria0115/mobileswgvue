@@ -13,6 +13,7 @@ export default {
   methods: {
     // 전 url 이동
     RouterBack() {
+      this.$store.commit("SetBack", true);
       this.$router.go(-1);
     },
   },

@@ -5,14 +5,14 @@
         <h2>{{GetSearchLanguage.menu.person}}</h2>
         <ul class="clfix" v-if="this.sortdata.person !== undefined">
           <li v-for="(value, name) in this.sortdata.person.data" :key="name">
-            <a href="">
+            <a>
               <span><img :src="value.photo" @error="$event.target.src='../../mobile/img/img03.png'" alt="" /></span>
               <dl>
                 <dt>
                   <em>{{ value.subject }}</em
                   >{{ value.jobposition }}
                 </dt>
-                <dd>{{ value.dept }}</dd>
+                <dd>{{ setWord(value.dept) }}</dd>
               </dl>
             </a>
           </li>
@@ -30,8 +30,44 @@
         <h2>{{GetSearchLanguage.menu.approval}}</h2>
         <ul v-if="this.sortdata.approval !== undefined">
           <li v-for="(value, name) in this.sortdata.approval.data" :key="name">
-            <!-- <a @click="openView(value)"> -->
-            <a :href="`/dwp/com/portal/main.nsf/wfrmpage?ReadForm&url=${value.originalurl}`">
+            <a @click="openView(value)">
+            <!-- <a :href="setUrl(value.originalurl)"> -->
+              <h3>{{ value.subject }}</h3>
+              <div class="clfix">
+                <em>{{ setWord(value.author) }}</em>
+                <span>{{ getTime(value["created"]) }}</span>
+              </div>
+              <p>
+                {{ value.body }}
+              </p>
+            </a>
+          </li>
+        </ul>
+      </div>
+      <div class="con02">
+        <h2>{{GetSearchLanguage.menu.board}}</h2>
+        <ul v-if="this.sortdata.board !== undefined">
+          <li v-for="(value, name) in this.sortdata.board.data" :key="name">
+            <a @click="openView(value)">
+            <!-- <a :href="setUrl(value.originalurl)"> -->
+              <h3>{{ value.subject }}</h3>
+              <div class="clfix">
+                <em>{{ setWord(value.author) }}</em>
+                <span>{{ getTime(value["created"]) }}</span>
+              </div>
+              <p>
+                {{ value.body }}
+              </p>
+            </a>
+          </li>
+        </ul>
+      </div>
+      <div class="con02">
+        <h2>{{GetSearchLanguage.menu.mail}}</h2>
+        <ul v-if="this.sortdata.mail !== undefined">
+          <li v-for="(value, name) in this.sortdata.mail.data" :key="name">
+            <a @click="openView(value)">
+            <!-- <a :href="setUrl(value.originalurl)"> -->
               <h3>{{ value.subject }}</h3>
               <div class="clfix">
                 <em>{{ setWord(value.author) }}</em>
@@ -53,6 +89,8 @@
 import { mapState,mapGetters } from "vuex";
 import Viewer from "../editor/viewer.vue";
 import config from "../../config/search.json";
+import config2 from "../../config/config.json";
+
 export default {
   components: {
     Viewer,
@@ -79,11 +117,14 @@ export default {
   created() {
   },
   methods: {
+    setUrl(url){
+      return config2.originPage + url;
+    },
     // utc time to local time, transformat
     getTime(date) {
       var moment = require("moment");
       var localTime = moment.utc(date).toDate();
-      localTime = moment(localTime).format("YYYY년 MM월 DD일 HH시 mm분 ss초");
+      localTime = moment(localTime).format("YYYY-MM-DD HHmm");
       return localTime;
     },
     // 데이터 값 (ko:zzz,en:xxx) 다국어 처리

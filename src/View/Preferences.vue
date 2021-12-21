@@ -1,7 +1,6 @@
 <template>
   <div class="wrap p_b50" :class="{ dark: this.color }" >
     <div class="modal_wrap">
-    {{this.color}}
     <router-view></router-view>
     <Footer></Footer>
     </div>

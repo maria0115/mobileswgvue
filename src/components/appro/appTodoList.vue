@@ -15,7 +15,10 @@
             :disabled="!enabled"
             :items="GetApproval[this.path].data.data"
             item-key="id" -->
-          <li v-for="(item, index) in lists" :key="index">
+          <li
+            v-for="(item, index) in this.GetApproval[this.path].data.data"
+            :key="index"
+          >
             <a>
               <span class="basic_img on" v-if="item.author">
                 <!-- v-if="item.photoerror" -->
@@ -53,10 +56,10 @@
             spinner="waveDots"
           >
             <div slot="no-more" style="padding: 10px 0px">
-              목록의 끝입니다 :)
+              {{ commonl.end }}
             </div>
             <div slot="no-results" style="padding: 10px 0px">
-              목록의 끝입니다 :)
+              {{ commonl.end }}
             </div>
             <div slot="error">
               Error message, click
@@ -90,12 +93,19 @@ import { Approval, AppSearch } from "../../api/index.js";
 import { SwipeList, SwipeOut } from "vue-swipe-actions";
 import config from "../../config/config.json";
 import "vue-swipe-actions/dist/vue-swipe-actions.css";
+import option from "@/config/option.json";
 export default {
   async created() {
+    const language = this.GetAppL.todolist;
+    this.commonl = this.GetCommonL;
+    this.morePlus = {};
+    this.morePlus.write = language.morePlus.write;
+    if (!this.Option()) {
+      this.morePlus = {};
+    }
     this.params = JSON.parse(this.$route.query.data);
     // this.params = this.GetHeader.menu;
     this.$store.commit("approjs/AppSaveFrom", this.params.type);
-    this.lists = this.GetApproval[this.path].data.data;
     this.category = this.GetCategory[this.params.top];
     this.Init();
     this.option.page = this.page;
@@ -114,14 +124,23 @@ export default {
           result = await Approval(this.option);
           result = result.data.data;
         }
-        this.lists = this.wellconcat(this.lists, result);
+        this.GetApproval[this.path].data.data = this.wellconcat(
+          this.GetApproval[this.path].data.data,
+          result
+        );
       }
       this.infiniteId++;
       this.$store.commit("SetBack", false);
-      window.scroll({ top: this.back.top, behavior: "smooth" });
       this.$forceUpdate();
+      // window.scroll({ top: this.back.top, behavior: "smooth" });
+      var scrollentity = $("html,body");
+      if (navigator.userAgent.match(/(iPod|iPhone|iPad)/)) {
+        scrollentity = $("html");
+      }
+      scrollentity.animate({ scrollTop: this.back.top }, 500);
     }
   },
+  mounted() {},
   components: {
     InfiniteLoading,
     Header,
@@ -133,7 +152,12 @@ export default {
   },
   beforeRouteLeave(to, from, next) {
     // this.infiniteId += 1;
-    this.$store.commit("SetTop", document.documentElement.scrollTop);
+    this.$store.commit(
+      "SetTop",
+      document.scrollingElement.scrollTop ||
+        window.scrollY ||
+        window.pageYOffset
+    );
 
     next();
   },
@@ -155,22 +179,19 @@ export default {
   },
   data() {
     return {
-      checkbox: [
-        { title: "제목" },
-        { doc: "서식명" },
-        { author: "기안자" },
-        { dept: "기안부서" },
-        { date: "기안일자" },
-      ],
-      morePlus: { write: "결재 작성" },
+      morePlus: {
+        write: "결재 작성",
+      },
       isOpen: false,
       infiniteId: 0,
       enabled: true,
-      title: "결재할 문서",
       option: {},
     };
   },
   methods: {
+    Option() {
+      return option[config.company].appWrite;
+    },
     SetHeader(data) {
       this.$store.dispatch("SetHeader", data);
     },
@@ -271,11 +292,14 @@ export default {
               if (data.length > 0) {
                 this.$store.commit("SetBackPage", option.page);
               }
-              // if (this.lists.length > 0) {
-              this.lists = this.wellconcat(this.lists, data);
+              // if (this.GetApproval[this.path].data.data.length > 0) {
+              this.GetApproval[this.path].data.data = this.wellconcat(
+                this.GetApproval[this.path].data.data,
+                data
+              );
               this.$forceUpdate();
               // } else {
-              //   this.lists = data;
+              //   this.GetApproval[this.path].data.data = data;
               // }
               $state.loaded();
 
@@ -296,6 +320,7 @@ export default {
         });
     },
     GetData(option, $state) {
+      // console.log("여긴가")
       option.approvaltype = option.type;
       Approval(option)
         .then((response) => {
@@ -311,12 +336,15 @@ export default {
               if (data.length > 0) {
                 this.$store.commit("SetBackPage", option.page);
               }
-              // if (this.lists.length > 0) {
-              this.lists = this.wellconcat(this.lists, data);
+              // if (this.GetApproval[this.path].data.data.length > 0) {
+              this.GetApproval[this.path].data.data = this.wellconcat(
+                this.GetApproval[this.path].data.data,
+                data
+              );
 
               this.$forceUpdate();
               // } else {
-              //   this.lists = data;
+              //   this.GetApproval[this.path].data.data = data;
               // }
               $state.loaded();
 
@@ -344,7 +372,7 @@ export default {
     },
     // 사진이 없으면 기본 이미지
     photoError(index) {
-      this.lists[index].photoerror = false;
+      this.GetApproval[this.path].data.data[index].photoerror = false;
     },
     // utc 시간 to local 시간
     transTime(time) {
@@ -373,16 +401,15 @@ export default {
   background: #ff743c url(/mobile/img/edit_check.png) center no-repeat;
   background-size: 1.5rem 0.87rem;
 }
-.app06_list li {
+/* .app06_list li {
   height: 5.43rem;
   position: relative;
   padding: 0.62rem 1.06rem 0 3.93rem;
-  border-top: 0.06rem solid #e6e6e6;
-  border-bottom: 0.06rem solid #e6e6e6;
-}
-.app06_list li + li {
+  /* border-top: 0.06rem solid #e6e6e6;
+  border-bottom: 0.06rem solid #e6e6e6; 
   margin-top: -0.062rem;
-}
+} 
+/* .app06_list li:nth-child(1){border-top:} */
 
 .app06_list li a {
   display: block;

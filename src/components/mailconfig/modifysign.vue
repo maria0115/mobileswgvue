@@ -3,24 +3,23 @@
     <h2 class="mail_st_header">
       <router-link :to="{name:'SeeSign'}">
         <img src="../../mobile/img/wmail_back.png" alt="" /> </router-link
-      >서명 편집
+      >{{lang.title}}
       <div>
-        <span class="delet" @click="Delete"><a>삭제</a></span>
-        <span class="save" @click="Modify"><a>저장</a></span>
+        <span class="delet fw_bold" @click="Delete"><a>{{lang.delete}}</a></span>
+        <span class="save fw_bold" @click="Modify"><a>{{lang.save}}</a></span>
       </div>
     </h2>
     <div class="m_contents06">
       <form @submit.prevent>
         <ul>
           <li>
-            <span>제목</span>
+            <span>{{lang.subject}}</span>
             <input type="text" v-model="subject" />
           </li>
           <li>
-            <span>설정</span>
+            <span>{{lang.setting}}</span>
             <div @click="defaultCheck">
-              <em class="sig_check" :class="{ active: this.default }"></em>기본
-              서명으로 지정
+              <em class="sig_check" :class="{ active: this.default }"></em>{{lang.default}}
             </div>
           </li>
           <li>
@@ -51,6 +50,7 @@ import Namo from '../editor/namo.vue';
 // import EditorContent from "./EditorContent.vue";
 export default {
   created() {
+    this.lang = this.GetMConfigL.modifysign;
     this.default = this.GetSignView.default;
     this.body = this.GetSignView.body;
     this.subject = this.GetSignView.subject;
@@ -91,7 +91,7 @@ export default {
       this.GetSignView.default = this.default;
       var result = await this.$store.dispatch("mailjs/SignEdit", this.GetSignView);
       if(result){
-        this.$router.push({ name: "SeeSign"});
+        this.$router.push({ name: 'sign' });
       }
     },
     Back() {

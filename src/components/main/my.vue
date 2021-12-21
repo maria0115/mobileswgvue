@@ -62,20 +62,23 @@
       </div> -->
 
         <div v-for="(value, name) in GetConfig.main.portlet" :key="name">
-          <div v-if="value.key === 'mail' && value.service">
-            <Mail :portlet="GetMainLanguage.portlet"></Mail>
+          <div v-if="value.category === 'mail' && value.service">
+            <Mail :portlet="value"></Mail>
           </div>
-          <div v-else-if="value.key === 'notice' && value.service">
-            <Notice :portlet="GetMainLanguage.portlet"></Notice>
+          <div v-else-if="value.type === 'notice' && value.service">
+            <Notice :portlet="value"></Notice>
           </div>
-          <div v-else-if="value.key === 'approving' && value.service">
-            <Approving :portlet="GetMainLanguage.portlet"></Approving>
+          <div v-else-if="value.category === 'approval' && value.service">
+            <Approving :portlet="value"></Approving>
           </div>
-          <div v-else-if="value.key === 'schedule' && value.service">
-            <Schedule :portlet="GetMainLanguage.portlet"></Schedule>
+          <div v-else-if="value.category === 'schedule' && value.service">
+            <Schedule :portlet="value"></Schedule>
           </div>
-          <div v-else-if="value.key === 'recentboard' && value.service">
-            <Recent :portlet="GetMainLanguage.portlet"></Recent>
+          <div v-else-if="value.category === 'reservation' && value.service">
+            <Book :portlet="value"></Book>
+          </div>
+          <div v-else-if="value.category === 'board' && value.service">
+            <Recent :portlet="value"></Recent>
           </div>
         </div>
       </div>
@@ -89,6 +92,7 @@ import Mail from "./my/mail.vue";
 import Notice from "./my/notice.vue";
 import Approving from "./my/approving.vue";
 import Schedule from "./my/schedule.vue";
+import Book from "./my/reservation.vue";
 import Recent from "./my/recent.vue";
 import $ from "jquery";
 
@@ -112,6 +116,7 @@ export default {
     Approving,
     Schedule,
     Recent,
+    Book,
   },
   computed: {
     ...mapState("mainjs", ["main"]),

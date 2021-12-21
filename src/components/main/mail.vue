@@ -18,12 +18,12 @@
                     class="rece"
                     v-if="value.tostuff !== undefined"
                     :class="{ on: value.tostuff.receive }"
-                    >수신</em
+                    >{{lang.reception}}</em
                   ><em
                     class="refer"
                     v-if="value.tostuff !== undefined"
                     :class="{ on: value.tostuff.ref }"
-                    >참조</em
+                    >{{lang.copyto}}</em
                   >
                 </div>
               </dt>
@@ -93,6 +93,7 @@ export default {
     ...mapGetters(["GetMainLanguage", "GetHeader"]),
   },
   created() {
+    this.lang = this.GetMainLanguage.main;
     this.params = JSON.parse(this.$route.query.data);
     // this.params = this.GetHeader.menu;
 

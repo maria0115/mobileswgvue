@@ -29,7 +29,7 @@
         <div>
           <div class="week_cal_top">
             <div>
-              <span>종일</span>
+              <span>{{lang.allday}}</span>
             </div>
             <ul class="week_caltit">
               <li
@@ -93,7 +93,7 @@
                             v-for="(v, i) in GetSchedule.calList.week[value]
                               .timeday"
                             :key="i"
-                            class="schedule time_schedule"
+                            class="schedule week_schedule"
                             :style="timeStyle(v)"
                             @click="Detail(v)"
                           >
@@ -143,7 +143,7 @@
             </div>
           </li> -->
         </div>
-        <span class="now_line" :style="`top:${now}rem`"></span>
+        <span class="now_line" :style="`top:${now}px`"></span>
       </div>
       <span class="today_btn" @click="Today">Today</span>
     </div>
@@ -156,10 +156,14 @@ import Header from "./header.vue";
 import DateHeader from "./datepicker.vue";
 import { mapState, mapGetters } from "vuex";
 import CalWrite from "./calWBtn.vue";
+import nowTime from "@/mixin/nowTime";
+
 export default {
   computed: {
     ...mapGetters("calendarjs", ["GetSchedule"]),
   },
+  mixins: [nowTime],
+
   components: {
     Header,
     DateHeader,
@@ -167,53 +171,20 @@ export default {
   },
   data() {
     return {
-      now: 4.68,
-      hour: 0,
-      calmenu: false,
-      thisWeek: [],
-      fulldate: "",
-      currentYear: 0,
-      currentMonth: 0,
-      currentDay: 0,
-      year: 0,
-      month: 0,
       lastMonthStart: 20,
       nextMonthStart: 0,
-      today: 0,
-      theDayOfWeek: 0,
-      daysSort: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
-      timeSort: [
-        "00:00",
-        "01:00",
-        "02:00",
-        "03:00",
-        "04:00",
-        "05:00",
-        "06:00",
-        "07:00",
-        "08:00",
-        "09:00",
-        "10:00",
-        "11:00",
-        "12:00",
-        "13:00",
-        "14:00",
-        "15:00",
-        "16:00",
-        "17:00",
-        "18:00",
-        "19:00",
-        "20:00",
-        "21:00",
-        "22:00",
-        "23:00",
-        "24:00",
-      ],
-      check: false,
+
+      days: 7,
     };
   },
   created() {
+    this.lang = this.GetScheduleL.week;
     this.Init();
+    this.$store.commit("calendarjs/SaveScheduleWhere", "week");
+  },
+  mounted() {
+    // window.scroll({ top: this.min, behavior: "smooth" });
+    this.nowTimeGo();
   },
   methods: {
     Write(time, day) {
@@ -225,124 +196,41 @@ export default {
         query: { data: JSON.stringify({ date: datestr, starttime: time }) },
       });
     },
-    timeStyle(value) {
-      if (!value.allDay) {
-        var start = new Date(`${value.startdate}T${value.starttime}`);
-        var end = new Date(`${value.enddate}T${value.endtime}`);
-        var elapsed = (end.getTime() - start.getTime()) / 1000 / 60;
-        return `top: ${
-          start.getMinutes() + start.getHours() * 60
-        }px;height: ${elapsed}px`;
-      }
-      return "";
-      // style="top: 60px; height: 70px"
-    },
-    Start(e) {
-      this.startX = e.touches[0].pageX - e.touches[0].target.offsetLeft;
-      this.check = true;
-    },
-    End(e) {},
-    Move(e) {
-      this.nowclientX = e.touches[0].pageX - e.touches[0].target.offsetLeft;
-      if (this.nowclientX - this.startX > 100 && this.check) {
-        this.MoveChange(-1);
-        this.check = false;
-      } else if (this.nowclientX - this.startX < -100 && this.check) {
-        this.MoveChange(1);
-        this.check = false;
-      }
-      // this.nowclientY = e.touches[0].pageY - e.touches[0].target.offsetTop;
-    },
+
     MoveChange(arg) {
-      var moment = require("moment");
-      var redate = this.fulldate.replaceAll(".", "/");
-      if (arg > 0) {
-        this.fulldate = moment(redate).add("7", "d").format("YYYY.MM.DD");
-      } else {
-        // -1
-        this.fulldate = moment(redate).subtract("7", "d").format("YYYY.MM.DD");
-      }
-      this.year = parseInt(this.fulldate.split(".")[0]);
-      this.month = parseInt(this.fulldate.split(".")[1]);
-      this.today = parseInt(this.fulldate.split(".")[2]);
-
-      redate = this.fulldate.replaceAll(".", "/");
-      var currentDay = new Date(redate);
-      this.theDayOfWeek = currentDay.getDay();
-
-      this.SetthisWeek();
-      var send = {};
-      send.start = `${this.thisWeek[0].year}-${this.thisWeek[0].month}-${this.thisWeek[0].day}`;
-      send.end = `${this.thisWeek[this.thisWeek.length - 1].year}-${
-        this.thisWeek[this.thisWeek.length - 1].month
-      }-${this.thisWeek[this.thisWeek.length - 1].day}`;
-      send.today = this.fulldate;
-      this.$store.dispatch("calendarjs/CalList", { data: send, which: "week" });
+      this.dateMove(arg);
+      this.Send();
     },
-    Today() {
-      this.Init();
+    Send() {
+      this.SetthisWeek();
+      this.$store.dispatch("calendarjs/CalList", {
+        data: this.SendSet(),
+        which: "week",
+      });
     },
     Init() {
-      var currentDay = new Date();
-      this.currentYear = currentDay.getFullYear();
-      this.currentMonth = currentDay.getMonth() + 1;
-      this.hour = currentDay.getHours(); //시간
-      var min = currentDay.getMinutes(); //분
-      min += this.hour * 60;
-      this.now = min / 16 + 4.68;
-      this.year = this.currentYear;
-      this.month = this.currentMonth;
-      this.today = currentDay.getDate();
-      this.currentDay = this.today;
-      this.theDayOfWeek = currentDay.getDay();
-      this.fulldate = `${this.year}.${this.fill(2, this.month)}.${this.fill(
-        2,
-        this.today
-      )}`;
+      this.InitSet();
+      this.Send();
 
-      this.SetthisWeek();
+    },
+    SendSet() {
       var send = {};
       send.start = `${this.thisWeek[0].year}-${this.thisWeek[0].month}-${this.thisWeek[0].day}`;
       send.end = `${this.thisWeek[this.thisWeek.length - 1].year}-${
         this.thisWeek[this.thisWeek.length - 1].month
       }-${this.thisWeek[this.thisWeek.length - 1].day}`;
       send.today = this.fulldate;
-      this.$store.dispatch("calendarjs/CalList", { data: send, which: "week" });
+      return send;
     },
     calendarData(arg) {
       var now = new Date();
       this.hour = now.getHours(); //시간
-      var min = now.getMinutes(); //분
-      min += this.hour * 60;
-      this.now = min / 16 + 4.68;
-      if (arg < 0) {
-        this.month -= 1;
-      } else if (arg === 1) {
-        this.month += 1;
-      }
-      if (this.month === 0) {
-        this.year -= 1;
-        this.month = 12;
-      } else if (this.month > 12) {
-        this.year += 1;
-        this.month = 1;
-      }
-      this.fulldate = `${this.year}.${this.fill(2, this.month)}.${this.fill(
-        2,
-        this.today
-      )}`;
-      var redate = this.fulldate.replaceAll(".", "/");
-      var currentDay = new Date(redate);
-      this.theDayOfWeek = currentDay.getDay();
-      this.SetthisWeek();
+      this.min = now.getMinutes(); //분
+      this.min += this.hour * 60;
+      this.now = this.min + 74.88;
+      this.calendarDataSet(arg);
+      this.Send();
 
-      var send = {};
-      send.start = `${this.thisWeek[0].year}-${this.thisWeek[0].month}-${this.thisWeek[0].day}`;
-      send.end = `${this.thisWeek[this.thisWeek.length - 1].year}-${
-        this.thisWeek[this.thisWeek.length - 1].month
-      }-${this.thisWeek[this.thisWeek.length - 1].day}`;
-      send.today = this.fulldate;
-      this.$store.dispatch("calendarjs/CalList", { data: send, which: "week" });
     },
     SetthisWeek() {
       for (var i = 0; i < this.daysSort.length; i++) {
@@ -369,21 +257,6 @@ export default {
         this.thisWeek[i] = data;
       }
     },
-    fill(width, number) {
-      number = number + ""; //number를 문자열로 변환하는 작업
-      var str = "";
-      for (var i = 0; i < width - number.length; i++) {
-        str = str + "0";
-      }
-      str = str + number;
-      return str;
-    },
-    CalMenu() {
-      this.calmenu = true;
-    },
-    CalMenuOff() {
-      this.calmenu = false;
-    },
     getWeekNo(v_date_str) {
       var date = new Date();
 
@@ -393,9 +266,7 @@ export default {
       return Math.ceil(date.getDate() / 7);
     },
     changeDate(date) {
-      this.year = parseInt(date.split(".")[0]);
-      this.month = parseInt(date.split(".")[1]);
-      this.today = parseInt(date.split(".")[2]);
+      this.SetDate(date);
       this.calendarData();
     },
     async Detail(value) {

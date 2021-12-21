@@ -10,8 +10,8 @@
         </div>
         <span class="sub_ham" @click="OpenHam"></span>
       </div>
-      <div class="edit_header">
-        <!--관리자 모드일때 노출되어야함-->
+      <!--관리자 모드일때 노출되어야함-->
+      <!-- <div class="edit_header">
         <h2>
           <img
             class="mail_back"
@@ -23,7 +23,7 @@
           <span class="all_btn"></span>
           <span class="trash_btn"></span>
         </div>
-      </div>
+      </div> -->
     </div>
     <div class="m_contents02">
       <form @submit.prevent>
@@ -60,10 +60,10 @@
             spinner="waveDots"
           >
             <div slot="no-more" style="padding: 10px 0px">
-              목록의 끝입니다 :)
+              {{ commonl.end }}
             </div>
             <div slot="no-results" style="padding: 10px 0px">
-              목록의 끝입니다 :)
+              {{ commonl.end }}
             </div>
             <div slot="error">
               Error message, click
@@ -79,13 +79,19 @@
         </ul>
       </form>
     </div>
-    <SubMenu :isOpen="isOpen" @CloseHam="CloseHam"></SubMenu>
+    <SubMenu
+      :isOpen="isOpen"
+      @CloseHam="CloseHam"
+      :params="this.params"
+    ></SubMenu>
     <Search @SetSearchWord="SetSearchWord"></Search>
     <WBtn :path="path"></WBtn>
     <div class="ac_btns">
       <span class="more_plus"></span>
       <ul>
-        <li class="top"><a>맨 위로</a></li>
+        <li class="top">
+          <a>{{ commonl.up }}</a>
+        </li>
         <li>
           <!-- @click.native="SetHeader(params)" -->
           <router-link
@@ -93,7 +99,7 @@
               name: 'boardwrite',
               query: { data: JSON.stringify(params) },
             }"
-            >게시판 작성</router-link
+            >{{ lang.write }}</router-link
           >
         </li>
       </ul>
@@ -112,6 +118,9 @@ import { mapState, mapGetters } from "vuex";
 
 export default {
   async created() {
+    this.commonl = this.GetCommonL;
+
+    this.lang = this.GetBoardL.list;
     this.params = JSON.parse(this.$route.query.data);
     this.$store.commit("boardjs/BoardWritePath", this.params.type);
     this.option.page = this.page;
@@ -134,9 +143,14 @@ export default {
         this.lists = this.lists.concat(result);
       }
       this.infiniteId++;
-      window.scroll({ top: this.back.top, behavior: "smooth" });
-      this.$store.commit("SetBack", false);
+      // window.scroll({ top: this.back.top, behavior: "smooth" });
       this.$forceUpdate();
+      this.$store.commit("SetBack", false);
+      var scrollentity = $("html,body");
+      if (navigator.userAgent.match(/(iPod|iPhone|iPad)/)) {
+        scrollentity = $("html");
+      }
+      scrollentity.animate({ scrollTop: this.back.top }, 500);
     } else {
       this.$store.dispatch("ListOfCategory", this.option).then((res) => {
         // this.Init();
@@ -147,7 +161,13 @@ export default {
   },
   mounted() {},
   beforeRouteLeave(to, from, next) {
-    this.$store.commit("SetTop", document.documentElement.scrollTop);
+    this.$store.commit(
+      "SetTop",
+      document.scrollingElement.scrollTop ||
+        window.scrollY ||
+        window.pageYOffset
+    );
+
     next();
   },
   components: {
@@ -231,6 +251,7 @@ export default {
           type: type,
           lnbid: this.params.lnbid,
           title: this.params.title,
+          top:this.params.top,
         });
       }
     },
@@ -283,7 +304,7 @@ export default {
         .then((data) => {
           setTimeout(() => {
             if (data) {
-              if(data.length > 0) {
+              if (data.length > 0) {
                 this.$store.commit("SetBackPage", option.page);
               }
               if (this.lists.length > 0) {
@@ -317,7 +338,7 @@ export default {
         .then((data) => {
           setTimeout(() => {
             if (data) {
-              if(data.length > 0) {
+              if (data.length > 0) {
                 this.$store.commit("SetBackPage", option.page);
               }
               if (this.lists.length > 0) {

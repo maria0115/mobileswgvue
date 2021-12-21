@@ -1,7 +1,7 @@
 <template>
   <div class="opinion_modal" :class="{ active: isOpen }">
     <div class="opinion_con">
-      <strong>결재의견</strong>
+      <strong>{{ lang.comment }}</strong>
       <div class="text_con">
         <textarea
           name=""
@@ -10,8 +10,8 @@
         ></textarea>
       </div>
       <div>
-        <span class="impor_mo_btn" @click="AgreeNReject">확인</span>
-        <span class="modal_cancel" @click="ModalOff">취소</span>
+        <span class="impor_mo_btn" @click="AgreeNReject">{{ lang.ok }}</span>
+        <span class="modal_cancel" @click="ModalOff">{{ lang.cancle }}</span>
       </div>
     </div>
   </div>
@@ -19,6 +19,9 @@
 
 <script>
 export default {
+  created() {
+    this.lang = this.GetAppL.comment;
+  },
   props: {
     isOpen: Boolean,
   },

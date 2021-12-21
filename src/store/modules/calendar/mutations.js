@@ -1,14 +1,17 @@
 
 export default {
-    calListOpen(state,value){
+    calListOpen(state, value) {
         state.calListOpen = value;
-        
+
     },
     isEdit(state, value) {
         state.store.edit = value;
     },
     SaveScheduleUnid(state, { unid, where }) {
         state.store.schedule.detail.unid = unid;
+        state.store.schedule.detail.where = where;
+    },
+    SaveScheduleWhere(state, where) {
         state.store.schedule.detail.where = where;
     },
 
@@ -63,7 +66,6 @@ export default {
         } else if (which === "day") {
             var d = [];
             var timeAllObj = [];
-            var isadd = [];
             data.forEach((time, i) => {
                 let isOverlap = false;
                 // 
@@ -73,41 +75,42 @@ export default {
                 let et1 = parseInt(endtime);
                 // 
                 var rank = 0;
-                if (!time.allDay && isadd.indexOf(i) == -1 && option.today == time.enddate) {
+                if (!time.allDay && option.today == time.enddate) {
+                    // if (!time.allDay && isadd.indexOf(i) == -1 && option.today == time.enddate) {
                     var time2arr = [];
                     // d.push(time);
                     data.forEach((time2, j) => {
-                        if (i != j) {
-                            var starttime2 = time2.startdate.split('-').join("") + time2.starttime.split(':').join("");
-                            var endtime2 = time2.enddate.split('-').join("") + time2.endtime.split(':').join("");
-                            let st2 = parseInt(starttime2);
-                            let et2 = parseInt(endtime2);
-                            if (st1 >= st2 && st1 <= et2 || et1 >= st2 && et1 <= et2 || st2 >= st1 && st2 <= et1 || et2 >= st1 && et2 <= et1) {
-                                isOverlap = true;
-                                isadd.push(j);
-                                d[rank] = d[rank] || [];
-                                d[rank].push(time2);
-                                rank++;
+                        var starttime2 = time2.startdate.split('-').join("") + time2.starttime.split(':').join("");
+                        var endtime2 = time2.enddate.split('-').join("") + time2.endtime.split(':').join("");
+                        let st2 = parseInt(starttime2);
+                        let et2 = parseInt(endtime2);
+                        if (st1 >= st2 && st1 <= et2 || et1 >= st2 && et1 <= et2 || st2 >= st1 && st2 <= et1 || et2 >= st1 && et2 <= et1) {
+                            // isOverlap = true;
+                            // d[rank] = d[rank] || [];
+                            // d[rank].push(time2);
+                            time2.left = rank;
+                            rank++;
 
-                            } else {
-                                isOverlap = false;
-                            }
+                        } else {
+                            isOverlap = false;
                         }
                     })
+                    time.width = rank;
+                    d.push(time);
                 }
-                if (!isOverlap && !time.allDay) {
-                    d[rank] = d[rank] || [];
-                    d[rank].push(time);
+                // if (!isOverlap && !time.allDay && isadd.indexOf(i) == -1) {
+                //     d[rank] = d[rank] || [];
+                //     d[rank].push(time);
 
-                } else if (time.allDay) {
+                // } else 
+                if (time.allDay) {
                     timeAllObj.push(time);
                 }
             });
             data = {};
             data.data = d;
             data.allday = timeAllObj;
-
-
+            console.log(data)
         }
 
         state.schedule.data.calList[which] = data;

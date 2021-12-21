@@ -1,5 +1,5 @@
 <template>
-    <iframe :src="src" style="width:100%;height:60vh;overflow:hidden;border:0;" ref="namo"></iframe>
+    <iframe :src="src" style="width:100%;height:472px;overflow:hidden;border:0;" ref="namo"></iframe>
 </template>
 
 <script>

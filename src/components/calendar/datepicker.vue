@@ -40,11 +40,12 @@ export default {
       this.cdate = newValue;
     },
     date: function (newValue) {
-      var value = newValue.replaceAll(".","/")
+      var value = this.replaceAll(newValue,".","/")
       this.myDatepicker.selectDate(new Date(value));
     },
   },
   computed: {
+    
     Cdate() {
       if (this.date == "") {
         const date = new Date();
@@ -61,6 +62,10 @@ export default {
     },
   },
   methods: {
+    // 자동완성 글 입력된 검색어로 자르기
+    replaceAll(str, searchStr, replaceStr) {
+      return str.split(searchStr).join(replaceStr);
+    },
     fill(width, str) {
       var n = String(str);
       return n.length >= width
@@ -82,14 +87,14 @@ export default {
         onSelect: function(formattedDate, date, inst){
           if(!date&&date.length==0){
             formattedDate=here.date;
-            var redate = formattedDate.replaceAll(".", "/");
+            var redate = here.replaceAll(formattedDate,".", "/");
             here.myDatepicker.selectDate(new Date(redate));
           }
           here.$emit("ChangeDate",formattedDate);
         }
       })
       .data("datepicker");
-      var value = this.date.replaceAll(".","/")
+      var value = this.replaceAll(this.date,".","/")
 
     this.myDatepicker.selectDate(new Date(value));
   },

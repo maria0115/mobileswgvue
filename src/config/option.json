@@ -1,0 +1,23 @@
+{
+    "saerom": {
+        "appWrite": true,
+        "mailDelay": true,
+        "language": true,
+        "voicesearch": true,
+        "alarmeti": true
+    },
+    "kogene": {
+        "appWrite": false,
+        "mailDelay": false,
+        "language": false,
+        "voicesearch": false,
+        "alarmeti": false
+    },
+    "kiturami": {
+        "appWrite": false,
+        "mailDelay": true,
+        "language": true,
+        "voicesearch": false,
+        "alarmeti": true
+    }
+}

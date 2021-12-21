@@ -1,5 +1,5 @@
 import {
-    OrgAutoSearch, GetLanguage, Login, InitOrg, Org, CategoryList, ListOfCategory, DocView
+    OrgAutoSearch, GetLanguage, Login, InitOrg, Org, CategoryList, ListOfCategory, DocView,Logout
 } from '../api/index.js';
 import { setRawCookie } from 'tiny-cookie';
 import cookie from 'vue-cookies';
@@ -45,11 +45,21 @@ export default {
     },
     logout(s) {
         cookie.set("LtpaToken", "");
+        cookie.set("language", "");
+
         if (!JSON.parse(localStorage.getItem("idSave"))) {
             localStorage.setItem(`${config.packageName}id`, "");
         }
         localStorage.setItem("autoLogin", false);
         localStorage.setItem(`${config.packageName}pass`, "");
+        var info = JSON.parse(localStorage.getItem(`${config.packageName}deviceInformation`));
+        Logout(info)
+        .then((res) => {
+            if(res.data.success){
+                return;
+            }
+            return;
+        })
         return;
     },
     setLogin() {
@@ -166,14 +176,16 @@ export default {
 
 
     // 다국어 data
-    async GetLanguage({ commit }, { app }) {
-        await GetLanguage(app)
+    GetLanguage({ commit }, { app }) {
+        return GetLanguage(app)
             .then(response => {
-                // 
-                // 
-                commit('GetLanguage', { res: response.data, app })
-                return;
+                commit('GetLanguage', { res: response.data, app });
 
+                return response.data;
+                // .then(res=>{
+                //     console.log(res);
+                //     return;
+                // })
             });
     },
     Children({ commit }, { child }) {

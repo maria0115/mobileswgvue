@@ -4,23 +4,27 @@
       <h2>
         <router-link :to="{ name: 'mail' }"
           ><img src="../../mobile/img/wmail_back.png" alt="" /></router-link
-        >메일쓰기
+        >{{ lang.title }}
       </h2>
       <div>
         <!--7월 6일 추가됨-->
-        <span class="tem_save" @click="Send('save')">임시저장</span
+        <span class="tem_save fw_bold" @click="Send('save')">{{
+          lang.save
+        }}</span
         ><!--7월 6일 추가됨-->
-        <span v-if="isDraftEdit()" class="mail_send" @click="$router.go(-1)"
-          >취소</span
-        >
-        <span v-else class="mail_send" @click="Send('send')">보내기</span>
+        <span v-if="isDraftEdit()" class="mail_send" @click="$router.go(-1)">{{
+          lang.cancle
+        }}</span>
+        <span v-else class="mail_send fw_bold" @click="Send('send')">{{
+          lang.send
+        }}</span>
       </div>
     </div>
     <div class="m_contents03">
       <form @submit.prevent>
         <ul class="wm_top">
           <li class="clfix">
-            <strong>받는사람 <em class="re_more"></em></strong>
+            <strong>{{ lang.to }} <em class="re_more"></em></strong>
             <div class="todiv div_list">
               <ul class="list_add clfix">
                 <li
@@ -37,13 +41,13 @@
                       <dt v-else>{{ value.name }}</dt>
                       <dd>{{ value.email }}</dd>
                     </dl>
-                    <span @click="MailOrgDataDelete(value, 'SendTo')"
-                      >삭제</span
-                    >
+                    <span @click="MailOrgDataDelete(value, 'SendTo')">{{
+                      lang.delete
+                    }}</span>
                   </div>
                 </li>
                 <li class="new_addr">
-                  <label for="toinput" class="blind">받는사람주소</label>
+                  <label for="toinput" class="blind">{{ lang.toEmail }}</label>
                   <textarea
                     @click="
                       [
@@ -56,6 +60,7 @@
                     "
                     id="toinput"
                     v-model="sendtosearchkeyword"
+                    @keypress.enter="AddOrgEnter('SendTo', $event.target.value)"
                     @keyup="
                       [
                         SendToSearch(
@@ -70,8 +75,11 @@
                 </li>
               </ul>
               <div>
-                <span class="tome" :class="{ active: this.tome }" @click="ToMe"
-                  >내게쓰기</span
+                <span
+                  class="tome"
+                  :class="{ active: this.tome }"
+                  @click="ToMe"
+                  >{{ lang.toMe }}</span
                 >
                 <span class="organ" @click="orgClick('SendTo')"></span>
               </div>
@@ -99,7 +107,7 @@
           </li>
           <li class="refer_div">
             <div class="refer_div01 clfix">
-              <strong>참조</strong>
+              <strong>{{ lang.cc }}</strong>
               <div class="refer_list div_list">
                 <ul class="list_add">
                   <li
@@ -113,13 +121,13 @@
                         <dt>{{ value.name }} / {{ value.department }}</dt>
                         <dd>{{ value.email }}</dd>
                       </dl>
-                      <span @click="MailOrgDataDelete(value, 'CopyTo')"
-                        >삭제</span
-                      >
+                      <span @click="MailOrgDataDelete(value, 'CopyTo')">{{
+                        lang.delete
+                      }}</span>
                     </div>
                   </li>
                   <li class="new_addr">
-                    <label for="referinput" class="blind">참조</label>
+                    <label for="referinput" class="blind">{{ lang.cc }}</label>
                     <textarea
                       @click="
                         [
@@ -132,6 +140,9 @@
                       "
                       id="referinput"
                       v-model="copytosearchkeyword"
+                      @keypress.enter="
+                        AddOrgEnter('CopyTo', $event.target.value)
+                      "
                       @keyup="
                         [
                           SendToSearch(
@@ -169,7 +180,7 @@
               <span class="organ" @click="orgClick('CopyTo')"></span>
             </div>
             <div class="refer_div02 clfix">
-              <strong>숨은참조</strong>
+              <strong>{{ lang.bcc }}</strong>
               <div class="cry_refer div_list">
                 <ul class="list_add">
                   <li
@@ -183,13 +194,13 @@
                         <dt>{{ value.name }} / {{ value.department }}</dt>
                         <dd>{{ value.email }}</dd>
                       </dl>
-                      <span @click="MailOrgDataDelete(value, 'BlindCopyTo')"
-                        >삭제</span
-                      >
+                      <span @click="MailOrgDataDelete(value, 'BlindCopyTo')">{{
+                        lang.delete
+                      }}</span>
                     </div>
                   </li>
                   <li class="new_addr">
-                    <label for="cryinput" class="blind">숨은참조</label>
+                    <label for="cryinput" class="blind">{{ lang.bcc }}</label>
                     <textarea
                       @click="
                         [
@@ -202,6 +213,9 @@
                       "
                       id="cryinput"
                       v-model="blindcopytosearchkeyword"
+                      @keypress.enter="
+                        AddOrgEnter('BlindCopyTo', $event.target.value)
+                      "
                       @keyup="
                         [
                           SendToSearch(
@@ -243,7 +257,7 @@
             </div>
           </li>
           <li class="tit_line clfix">
-            <strong>제목</strong>
+            <strong>{{ lang.subject }}</strong>
             <div>
               <input type="text" v-model="Subject" />
               <input
@@ -258,7 +272,7 @@
           </li>
           <li class="add_file clfix">
             <strong
-              >파일첨부<span class="tit_clip" @click="submitFile()"
+              >{{ lang.attach }}<span class="tit_clip" @click="submitFile()"
             /></strong>
 
             <ul>
@@ -287,19 +301,19 @@
                 class="impor_check"
                 :class="{ active: this.Importance }"
               ></span
-              >중요도 높음
+              >{{ lang.imaportance }}
             </p>
           </li>
-          <li class="time_send" @click="timeToggle">
+          <li v-if="!this.tome" class="time_send" @click="timeToggle">
             <p>
               <span
                 class="time_check"
                 :class="{ active: this.dispreserve }"
               ></span
-              >예약발송
+              >{{ lang.reservation }}
             </p>
             <span v-if="this.ExpireDate && this.time && this.dispreserve"
-              >2021-05-30<em>19:00</em></span
+              >{{ this.ExpireDate }}<em>{{ this.time }}</em></span
             >
           </li>
           <li class="mail_edit">
@@ -317,14 +331,14 @@
         </ul>
         <div class="time_modal" :class="{ active: this.timemodal }">
           <div class="modal_con">
-            <strong>예약발송</strong>
+            <strong>{{ lang.reservation }}</strong>
             <ul>
               <li>
-                <em>일자</em>
+                <em>{{ lang.day }}</em>
                 <div><input type="date" v-model="ExpireDate" /></div>
               </li>
               <li>
-                <em>시간</em>
+                <em>{{ lang.time }}</em>
                 <div>
                   <select name="" id="" v-model="STime">
                     <option
@@ -347,7 +361,7 @@
                 </div>
               </li>
             </ul>
-            <span class="time_mo_btn" @click="timeOk">확인</span>
+            <span class="time_mo_btn" @click="timeOk">{{ lang.ok }}</span>
             <span class="modal_close" @click="disReservation"></span>
           </div>
         </div>
@@ -366,16 +380,18 @@ import Namo from "../editor/namo.vue";
 // import EditorContent from "../mailconfig/EditorContent.vue";
 export default {
   async created() {
+    this.lang = this.GetMailLanguage.write;
+    console.log(this.lang);
     // this.$store.commit("mailjs/MailOrgDataInit");
     this.Body_Text = `${this.GetMail.writeForm.greetings}<p></p><p></p>${this.GetMail.writeForm.signature}<p></p><p></p>`;
     this.isEdit = this.$route.query.isEdit;
     if (this.from === "Relay") {
       this.file = this.GetMailDetail.attach;
       this.Subject = this.GetMailDetail.forwardMail.subject;
-      this.Body_Text += `${this.GetMailDetail.forwardMail.body}${this.GetMailDetail.body}`;
+      this.Body_Text += `${this.GetMailDetail.forwardMail.body}<br><br><br>${this.GetMailDetail.body}`;
     } else if (this.from === "Reply" || this.from === "AllReply") {
       this.Subject = this.GetMailDetail.replyMail.subject;
-      this.Body_Text += `${this.GetMailDetail.replyMail.body}${this.GetMailDetail.body}`;
+      this.Body_Text += `${this.GetMailDetail.replyMail.body}<br><br><br>${this.GetMailDetail.body}`;
     } else if (this.isDraftEdit()) {
       this.file = this.GetMailDetail.attach;
       this.Subject = this.GetMailDetail.subject;
@@ -415,6 +431,8 @@ export default {
       "GetMail",
       "GetMailConfig",
     ]),
+    ...mapGetters(["GetMailLanguage"]),
+
     isBlock: function () {
       if (this.isOpen) {
         return "block";
@@ -457,7 +475,10 @@ export default {
   },
   methods: {
     isDraftEdit() {
-      return this.GetfolderName.indexOf("draft") !== -1 && this.isEdit;
+      if (this.GetfolderName) {
+        return this.GetfolderName.indexOf("draft") !== -1 && this.isEdit;
+      }
+      return false;
     },
     generateRandomCode(n) {
       let str = "";
@@ -649,6 +670,11 @@ export default {
 
       // data에 담고
 
+      if (this.Subject.length == 0) {
+        alert(this.lang.comment);
+        return;
+      }
+
       if (this.org.SendTo.length > 0 && this.org.SendTo[0].id) {
         var formData = this.FormSet();
         // 사람이 한사람이라도 있으면
@@ -761,6 +787,8 @@ export default {
       }
     },
     Back() {
+      this.$store.commit("SetBack", true);
+
       this.$router.go(-1);
     },
     SendToSearch(who, keyword, value) {
@@ -782,7 +810,25 @@ export default {
       const color = ["#bcbbdd", "#bbcbdd", "#bbddd7", "#d0d0d0"];
       return `background: ${color[Math.floor(Math.random() * 4)]}`;
     },
+    AddOrgEnter(who, value) {
+      var data = {};
+
+      data.id = value;
+      data.scheduleId = value;
+      data.name = value;
+      data.shortname = value;
+      data.email = value;
+      this.$store.commit("AddOrg", { who, value: data });
+      this.sendtosearchkeyword = "";
+      this.copytosearchkeyword = "";
+      this.blindcopytosearchkeyword = "";
+    },
     async AddOrg(who, value, what) {
+      var data = {};
+      data.item = value;
+      data.point = who;
+      this.$store.commit("OrgDataAdd", data);
+
       await this.$store.commit("AddOrg", { who, value });
       this[what] = false;
       this[`${what}keyword`] = "";

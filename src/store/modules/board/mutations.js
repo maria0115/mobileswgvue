@@ -1,4 +1,7 @@
 export default {
+    GetBoardSet(state,data){
+        state.options = data;
+    },
     EditMode(state,boo){
         state.store.board.edit = boo;
 

@@ -34,6 +34,9 @@
             <li @click="ReadFlag">{{ GetMailLanguage.option.readsign }}</li>
             <li class="move">{{ GetMailLanguage.option.move }}</li>
             <li @click="Relay">{{ GetMailLanguage.option.receive }}</li>
+            <li v-if="path.includes('trash')" @click="MailRecovery">
+              {{ lang.MailRecovery }}
+            </li>
           </ul>
         </div>
       </div>
@@ -46,7 +49,7 @@
             <!--8월 9일 태그 수정됨 -->
             <input
               type="text"
-              placeholder="검색어를 입력하세요"
+              :placeholder="commonl.search"
               @keypress.enter="Search"
               v-model="searchword"
             />
@@ -63,24 +66,24 @@
         <div class="sc_btm">
           <p>
             <input type="checkbox" ref="all" class="all_sc_check active" />
-            <label for="">전체</label>
+            <label for="">{{ lang.all }}</label>
           </p>
           <p>
             <span>
               <input type="checkbox" ref="subject" class="sc_check" />
-              <label for="">제목</label>
+              <label for="">{{ lang.subject }}</label>
             </span>
             <span>
               <input type="checkbox" ref="author" class="sc_check" />
-              <label for="">보낸이</label>
+              <label for="">{{ lang.author }}</label>
             </span>
             <span>
               <input type="checkbox" ref="sender" class="sc_check" />
-              <label for="">받는이</label>
+              <label for="">{{ lang.sender }}</label>
             </span>
             <span>
               <input type="checkbox" ref="copyto" class="sc_check" />
-              <label for="">참조자</label>
+              <label for="">{{ lang.copyto }}</label>
             </span>
           </p>
         </div>
@@ -94,6 +97,9 @@ import $ from "jquery";
 import { mapState, mapGetters } from "vuex";
 export default {
   created() {
+    this.lang = this.GetMailLanguage.header;
+    this.commonl = this.GetCommonL;
+
     this.searchword = this.GetMailConfig.searchOption.searchword;
   },
   data() {
@@ -206,6 +212,13 @@ export default {
       if (this.mailSearchPath.includes(this.path)) {
         this.$router.push(this.path);
       }
+    },
+    MailRecovery() {
+      this.$store.dispatch("mailjs/MailRecovery").then((res) => {
+        if (res) {
+          this.$router.push(this.$router.currentRoute);
+        }
+      });
     },
   },
 };

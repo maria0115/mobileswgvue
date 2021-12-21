@@ -5,7 +5,7 @@
       <form @submit.prevent>
         <ul>
           <li class="app_tit">
-            <strong>제목</strong>
+            <strong>{{ lang.title }}</strong>
             <div>
               <input
                 type="text"
@@ -15,14 +15,14 @@
             </div>
           </li>
           <li class="proposer">
-            <strong>신청자</strong>
+            <strong>{{ lang.author }}</strong>
             <div>
               {{ GetMyInfo.info.name }} {{ GetMyInfo.info.position }} /
               {{ GetMyInfo.info.dept }}
             </div>
           </li>
           <li class="approver">
-            <strong>결재자</strong>
+            <strong>{{ lang.approver }}</strong>
             <div>
               <!-- <input
                 type="text"
@@ -31,14 +31,16 @@
                 "
               />
               <span class="ps_add" @click="addApprover">추가</span> -->
-              <span class="app_pointer" @click="orgClick('SendTo', 'sAppList1')"
-                >결재선 지정</span
+              <span
+                class="app_pointer"
+                @click="orgClick('SendTo', 'sAppList1')"
+                >{{ lang.line }}</span
               >
               <span
                 v-if="thisform == 'K-SIS_Form661m'"
                 class="app_pointer"
                 @click="orgClick('CopyTo', 'sAppList2')"
-                >주관부서</span
+                >{{ lang.dept1 }}</span
               >
             </div>
             <div class="add_search" :class="{ active: this.sendtosearch }">
@@ -63,17 +65,15 @@
             </div>
           </li>
           <li class="approute">
-            <strong>결재경로</strong>
+            <strong>{{ lang.dept2 }}</strong>
             <div>
               <div>
                 <p>
-                  기안자_{{ GetMyInfo.info.dept }} {{ GetMyInfo.info.name }}
+                  {{ lang.path }}_{{ GetMyInfo.info.dept }}
+                  {{ GetMyInfo.info.name }}
                   {{ GetMyInfo.info.position }}
                 </p>
                 <ul>
-                  {{
-                    appPath
-                  }}
                   <li
                     v-for="(value, index) in appPath"
                     @click="Pointer(index)"
@@ -87,16 +87,19 @@
               </div>
               <p>
                 <span class="up" @click="Up"
-                  ><img src="../../mobile/img/up_btn.png" alt="위" />위</span
+                  ><img src="../../mobile/img/up_btn.png" alt="위" />{{
+                    lang.up
+                  }}</span
                 >
                 <span class="down" @click="Down"
-                  ><img
-                    src="../../mobile/img/down_btn.png"
-                    alt="아래"
-                  />아래</span
+                  ><img src="../../mobile/img/down_btn.png" alt="아래" />{{
+                    lang.down
+                  }}</span
                 >
-                <span class="delet" @click="Delete()">삭제</span>
-                <span class="all_delet" @click="AllDel">모두삭제</span>
+                <span class="delet" @click="Delete()">{{ lang.remove }}</span>
+                <span class="all_delet" @click="AllDel">{{
+                  lang.allremove
+                }}</span>
               </p>
             </div>
           </li>
@@ -150,7 +153,7 @@
             </div>
           </li> -->
           <li class="division">
-            <strong>공유범위</strong>
+            <strong>{{ lang.sharerange }}</strong>
             <div>
               <select v-model="pDocPermission">
                 <option
@@ -164,7 +167,7 @@
             </div>
           </li>
           <li class="division">
-            <strong>보존년한</strong>
+            <strong>{{ lang.period }}</strong>
             <div>
               <select v-model="pDocPeriod">
                 <option
@@ -186,27 +189,27 @@
             <div><input type="text" v-model="daycount" />일</div>
           </li> -->
           <li class="reason">
-            <strong>사유</strong>
+            <strong>{{ lang.comment }}</strong>
             <div>
               <!-- <editor-content :editor="editor" /> -->
               <textarea v-model="TmpsComment"></textarea>
             </div>
           </li>
           <li class="reason">
-            <strong>본문</strong>
+            <strong>{{ lang.body }}</strong>
             <!-- <div> -->
-              <editor-content :editor="editor"/>
-              <!-- {{Body_Text}}
+            <editor-content :editor="editor" />
+            <!-- {{Body_Text}}
               <textarea v-html="Body_Text"></textarea> -->
             <!-- </div> -->
           </li>
           <li class="file_add">
-            <strong>첨부</strong>
+            <strong>{{ lang.attach }}</strong>
             <div>
               <input class="load_name" />
               <div class="filebox">
                 <!-- @click="submitFile()" -->
-                <label for="add_f">찾아보기</label>
+                <label for="add_f">{{ lang.search }}</label>
                 <input
                   type="file"
                   id="add_f"
@@ -232,8 +235,10 @@
     <Org
       :modalon="modalon"
       :appDept="appDept"
+      :appPath="appPath"
       @AddItem="AddItem"
       @ModalOff="ModalOff"
+      @DelPickItem="DelItem"
     ></Org>
   </div>
 </template>
@@ -247,6 +252,15 @@ import Org from "../../View/OrgAppro.vue";
 import { Editor, EditorContent } from "tiptap";
 export default {
   created() {
+    const language = this.GetAppL.appwrite;
+    // this.commonl = this.GetCommonL;
+
+    this.morePlus = language.morePlus;
+    this.category = language.category;
+    this.DocPeriod = language.DocPeriod;
+    this.DocPermission = language.DocPermission;
+    this.pathDivision = language.pathDivision;
+    this.lang = language;
     this.params = JSON.parse(this.$route.query.data);
     // this.params = this.GetHeader.menu;
     this.params.isedit =
@@ -259,7 +273,7 @@ export default {
       this.file = this.detail.attachInfo;
       this.Subject = this.detail.subject;
       this.Body_Text = this.detail.body;
-      this.morePlus= { raise: "결재보내기" };
+      this.morePlus = { raise: language.morePlus.raise };
     }
 
     const date = new Date();
@@ -294,8 +308,6 @@ export default {
       appDept: "sAppList1",
       editor: null,
       file: [],
-      morePlus: { raise: "결재보내기", draft: "임시저장" },
-      title: "결재양식함에서 지정",
       modalon: false,
       modalAutoOrg: 0,
       copytosearch: false,
@@ -306,18 +318,6 @@ export default {
       pointer: -1,
       Detach: [],
       addAttach: [],
-      category: {
-        year: "연차휴가",
-        prize: "경조/포상",
-        health: "보건",
-        free: "무급휴가",
-        month: "월차",
-        sick: "병가",
-        Refresh: "Refresh",
-        military: "병역동원훈련",
-        baby: "산전산후",
-        early: "조퇴",
-      },
       onCategory: "year",
       file: [],
       Subject: "",
@@ -329,19 +329,6 @@ export default {
       startdate: null,
       enddate: null,
       pDocPeriod: 1,
-      DocPeriod: {
-        1: "1년",
-        3: "3년",
-        5: "5년",
-        10: "10년",
-        15: "15년",
-        99: "영구",
-      },
-      pathDivision: {
-        sAppList1: { AP: "결재", "AG_S!@AG_M": "협조" },
-        sAppList2: { AP: "담당" },
-      },
-      DocPermission: { H0: "권한자만 공유", H1: "부서공유", H2: "사내공유" },
       pDocPermission: "H0",
     };
   },
@@ -355,7 +342,7 @@ export default {
   methods: {
     Send(e) {
       if (!(this.Subject.length > 0)) {
-        alert("제목을 입력하세요");
+        alert(this.lang.alert.subject);
         return;
       }
       let formData = new FormData();
@@ -388,20 +375,24 @@ export default {
       }
       for (var i = 0; i < this.appPath.length; i++) {
         if (this.appPath[i].appDept == "sAppList1") {
-          sAppList1 += `${this.appPath[i].appadd}^${AprTcount1}^${this.appPath[i].approvalInfo.approvalInfo};`;
           AprTcount1++;
+          sAppList1 += `${this.appPath[i].appadd}^${AprTcount1}^${this.appPath[i].approvalInfo.approvalInfo};`;
         } else if (this.appPath[i].appDept == "sAppList2") {
-          sAppList2 += `${this.appPath[i].appadd}^${AprTcount2}^${this.appPath[i].approvalInfo.approvalInfo};`;
           AprTcount2++;
+          sAppList2 += `${this.appPath[i].appadd}^${AprTcount2}^${this.appPath[i].approvalInfo.approvalInfo};`;
         }
       }
-      if (AprTcount1 <= 1) {
-        alert("결재선 지정하세요");
+      if (AprTcount1 <= 1 && e !== "draft") {
+        alert(this.lang.alert.appr);
         return;
       }
 
-      if (this.thisform == "K-SIS_Form661m" && AprTcount2 < 1) {
-        alert("주관부서 지정하세요");
+      if (
+        this.thisform == "K-SIS_Form661m" &&
+        AprTcount2 < 1 &&
+        e !== "draft"
+      ) {
+        alert(this.lang.alert.dept);
         return;
       }
 
@@ -409,7 +400,14 @@ export default {
       formData.append("formCode", this.thisform);
       formData.append("From", this.GetMyInfo.info.notesid);
       formData.append("myinfo", this.GetMyInfo.approvalInfo);
-      console.log(sAppList1, sAppList2, AprTcount1, AprTcount2);
+      console.log(
+        sAppList1,
+        "------",
+        sAppList2,
+        "---------",
+        AprTcount1,
+        AprTcount2
+      );
       formData.append("sAppList1", sAppList1);
       formData.append("sAppList2", sAppList2);
       formData.append("AprTcount1", AprTcount1);
@@ -442,12 +440,33 @@ export default {
     SetHeader(data) {
       this.$store.dispatch("SetHeader", data);
     },
+    DelItem(item) {
+      if (item.length > 0) {
+        this.appPath = this.appPath.filter(function (itemone, idx1) {
+          return (
+            item.findIndex(function (itemtwo, idx) {
+              // return itemtwo==itemone;
+              return (
+                itemtwo.approvalInfo.email == itemone.approvalInfo.email &&
+                itemtwo.appadd == itemone.appadd &&
+                itemtwo.appDept == itemone.appDept
+              );
+            }) == -1
+          );
+        });
+        // x => !item.includes(x)
+      }
+    },
     AddItem(item) {
-      if (Object.keys(item.approvalInfo).length > 0) {
-        if (item.appDept == "sAppList2") {
-          item.appadd = "AP";
+      if (item.length > 0) {
+        for (var i = 0; i < item.length; i++) {
+          if (Object.keys(item[i].approvalInfo).length > 0) {
+            if (item[i].appDept == "sAppList2") {
+              item[i].appadd = "AP";
+            }
+          }
         }
-        this.appPath.push(item);
+        this.appPath = this.appPath.concat(item);
         var result = this.appPath;
 
         var result = result.filter(function (item1, idx1) {
@@ -604,8 +623,11 @@ export default {
     },
     AllDel() {
       // if (!this.params.isedit) {
-        console.log(this.appPath)
-        this.appPath = this.appPath.slice(this.currentidx-1,this.appPath.length);
+      // this.appPath = this.appPath.slice(
+      //   this.currentidx - 1,
+      //   this.appPath.length
+      // );
+      this.appPath = [];
 
       // }
     },
@@ -617,11 +639,11 @@ export default {
 </script>
 
 <style>
-.ProseMirror{
+.ProseMirror {
   width: 100% !important;
   height: 8.75rem !important;
   appearance: none !important;
-  outline: none !important; 
+  outline: none !important;
   border: 0.06rem solid #e6e6e6 !important;
   padding: 0.62rem !important;
 }

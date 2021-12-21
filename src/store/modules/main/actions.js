@@ -14,7 +14,7 @@ export default {
     // mail data
     GetMail({ commit, rootState, state }, { mailtype, category }) {
         var data = state.main.data.mailtype[mailtype][category];
-        data.mailtype = mailtype;
+        data['mailtype'] = mailtype;
         rootState.tf = true;
         Mail(data)
             .then(response => {

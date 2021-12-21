@@ -28,6 +28,7 @@ export default {
     plugins: [dataState],
     state: {
         board: config.board,
+        options:{},
 
     },
     mutations,

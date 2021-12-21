@@ -66,9 +66,10 @@ export default {
         
         state.store.folderName = folderName;
     },
-    MailDetailUnid(state, unid) {
+    MailDetailUnid(state, {unid,type}) {
         
         state.store.maildetail.unid = unid;
+        state.store.maildetail.type = type;
     },
     MailDetailData(state, data) {
         

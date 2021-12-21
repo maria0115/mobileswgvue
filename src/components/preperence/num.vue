@@ -6,16 +6,11 @@
         <ul class="num_menu">
           <li>
             <ul>
-              <li v-for="(value, name) in this.GetDisplay.list" :key="name">
-                <label for="mn01">{{ value[Object.keys(value)[0]] }}</label>
-                <input
-                  type="radio"
-                  name="n_radio"
-                  id="mn01"
-                  :value="Object.keys(value)[0]"
-                  :checked="boo(Object.keys(value)[0])"
-                  v-on:input="setConfig($event)"
-                />
+              <li v-for="(value, name) in this.GetDisplay.list" :key="name" @click="setConfig(Object.keys(value)[0])">
+                <span>{{ value[Object.keys(value)[0]] }}</span>
+                <em
+                  :class="{ checked: boo(Object.keys(value)[0]) }"
+                ></em>
               </li>
             </ul>
           </li>
@@ -47,11 +42,11 @@ export default {
   },
   methods: {
     // click 시 해당 설정값 db에 입력
-    setConfig(event) {
+    setConfig(value) {
       // alert(event.target.value,"event.target.value")
       this.$store.dispatch("configjs/setConfig", {
         menu: "listcount",
-        value: event.target.value,
+        value,
       });
     },
   },

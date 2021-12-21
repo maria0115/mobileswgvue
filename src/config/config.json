@@ -1,5 +1,6 @@
 {
     "packageName":"swgMobile",
+    "company":"saerom",
     "extension":["doc","docx","jpg","jpeg","png","gif","psd","ai","img","pdf","ppt","pptx","vod","mp3","mp4","xls","xlsx","zip"],
     "description_systemmode": "system,light,dark",
     "systemcolor": "light",
@@ -8,6 +9,8 @@
     "noticeSpeed":2.5,
     "namoURL":"/dwp/com/sys/gwlib.nsf/crosseditor_mobile?ReadForm&did=",
     "objEzXURL":"http://125.7.235.220:81/DG_viewer/viewer/document/docviewer.do/",
+    "originPage":"/dwp/com/portal/main.nsf/wfrmpage?ReadForm&url=",
+    "sat": false,
     "config": {
         "login": true,
         "alarm": {

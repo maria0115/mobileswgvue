@@ -8,40 +8,26 @@
       <form @submit.prevent>
         <ul class="ft_menu">
           <li>
-            <p>메신저 로그인 화면 개선안</p>
-            <p>BI와 ERP데이터 정합성 모니터링 리포트</p>
+            <p>{{lang.message}}</p>
+            <p>{{lang.message2}}</p>
           </li>
           <li class="font-size">
             <strong>{{this.GetStyle.setsize}}</strong>
             <ul>
-              <li v-for="(value, name) in this.GetStyle.size" :key="name">
-                <label for="f01" :class="name">{{ value }}</label>
-                <span
-                  ><input
-                    type="radio"
-                    name="radio"
-                    id="f01"
-                    :value="name"
-                    :checked="boosize(name)"
-                    v-on:input="setConfig($event, 'size')"
-                /></span>
+              <li v-for="(value, name) in this.GetStyle.size" :key="name" @click="setConfig(name, 'size')">
+                <span>{{ value }}</span>
+                <em :class="{ checked: boosize(name) }"
+                  ><b></b></em>
               </li>
             </ul>
           </li>
           <li class="font">
             <strong>{{this.GetStyle.setfont}}</strong>
             <ul>
-              <li v-for="(value, name) in this.GetStyle.font" :key="name">
-                <label for="f04" class="f_s01">{{ value }}</label>
-                <span
-                  ><input
-                    type="radio"
-                    name="f_radio"
-                    id="f04"
-                    :value="name"
-                    :checked="boo(name)"
-                    v-on:input="setConfig($event, 'font')"
-                /></span>
+              <li v-for="(value, name) in this.GetStyle.font" :key="name" @click="setConfig(name, 'font')">
+                <span>{{ value }}</span>
+                <em :class="{ checked: boo(name) }"
+                  ><b></b></em>
               </li>
             </ul>
           </li>
@@ -55,12 +41,15 @@
 import { mapGetters } from "vuex";
 import Header from "./header.vue";
 export default {
+  created(){
+    this.lang = this.GetLanguageConfig.font;
+  },
   components: {
     Header,
   },
   computed: {
     ...mapGetters("configjs",["GetConfig"]),
-    ...mapGetters(["GetStyle"]),
+    ...mapGetters(["GetStyle","GetLanguageConfig"]),
     // 사용자가 설정한 font class on
     boo() {
       return (font) => {
@@ -82,11 +71,11 @@ export default {
   },
   methods: {
     // click 시 해당 설정값 db에 입력
-    setConfig(event, menu) {
+    setConfig(value, menu) {
       this.$store.dispatch("configjs/setConfig", {
         menu: "font",
         setting: menu,
-        value: event.target.value,
+        value,
       });
     },
   },

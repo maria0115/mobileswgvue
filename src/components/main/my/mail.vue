@@ -1,13 +1,13 @@
 <template>
   <div class="m_mail">
-    <strong desc="메일">{{ portlet.mail }}</strong>
+    <strong desc="메일">{{ portlet.title }}</strong>
     <ul>
       <li
         :class="{ new: value.unread }"
         v-for="(value, name) in main.data.mailtype.inbox_detail.my.data.data"
         :key="name"
       >
-        <a > 
+        <a>
           <dl @click="MailDetail(value.unid)">
             <dt>
               {{ value.sender }}
@@ -16,12 +16,12 @@
                   class="rece"
                   v-if="value.tostuff !== undefined"
                   :class="{ on: value.tostuff.receive }"
-                  >수신</em
+                  >{{ lang.to }}</em
                 ><em
                   class="refer"
                   v-if="value.tostuff !== undefined"
                   :class="{ on: value.tostuff.ref }"
-                  >참조</em
+                  >{{ lang.cc }}</em
                 >
               </div>
             </dt>
@@ -49,7 +49,7 @@
       </li>
     </ul>
     <FollowUp :unid="clickedUnid"></FollowUp>
-    <router-link :to="{name:'mail'}"
+    <router-link :to="{ name: 'mail' }"
       ><span class="m_more"><a></a></span
     ></router-link>
   </div>
@@ -59,6 +59,9 @@
 import { mapState, mapGetters } from "vuex";
 import FollowUp from "../../../components/mail/folloup.vue";
 export default {
+  created() {
+    this.lang = this.GetMailLanguage.list;
+  },
   props: ["portlet"],
   data() {
     return {
@@ -72,6 +75,7 @@ export default {
     ...mapState("mainjs", ["main"]),
     ...mapState("mailjs", ["TimeOption"]),
     ...mapGetters("mailjs", ["GetMail"]),
+    ...mapGetters(["GetMailLanguage"]),
   },
   components: {
     FollowUp,

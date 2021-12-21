@@ -1,9 +1,23 @@
 import {
-    ReplyInfo,BoardSearch, BoardWrite, Board, BoardDetail, WriteReply, DeleteReply, Likeit, DeleteBoard, BoardEdit
+    ReplyInfo,BoardSearch, BoardWrite, Board, BoardDetail, WriteReply, DeleteReply, Likeit, DeleteBoard, BoardEdit, GetBoardSet
 } from '../../../api/index';
 import router from '../../../router/index';
 //system 모드이면 무슨 light 인지 dark 인지 감지
 export default {
+    GetBoardSet({ state,commit }, {lnbid,type}){
+        return GetBoardSet({lnbid,type})
+        .then((res) => {
+            // rootState.tf = false;
+            if (res.status !== 200) {
+                return false;
+            } else {
+                console.log(res.data)
+                commit("GetBoardSet", res.data);
+                return res.data;
+            }
+
+        })
+    },
     BoardSearch({ state, commit, rootState }, data) {
         rootState.tf = true;
         return BoardSearch(data)
@@ -139,7 +153,7 @@ export default {
 
         // rootunid
     },
-    BoardDetail({ state, commit, rootState }, { menu, unid, comment, type, lnbid,title },viewcount) {
+    BoardDetail({ state, commit, rootState }, { menu, unid, comment, type, lnbid,title,top },viewcount) {
         var data = {};
         data.viewcount = 1;
         if (menu) {
@@ -173,7 +187,7 @@ export default {
                         router.push(
                             {
                                 name: 'boardread',
-                                query: { data: JSON.stringify({ type, lnbid,title }) }
+                                query: { data: JSON.stringify({ type, lnbid,title,top }) }
                             });
                             return true;
                     }

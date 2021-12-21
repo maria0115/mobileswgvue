@@ -19,7 +19,7 @@
           <span class="search_icon" @click="SearchWord(searchQuery)">
             <img src="../mobile/img/search_icon.png" alt="검색하기" />
           </span>
-          <span class="voi_btn" @click="checkApi">
+          <span v-if="this.Option()" class="voi_btn" @click="checkApi">
             <img src="../mobile/img/voi_icon.png" alt="음성검색" />
           </span>
         </div>
@@ -66,13 +66,15 @@
 import { mapState, mapGetters } from "vuex";
 import $ from "jquery";
 let qwe = null;
+import config from "@/config/config.json";
+import option from "@/config/option.json";
 export default {
   created() {
     // 다국어 처리
     // this.$store.dispatch("search/GetLanguage", { app: "search" });
   },
   computed: {
-    ...mapState("searchjs", ["autoList","recent", "form"]),
+    ...mapState("searchjs", ["autoList", "recent", "form"]),
     ...mapGetters("searchjs", ["data"]),
     ...mapState("configjs", ["config"]),
     ...mapGetters(["GetSearchLanguage"]),
@@ -123,6 +125,9 @@ export default {
     document.addEventListener("click", this.click);
   },
   methods: {
+    Option(){
+      return option[config.company].voicesearch;
+    },
     // 검색어 삭제
     wordReset() {
       this.searchQuery = "";
@@ -161,7 +166,7 @@ export default {
       this.allremove();
       this.$store.commit("searchjs/setWord", { word });
       if (this.$route.name !== "allsearchsearch") {
-        this.$router.push({name:'allsearchsearch'});
+        this.$router.push({ name: "allsearchsearch" });
       } else {
         this.$store.dispatch("searchjs/SearchWord", {
           word,
@@ -194,39 +199,43 @@ export default {
     },
     // 음성인식
     checkApi() {
+      window.SpeechRecognition =
+        window.SpeechRecognition || window.webkitSpeechRecognition;
+
       if (
-        typeof window.webkitSpeechRecognition == "undefined" ||
-        typeof window.webkitSpeechRecognition == undefined ||
-        window.webkitSpeechRecognition == null ||
-        window.webkitSpeechRecognition == ""
+        window.SpeechRecognition == "undefined" ||
+        typeof window.SpeechRecognition == undefined ||
+        window.SpeechRecognition == null ||
+        window.SpeechRecognition == ""
       ) {
-        // 인터넷 익스플로러 음성 인식 X
         alert("현재 브라우저에서 지원하지 않는 서비스입니다.     ");
       } else {
+        const recognition = new window.SpeechRecognition();
+        recognition.interimResults = true;
+        recognition.lang = "ko-KR";
+        qwe = recognition;
+
         if (this.voice == "듣는중") {
           // empty
           qwe.stop();
         } else {
           this.voice = "듣는중";
-          window.SpeechRecognition =
-            window.webkitSpeechRecognition || window.SpeechRecognition;
           const recognition = new window.SpeechRecognition();
           qwe = recognition;
           recognition.lang = "ko-KR";
+          recognition.interimResults = true;
           recognition.addEventListener("result", (event) => {
             const text = Array.from(event.results)
               .map((result) => result[0])
               .map((result) => result.transcript)
               .join("");
             this.runtimeTranscription = text;
+            this.searchQuery = text;
+            this.data.searchword = text;
           });
           recognition.addEventListener("end", () => {
             if (this.runtimeTranscription !== "") {
               this.transcription.push(this.runtimeTranscription);
-              console.log(
-                this.runtimeTranscription,
-                "recognition"
-              );
               this.$store.dispatch("searchjs/SearchWord", {
                 word: this.runtimeTranscription,
                 category: this.data.class,
@@ -244,7 +253,62 @@ export default {
           recognition.start();
         }
       }
+
     },
+    // 음성인식
+    // checkApi() {
+    //   if (
+    //     typeof window.webkitSpeechRecognition == "undefined" ||
+    //     typeof window.webkitSpeechRecognition == undefined ||
+    //     window.webkitSpeechRecognition == null ||
+    //     window.webkitSpeechRecognition == ""
+    //   ) {
+    //     // 인터넷 익스플로러 음성 인식 X
+    //     alert("현재 브라우저에서 지원하지 않는 서비스입니다.     ");
+    //   } else {
+    //     if (this.voice == "듣는중") {
+    //       // empty
+    //       qwe.stop();
+    //     } else {
+    //       this.voice = "듣는중";
+    //       window.SpeechRecognition =
+    //         window.webkitSpeechRecognition || window.SpeechRecognition;
+    //       const recognition = new window.SpeechRecognition();
+    //       qwe = recognition;
+    //       recognition.lang = "ko-KR";
+    //       recognition.interimResults = true;
+    //       recognition.addEventListener("result", (event) => {
+    //         const text = Array.from(event.results)
+    //           .map((result) => result[0])
+    //           .map((result) => result.transcript)
+    //           .join("");
+    //         this.runtimeTranscription = text;
+    //       });
+    //       recognition.addEventListener("end", () => {
+    //         if (this.runtimeTranscription !== "") {
+    //           this.transcription.push(this.runtimeTranscription);
+    //           console.log(
+    //             this.runtimeTranscription,
+    //             "recognition"
+    //           );
+    //           this.$store.dispatch("searchjs/SearchWord", {
+    //             word: this.runtimeTranscription,
+    //             category: this.data.class,
+    //           });
+    //           this.$router.push({name:'allsearchsearch'});
+    //           this.runtimeTranscription = "";
+    //           recognition.stop();
+    //           alert("검색 성공!");
+    //         } else {
+    //           alert("종료!");
+    //         }
+    //         this.voice = "음성 검색";
+    //         // recognition.start();
+    //       });
+    //       recognition.start();
+    //     }
+    //   }
+    // },
     // 자동완성 창 닫기
     auto_removeClass() {
       var $auto_search = $(".auto_search");

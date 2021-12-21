@@ -5,7 +5,7 @@
     <div class="a_contents04">
       <ul class="a_list">
         <li>
-          <h3 :class="{ active: all }" @click="toggle('all')"><a>서식함</a></h3>
+          <h3 :class="{ active: all }" @click="toggle('all')"><a>{{GetAppL.docForm.form}}</a></h3>
           <ul :class="{ active: all }">
             <li v-for="(value, name) in formCode" :key="name">
               <a @click="SetHeader(value, name)">{{ value }}</a>
@@ -27,6 +27,11 @@ import BtnPlus from "./btnPlus.vue";
 import { mapState, mapGetters } from "vuex";
 export default {
   created() {
+    const language = this.GetAppL.docForm;
+    this.formCode = language.formCode;
+    this.checkbox = [language.checkbox];
+    this.morePlus = language.morePlus;
+    this.title = language.title;
     this.params = JSON.parse(this.$route.query.data);
 
     // this.params = this.GetHeader.menu;
@@ -43,18 +48,11 @@ export default {
   },
   data() {
     return {
-      checkbox: [{ doc: "양식명" }],
-      morePlus: { view: "결제문서 불러오기" },
       isOpen: false,
       often: false,
       recent: false,
       all: true,
       var: false,
-      title: "결재 양식함",
-      formCode: {
-        "K-SIS_Form601m": "품의서-기본",
-        "K-SIS_Form661m": "신청서-기본",
-      },
     };
   },
   methods: {

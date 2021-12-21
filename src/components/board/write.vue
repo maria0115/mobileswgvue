@@ -7,15 +7,15 @@
         >{{ this.params.title }}
       </h2>
       <div>
-        <span class="save" @click="Send">저장</span>
-        <span class="cancel" @click="Cancel">취소</span>
+        <span class="save fw_bold" @click="Send">{{lang.save}}</span>
+        <span class="cancel fw_bold" @click="Cancel">{{lang.cancle}}</span>
       </div>
     </div>
     <div class="m_contents03">
       <form @submit.prevent>
         <ul class="wn_top">
           <li class="tit_line clfix">
-            <strong>작성자</strong>
+            <strong>{{lang.author}}</strong>
             <div>
               {{ this.GetMyInfo.info.name }}
               {{ this.GetMyInfo.info.position }} /
@@ -23,56 +23,49 @@
             </div>
           </li>
           <li class="tit_line clfix">
-            <strong>작성일</strong>
+            <strong>{{lang.created}}</strong>
             <div>
               {{ nowTime() }}
             </div>
           </li>
           <!-- v-if="GetStoreBoard.path!=='education'&&GetStoreBoard.path!=='congratulate'" -->
-          <li
-            class="tit_line date_ch_t clfix"
-            v-if="
-              GetStoreBoard.path !== 'education' &&
-              GetStoreBoard.path !== 'congratulate' &&
-              !doNotChange()
-            "
-          >
-            <strong>게시기간</strong>
+          <li class="tit_line date_ch_t clfix" v-if="this.options.isUseTerm">
+            <strong>{{lang.term}}</strong>
             <div class="clfix">
               <select v-model="term">
-                <option value="1M">1개월</option>
-                <option value="3M">3개월</option>
-                <option value="6M">6개월</option>
-                <option value="1Y">1년</option>
-                <option value="all">영구</option>
+                <option value="1M">{{lang['M1']}}</option>
+                <option value="3M">{{lang['M3']}}</option>
+                <option value="6M">{{lang['M6']}}</option>
+                <option value="1Y">{{lang['Y1']}}</option>
+                <option value="all">{{lang.everlasting}}</option>
               </select>
             </div>
           </li>
-          <li class="tit_line com_line clfix">
-            <strong>댓글</strong>
+          <li class="tit_line com_line clfix" v-if="this.options.isUseReply">
+            <strong>{{lang.comment}}</strong>
             <div>
               <span @click="Reply(0)"
                 ><em
                   class="sv_radio"
                   :class="{ active: isAllowReply == 0 }"
                 ></em
-                >허용안함</span
+                >{{lang.notallow}}</span
               >
               <span @click="Reply(1)"
                 ><em
                   class="sv_radio"
                   :class="{ active: isAllowReply == 1 }"
                 ></em
-                >허용</span
+                >{{lang.allow}}</span
               >
             </div>
           </li>
           <li
             class="tit_line bullet clfix"
-            v-if="params.type == 'congratulate'"
+            v-if="Object.keys(this.options.categoryall).length > 0"
           >
             <!--교육,업무게시판은 클래스bullet display:none;해주세요-->
-            <strong>글머리</strong>
+            <strong><font class="f_red">*</font>{{lang.head}}</strong>
             <!-- <div class="notice" style="display: none">
               <select>
                 <option value="전체">전체</option>
@@ -83,19 +76,25 @@
             </div> -->
             <div class="free_board" style="display: block">
               <select v-model="category">
-                <option value="congratulate">경사</option>
-                <option value="condolences">조사</option>
+                <option value="">{{lang.all}}</option>
+                <option
+                  v-for="(value, index) in options.categoryall"
+                  :key="index"
+                  :value="index"
+                >
+                  {{ value.categoryall_val }}
+                </option>
               </select>
             </div>
           </li>
           <li class="tit_line tit_input clfix">
-            <strong>제목</strong>
+            <strong>{{lang.title}}</strong>
             <div>
               <input type="text" v-model="Subject" />
             </div>
           </li>
           <li class="tit_line att_file active">
-            <strong>첨부파일</strong>
+            <strong>{{lang.attach}}</strong>
             <span class="tit_clip" @click="submitFile()"></span>
             <input
               multiple
@@ -137,11 +136,17 @@ export default {
   computed: {
     ...mapGetters("mainjs", ["GetMyInfo"]),
     ...mapGetters("boardjs", ["GetStoreBoard"]),
+    ...mapState("boardjs", ["options"]),
     ...mapGetters(["GetHeader"]),
   },
   created() {
+    this.lang = this.GetBoardL.write;
     // this.params = this.GetHeader.menu;
     this.params = JSON.parse(this.$route.query.data);
+    // this.options = await this.$store.dispatch("boardjs/GetBoardSet",{lnbid:this.params.lnbid,type:this.params.type});
+    // .then((res)=>{
+    //   this.options = res;
+    // })
     if (this.GetStoreBoard.path === "congratulate") {
       this.category = "congratulate";
     }
@@ -203,14 +208,9 @@ export default {
     };
   },
   methods: {
-    doNotChange() {
-      console.log(
-        this.GetStoreBoard.edit,
-        this.GetStoreBoard.detail.isEternity
-      );
-      return this.GetStoreBoard.edit && this.GetStoreBoard.detail.isEternity;
-    },
     Back() {
+      this.$store.commit("SetBack", true);
+
       this.$router.go(-1);
     },
     nowTime() {
@@ -274,6 +274,15 @@ export default {
 
       // if (this.GetStoreBoard.path === "congratulate") {
       formData.append("category1", this.category);
+      var categoryall_nm = "";
+
+      if (Object.keys(this.options.categoryall).length > 0&&this.category!=="") {
+        categoryall_nm = this.options.categoryall[this.category].categoryall_nm;
+      }
+
+      formData.append("categoryall", this.category);
+      formData.append("categoryall_nm", categoryall_nm);
+
       // }
       // if (this.GetStoreBoard.path === "notice") {
       //   this.term;
@@ -352,6 +361,7 @@ export default {
     },
     GoList() {
       // this.SetHeader(this.params);
+      // this.$store.commit("SetBack", true);
 
       this.$router.push({
         name: "boardlist",
@@ -365,6 +375,8 @@ export default {
       this.isAllowReply = value;
     },
     Cancel() {
+      this.$store.commit("SetBack", true);
+
       this.GoList();
     },
   },

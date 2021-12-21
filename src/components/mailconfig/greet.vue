@@ -2,8 +2,8 @@
   <div>
     <h2 class="mail_st_header">
       <router-link :to="{name:'mailsetconfig'}"><img src="../../mobile/img/wmail_back.png" alt="" /></router-link>
-      인사말
-      <span><router-link :to="{name:'addgreet'}">추가</router-link></span>
+      {{lang.title}}
+      <span><router-link :to="{name:'addgreet'}">{{lang.add}}</router-link></span>
     </h2>
     <div class="m_contents06">
       <ul class="cm_list">
@@ -19,6 +19,9 @@
 <script>
 import { mapState, mapGetters } from "vuex";
 export default {
+  created(){
+    this.lang = this.GetMConfigL.greet;
+  },
   components: {
   },
   computed: {

@@ -4,14 +4,14 @@
     <ul class="f_list">
       <li>
         <a @click="moveFolder('$inbox', 'inbox_detail')"
-          >받은 메일</a
+          >{{lang.title}}</a
         >
       </li>
       <li>
-        <a @click="moveFolder('$trash', 'mail_trash')">휴지통</a>
+        <a @click="moveFolder('$trash', 'mail_trash')">{{lang.trash}}</a>
       </li>
       <li :class="{ drop_menu: isFolder > 0 }">
-        <a @click="toggle">기본 폴더</a>
+        <a @click="toggle">{{lang.folder}}</a>
         <ul class="f_depth02" :style="{ display: this.isBlock }">
           <div
             class="drop_menu"
@@ -34,6 +34,9 @@
 import { mapState, mapGetters } from "vuex";
 import FolderItem from "./folderitem.vue";
 export default {
+  created(){
+    this.lang = this.GetMailLanguage.move;
+  },
   data: function () {
     return {
       isOpen: false,
@@ -44,6 +47,7 @@ export default {
   },
   computed: {
     ...mapState("mailjs", ["mail"]),
+    ...mapGetters(["GetMailLanguage"]),
     isBlock: function () {
       if (this.isOpen) {
         return "block";

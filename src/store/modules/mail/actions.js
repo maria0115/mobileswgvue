@@ -17,10 +17,30 @@ import {
     GreetList,
     GreetSet,
     GreetAdd,
-    GreetDetail, SignAdd, SignSet, SignList, ReadFlag, MailMove, MailDelete, Mail
+    GreetDetail, SignAdd, SignSet, SignList, ReadFlag, MailMove, MailDelete, Mail, MailRecovery
 } from '../../../api/index';
 import router from '../../../router/index';
 export default {
+    MailRecovery({ state,rootState  }, ) {
+        var checkedNames = state.mail.checkBtn.checkedNames;
+        if (checkedNames.length > 0) {
+            var unid = "";
+            for (var i = 0; i < checkedNames.length; i++) {
+                unid += `${checkedNames[i].unid},`;
+                // 
+            }
+            rootState.tf = true;
+            return MailRecovery(unid)
+                .then((res) => {
+                    rootState.tf = false;
+                    if (res.status !== 200) {
+                        return false;
+                    } else {
+                        return true;
+                    }
+                })
+        }
+    },
     MailRealDelete({ state, rootState, dispatch }, { datas, type }) {
         // data는 //unid,unid string
         var datastr = "";
@@ -155,7 +175,7 @@ export default {
                 }
             })
     },
-    async ToMeInfo({ commit,rootState }) {
+    async ToMeInfo({ commit, rootState }) {
         rootState.tf = true;
         var result = await ToMe()
             .then((res) => {
@@ -178,7 +198,7 @@ export default {
                 commit("ToMe", res.data);
                 return res.data;
 
-            })  
+            })
         // 
 
         // await commit("OrgDataInit");
@@ -302,8 +322,9 @@ export default {
             })
 
     },
-    async MailDetail({ state, rootState, commit }, data) {
-        return await MailDetail(data)
+    async MailDetail({ state, rootState, commit }, { unid, type }) {
+        console.log(unid, type)
+        return await MailDetail(unid, type)
             .then(response => {
 
                 if (response.status !== 200) {
@@ -400,8 +421,9 @@ export default {
                 if (response.status !== 200) {
 
                 } else {
-                    commit("GreetViewData", data);
-                    commit("BeforeSave"); router.push({ name: 'SeeGreet', params: { before: "add" } });
+                    // commit("GreetViewData", data);
+                    // commit("BeforeSave"); 
+                    router.push({ name: 'greet' });
                 }
             });
 
@@ -462,8 +484,9 @@ export default {
                 if (response.status !== 200) {
 
                 } else {
-                    commit("SignViewData", data);
-                    commit("BeforeSave"); router.push({ name: 'SeeSign', params: { before: "add" } });
+                    // commit("SignViewData", data);
+                    // commit("BeforeSave"); 
+                    router.push({ name: 'sign' });
                 }
             });
 

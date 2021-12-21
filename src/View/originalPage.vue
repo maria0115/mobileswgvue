@@ -1,6 +1,10 @@
 <template>
-  <div>
-    <div v-html="body"></div>
+  <div style="margin-left: -45px; magin-right: -45px">
+    <iframe
+      :src="origin() + this.$route.params.url"
+      style="width: 900px; height: 100vh"
+    ></iframe>
+    <Spinner :loading="tf"></Spinner>
     <Footer></Footer>
   </div>
 </template>
@@ -8,70 +12,62 @@
 <script>
 // import axios from 'axios';
 import Footer from "./footer.vue";
+import Spinner from "@/View/Spinner.vue";
+import config from "@/config/config.json";
 
 export default {
+  created() {},
   data() {
     return {
-      body: "잠시만 기다려주세요......",
+      tf: false,
     };
+  },
+  metaInfo() {
+    return {
+      // title: "Welcome Mobile",
+      meta: [
+        // { charset: "utf-8" },
+        // { "http-equiv": "X-UA-Compatible", content: "IE=edge" },
+        {
+          vmid: "viewport",
+          name: "viewport",
+          content: "width=device-width, initial-scale=1.0, maximum-scale=1.0",
+        },
+        // {
+        //   name: "apple-mobile-web-app-capable",
+        //   content: "yes",
+        // },
+        // {
+        //   name: "apple-mobile-web-app-status-bar-style",
+        //   content: "black",
+        // },
+        // { vmid: "description", name: "description", content: "description" },
+        //  { name: 'description', content: 'My description' }
+      ],
+    };
+    // link: [
+    //   { rel: "icon", href: "/favicon.ico" },
+    //   // ...
+    // ],
+    // script: [
+    //   { type: "text/javascript", src: "/mobile/js/jquerymin.js" },
+    //   // ...
+    // ],
   },
   components: {
     Footer,
-  },
-  created(){
-    this.showOrigin();
+    Spinner,
   },
   methods: {
-    showOrigin() {
-      this.$store.dispatch("tf", {
-        data: true,
-      });
-      var port = window.location.port;
-      if (
-        typeof port == "undefined" ||
-        typeof port == undefined ||
-        port == null ||
-        port == ""
-      ) {
-        port = "";
-      } else {
-        port = ":" + port;
+    origin() {
+      if (this.$route.params.category == "board") {
+        return "";
       }
-      var data = {"documenturl":`https://${window.location.hostname + port}/dwp/com/portal/main.nsf/wfrmpage?ReadForm&url=${this.$route.params.url}`,"cookie":document.cookie,"remove_element":"","null_check_element":"body > div.dwp-container-wrap > div > div > div > form > div.dwp-page-body > div > div > div > div.dwp-section.close-area.active > div.dwp-sign-wrap > div:nth-child(2)","capture_element":"","viewportw":"","viewporth":""};
-        // axios({
-        //     method: 'post',
-        //     url: `/convert2image`,
-        //     data: data,
-        //     headers: {
-        //         'Content-Type': 'application/json'
-        //     }
-        // })            
-        // .then((res) => {
-        //     if (res.status === 200) {
-        //       this.$store.dispatch("tf", {
-        //         data: false,
-        //       });
-        //         this.body = res.data;
-        //     }
-        // })
-        this.$store.dispatch("DocView", data).then((res) => {
-          if (res.status === 200) {
-                this.body = res.data;
-            }
-      });
+      return config.originPage;
     },
   },
-  watch : {
-    body: function(newValue, oldValue) {
-      if (newValue !== "잠시만 기다려주세요......") {
-        this.$store.dispatch("tf", {data: false});
-      }
-    }
-  }
-
-}
+};
 </script>
 
 <style>
-
 </style>

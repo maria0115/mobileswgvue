@@ -13,26 +13,21 @@ import config from "./config/config.json";
 import VDragged from 'v-dragged'
 // sync(store, router, { moduleName: 'header' } )
 Vue.use(VDragged) 
+
+// import VueHead from 'vue-head';
+
+// Vue.use(VueHead)
+
+import Meta from 'vue-meta'
+import language from "@/mixin/language.js";
+Vue.use(Meta);
+
 // Vue.use(VueCookies);
 Vue.config.productionTip = false;
 // import VTooltip from 'v-tooltip'
 // Vue.prototype.mainmenu = config.config.main.menuportlet;
 Vue.prototype.customFolder = "";
-// Vue.use(VTooltip)
-// import Popover from 'vue-js-popover'
-// Vue.use(Popover, { tooltip: true })
-// import BootstrapVue from 'bootstrap-vue'
-// import 'bootstrap/dist/css/bootstrap.min.css'
-// import 'bootstrap-vue/dist/bootstrap-vue.css'
-
-// Vue.use(BootstrapVue)
-// async function get(){
-//   var store = await import(`./store/index.js`);
-//   var router = await import(`./router/index.js`);
-//   var r = await router.router();
-//   var s = await store.getstore();
-//   console.log(s,"store");
-//   console.log(r,"router");
+Vue.mixin(language)
 new Vue({
   store,
   router,

@@ -63,7 +63,6 @@ export default {
   async created() {
     // this.params = this.GetHeader.menu;
     this.params = JSON.parse(this.$route.query.data);
-
     this.top = this.params.lnbid;
     var res = await this.$store.dispatch("CategoryList", this.top);
     this.categories = res;
@@ -95,6 +94,7 @@ export default {
           menu: menu.type,
           unid: value.unid,
           lnbid: menu.lnbid,
+          top:this.params.lnbid,
         });
       }
     },

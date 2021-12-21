@@ -1,7 +1,7 @@
 import {
      PSearch, PUdate,
 } from '../../../api/index';
-import $, { data } from "jquery";
+// import $, { data } from "jquery";
 //system 모드이면 무슨 light 인지 dark 인지 감지
 const whatcolor = {
     fetch(color) {
@@ -89,6 +89,8 @@ export default {
                         $("html").removeClass("normal");
                         $("html").addClass("mar15");
                     }
+                }else if(menu == "font" && setting == "font"){
+                    $(".wrap").css("font-family", value);
                 }
 
                 state.store.config[menu][setting] = value;

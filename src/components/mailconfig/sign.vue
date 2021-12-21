@@ -2,8 +2,8 @@
   <div>
     <h2 class="mail_st_header">
       <router-link :to="{name:'mailsetconfig'}"><img src="../../mobile/img/wmail_back.png" alt="" /></router-link>
-      서명
-      <span><router-link :to="{name:'addsign'}">추가</router-link></span>
+      {{lang.title}}
+      <span><router-link :to="{name:'addsign'}">{{lang.add}}</router-link></span>
     </h2>
     <div class="m_contents06">
       <ul class="cm_list">
@@ -19,6 +19,9 @@
 <script>
 import { mapState, mapGetters } from "vuex";
 export default {
+  created(){
+    this.lang = this.GetMConfigL.sign;
+  },
   computed: {
     ...mapState("mailjs",["mail"]),
   },

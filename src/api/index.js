@@ -1,5 +1,79 @@
 import axios from 'axios';
 // /api/approval?type=edit
+function MailRecovery(unid) {
+    return axios({
+        method: 'get',
+        url: `/api/mail?type=recovery&unid=${unid}`,
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+}
+function deleteBook(data) {
+    return axios({
+        method: 'delete',
+        url: `/api/reservation?type=deleteItem`,
+        data:data,
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+}
+function BookWrite(data,type) {
+    return axios({
+        method: 'post',
+        url: `/api/reservation?type=${type}`,
+        data,
+        headers: {
+            "Content-Type": "multipart/form-data"
+        }
+    })
+}
+function BookDetail(data) {
+    return axios({
+        method: 'get',
+        url: `/api/reservation?type=detail&unid=${data.unid}`,
+        headers: {
+            'Content-Type': 'application/json'
+        },
+    })
+}
+function reservationList(data) {
+    return axios({
+        method: 'get',
+        url: `/api/reservation?type=${data.type}&category=${data.category}&date=${data.date}&roomId=${data.roomId}`,
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+}
+function MyreservationList(date) {
+    return axios({
+        method: 'get',
+        url: `/api/reservation?type=today&date=${date}`,
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+}
+function roomList(data) {
+    return axios({
+        method: 'get',
+        url: `/api/reservation?type=${data.type}&category=${data.category}`,
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+}
+function GetBoardSet({lnbid,type}) {
+    return axios({
+        method: 'get',
+        url: `/api/board?type=getBoardSet&lnbid=${lnbid}&category=${type}`,
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+}
 function AppSearch(data) {
     return axios({
         method: 'get',
@@ -95,6 +169,16 @@ function agreeNreject(data) {
         }
     })
 }
+function Logout(data) {
+    return axios({
+        method: 'DELETE',
+        url: `/api/login?type=logout`,
+        data,
+        headers: {
+            "Content-Type": "application/json"
+        }
+    })
+}
 function Login(data) {
     return axios({
         method: 'post',
@@ -106,7 +190,6 @@ function Login(data) {
     })
 }
 function AppDetail(data) {
-    console.log(data,"appdetail")
     return axios({
         method: 'get',
         url: `/api/approval?type=detail&unid=${data.unid}&approvalType=${data.type}&openurl=${data.openurl}`,
@@ -187,7 +270,6 @@ function ReplyInfo(data) {
     })
 }
 function BoardDetail(data) {
-    console.log(data)
     return axios({
         method: 'get',
         url: `/api/board?type=detail&boardType=${data.menu}&unid=${data.unid}&lnbid=${data.lnbid}`,
@@ -399,10 +481,10 @@ function SignEdit(data) {
     })
 }
 // 메일 디테일
-function MailDetail(data) {
+function MailDetail(unid,mailtype) {
     return axios({
         method: 'get',
-        url: `/api/mail?type=detail&unid=${data}`,
+        url: `/api/mail?type=detail&unid=${unid}&mailType=${mailtype}`,
         headers: {
             'Content-Type': 'application/json'
         }
@@ -589,7 +671,6 @@ function MailMove(data) {
 }
 // 메일삭제
 function MailDelete(data) {
-    console.log(data,"data")
     return axios({
         method: 'delete',
         url: `/api/mail`,
@@ -832,4 +913,13 @@ export {
     ReplyInfo,
     CategoryList2,
     DocView,
+    Logout,
+    GetBoardSet,
+    roomList,
+    reservationList,
+    BookDetail,
+    BookWrite,
+    deleteBook,
+    MailRecovery,
+    MyreservationList,
 }

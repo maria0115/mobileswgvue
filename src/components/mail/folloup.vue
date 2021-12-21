@@ -2,7 +2,7 @@
   <div class="impor_mail">
     <!--7월 29일 추가됨 -->
     <div class="impor_con">
-      <strong>수행 설정</strong>
+      <strong>{{lang.title}}</strong>
       <p>
         <span
           ><em
@@ -11,18 +11,18 @@
             @click="followUse"
             :class="{ active: this.use }"
           ></em
-          >수행필요로 설정</span
+          >{{lang.subtitle}}</span
         >
       </p>
       <ul>
         <li>
-          <em>일자</em>
+          <em>{{lang.day}}</em>
           <div>
             <input type="date" v-model="date" />
           </div>
         </li>
         <li>
-          <em>시간</em>
+          <em>{{lang.time}}</em>
           <div>
             <select name="" id="" v-model="STime">
               <option
@@ -46,16 +46,16 @@
           </div>
         </li>
         <li>
-          <em>수행할 내용</em>
+          <em>{{lang.body}}</em>
           <div><textarea v-model="body"></textarea></div>
           <!-- <editor-content
           :editor="editor"
         /> -->
         </li>
       </ul>
-      <div>
-        <span class="impor_mo_btn" @click="followSet">확인</span>
-        <span class="modal_cancel" @click="followCancle">취소</span>
+      <div>{{lang}}
+        <span class="impor_mo_btn" @click="followSet">{{lang.success}}</span>
+        <span class="modal_cancel" @click="followCancle">{{lang.cancle}}</span>
       </div>
     </div>
   </div>
@@ -69,9 +69,10 @@ export default {
     unid: String,
   },
   created() {
+    this.lang = this.GetMailLanguage.followup;
     var moment = require("moment");
     var localTime = moment.utc().toDate();
-    this.date = moment(localTime).format("yyyy-MM-DD");
+    this.date = moment(localTime).format("YYYY-MM-DD");
 
     // this.editor = new Editor({
     //   content: "",
@@ -83,6 +84,7 @@ export default {
   computed: {
     ...mapState("mailjs", ["TimeOption"]),
     ...mapGetters("mailjs", ["GetMail"]),
+    ...mapGetters( ["GetMailLanguage"]),
   },
   data() {
     return {
@@ -121,7 +123,7 @@ export default {
         } else {
           var moment = require("moment");
           var localTime = moment.utc().toDate();
-          this.date = moment(localTime).format("yyyy-MM-DD");
+          this.date = moment(localTime).format("YYYY-MM-DD");
           this.STime = "05";
           this.SMin = "50";
           this.use = false;

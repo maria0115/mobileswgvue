@@ -4,8 +4,8 @@
       @ChangeDate="changeDate"
       @calMenu="CalMenu"
       :date="fulldate"
-      @cNext="calendarData(1)"
-      @cPrev="calendarData(-1)"
+      @cNext="MoveChange(1)"
+      @cPrev="MoveChange(-1)"
       @change="DateChange($event)"
     ></date-header>
     <Header :calmenu="this.calmenu" @calMenuOff="CalMenuOff"></Header>
@@ -46,7 +46,7 @@
                     next_month:
                       dates.length - 1 === idx && nextMonthStart > day,
                     t_day:
-                      day === currenttoday &&
+                      day === currentDay &&
                       month === currentMonth &&
                       year === currentYear &&
                       !(dates.length - 1 === idx && nextMonthStart > day) &&
@@ -99,6 +99,7 @@
 import Header from "./header.vue";
 import { mapState, mapGetters } from "vuex";
 import DateHeader from "./datepicker.vue";
+import nowTime from "@/mixin/nowTime";
 import CalWrite from "./calWBtn.vue";
 export default {
   components: {
@@ -107,41 +108,29 @@ export default {
     CalWrite,
   },
   created() {
+    var language = this.GetScheduleL.cal;
+    this.days = language.days.split(",");
     this.Init();
+    this.$store.commit("calendarjs/SaveScheduleWhere", "month");
   },
   data() {
     return {
-      calmenu: false,
-      days: [
-        "일요일",
-        "월요일",
-        "화요일",
-        "수요일",
-        "목요일",
-        "금요일",
-        "토요일",
-      ],
       selectedMonth: null,
       dates: [],
-      currentYear: 0,
-      currentMonth: 0,
-      year: 0,
-      month: 0,
       premonth: 0,
       lastMonthStart: 20,
       nextMonthStart: 0,
-      today: 0,
-      fulldate: "",
       nowclientY: 0,
       nowclientX: 0,
       startX: 0,
       endX: 0,
-      check: false,
       lastMonth: 0,
       lastYear: 0,
       islist: false,
     };
   },
+  mixins: [nowTime],
+
   computed: {
     ...mapGetters("calendarjs", ["GetSchedule"]),
   },
@@ -151,8 +140,11 @@ export default {
       var callist = [];
 
       for (var i = 0; i < calList.length; i++) {
-        var startdate = calList[i].startdate.replaceAll("-", "/");
-        var enddate = calList[i].enddate.replaceAll("-", "/");
+        // var startdate = calList[i].startdate.replaceAll("-", "/");
+        var startdate = this.replaceAll(calList[i].startdate, "-", "/");
+        // var enddate = calList[i].enddate.replaceAll("-", "/");
+        var enddate = this.replaceAll(calList[i].enddate, "-", "/");
+
         var start = Math.floor(+new Date(startdate) / 1000);
         var end = Math.floor(+new Date(enddate) / 1000);
 
@@ -198,28 +190,6 @@ export default {
 
       return callist;
     },
-    Start(e) {
-      this.startX = e.touches[0].pageX - e.touches[0].target.offsetLeft;
-      this.check = true;
-    },
-    End(e) {},
-    Move(e) {
-      this.nowclientX = e.touches[0].pageX - e.touches[0].target.offsetLeft;
-      if (this.nowclientX - this.startX > 100 && this.check) {
-        this.calendarData(-1);
-        this.check = false;
-      } else if (this.nowclientX - this.startX < -100 && this.check) {
-        this.calendarData(1);
-        this.check = false;
-      }
-      // this.nowclientY = e.touches[0].pageY - e.touches[0].target.offsetTop;
-    },
-    CalMenu() {
-      this.calmenu = true;
-    },
-    CalMenuOff() {
-      this.calmenu = false;
-    },
     isHoliday(day) {
       var data = {};
       const holiday = this.GetSchedule.holiday;
@@ -252,7 +222,7 @@ export default {
     showDate(date) {
       this.date = date;
     },
-    async calendarData(arg) {
+    async MoveChange(arg) {
       // var moment = require("moment");
       if (arg < 0) {
         this.month -= 1;
@@ -283,6 +253,8 @@ export default {
     getFirstDayLastDate(year, month) {
       const firstDay = new Date(year, month - 1, 1).getDay();
       const lastDate = new Date(year, month, 0).getDate();
+      const nextDate = new Date(year, month + 1, 0).getDate();
+
       this.lastYear = year;
       this.lastMonth = month - 1;
       if (month === 1) {
@@ -326,9 +298,15 @@ export default {
       }
       const len = weekOfDays.length;
       var last = "";
+      var nextmonth = this.month;
+      var nextyear = this.year;
+      if (this.month + 1 > 12) {
+        nextmonth = 1;
+        nextyear = this.year + 1;
+      }
       if (len > 0 && len < 7) {
         // last = len + 1;
-        last = `${this.year}-${this.fill(2, this.month + 1)}-${this.fill(
+        last = `${nextyear}-${this.fill(2, nextmonth)}-${this.fill(
           2,
           7 - len
         )}`;
@@ -338,7 +316,7 @@ export default {
         }
       } else {
         // last = monthLastDate;
-        last = `${this.year}-${this.fill(2, this.month)}-${this.fill(
+        last = `${nextyear}-${this.fill(2, nextmonth)}-${this.fill(
           2,
           monthLastDate
         )}`;
@@ -348,6 +326,7 @@ export default {
       data.start = start;
       data.end = last;
       data.today = this.fulldate;
+      console.log(this.fulldate, data);
       this.$store.dispatch("calendarjs/CalList", { data, which: "month" });
       if (weekOfDays.length > 0) dates.push(weekOfDays);
       this.nextMonthStart = weekOfDays[0];
@@ -358,27 +337,16 @@ export default {
         this.year = parseInt(e["_i"].split(".")[0]);
         this.month = parseInt(e["_i"].split(".")[1]);
 
-        this.calendarData();
+        this.MoveChange();
       }
     },
     Today() {
       this.Init();
     },
     Init() {
-      const date = new Date();
-      this.currentYear = date.getFullYear();
-      this.currentMonth = date.getMonth() + 1;
-      this.year = this.currentYear;
-      this.month = this.currentMonth;
+      this.InitForm();
 
-      this.today = date.getDate();
-      this.currenttoday = date.getDate();
-      this.fulldate = `${this.year}.${this.fill(2, this.month)}.${this.fill(
-        2,
-        this.today
-      )}`;
-
-      this.calendarData();
+      this.MoveChange();
       return;
     },
     Rest() {
@@ -392,22 +360,11 @@ export default {
       }
       return;
     },
-    fill(width, number) {
-      number = number + ""; //number를 문자열로 변환하는 작업
-      var str = "";
-      for (var i = 0; i < width - number.length; i++) {
-        str = str + "0";
-      }
-      str = str + number;
-      return str;
-    },
     changeDate(date) {
       // alert("changeDate")
-      this.year = parseInt(date.split(".")[0]);
-      this.month = parseInt(date.split(".")[1]);
-      this.today = parseInt(date.split(".")[2]);
+      this.SetDate(date);
 
-      this.calendarData();
+      this.MoveChange();
     },
     async Detail(day, next, last, yuil) {
       var data = await this.isAllday(day, next, last);
@@ -454,10 +411,12 @@ export default {
       // await
       this.$router.push({
         name: "calread",
-        query: {data:JSON.stringify({
-          date: value.enddate,
-          time: `${value.starttime} ~ ${value.endtime}`,
-        })},
+        query: {
+          data: JSON.stringify({
+            date: value.enddate,
+            time: `${value.starttime} ~ ${value.endtime}`,
+          }),
+        },
       });
     },
   },

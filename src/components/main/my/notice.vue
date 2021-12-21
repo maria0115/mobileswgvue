@@ -1,7 +1,7 @@
 <template>
   <div>
     <p class="m_notice">
-      <em description="공지">{{ portlet.announcement }}</em>
+      <em description="공지">{{ portlet.title }}</em>
       <VueSlickCarousel
         v-bind="settings"
         v-if="GetMain.boardtype['notice']['my'].data.length > 0"
@@ -48,7 +48,8 @@ export default {
         this.$store.dispatch("boardjs/BoardDetail", {
           menu,
           unid: value.unid,
-          type:"notice",title:this.portlet.announcement
+          top:this.portlet.lnbid,
+          type:"notice",title:this.portlet.title
         });
       }
     },

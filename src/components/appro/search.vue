@@ -1,5 +1,5 @@
 <template>
-  <div class="search_con search_con02">
+  <div class="search_con search_con02" @click="Close">
     <form @submit.prevent>
       <div>
         <div class="sc_top">
@@ -10,7 +10,7 @@
               type="text"
               v-model="keyword"
               @keypress.enter="Search"
-              placeholder="검색어를 입력하세요"
+              :placeholder="commonl.search"
             />
             <span class="search_btn" @click="Search"></span>
           </div>
@@ -21,60 +21,65 @@
           <p>
             <span>
               <input type="checkbox" ref="all" class="all_sc_check active" />
-              <label for="">전체</label>
+              <label for="">{{ lang.all }}</label>
             </span>
           </p>
           <p v-if="path().indexOf('success') == -1">
             <span>
               <input type="checkbox" ref="subject" class="sc_check" />
-              <label for="">제목</label>
+              <label for="">{{ lang.title }}</label>
             </span>
             <span>
               <input type="checkbox" ref="formtitle" class="sc_check" />
-              <label for="">서식명</label>
+              <label for="">{{ lang.subject }}</label>
             </span>
 
             <em v-if="path() == 'approve' || path() == 'approving'">
               <span>
                 <input type="checkbox" ref="authorName" class="sc_check" />
-                <label for="">기안자</label>
+                <label for="">{{ lang.author }}</label>
               </span>
               <span v-if="path() == 'approve'">
                 <input type="checkbox" ref="authorOrgName" class="sc_check" />
-                <label for="">기안부서</label>
+                <label for="">{{ lang.dept }}</label>
               </span>
               <span v-if="path() == 'approving'">
                 <input type="checkbox" ref="sCurFullList" class="sc_check" />
-                <label for="">기안부서</label>
+                <label for="">{{ lang.dept }}</label>
               </span>
               <span>
                 <input type="checkbox" ref="date" class="sc_check date_line" />
-                <label for="">기안일자</label>
+                <label for="">{{ lang.created }}</label>
               </span>
             </em>
           </p>
-          
+
           <p v-else>
             <span>
               <input type="checkbox" ref="authorName" class="sc_check" />
-              <label for="">기안자</label>
+              <label for="">{{ lang.author }}</label>
             </span>
             <span>
               <input type="checkbox" ref="subject" class="sc_check" />
-              <label for="">제목</label>
+              <label for="">{{ lang.title }}</label>
             </span>
             <span>
               <input type="checkbox" ref="body" class="sc_check" />
-              <label for="">본문</label>
+              <label for="">{{ lang.body }}</label>
             </span>
             <span>
               <input type="checkbox" ref="attach" class="sc_check" />
-              <label for="">첨부</label>
+              <label for="">{{ lang.attach }}</label>
             </span>
           </p>
-          <div class="d_line clfix" v-if="path() == 'approve' || path() == 'approving'"><!--10월 13일 추가됨 -->
-      <input type="date" v-model="startDate"><b>~</b><input v-model="endDate" type="date">
-</div>
+          <div
+            class="d_line clfix"
+            v-if="path() == 'approve' || path() == 'approving'"
+          >
+            <!--10월 13일 추가됨 -->
+            <input type="date" v-model="startDate" /><b>~</b
+            ><input v-model="endDate" type="date" />
+          </div>
         </div>
       </div>
     </form>
@@ -87,9 +92,12 @@ import $ from "jquery";
 import { mapState, mapGetters } from "vuex";
 export default {
   computed: {
-    ...mapGetters( ["GetHeader"]),
+    ...mapGetters(["GetHeader"]),
   },
   created() {
+    this.lang = this.GetAppL.search;
+    this.commonl = this.GetCommonL;
+
     this.params = JSON.parse(this.$route.query.data);
     // this.params = this.GetHeader.menu;
 
@@ -104,6 +112,12 @@ export default {
     };
   },
   methods: {
+    Close(e) {
+      var LayerPopup = $(".search_con");
+      if (LayerPopup.has(e.target).length === 0) {
+        $(".search_con").removeClass("active");
+      }
+    },
     fill(width, number) {
       number = number + ""; //number를 문자열로 변환하는 작업
       var str = "";
@@ -130,7 +144,7 @@ export default {
       return;
     },
     path() {
-      return this.params.type||"";
+      return this.params.type || "";
     },
     Search() {
       var data = {};
@@ -144,9 +158,8 @@ export default {
       data.keyword = this.keyword;
       data.startDate = this.startDate;
       data.endDate = this.endDate;
-      this.$emit("SetSearchWord",data);
-        $('.search_con').removeClass('active');
-
+      this.$emit("SetSearchWord", data);
+      $(".search_con").removeClass("active");
     },
   },
 };

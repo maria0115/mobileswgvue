@@ -16,13 +16,13 @@
         <li class="cal_type">
           <ul>
             <li class="month">
-              <router-link :to="{ name: 'calmonth' }">월간</router-link>
+              <router-link :to="{ name: 'calmonth' }">{{lang.month}}</router-link>
             </li>
             <li class="week">
-              <router-link :to="{ name: 'calweek' }">주간</router-link>
+              <router-link :to="{ name: 'calweek' }">{{lang.week}}</router-link>
             </li>
             <li class="day">
-              <router-link :to="{ name: 'calday' }">일간</router-link>
+              <router-link :to="{ name: 'calday' }">{{lang.day}}</router-link>
             </li>
           </ul>
         </li>
@@ -40,7 +40,9 @@
 <script>
 import { mapState, mapGetters } from "vuex";
 export default {
-  created() {},
+  created() {
+    this.lang = this.GetScheduleL.header;
+  },
   props: ["calmenu"],
   computed: {
     ...mapGetters("mainjs", ["GetMyInfo"]),

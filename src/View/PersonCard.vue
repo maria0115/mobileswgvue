@@ -16,8 +16,8 @@
         > -->
       </span>
       <ul>
-        <li><span>회사전화:</span>{{ item.office }}</li>
-        <li><span>휴대폰:</span>{{ item.mobile }}</li>
+        <li><span>{{lang.comPhone}}:</span>{{ item.office }}</li>
+        <li><span>{{lang.phone}}:</span>{{ item.mobile }}</li>
         <li><span>email:</span>{{ item.email }}</li>
       </ul>
     </div>
@@ -25,13 +25,13 @@
       <li>
         <a :href="`tel:${item.office}`">
           <span></span>
-          <em>회사전화</em>
+          <em>{{lang.comPhone}}</em>
         </a>
       </li>
       <li>
         <a :href="`tel:${item.mobile}`">
           <span></span>
-          <em>휴대폰</em>
+          <em>{{lang.phone}}</em>
         </a>
       </li>
       <li>
@@ -55,6 +55,8 @@
 export default {
   created(){
     // console.log(this.item.photo);
+    this.lang = this.GetCommonL.org;
+
   },
   props: {
     item: Object,

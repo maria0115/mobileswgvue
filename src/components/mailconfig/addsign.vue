@@ -3,19 +3,19 @@
     <h2 class="mail_st_header">
       <router-link :to="{name:'sign'}">
         <img src="../../mobile/img/wmail_back.png" alt="" /> </router-link
-      >서명 등록
-      <span class="save" @click="SignAdd"><a>저장</a></span>
+      >{{lang.title}}
+      <span class="save fw_bold" @click="SignAdd"><a>{{lang.save}}</a></span>
     </h2>
     <div class="m_contents06">
       <form @submit.prevent>
         <ul>
           <li>
-            <span>제목</span>
+            <span>{{lang.subject}}</span>
             <input type="text" v-model="subject" />
           </li>
           <li>
-            <span>설정</span>
-            <div @click="DefaultSign"><em class="sig_check"  :class="{active:this.default}"></em>기본 서명으로 지정</div>
+            <span>{{lang.setting}}</span>
+            <div @click="DefaultSign"><em class="sig_check"  :class="{active:this.default}"></em>{{lang.default}}</div>
           </li>
           <li>
             <Namo :editor="body" :read="false" did="greet" ref="editor"></Namo>
@@ -42,6 +42,9 @@ http://www.saerom.co.kr
 import Namo from '../editor/namo.vue';
 
 export default {
+  created(){
+    this.lang = this.GetMConfigL.addsign
+  },
   components: {
     Namo
   },

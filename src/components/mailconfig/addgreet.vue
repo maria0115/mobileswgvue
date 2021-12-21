@@ -3,21 +3,20 @@
     <h2 class="mail_st_header">
       <router-link :to="{name:'greet'}">
         <img src="../../mobile/img/wmail_back.png" alt="" /> </router-link
-      >인사말 등록
-      <span class="save" @click="GreetAdd"><a>저장</a></span>
+      >{{lang.title}}
+      <span class="save fw_bold" @click="GreetAdd"><a>{{lang.save}}</a></span>
     </h2>
     <div class="m_contents06">
       <form @submit.prevent>
         <ul>
           <li>
-            <span>제목</span>
+            <span>{{lang.subject}}</span>
             <input type="text" v-model="subject" />
           </li>
           <li>
-            <span>설정</span>
+            <span>{{lang.setting}}</span>
             <div @click="DefaultGreet">
-              <em class="sig_check" :class="{ active: this.default }"></em>기본
-              인사말로 지정
+              <em class="sig_check" :class="{ active: this.default }"></em>{{lang.default}}
             </div>
           </li>
           <li>
@@ -37,6 +36,9 @@
 import Namo from '../editor/namo.vue';
 
 export default {
+  created(){
+    this.lang = this.GetMConfigL.addgreet;
+  },
   components: {
     Namo
   },

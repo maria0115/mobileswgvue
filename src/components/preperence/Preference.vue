@@ -19,7 +19,7 @@
               </li>
             </ul>
           </li>
-          <!-- <li>
+          <li v-if="this.Option()">
             <h2>{{ this.GetLanguageConfig.allim.setallim }}</h2>
             <ul>
               <li>
@@ -53,7 +53,7 @@
                 </router-link>
               </li>
             </ul>
-          </li> -->
+          </li>
           <!-- <li>
             <ul>
               <li>
@@ -126,6 +126,8 @@
 import { mapGetters, mapState } from "vuex";
 import Header from "./header.vue";
 import $ from "jquery";
+import config from "@/config/config.json";
+import option from "@/config/option.json";
 export default {
   components: {
     Header,
@@ -155,6 +157,9 @@ export default {
     },
   },
   methods: {
+    Option(){
+      return option[config.company].alarmeti;
+    },
     // click 시 해당 설정값 db에 입력
     setConfig(menu) {
       var classarr = this.$refs[menu].getAttribute("class").split(" ");

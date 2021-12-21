@@ -6,8 +6,13 @@
         }}<em>{{ approveData.cnt }}</em></strong
       >
       <div class="app_list01 clfix">
-        <p v-if="approveData.data.length === 0">결재할 문서가 없습니다.</p>
-        <div v-else v-for="(value, name) in approveData.data" :key="name"  @click="Read(value, 'approve')">
+        <p v-if="approveData.data.length === 0">{{lang.approvalresult}}</p>
+        <div
+          v-else
+          v-for="(value, name) in approveData.data"
+          :key="name"
+          @click="Read(value, 'approve')"
+        >
           <div class="icons">
             <!-- <span class="opin"></span> -->
             <span class="clip" v-if="value.attach"></span>
@@ -49,7 +54,9 @@
             name: 'appapprove',
             query: {
               data: JSON.stringify({
-                type: ThisCategory('approve').type||ThisCategory('approve').category,
+                type:
+                  ThisCategory('approve').type ||
+                  ThisCategory('approve').category,
                 lnbid: ThisCategory('approve').lnbid,
                 top: params.lnbid,
                 title: ThisCategory('approve').title,
@@ -60,23 +67,24 @@
       ></span>
     </div>
     <span class="load" @click="addApprove('approve')" v-if="moreList.approve"
-      >결재할 문서 펼쳐보기<img
+      >{{lang.approvalmore}}<img
         src="../../mobile/img/down_arrow.png"
         alt="더보기"
     /></span>
-
     <div class="in_box02" v-if="menuOfCategoryIdx('approving') !== -1">
       <strong
-        >{{ GetMainLanguage.portlet.approval.approving }}
-        <em>{{ approvingData.cnt }}</em></strong
+        >{{ GetMainLanguage.portlet.approval.approving
+        }}<em>{{ approvingData.cnt }}</em></strong
       >
-      <div
-        class="app_list01"
-        v-for="(value, name) in approvingData.data"
-        :key="name"
-         @click="Read(value, 'approving')"
-      >
-        <div>
+      <!-- <div v-else v-for="(value, name) in approveData.data" :key="name"  @click="Read(value, 'approve')"> -->
+      <div class="app_list01 clfix">
+        <p v-if="approvingData.data.length === 0">{{lang.approvalresult}}</p>
+        <div
+          v-else
+          v-for="(value, name) in approvingData.data"
+          :key="name"
+          @click="Read(value, 'approving')"
+        >
           <div class="icons">
             <!-- <span class="opin"></span> -->
             <span class="clip" v-if="value.attach"></span>
@@ -118,7 +126,9 @@
             name: 'appapproving',
             query: {
               data: JSON.stringify({
-                type: ThisCategory('approving').type||ThisCategory('approving').category,
+                type:
+                  ThisCategory('approving').type ||
+                  ThisCategory('approving').category,
                 lnbid: ThisCategory('approving').lnbid,
                 top: params.lnbid,
                 title: ThisCategory('approving').title,
@@ -132,7 +142,7 @@
       class="load"
       @click="addApprove('approving')"
       v-if="moreList.approving"
-      >결재중 문서 펼쳐보기<img
+      >{{lang.approvalmore}}<img
         src="../../mobile/img/down_arrow2.png"
         alt="더보기"
     /></span>
@@ -152,11 +162,14 @@ export default {
   async created() {
     // this.params = JSON.parse(this.$route.query.data);
     // this.params = this.GetHeader.menu;
-    var main = this.GetCategory["main"];
-    var appidx = main.findIndex(function (item, idx) {
-      return item.category == "approval";
-    });
-    this.params = main[appidx];
+    // var main = this.GetCategory["main"];
+    // var appidx = main.findIndex(function (item, idx) {
+    //   return item.category == "approval";
+    // });
+    // this.params = main[appidx];
+        this.lang = this.GetMainLanguage.main;
+
+    this.params = JSON.parse(this.$route.query.data);
 
     this.approveData = this.main.data.approvaltype.approve.more;
     this.approvingData = this.main.data.approvaltype.approving.more;
@@ -219,7 +232,9 @@ export default {
         name: `${where}view`,
         query: {
           data: JSON.stringify({
-            type: this.ThisCategory(where).type||this.ThisCategory(where).category,
+            type:
+              this.ThisCategory(where).type ||
+              this.ThisCategory(where).category,
             lnbid: this.ThisCategory(where).lnbid,
             top: this.params.lnbid,
             title: this.ThisCategory(where).title,

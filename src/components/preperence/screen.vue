@@ -1,22 +1,21 @@
 <template>
   <div>
-    <Header :header="this.GetDisplay.maindisplay" header_desc="메인 화면 설정"></Header>
+    <Header
+      :header="this.GetDisplay.maindisplay"
+      header_desc="메인 화면 설정"
+    ></Header>
     <div class="contents06">
       <form @submit.prevent>
         <ul class="sc_menu">
           <li>
             <ul>
-              <li v-for="(value, name) in this.GetDisplay.main" :key="name">
-                <label for="sc01">{{ value }}</label>
-                <input
-                  type="radio"
-                  name="d_radio"
-                  id="sc01"
-                  :value="value"
-                  :checked="boo(name)"
-                  :ref="name"
-                  @click="setConfig(name)"
-                />
+              <li
+                v-for="(value, name) in this.GetDisplay.main"
+                :key="name"
+                @click="setConfig(name)"
+              >
+                <span>{{ value }}</span>
+                <em :class="{ checked: boo(name) }"></em>
               </li>
             </ul>
           </li>
@@ -34,7 +33,7 @@ export default {
     Header,
   },
   computed: {
-    ...mapGetters("configjs",["GetConfig"]),
+    ...mapGetters("configjs", ["GetConfig"]),
     ...mapGetters(["GetDisplay"]),
     // 사용자가 설정한 구성 class on
     boo() {

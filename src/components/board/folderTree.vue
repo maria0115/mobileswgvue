@@ -27,6 +27,7 @@
 export default {
   name: "TreeItem",
   created() {
+    console.log(this.GetBoardL)
   },
   props: {
     item: Object,

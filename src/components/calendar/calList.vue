@@ -17,7 +17,7 @@
         >
           <a>
             <dl>
-              <dt v-if="value.data.allDay">종일</dt>
+              <dt v-if="value.data.allDay">{{lang.allday}}</dt>
               <dt v-else>
                 {{ value.data.starttime.split(":")[0] }}:{{
                   value.data.starttime.split(":")[1]
@@ -35,7 +35,7 @@
       <div class="no_schedule" v-else>
         <div>
           <span></span>
-          <p>등록된 일정이 없습니다.<br />일정을 등록하세요</p>
+          <p>{{lang.havenotschedule}}<br />{{lang.beregister}}</p>
         </div>
       </div>
     </div>
@@ -54,6 +54,9 @@ export default {
     CalWrite,
   },
   created() {
+    this.lang = this.GetScheduleL.list;
+    this.days = this.lang.days.split(",");
+
     var date = this.GetSaveScheduleList.date;
 
     this.today = `${date.year}.${this.fill(2, date.month)}.${this.fill(
@@ -67,7 +70,6 @@ export default {
   data() {
     return {
       today: "",
-      days: ["일", "월", "화", "수", "목", "금", "토"],
     };
   },
   methods: {

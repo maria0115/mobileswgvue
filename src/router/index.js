@@ -1,12 +1,12 @@
 
 import Router from 'vue-router';
 import Vue from 'vue';
-import Preferences from '../View/Preferences.vue';
+
+
 import Common from '../View/Common.vue';
-import Search from '../View/Search.vue';
-import Main from '../View/Main.vue';
+
 import Login from '../View/Login.vue';
-import MailList from '../View/MailList.vue';
+
 import MailConfig from '../View/MailConfig.vue';
 import addgreet from '../components/mailconfig/addgreet.vue';
 import addsign from '../components/mailconfig/addsign.vue';
@@ -19,6 +19,8 @@ import seegreet from '../components/mailconfig/seegreet.vue';
 import seesign from '../components/mailconfig/seesign.vue';
 import set_config from '../components/mailconfig/set_config.vue';
 import sign from '../components/mailconfig/sign.vue';
+
+import Main from '../View/Main.vue';
 import my from '../components/main/my.vue';
 import myicon from '../components/main/myicon.vue';
 import mail from '../components/main/mail.vue';
@@ -27,6 +29,8 @@ import approval from '../components/main/approval.vue';
 import board from '../components/main/board.vue';
 import person from '../components/main/person.vue';
 import reservation from '../components/main/reservation.vue';
+
+import Preferences from '../View/Preferences.vue';
 import Allim from '../components/preperence/allim.vue';
 import Dark from '../components/preperence/dark.vue';
 import Etiq from '../components/preperence/etiq.vue';
@@ -34,12 +38,17 @@ import Font from '../components/preperence/font.vue';
 import Num from '../components/preperence/num.vue';
 import Screen from '../components/preperence/screen.vue';
 import Preference from '../components/preperence/Preference.vue';
+
+import Search from '../View/Search.vue';
 import AllSearch from '../components/search/allsearch.vue';
 import Document from '../components/search/document.vue';
 import Person from '../components/search/person.vue';
+
+import MailList from '../View/MailList.vue';
 import InboxDetail from '../components/mail/inbox_detail.vue';
 import ReadMail from '../components/mail/readmail.vue';
 import WriteMail from '../components/mail/writemail.vue';
+
 import Calendar from '../View/Calendar.vue';
 import Cal from '../components/calendar/cal.vue';
 import CalDay from '../components/calendar/calDay.vue';
@@ -48,6 +57,7 @@ import CalList from '../components/calendar/calList.vue';
 import CalRead from '../components/calendar/calRead.vue';
 import CalWeek from '../components/calendar/calWeek.vue';
 import CalWrite from '../components/calendar/calWrite.vue';
+
 import Approve from '../View/Approve.vue';
 import appDocForm from '../components/appro/appDocForm.vue';
 import appIngList from '../components/appro/appIngList.vue';
@@ -55,11 +65,19 @@ import appIngView from '../components/appro/appIngView.vue';
 import appTodoList from '../components/appro/appTodoList.vue';
 import appTodoView from '../components/appro/appTodoView.vue';
 import appWrite from '../components/appro/appWrite.vue';
+
 import Board from '../View/Board.vue';
 import BoardList from '../components/board/list.vue';
 import BoardRead from '../components/board/read.vue';
 import BoardWrite from '../components/board/write.vue';
+
 import originalPage from '../View/originalPage.vue';
+
+import Reservation from '../View/Reservation.vue';
+import ReservationWrite from '../components/reservation/write.vue';
+import ReservationList from '../components/reservation/list.vue';
+import ReservationRead from '../components/reservation/read.vue';
+
 
 import { store } from '../store/index.js';
 
@@ -78,33 +96,40 @@ const router = new Router({
   routes: [
     {
       path: '/',
-      redirect: 'mobile_index',
-
+      name: "home",
+      redirect:"/mobile_index",
     },
     {
       path: '/mobile_index',
       name: 'root',
-      beforeEnter: (to, from, next) => {
-        next();
-      },
+      
+      // beforeEnter: (to, from, next) => {
+      //   console.log("계속들어오니 /mobile_index")
+      //   store.dispatch("GetLanguage", { app: "search" });
+      //   store.dispatch("GetLanguage", { app: "mail" });
+      //   store.dispatch("GetLanguage", { app: "config" });
+      //   store.dispatch("GetLanguage", { app: "approval" });
+      //   store.dispatch("GetLanguage", { app: "board" });
+      //   store.dispatch("GetLanguage", { app: "reservation" });
+      //   store.dispatch("GetLanguage", { app: "mailconfig" });
+      //   store.dispatch("GetLanguage", { app: "schedule" });
+      //   store.dispatch("GetLanguage", { app: "common" });
+      //   next();
+      // },
+
       component: Common,
-      redirect: '/mobile_index/main',
+      // redirect: '/mobile_index/main',
       children: [
         {
           path: 'main',
           component: Main,
           name: 'main',
           beforeEnter: (to, from, next) => {
+            
             store.dispatch("CategoryList", "");
-            if (Object.keys(store.state.store.language).length < 4) {
-
-              store.dispatch("GetLanguage", { app: "search" });
-              store.dispatch("GetLanguage", { app: "mail" });
-              store.dispatch("GetLanguage", { app: "config" });
-            }
-
+            store.dispatch("mainjs/GetMyInfo");
             store.dispatch("GetLanguage", { app: "main" })
-              .then(() => {
+              .then((res) => {
                 store.dispatch("configjs/setMode")
                   .then((res) => {
                     next();
@@ -120,7 +145,7 @@ const router = new Router({
               beforeEnter: (to, from, next) => {
                 store.dispatch("mainjs/GetSchedule", { scheduletype: "recent", category: "my" });
                 store.dispatch("mainjs/GetBoard", { boardtype: "notice", category: "my" });
-                store.dispatch("mainjs/GetBoard", { boardtype: "recent", category: "my" });
+                // store.dispatch("mainjs/GetBoard", { boardtype: "recent", category: "my" });
                 store.dispatch("mainjs/GetApproval", { approvaltype: "approving", category: "my" });
                 store.dispatch("mainjs/GetMail", { mailtype: "inbox_detail", category: "my" });
                 store.dispatch("mainjs/GetMyInfo")
@@ -135,15 +160,16 @@ const router = new Router({
               component: my,
               name: "My",
               beforeEnter: (to, from, next) => {
+                var moment = require("moment");
+                var today = moment().format("YYYY-MM-DD");
                 store.dispatch("mainjs/GetSchedule", { scheduletype: "recent", category: "my" });
+                store.dispatch("bookjs/MyreservationList", today);
                 store.dispatch("mainjs/GetBoard", { boardtype: "notice", category: "my" });
-                store.dispatch("mainjs/GetBoard", { boardtype: "recent", category: "my" });
+                // store.dispatch("mainjs/GetBoard", { boardtype: "recent", category: "my" });
                 store.dispatch("mainjs/GetApproval", { approvaltype: "approving", category: "my" });
                 store.dispatch("mainjs/GetMail", { mailtype: "inbox_detail", category: "my" });
-                store.dispatch("mainjs/GetMyInfo")
-                  .then(() => {
-                    next();
-                  })
+                next();
+
               },
 
             },
@@ -196,8 +222,8 @@ const router = new Router({
               },
             }, {
               path: 'reservation',
-              name: 'mainbook',
-              component: reservation
+              name: 'mainreservation',
+              redirect: '../reservation_more'
             }, {
               path: 'person',
               component: person
@@ -214,12 +240,6 @@ const router = new Router({
           path: 'search',
           component: Search,
           name: 'search',
-          beforeEnter: (to, from, next) => {
-            // store.dispatch("GetLanguage", { app: "search" })
-            // .then(() => {
-            next();
-            // })
-          },
           children: [
             {
               path: 'allsearch',
@@ -301,12 +321,6 @@ const router = new Router({
           component: Preferences,
           name: 'setting',
           redirect: 'setting/config',
-          beforeEnter: (to, from, next) => {
-            // store.dispatch("GetLanguage", { app: "config" })
-            // .then(() => {
-            next();
-            // })
-          },
           children: [
             {
               name: 'setconfig',
@@ -510,14 +524,15 @@ const router = new Router({
               name: 'ReadMail',
               component: ReadMail,
               beforeEnter: (to, from, next) => {
+                console.log(from)
                 if (to.params.unid) {
-                  store.dispatch("mailjs/MailDetail", to.params.unid)
+                  store.dispatch("mailjs/MailDetail", { unid: to.params.unid, type: from.name })
                     .then(() => {
-                      store.commit("mailjs/MailDetailUnid", to.params.unid);
+                      store.commit("mailjs/MailDetailUnid", { unid: to.params.unid, type: from.name });
                       next();
                     })
                 } else {
-                  store.dispatch("mailjs/MailDetail", store.state.mailjs.store.maildetail.unid);
+                  store.dispatch("mailjs/MailDetail", { unid: store.state.mailjs.store.maildetail.unid, type: store.state.mailjs.store.maildetail.type });
                   next();
                 }
                 // 
@@ -562,11 +577,6 @@ const router = new Router({
           path: 'mailconfig',
           name: 'mailconfig',
           component: MailConfig,
-          beforeEnter: (to, from, next) => {
-            // store.dispatch("GetLanguage", { app: "mail" });
-            // store.dispatch("GetMailDetail", { mailtype: "folderList" });
-            next();
-          },
           redirect: 'mailconfig/set_config',
           children: [
             {
@@ -717,12 +727,6 @@ const router = new Router({
           name: 'schedule',
           component: Calendar,
           redirect: 'schedule_more/month',
-          beforeEnter: (to, from, next) => {
-            // store.dispatch("CalList", { app: "config" })
-            // .then(() => {
-            next();
-            // })
-          },
           children: [
             {
               name: 'schedulefirst',
@@ -1038,7 +1042,12 @@ const router = new Router({
               beforeEnter: (to, from, next) => {
                 // store.dispatch("GetApprovalList", { type: "draft" })
                 // .then(() => {
-                next();
+                var params = JSON.parse(to.query.data);
+                store.dispatch("boardjs/GetBoardSet", { lnbid: params.lnbid, type: params.type })
+                  .then(() => {
+                    next();
+
+                  })
                 // })
               },
 
@@ -1049,17 +1058,78 @@ const router = new Router({
           path: 'login',
           name: 'login',
           component: Login,
-          beforeEnter: (to, from, next) => {
-            next();
-          },
         },
         {
           path: 'originalPage',
           name: 'originalPage',
           component: originalPage,
-          beforeEnter: (to, from, next) => {
-            next();
-          },
+        },
+        {
+          path: 'reservation_more',
+          name: 'reservation',
+          component: Reservation,
+          redirect: 'reservation_more/list',
+          children: [
+            {
+              path: 'list',
+              name: 'reservationfirst',
+              component: ReservationList,
+              beforeEnter: (to, from, next) => {
+                var data = {};
+                data.type = "companyList";
+                store.dispatch("bookjs/stepList", data)
+                  .then((res) => {
+                    data.type = "roomList";
+                    data.category = res;
+                    store.dispatch("bookjs/roomList", data)
+                      .then((rres) => {
+                        next();
+                      })
+                  })
+              },
+            },
+            {
+              path: 'list',
+              name: 'reservationlist',
+              component: ReservationList,
+              beforeEnter: (to, from, next) => {
+                var data = {};
+                data.type = "companyList";
+                store.dispatch("bookjs/stepList", data)
+                  .then((res) => {
+                    data.type = "roomList";
+                    data.category = res;
+                    store.dispatch("bookjs/roomList", data)
+                      .then((rres) => {
+                        next();
+                      })
+                  })
+              },
+            },
+            {
+              path: 'write',
+              name: 'reservationWrite',
+              component: ReservationWrite,
+              beforeEnter: (to, from, next) => {
+                next();
+              },
+
+            },
+            {
+              path: 'read',
+              name: 'reservationRead',
+              component: ReservationRead,
+              beforeEnter: (to, from, next) => {
+                store.dispatch("bookjs/BookDetail", { unid: store.state.bookjs.store.unid })
+                  .then(res => {
+                    if (res) {
+                      next();
+                    }
+                  })
+              },
+
+            },
+          ]
         },
       ],
 
@@ -1069,7 +1139,9 @@ const router = new Router({
   ]
 })
 import axios from 'axios';
+import { roomList } from '../api';
 router.beforeEach((to, from, next) => {
+  store.commit("OrgDataInit");
   // let isLogged = ... 
   // /login URL은 로그인 페이지 
   // to.meta.isLogged && !isLogged ? next({ path: '/login', replace: true }) : next() 

@@ -58,12 +58,12 @@
                         class="rece"
                         v-if="item.tostuff !== undefined"
                         :class="{ on: item.tostuff.receive }"
-                        >수신</em
+                        >{{ lang.to }}</em
                       ><em
                         class="refer"
                         v-if="item.tostuff !== undefined"
                         :class="{ on: item.tostuff.ref }"
-                        >참조</em
+                        >{{ lang.cc }}</em
                       >
                     </div>
                   </dt>
@@ -88,12 +88,12 @@
                   </p>
                   <span :class="[{ clip: haveClip(item.attach) }]"></span>
                 </div>
-                <em class="trash_can"></em
+                <em class="trash"></em
                 ><!-- html만 넣음 -->
               </li>
             </template>
             <template v-slot:right="{ item, index }">
-              <i class="trash_can" @click="mailDelete(item, index)"></i>
+              <i class="trash" @click="mailDelete(item, index)"></i>
             </template>
           </swipe-list>
           <infinite-loading
@@ -103,10 +103,10 @@
             spinner="waveDots"
           >
             <div slot="no-more" style="padding: 10px 0px">
-              목록의 끝입니다 :)
+              {{ commonl.end }}
             </div>
             <div slot="no-results" style="padding: 10px 0px">
-              목록의 끝입니다 :)
+              {{ commonl.end }}
             </div>
             <div slot="error">
               Error message, click
@@ -121,9 +121,13 @@
     <div class="ac_btns">
       <span class="more_plus"></span>
       <ul>
-        <li><a class="top">맨 위로</a></li>
         <li>
-          <router-link :to="{ name: 'WriteMail' }">메일 작성</router-link>
+          <a class="top">{{ commonl.up }}</a>
+        </li>
+        <li>
+          <router-link :to="{ name: 'WriteMail' }">{{
+            lang.morePlus.write
+          }}</router-link>
         </li>
       </ul>
     </div>
@@ -159,7 +163,6 @@ export default {
   },
   data() {
     return {
-      morePlus: [{ top: "맨 위로" }, { write: "메일 작성" }],
       // path:this.path,
       enabled: true,
       active: false,
@@ -180,6 +183,7 @@ export default {
     ...mapGetters("mailjs", ["GetMail", "GetMailConfig"]),
     ...mapGetters("configjs", ["GetConfig"]),
     ...mapState(["back"]),
+    ...mapGetters(["GetMailLanguage"]),
 
     path() {
       if (this.$route.path.indexOf("custom") === -1) {
@@ -191,7 +195,12 @@ export default {
   },
   beforeRouteLeave(to, from, next) {
     // this.$refs.infiniteLoading.$emit('$InfiniteLoading:reset');
-    this.$store.commit("SetTop", document.documentElement.scrollTop);
+    this.$store.commit(
+      "SetTop",
+      document.scrollingElement.scrollTop ||
+        window.scrollY ||
+        window.pageYOffset
+    );
 
     this.$store.commit("mailjs/MailSearchOptionInit");
     this.$store.commit("mailjs/Back");
@@ -199,6 +208,9 @@ export default {
   },
   async created() {
     // this.mail.data[this.path].data.data
+    this.lang = this.GetMailLanguage.list;
+    this.commonl = this.GetCommonL;
+
     this.page = 0;
     // this.infiniteId += 1;
     if (this.path === "custom") {
@@ -225,7 +237,8 @@ export default {
           var result = await MailSearch(option);
           result = result.data.data;
           if (result) {
-            this.mail.data[this.path].data.data = this.mail.data[this.path].data.data.concat(result);
+            this.mail.data[this.path].data.data =
+              this.mail.data[this.path].data.data.concat(result);
           }
         }
       } else {
@@ -235,14 +248,20 @@ export default {
           var result = await Mail(option);
           result = result.data.data;
           if (result) {
-            this.mail.data[this.path].data.data = this.mail.data[this.path].data.data.concat(result);
+            this.mail.data[this.path].data.data =
+              this.mail.data[this.path].data.data.concat(result);
           }
         }
       }
       this.infiniteId++;
       this.$store.commit("SetBack", false);
-      window.scroll({ top: this.back.top, behavior: "smooth" });
       this.$forceUpdate();
+      // window.scroll({ top: this.back.top, behavior: "smooth" });
+      var scrollentity = $("html,body");
+      if (navigator.userAgent.match(/(iPod|iPhone|iPad)/)) {
+        scrollentity = $("html");
+      }
+      scrollentity.animate({ scrollTop: this.back.top }, 500);
     }
   },
   mounted() {
@@ -279,12 +298,11 @@ export default {
         });
       }
       this.$store.commit("mailjs/mailDelete", { type: this.path });
-
     },
     remove(item) {
-      this.mail.data[this.path].data.data = this.mail.data[this.path].data.data.filter(
-        (i) => i !== item
-      );
+      this.mail.data[this.path].data.data = this.mail.data[
+        this.path
+      ].data.data.filter((i) => i !== item);
     },
     // 스크롤 페이징
     infiniteHandler($state) {
@@ -330,7 +348,8 @@ export default {
                 this.$store.commit("SetBackPage", option.page);
               }
               // if (Object.keys(this.mail.data[this.path].data).length > 0) {
-              this.mail.data[this.path].data.data = this.mail.data[this.path].data.data.concat(data);
+              this.mail.data[this.path].data.data =
+                this.mail.data[this.path].data.data.concat(data);
               // }
               $state.loaded();
 
@@ -365,7 +384,8 @@ export default {
               //   this.mail.data[this.path].data &&
               //   Object.keys(this.mail.data[this.path].data).length > 0
               // ) {
-              this.mail.data[this.path].data.data = this.mail.data[this.path].data.data.concat(data);
+              this.mail.data[this.path].data.data =
+                this.mail.data[this.path].data.data.concat(data);
               // }
               $state.loaded();
 
@@ -464,7 +484,7 @@ export default {
 </script>
 
 <style>
-.trash_can {
+.trash {
   /* position:absolute;
   top:0;
   right:0; */

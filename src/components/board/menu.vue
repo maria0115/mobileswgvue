@@ -22,16 +22,16 @@
       </div>
       <!-- class="depth02" -->
       <ul class="nt_list_menu">
-        <div v-for="(value, index) in GetCategory['main']" :key="index">
-          <li v-if="value.category == 'board'">
-            <h3 @click="OpenFolder(value, index, $event, $parent)">
+        <div v-for="(value, index) in menu" :key="index">
+          <li>
+            <h3 @click="OpenFolder(value, index, $event, $parent)" class="on">
               <a>{{ value.title }}</a>
               <em class="down_m"></em>
               <!-- <em @click="depthDown($event, $parent)" class="down_m"></em> -->
             </h3>
-            <ul class="depth02">
-              <li v-for="(v, i) in child(value)" :key="i">
-                  <!-- @click.native="
+            <ul class="depth02" style="display: block">
+              <li v-for="(v, i) in value.children" :key="i">
+                <!-- @click.native="
                     SetHeader({
                       lnbid: v.lnbid,
                       type: value.type,
@@ -47,6 +47,7 @@
                         lnbid: v.lnbid,
                         type: value.type,
                         title: v.title,
+                        top: params.top,
                       }),
                     },
                   }"
@@ -97,31 +98,35 @@
 import { mapState, mapGetters } from "vuex";
 import FolderTree from "./folderTree.vue";
 export default {
-  created() {},
-  async mounted() {
-    var mainmenu = this.GetCategory["main"];
-    for (var i = 0; i < mainmenu.length; i++) {
-      if (mainmenu[i].category == "board") {
-        this.GetCategory["main"][i].children = await this.$store.dispatch(
-          "CategoryList",
-          mainmenu[i].lnbid
-        );
-      }
-    }
-    // this.$forceUpdate();
+  async created() {
+    var topidx = this.GetCategory["main"].findIndex((item, idx) => {
+      return item.lnbid == this.params.top;
+    });
+
+    this.GetCategory["main"][topidx].children = await this.$store.dispatch(
+      "CategoryList",
+      this.params.top
+    );
+    this.menu.push(this.GetCategory["main"][topidx]);
+  },
+  data() {
+    return {
+      menu: [],
+    };
   },
   components: {
     FolderTree,
   },
   props: {
     isOpen: Boolean,
+    params: Object,
   },
   methods: {
-    Close(e){
+    Close(e) {
       var LayerPopup = $(".noti_sub_menu01");
-        if(LayerPopup.has(e.target).length === 0){
-          this.CloseHam();
-        }
+      if (LayerPopup.has(e.target).length === 0) {
+        this.CloseHam();
+      }
     },
     SetHeader(data) {
       this.$store.dispatch("SetHeader", data);

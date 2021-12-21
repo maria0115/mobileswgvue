@@ -6,22 +6,18 @@
           ><img src="../../mobile/img/wmail_back.png" alt="" /></a
       ></em>
       <div class="rdmail_icons">
-        <span class="rd_reply" @click="Replay('Reply')">답장</span>
-        <span
-          class="rd_relay"
-          v-if="!isDraft()"
-          @click="Replay('Relay')"
-          >전달</span
+        <span class="rd_reply fw_bold" @click="Replay('Reply')">{{lang.reply}}</span>
+        <span class="rd_relay" v-if="!isDraft()" @click="Replay('Relay')"
+          >{{lang.fw}}</span
         >
-        <span class="rd_relay" v-else @click="Edit()">편집</span>
-        <span class="rd_del" @click="mailDelete">삭제</span>
+        <span class="rd_relay fw_bold" v-else @click="Edit()">{{lang.edit}}</span>
+        <span class="rd_del fw_bold" @click="mailDelete">{{lang.delete}}</span>
         <span class="rd_more"></span>
         <ul class="more_box">
-          <li class="move">이동</li>
-          <li @click="SpamSet" v-if="!isDraft()">
-            스팸차단
-          </li>
-          <li @click="Replay('AllReply')">전체답장</li>
+          <li class="move">{{lang.move}}</li>
+          <li @click="SpamSet" v-if="!isDraft()">{{lang.spam}}</li>
+          <li @click="Replay('AllReply')">{{lang.allreply}}</li>
+          <li v-if="path.includes('trash')" @click="MailRecovery">{{lang.recovery}}</li>
         </ul>
       </div>
     </div>
@@ -36,8 +32,8 @@
               >
             </span>
             <dl>
-              <dt v-if="GetMailDetail.author.shortname">
-                {{ GetMailDetail.author.shortname }}
+              <dt v-if="GetMailDetail.author.name">
+                {{ GetMailDetail.author.name }}
               </dt>
               <dt v-else>{{ GetMailDetail.author.name }}</dt>
               <dd>{{ getTime(GetMailDetail.created) }}</dd>
@@ -46,7 +42,7 @@
           </div>
           <ul class="re_refer_div">
             <li class="clfix refer01">
-              <strong>받는사람</strong>
+              <strong>{{lang.sender}}</strong>
               <div>
                 <span
                   v-for="(value, index) in GetMailDetail.sendTo"
@@ -59,7 +55,7 @@
               </div>
             </li>
             <li class="clfix refer02">
-              <strong>참조</strong>
+              <strong>{{lang.copyto}}</strong>
               <div>
                 <span
                   v-for="(value, index) in GetMailDetail.copyTo"
@@ -71,7 +67,7 @@
                 >
               </div>
             </li>
-            <li
+            <!-- <li
               class="clfix refer02"
               v-if="GetMailDetail.blindCopyTo.length > 0"
             >
@@ -86,7 +82,7 @@
                   <p v-else>{{ value.name }} {{ value.position }}</p></span
                 >
               </div>
-            </li>
+            </li> -->
           </ul>
           <span
             class="star"
@@ -96,8 +92,8 @@
           <FollowUp :unid="clickedUnid"></FollowUp>
         </div>
         <div class="add_file clfix">
-          <strong>첨부파일</strong>
-          <ul>
+          <strong>{{lang.attach}}</strong>
+          <ul v-if="!sat">
             <li
               v-for="(value, index) in GetMailDetail.attach"
               :key="index"
@@ -116,11 +112,12 @@
               </div>
             </li>
           </ul>
-          <!-- <Viewer
+          <Viewer
+            v-else
             className=""
             :attaInfo="GetMailDetail.attach"
             :attach="true"
-          ></Viewer> -->
+          ></Viewer>
         </div>
         <!-- <div class="rdm_edit" v-html="GetMailDetail.body">
           안녕하세요. 디자인 팀 안지영 입니다. 2021년 사내업무 및 유지 보수 내역
@@ -172,21 +169,29 @@ export default {
   computed: {
     ...mapState("mailjs", ["TimeOption"]),
     ...mapGetters("mailjs", ["GetMailDetail", "GetMail", "GetfolderName"]),
+    ...mapGetters(["GetMailLanguage"]),
     path() {
       return this.$route.name;
+    },
+    sat() {
+      return configjson.sat;
     },
   },
   mounted() {},
   created() {
+    this.lang = this.GetMailLanguage.read;
     this.$store.dispatch("mailjs/FollowUpInfo", this.GetMailDetail.unid);
     this.$store.commit("mailjs/checkedNamesPush", this.GetMailDetail.unid);
   },
   methods: {
-    isDraft(){
-      return this.GetfolderName.indexOf('draft') !== -1;
+    isDraft() {
+      if (this.GetfolderName) {
+        return this.GetfolderName.indexOf("draft") !== -1;
+      }
+      return false;
     },
     Edit() {
-      this.$router.push({ name: "WriteMail",query:{isEdit:true} });
+      this.$router.push({ name: "WriteMail", query: { isEdit: true } });
     },
     followUp(unid) {
       this.clickedUnid = unid;
@@ -227,13 +232,15 @@ export default {
       this.$store.dispatch("mailjs/SpamSet", data);
     },
     Back() {
+      this.$store.commit("SetBack", true);
+
       this.$store.commit("mailjs/Back");
       this.$router.go(-1);
     },
     getTime(date) {
       var moment = require("moment");
       var localTime = moment.utc(date).toDate();
-      localTime = moment(localTime).format("YYYY-MM-DD일 HH:mm");
+      localTime = moment(localTime).format("YYYY-MM-DD HH:mm");
       return localTime;
     },
     attachClick(url) {
@@ -251,6 +258,13 @@ export default {
       if (result) {
         this.$router.go(-1);
       }
+    },
+    MailRecovery() {
+      this.$store.dispatch("mailjs/MailRecovery").then((res) => {
+        if (res) {
+          this.$router.go(-1);
+        }
+      });
     },
   },
 };

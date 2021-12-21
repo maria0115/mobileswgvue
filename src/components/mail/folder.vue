@@ -18,7 +18,7 @@
       </div>
       <div class="mail_box_list01">
         <div>
-          <em>기본 메일함</em>
+          <em>{{lang.mailbox}}</em>
           <ul class="list_menu">
             <li>
               <h3>
@@ -134,7 +134,7 @@
             <li>
               <h3>
                 <a @click="depthDown($event, $parent)" class="down_more"
-                  >기본 폴더</a
+                  >{{lang.basic}}</a
                 >
               </h3>
               <ul class="depth02">
@@ -161,6 +161,9 @@
 import { mapState, mapGetters } from "vuex";
 import TreeItem from "../../View/TreeView.vue";
 export default {
+  created(){
+    this.lang = this.GetMailLanguage.folder;
+  },
   components: {
     TreeItem,
   },

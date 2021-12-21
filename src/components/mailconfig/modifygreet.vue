@@ -3,24 +3,23 @@
     <h2 class="mail_st_header">
       <router-link :to="{name:'SeeGreet'}">
         <img src="../../mobile/img/wmail_back.png" alt="" /> </router-link
-      >인사말 편집
+      >{{lang.title}}
       <div>
-        <span class="delet" @click="Delete"><a>삭제</a></span>
-        <span class="save" @click="Modify"><a>저장</a></span>
+        <span class="save fw_bold" @click="Modify"><a>{{lang.save}}</a></span>
+        <span class="delet fw_bold" @click="Delete"><a>{{lang.delete}}</a></span>
       </div>
     </h2>
     <div class="m_contents06">
       <form @submit.prevent>
         <ul>
           <li>
-            <span>제목</span>
+            <span>{{lang.subject}}</span>
             <input type="text" v-model="subject" />
           </li>
           <li>
-            <span>설정</span>
+            <span>{{lang.setting}}</span>
             <div @click="defaultCheck">
-              <em class="sig_check" :class="{ active: this.default }"></em>기본
-              인사말로 지정
+              <em class="sig_check" :class="{ active: this.default }"></em>{{lang.default}}
             </div>
           </li>
           <li>
@@ -43,6 +42,7 @@ import Namo from '../editor/namo.vue';
 // import EditorContent from "./EditorContent.vue";
 export default {
   created() {
+    this.lang = this.GetMConfigL.modifygreet;
     this.default = this.GetGreetView.default;
     this.body = this.GetGreetView.body;
     this.subject = this.GetGreetView.subject;
@@ -84,7 +84,7 @@ export default {
       this.GetGreetView.default = this.default;
       var result = await this.$store.dispatch("mailjs/GreetEdit", this.GetGreetView);
       if(result){
-        this.$router.push({ name: "SeeGreet"});
+        this.$router.push({ name: 'greet' });
       }
     },
     Back() {

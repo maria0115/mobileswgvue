@@ -6,9 +6,9 @@
           ><img src="../../mobile/img/wmail_back.png" alt="" /></a
         >{{ params.title }}
       </h2>
-      <div v-if="GetStoreBoard.detail.isWriter||GetStoreBoard.detail.isAdmin">
-        <span class="edit" @click="Edit">수정</span>
-        <span class="del" @click="DeleteBoard">삭제</span>
+      <div v-if="GetStoreBoard.detail.isWriter || GetStoreBoard.detail.isAdmin">
+        <span class="edit fw_bold" @click="Edit">{{ lang.modify }}</span>
+        <span class="del fw_bold" @click="DeleteBoard">{{ lang.remove }}</span>
       </div>
     </div>
     <div class="m_contents04">
@@ -27,7 +27,8 @@
             <dd>
               {{ transTime(GetStoreBoard.detail.created) }}
               <span
-                >조회 : <em>{{ GetStoreBoard.detail.read_cnt }}</em></span
+                >{{ lang.open }} :
+                <em>{{ GetStoreBoard.detail.read_cnt }}</em></span
               >
             </dd>
           </dl>
@@ -36,10 +37,10 @@
       </div>
       <div class="posting" v-if="params.type !== 'congratulate'">
         <p>
-          <span>게시기간</span
-          ><em v-if="GetStoreBoard.detail.isEternity">영구</em
+          <span>{{ lang.term }}</span
+          ><em v-if="GetStoreBoard.detail.isEternity">{{ lang.everlasting }}</em
           ><em v-else
-            >{{ btransTime(GetStoreBoard.detail.startDate) }} ~ {{GetStoreBoard.detail}}
+            >{{ btransTime(GetStoreBoard.detail.startDate) }} ~
             {{ btransTime(GetStoreBoard.detail.endDate) }}</em
           >
         </p>
@@ -48,8 +49,8 @@
         class="add_file nt_file clfix"
         v-if="GetStoreBoard.detail.attach.length > 0"
       >
-        <strong>첨부파일</strong>
-        <ul>
+        <strong>{{ lang.attach }}</strong>
+        <ul v-if="!sat">
           <li
             class="active"
             v-for="(value, index) in GetStoreBoard.detail.attach"
@@ -61,7 +62,8 @@
                 alt=""
             /></span>
             <div>
-              <a :href="value.url">
+              <a @click="openDownload(value.url)">
+                <!-- <a :href="value.url"> -->
                 <p>{{ value.name }}</p>
                 <em>({{ value.size }})</em>
               </a>
@@ -69,11 +71,12 @@
           </li>
         </ul>
 
-        <!-- <Viewer
+        <Viewer
+          v-else
           className=""
           :attaInfo="GetStoreBoard.detail.attach"
           :attach="true"
-        ></Viewer> -->
+        ></Viewer>
       </div>
       <!-- <div class="noti_con" v-html="GetStoreBoard.detail.body"></div> -->
 
@@ -102,15 +105,16 @@
         class="comment"
       >
         <span
-          >댓글 <em>{{ this.GetStoreBoard.detail.reply.length }}</em></span
+          >{{ lang.reply }}
+          <em>{{ this.GetStoreBoard.detail.reply.length }}</em></span
         >
         <div class="com_input">
           <div class="f_com">
             <textarea
               v-model="PBody"
-              placeholder="댓글을 작성해 주세요."
+              :placeholder="lang.placeholder"
             ></textarea>
-            <span class="en_btn" @click="CommentSend()">등록</span>
+            <span class="en_btn" @click="CommentSend()">{{ lang.write }}</span>
           </div>
         </div>
         <div
@@ -143,7 +147,7 @@
             ></span>
             <span
               class="del_ic"
-              v-if="isMe(value)||GetStoreBoard.detail.isAdmin"
+              v-if="isMe(value) || GetStoreBoard.detail.isAdmin"
               @click="DeleteComment(value)"
             ></span>
           </div>
@@ -158,9 +162,11 @@
             <div class="s_com">
               <textarea
                 v-model="CBody"
-                placeholder="댓글을 작성해 주세요."
+                :placeholder="lang.placeholder"
               ></textarea>
-              <span class="en_btn" @click="CommentSend(value)">등록</span>
+              <span class="en_btn" @click="CommentSend(value)">{{
+                lang.write
+              }}</span>
             </div>
           </div>
         </div>
@@ -182,9 +188,9 @@ export default {
     Viewer,
   },
   created() {
+    this.lang = this.GetBoardL.read;
     // this.params = this.GetHeader.menu;
-      this.params = JSON.parse(this.$route.query.data);
-
+    this.params = JSON.parse(this.$route.query.data);
   },
   mounted() {
     this.editor = new Editor({
@@ -208,7 +214,10 @@ export default {
   computed: {
     ...mapGetters("boardjs", ["GetStoreBoard"]),
     ...mapGetters("mainjs", ["GetMyInfo"]),
-    ...mapGetters( ["GetHeader"]),
+    ...mapGetters(["GetHeader"]),
+    sat() {
+      return configjson.sat;
+    },
   },
   methods: {
     getExtensionOfFilename(filename) {
@@ -265,12 +274,12 @@ export default {
       );
     },
     ParentTag(parentUnid) {
-      // console.log(parentUnid,this.GetStoreBoard.parents)
-      var result = this.GetStoreBoard.parents.filter((p) => {
-        return p.unid === parentUnid;
+      // console.log(parentUnid,this.GetStoreBoard.parents,this.GetStoreBoard.detail.reply)
+      var result = this.GetStoreBoard.detail.reply.filter((p) => {
+        return p.my_unid === parentUnid;
       });
       if (result.length > 0) {
-        return `@${result[0].data.author}`;
+        return `@${result[0].author}`;
       }
       return "";
     },
@@ -343,9 +352,11 @@ export default {
     },
     GoList() {
       // this.SetHeader(this.params);
+      this.$store.commit("SetBack", true);
+
       this.$router.push({
         name: "boardlist",
-        query:{data:JSON.stringify(this.params)}
+        query: { data: JSON.stringify(this.params) },
       });
     },
     SetHeader(data) {
@@ -370,7 +381,7 @@ export default {
 
       this.$router.replace({
         name: "boardwrite",
-        query: {data:JSON.stringify(this.params)}
+        query: { data: JSON.stringify(this.params) },
       });
     },
     CommentSend(value) {
@@ -422,11 +433,15 @@ export default {
       data.boardType = this.GetStoreBoard.path;
       data.root_unid = value.root_unid;
       data.my_unid = value.my_unid;
+      data.lnbid = this.params.lnbid;
       this.$store.dispatch("boardjs/DeleteReply", data).then((res) => {
         if (res) {
           this.Read();
         }
       });
+    },
+    openDownload(url) {
+      location.href = url;
     },
   },
 };

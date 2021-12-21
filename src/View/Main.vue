@@ -13,7 +13,9 @@
           <span class="ham" @click="clickHam"></span>
           >
           <h1 class="logo">
-            <a @click="GoHome"></a>
+            <a @click="GoHome">
+              <img :src="Logo()" alt="로고" />
+            </a>
           </h1>
           <!-- <div class="allim_btn">
             <span class="allim_icon"></span>
@@ -30,7 +32,6 @@
               <img
                 v-if="GetMyInfo.photo !== undefined"
                 :src="GetMyInfo.photo"
-                
                 alt=""
                 @error="$event.target.src = '/mobile/img/img03.png'"
               />
@@ -84,21 +85,19 @@
               GetMainLanguage.hamburger.button.edit
             }}</span>
             <ul class="clfix">
-              <li
-                v-for="(value, name) in this.menuposition"
-                @click="MenuGo(!edit, value)"
-                :key="name"
-              >
-                <a>
-                  <span>
-                    <img
-                      :src="`/mobile/img/menu_icon${value.category}.png`"
-                      :alt="`${value.title}`"
-                    />
-                  </span>
-                  <em>{{ value.title }}</em>
-                </a>
-              </li>
+              <div v-for="(value, name) in this.menuposition" :key="name">
+                <li @click="MenuGo(!edit, value)" v-if="value.service">
+                  <a>
+                    <span>
+                      <img
+                        :src="`/mobile/img/menu_icon${value.category}.png`"
+                        :alt="`${value.title}`"
+                      />
+                    </span>
+                    <em>{{ value.title }}</em>
+                  </a>
+                </li>
+              </div>
             </ul>
           </div>
           <div class="editmenu" v-else>
@@ -111,7 +110,7 @@
               }}</span>
             </div>
             <ul class="clfix">
-              <li v-for="(value, name) in mainmenu" :key="name">
+              <li v-for="(value, name) in menuposition" :key="name">
                 <span>
                   <img
                     :src="`/mobile/img/menu_icon${value.category}.png`"
@@ -119,7 +118,7 @@
                   />
                   <b
                     @click="deleteItem(value, name)"
-                    :class="{ on: isOn(value, name) }"
+                    :class="{ on: value.service }"
                   ></b>
                 </span>
                 <em>{{ value.title }}</em>
@@ -144,7 +143,7 @@
                 :class="{ on: value.service }"
                 @click="checkService(value, name)"
               ></span
-              >{{ GetMainLanguage.portlet.portletposition[value.key] }}
+              >{{ value.title }}
             </li>
           </ul>
         </div>
@@ -174,11 +173,9 @@
                 :name="!drag ? 'flip-list' : null"
               >
                 <template v-for="(value, name) in GetConfig.main.portlet">
-                  <li v-if="value.service" :key="value.key">
+                  <li v-if="value.service" :key="name">
                     <em>{{ numSort(value, name) + 1 }}.</em>
-                    <span>{{
-                      GetMainLanguage.portlet.portletposition[value.key]
-                    }}</span>
+                    <span>{{ value.title }}</span>
                   </li>
                 </template>
               </transition-group>
@@ -190,9 +187,6 @@
 
       <div class="main_tabmenu">
         <ul class="main_menu clfix">
-          {{
-            this.Category
-          }}
           <li
             :class="[{ active: Category === 'My' || Category === 'MyIcon' }]"
             class="tab"
@@ -212,22 +206,23 @@
               >MY</router-link
             >
           </li>
-          <li
-            :class="[
-              {
-                active:
-                  Category === `main${value.category}` && value.type == Type,
-              },
-            ]"
-            class="tab"
-            v-for="(value, name) in GetConfig.main.menuportlet"
-            :key="name"
-          >
-            <!-- <router-link :to="`${MenuRouter(value.key)}`">{{
+          <span v-for="(value, name) in GetConfig.main.menuportlet" :key="name">
+            <li
+              :class="[
+                {
+                  active:
+                    Category === `main${value.category}` && value.type == Type,
+                },
+              ]"
+              class="tab"
+              v-if="value.service"
+            >
+              <!-- <router-link :to="`${MenuRouter(value.key)}`">{{
             GetMainLanguage.header[value.key]
           }}</router-link> -->
-            <a @click="MainGo(value)">{{ value.title }}</a>
-          </li>
+              <a @click="MainGo(value)">{{ value.title }}</a>
+            </li>
+          </span>
         </ul>
       </div>
       <!-- <ul class="list-group drag p20">
@@ -286,9 +281,16 @@
           this.GetConfig.display == 'menu'
         " -->
       <div class="logout" des="main2">
-        <span @click="logout"><a>로그아웃</a></span>
+        <span @click="logout"><a>{{GetCommonL.footer.logout}}</a></span>
       </div>
-      <div class="top_btn" @click="scrollToTop();"></div>
+      <btm-btn
+        v-if="
+          (Category == 'mainmail' || Category == 'mainapproval') && Option()
+        "
+      ></btm-btn>
+      <btm-btn v-else-if="Category == 'mainmail'"></btm-btn>
+      <div v-else class="top_btn" @click="scrollToTop()"></div>
+
       <Org :modalon="modalon" @ModalOff="ModalOff"></Org>
     </div>
   </div>
@@ -304,12 +306,16 @@ import SearchHeader from "./SearchHeader.vue";
 import $ from "jquery";
 import draggable from "vuedraggable";
 import Org from "./Org.vue";
+import BtmBtn from "./BtmBtn.vue";
 import { CategoryList } from "../api/index.js";
+import config from "@/config/config.json";
+import option from "@/config/option.json";
 export default {
   components: {
     SearchHeader,
     draggable,
     Org,
+    BtmBtn,
   },
   data() {
     return {
@@ -387,6 +393,7 @@ export default {
       $("html").removeClass("normal");
       $("html").addClass("mar15");
     }
+    this.menu = this.GetConfig.menuportlet;
     this.InitMenu();
 
     if (
@@ -418,33 +425,39 @@ export default {
     }
   },
   methods: {
+    Logo(){
+      return require(`../mobile/img/main_logo_${this.Company()}.png`)
+    },
+    Company(){
+      return config.company;
+    },
+    Option() {
+      return option[config.company].appWrite;
+    },
     scrollToTop() {
-      // console.log(this)
+      //
       // if(this.$root.$el.scrollHeight>200){
-      //   console.log(window);
+      //
       //   window.scrollTo(0,0)
       // }
       // var timeOut;
-      // console.log(window.pageYOffset);
+      //
       //   if (document.body.scrollTop!=0 || document.documentElement.scrollTop!=0){
-      //     console.log("여기안들어오니")
+      //
       //       window.scrollBy(0,-50);
       //       timeOut=setTimeout('scrollToTop()',10);
       //   }
       //   else clearTimeout(timeOut);
     },
     MainGo(value) {
-      if (value.category == "schedule") {
+      if (value.category == "schedule" || value.category == "reservation") {
         this.$router.push({ name: `${value.category}first` });
       } else {
         this.$router
           .push({
             name: `main${value.category}`,
             query: {
-              data: JSON.stringify({
-                type: value.type,
-                lnbid: value.lnbid,
-              }),
+              data: JSON.stringify(value),
             },
           })
           .catch((error) => {
@@ -456,13 +469,27 @@ export default {
     },
     MoreGo(value) {},
     InitMenu() {
-      for (let key in this.GetCategory["main"]) {
-        this.mainmenu[key] = this.GetCategory["main"][key];
-      }
+      //
+      // for (let key in this.GetConfig.main.menuportlet) {
+      //   this.mainmenu[key] = this.GetConfig.main.menuportlet[key];
+      // }
+
+      // var newmenu = [];
+
+      // var data = this.GetConfig.main.menuportlet;
+      // for (var i = 0; i < data.length; i++) {
+      //   newmenu.push(data[i]);
+      // }
+
+      this.mainmenu = JSON.parse(
+        JSON.stringify(this.GetConfig.main)
+      ).menuportlet;
+      // this.mainmenu = newmenu;
+      // this.mainmenu = this.GetConfig.main.menuportlet;
     },
     logout() {
       this.$store.dispatch("logout");
-      this.$router.push({ name: "login"});
+      this.$router.push({ name: "login" });
     },
     ModalOff() {
       this.modalon = false;
@@ -492,6 +519,21 @@ export default {
         name = `${value.category}first`;
         if (value.category == "board") {
           name = `${value.category}list`;
+          if (value.type == "board") {
+          this.$router.push({
+            name: name,
+            query: {
+              type: value.type,
+              data: JSON.stringify({
+                lnbid: this.categorys[0].lnbid,
+                type: value.type,
+                top:value.top,
+                title: this.categorys[0].title,
+              }),
+            },
+          });
+          return;
+        }
         } else if (value.category === "approval") {
           var approve = this.ThisCategory("approve");
           this.$router.push({
@@ -516,20 +558,24 @@ export default {
       }
     },
     MenuRouter(key) {
-      if (key === "schedule") {
+      if (key === "schedule" || key === "reservation") {
         return `${key}_more`;
       }
       return key;
     },
     // 메뉴 관리 편집 후 완료 버튼 누르지 않아도 data vind 으로 변경이 되어 있어 hamberger button click 시 다시 사용자 설정값 가져옴
     clickHam() {
-      var newmenu = [];
+      // var newmenu = [];
 
-      var data = this.GetConfig.main.menuportlet;
-      for (var i = 0; i < data.length; i++) {
-        newmenu.push(data[i]);
-      }
-      this.menuposition = newmenu;
+      // var data = this.GetConfig.main.menuportlet;
+      // for (var i = 0; i < data.length; i++) {
+      //   newmenu.push(data[i]);
+      // }
+      // this.menuposition = newmenu;
+
+      this.menuposition = JSON.parse(
+        JSON.stringify(this.GetConfig.main)
+      ).menuportlet;
     },
     // 포틀릿 순서변경
     sort() {
@@ -562,27 +608,40 @@ export default {
     // },
     // 메뉴관리 메뉴 삭제
     deleteItem: function (item, index) {
-      var result = this.isOn(item, index);
-      if (result) {
-        this.menuposition = this.menuposition.filter(
-          (element) =>
-            element.lnbid !== item.lnbid || element.category !== item.category
-        );
-      } else {
-        this.menuposition.push(item);
-        this.menuposition.sort(function (a, b) {
-          return a.order - b.order;
-        });
+      for (var i = 0; i < this.menuposition.length; i++) {
+        if (
+          this.menuposition[i].lnbid == item.lnbid &&
+          this.menuposition[i].category == item.category
+        ) {
+          this.menuposition[i].service = !this.menuposition[i].service;
+        }
       }
+      // var result = this.isOn(item, index);
+      // if (result) {
+      //   this.menuposition = this.menuposition.filter(
+      //     (element) =>
+      //       element.lnbid !== item.lnbid || element.category !== item.category
+      //   );
+      // } else {
+      //   this.menuposition.push(item);
+      //   this.menuposition.sort(function (a, b) {
+      //     return a.order - b.order;
+      //   });
+      // }
     },
     // 메뉴관리 초기화
     resetItem() {
-      let menuportlet = [];
-      for (let key in this.mainmenu) {
-        menuportlet[key] = this.mainmenu[key];
+      // let menuportlet = [];
+
+      // for (let key in this.mainmenu) {
+      //   menuportlet[key] = this.mainmenu[key];
+      // }
+      // this.menuposition = menuportlet;
+      for (var i = 0; i < this.menuposition.length; i++) {
+        this.menuposition[i].service = true;
       }
-      this.menuposition = menuportlet;
-      return menuportlet;
+      // this.menuposition = JSON.parse(JSON.stringify(this.mainmenu));
+      // return menuportlet;
     },
     // 메뉴관리 변경 완료
     complete() {
@@ -600,7 +659,8 @@ export default {
     // 편집 완료
     editmodeReset() {
       this.edit = false;
-      this.menuposition = this.GetConfig.main.menuportlet;
+
+      this.menuposition = JSON.parse(JSON.stringify(this.mainmenu));
     },
     // 포틀릿 순서변경 할 때마다 db입력
     RealTimeData() {
@@ -640,7 +700,7 @@ export default {
       return false;
     },
     GoHome() {
-      this.$router.push({ name: "root" });
+      this.$router.push({ name: "main" });
     },
   },
 };

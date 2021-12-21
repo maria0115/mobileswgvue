@@ -5,8 +5,8 @@
         <h2>{{ GetSearchLanguage.menu[this.path] }}</h2>
         <ul v-if="datacheck">
           <li v-for="(value, name) in this.sortdata[path].data" :key="name">
-            <!-- <a @click="openView(value)"> -->
-            <a :href="`/dwp/com/portal/main.nsf/wfrmpage?ReadForm&url=${value.originalurl}`">
+            <a @click="openView(value)">
+            <!-- <a :href="this.path === 'approval' ? openView(value) : value.originalurl"> -->
               <h3>{{ value.subject }}</h3>
               <div class="clfix">
                 <em>{{ setWord(value.author) }}</em>
@@ -47,6 +47,8 @@ import { Search } from "../../api/index.js";
 import Viewer from "../editor/viewer.vue";
 import InfiniteLoading from "vue-infinite-loading";
 import config from "../../config/search.json";
+import config2 from "../../config/config.json";
+
 export default {
   components: {
     InfiniteLoading,
@@ -97,11 +99,14 @@ export default {
     next();
   },
   methods: {
+    setUrl(url){
+      return config2.originPage + url;
+    },
     // utc time to local time, transformat
     getTime(date) {
       var moment = require("moment");
       var localTime = moment.utc(date).toDate();
-      localTime = moment(localTime).format("YYYY년 MM월 DD일 HH시 mm분 ss초");
+      localTime = moment(localTime).format("YYYY-MM-DD HHmm");
       return localTime;
     },
     // 데이터 값 (ko:zzz,en:xxx) 다국어 처리
@@ -161,10 +166,11 @@ export default {
         });
     },
     openView(value){
+      console.log(value)
       if(value.originalurl !== ""){ 
         this.$router.push({
             name: "originalPage",
-            params: { url: value.originalurl},
+            params: { url: value.originalurl,category:value.category},
           });
       }
       // if(value.originalurl !== ""){ 

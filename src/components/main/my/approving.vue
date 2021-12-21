@@ -1,6 +1,6 @@
 <template>
   <div class="m_app_ing">
-    <strong desc="결재 중 문서">{{ portlet.approval.approving }}</strong>
+    <strong desc="결재 중 문서">{{ portlet.title }}</strong>
     <em class="tooltip" :class="{ active: active }"
       ><strong v-for="(value, name) in tooltipText" :key="name"
         ><div>{{ `${value}` }}</div></strong
@@ -81,8 +81,8 @@
         query: {data:JSON.stringify({
           type: 'approving',
           lnbid: '',
-          top: GetCategory['main'][TopIdx()].lnbid,
-          title: portlet.approval.approving,
+          top: portlet.lnbid,
+          title: portlet.title,
         })}
       }"
       ><span class="m_more"><a></a></span
@@ -99,8 +99,7 @@ import VueSlickCarousel from "vue-slick-carousel";
 import { mapState, mapGetters } from "vuex";
 export default {
   async created() {
-    var main = this.GetCategory["main"];
-    this.params = main[this.TopIdx()];
+    this.params = this.portlet;
     var categorys = await this.$store.dispatch(
       "CategoryList",
       this.params.lnbid

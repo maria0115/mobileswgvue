@@ -2,25 +2,24 @@
   <div>
     <h2 class="mail_st_header">
       <router-link :to="{name:'mailsetconfig'}"><img src="../../mobile/img/wmail_back.png" alt="" /></router-link
-      >자동저장
+      >{{lang.title}}
     </h2>
     <div class="m_contents05">
       <ul class="cm_list" :class="{on:GetMailConfig.autosave.config.use}">
         <li class="toggle_line">
-          <a @click="MailConfigChange(!GetMailConfig.autosave.config.use,'use')">자동저장사용<span class="btn_toggle"></span></a>
+          <a @click="MailConfigChange(!GetMailConfig.autosave.config.use,'use')">{{lang.subtitle}}<span class="btn_toggle"></span></a>
         </li>
         <li class="t_btn">
-          <a>자동저장주기<span>{{GetMailConfig.autosave.config.time}}분</span></a>
+          <a>{{lang.cycle}}<span>{{GetMailConfig.autosave.config.time}}{{lang.minute}}</span></a>
         </li>
         <li class="d_btn">
-          <a>메시지 보관 기간<span>{{GetMailConfig.autosave.config.day}}일</span></a>
+          <a>{{lang.period}}<span>{{GetMailConfig.autosave.config.day}}{{lang.day}}</span></a>
         </li>
       </ul>
       <div>
-        <p>메일 작성 시 설정한 시간에 따라 메일이 자동저장됩니다.</p>
+        <p>{{lang.message}}</p>
         <p>
-          자동저장된 메일은 [기본메일함]->[임시보관]->[자동저장] 메뉴에서 확인할
-          수 있습니다.
+          {{lang.message2}}
         </p>
       </div>
       <div class="save_time">
@@ -28,7 +27,7 @@
         <ul>
           <li v-for="(value,index) in this.GetMailConfig.autosave.dutytime" :key="index" @click="MailConfigChange(value,'time')">
             <span class="sv_radio" :class="{active:GetMailConfig.autosave.config.time==value}"></span>
-            <em>{{value}}분</em>
+            <em>{{value}}{{lang.minute}}</em>
           </li>
         </ul>
       </div>
@@ -37,25 +36,20 @@
         <ul>
           <li v-for="(value,index) in this.GetMailConfig.autosave.storageperiod" :key="index" @click="MailConfigChange(value,'day')">
             <span class="sv_radio" :class="{active:GetMailConfig.autosave.config.day==value}"></span>
-            <em>{{value}}일</em>
+            <em>{{value}}{{lang.day}}</em>
           </li>
         </ul>
       </div>
     </div>
-    <ul class="btm_btn clfix">
-      <li class="home"><a href="./mob_main.html"></a></li>
-      <li class="back"><a href=""></a></li>
-      <li class="go"><a href=""></a></li>
-      <li class="refresh"><a href=""></a></li>
-      <li class="link"><a href=""></a></li>
-      <li class="btm_more"><a href=""></a></li>
-    </ul>
   </div>
 </template>
 
 <script>
 import { mapState, mapGetters } from "vuex";
 export default {
+  created(){
+    this.lang = this.GetMConfigL.autosave;
+  },
   components: {
   },
   computed: {

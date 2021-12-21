@@ -3,7 +3,7 @@
         "photo": "http://swg60.saerom.co.kr/dwp/com/portal/userphoto.nsf/photo/@/$FILE/@.jpg",
         "newcount": 0,
         "my": {
-            "recentdate": 20,
+            "recentdate": 7,
             "recentdate_desc": "최근 생성된 게시물 new 아이콘 ex)1=1일전 , 0=오늘",
             "description_myinfo": "/ my 페이지 변수 초기화"
         },

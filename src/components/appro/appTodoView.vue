@@ -26,7 +26,7 @@
           <li v-if="detail.approvalInfo">
             <h3 :class="{ active: appActive }">
               <a @click="isOpenApp"
-                >결재정보 <em>({{ this.detail.approvalInfo.length }})</em></a
+                >{{lang.appinfo}} <em>({{ this.detail.approvalInfo.length }})</em></a
               >
             </h3>
             <div :class="{ active: appActive }">
@@ -56,11 +56,11 @@
           <li class="app_file" v-if="this.detail.attachInfo.length > 0">
             <h3 :class="{ active: attActive }">
               <a @click="isOpenAtt"
-                >첨부파일 <em>({{ this.detail.attachInfo.length }})</em></a
+                >{{lang.attach}} <em>({{ this.detail.attachInfo.length }})</em></a
               >
             </h3>
             <div :class="{ active: attActive }">
-              <ul>
+              <ul v-if="!sat">
                 <li
                   v-for="(value, index) in this.detail.attachInfo"
                   :key="index"
@@ -74,16 +74,17 @@
                   </div> -->
                 </li>
               </ul>
-              <!-- <Viewer
+              <Viewer
+                v-else
                 className=""
                 :attaInfo="this.detail.attachInfo"
                 :attach="true"
-              ></Viewer> -->
+              ></Viewer>
             </div>
           </li>
         </ul>
         <div class="line03">
-          <a v-html="detail.body"></a>
+          <a v-html="detail.body" style="overflow-x: auto"></a>
         </div>
         <!-- <div class="line04 clfix">
           <form @submit.prevent>
@@ -97,7 +98,11 @@
       <BtnPlus :menu="morePlus" @BtnClick="BtnClick"></BtnPlus>
       <Viewer className="" :attach="false" ref="viewer"></Viewer>
     </div>
-    <Comment :isOpen="agreeNreject" @ModalOff="ModalOff" @AgreeNReject="AgreeNReject"></Comment>
+    <Comment
+      :isOpen="agreeNreject"
+      @ModalOff="ModalOff"
+      @AgreeNReject="AgreeNReject"
+    ></Comment>
   </div>
 </template>
 
@@ -108,17 +113,31 @@ import BtnPlus from "./btnPlus.vue";
 import Comment from "./Comment.vue";
 import { mapState, mapGetters } from "vuex";
 import Viewer from "../editor/viewer.vue";
+
+import config from "@/config/config.json";
 export default {
   created() {
-    if (!this.detail.agreeBtn) {
-      // this.morePlus = { view: "원문 보기",deleteItem: "삭제", };
-      this.morePlus = { view: "원문 보기" };
-      return;
-    }
+    const language = this.GetAppL.todolist;
+    // this.commonl = this.GetCommonL;
+    this.lang = language;
+
+    var more = language.morePlus;
+    this.morePlus.agree = more.agree;
+    this.morePlus.reject = more.reject;
+    this.morePlus.view = more.view;
+    this.title = language.title;
     this.params = JSON.parse(this.$route.query.data);
     // this.params = this.GetHeader.menu;
+    if (!this.detail.agreeBtn) {
+      // this.morePlus = { view: "원문 보기",deleteItem: "삭제", };
+      this.morePlus = { view: more.view };
+    }
     if (this.detail.status == "mutualing") {
-      this.morePlus = { agree: "협조동의", reject: "반대", view: "원문 보기" };
+      this.morePlus = {
+        agree: more.mutualing.agree,
+        reject: more.mutualing.agree,
+        view: more.view,
+      };
     }
   },
   computed: {
@@ -126,6 +145,9 @@ export default {
     ...mapState("approjs", ["detail"]),
     ...mapGetters(["GetHeader"]),
     ...mapGetters("approjs", ["GetSaveApproval"]),
+    sat() {
+      return config.sat;
+    },
   },
   components: {
     BackHeader,
@@ -199,6 +221,7 @@ export default {
       window.open(url);
     },
     OriginView() {
+      // location.href = config.originPage + this.detail.openurl;
       // node 원문보기
       this.$router.push({
         name: "originalPage",

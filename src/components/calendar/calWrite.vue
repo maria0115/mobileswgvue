@@ -5,7 +5,7 @@
       <form @submit.prevent>
         <ul class="wc_top">
           <li class="cal_title">
-            <strong>일정제목</strong>
+            <strong>{{lang.title}}</strong>
             <div>
               <input type="text" v-model="Subject" />
               <input
@@ -18,15 +18,15 @@
             </div>
           </li>
           <li class="cal_category">
-            <strong>카테고리</strong>
+            <strong>{{lang.cate}}</strong>
             <div class="">
               <select name="" v-model="onCategory" id="">
                 <option
-                  v-for="(value, index) in category"
+                  v-for="(value, index) in lang.category"
                   :key="index"
-                  :value="Object.keys(value)[0]"
+                  :value="index"
                 >
-                  {{ value[Object.keys(value)[0]] }}
+                  {{ value }}
                 </option>
               </select>
             </div>
@@ -43,32 +43,32 @@
             </div>
           </li> -->
           <li class="cal_date">
-            <strong>일자</strong>
+            <strong>{{lang.date}}</strong>
             <div>
               <input type="date" :disabled="this.GetEdit" v-model="date" />
             </div>
           </li>
           <li v-if="!this.GetEdit" class="repeat_s">
-            <strong>반복</strong>
+            <strong>{{lang.rep}}</strong>
             <div>
               <span @click="rClick('regular')">
-                <em :class="{ click: !rereclick }"></em>일반
+                <em :class="{ click: !rereclick }"></em>{{lang.oneday}}
               </span>
               <span class="rere_btn" @click="RBtn"
                 ><!--클래스명 추가됨 8월 12일 -->
-                <em :class="{ click: rereclick }"></em>반복예약
+                <em :class="{ click: rereclick }"></em>{{lang.repbook}}
               </span>
             </div>
           </li>
           <li v-if="!(onCategory == 1 || onCategory == 2)" class="cal_time">
-            <strong>시간</strong>
+            <strong>{{lang.time}}</strong>
             <div>
               <input type="time" value="15:00" v-model="startTime" /><b>~</b
               ><input type="time" value="16:00" v-model="endTime" />
             </div>
           </li>
           <li v-if="onCategory == 3" class="cal_att">
-            <strong>참석자</strong>
+            <strong>{{lang.send}}</strong>
             <div>
               <ul class="list_add clfix">
                 <li
@@ -83,13 +83,13 @@
                       <dd>{{ value.email }}</dd>
                     </dl>
                     <span @click="ScheduleOrgDataDelete(value, 'SendTo')"
-                      >삭제</span
+                      >{{lang.remove}}</span
                     >
                   </div>
                 </li>
 
                 <li class="new_addr">
-                  <label for="toinput" class="blind">참석자</label>
+                  <label for="toinput" class="blind">{{lang.send}}</label>
                   <textarea
                     @click="
                       [
@@ -113,7 +113,7 @@
                   ></textarea>
                 </li>
               </ul>
-              <span class="c_organ" @click="orgClick('SendTo')">조직도</span>
+              <span class="c_organ" @click="orgClick('SendTo')">{{lang.org}}</span>
             </div>
             <div class="add_search" :class="{ active: this.sendtosearch }">
               <ul>
@@ -137,7 +137,7 @@
             </div>
             <ul class="more_cal_att">
               <li>
-                <strong>참조</strong>
+                <strong>{{lang.copy}}</strong>
                 <div>
                   <ul class="list_add clfix">
                     <li
@@ -152,12 +152,12 @@
                           <dd>{{ value.email }}</dd>
                         </dl>
                         <span @click="ScheduleOrgDataDelete(value, 'CopyTo')"
-                          >삭제</span
+                          >{{lang.remove}}</span
                         >
                       </div>
                     </li>
                     <li class="new_addr">
-                      <label for="toinput" class="blind">참조</label>
+                      <label for="toinput" class="blind">{{lang.copy}}</label>
                       <textarea
                         @click="
                           [
@@ -182,7 +182,7 @@
                     </li>
                   </ul>
                   <span class="c_organ" @click="orgClick('CopyTo')"
-                    >조직도</span
+                    >{{lang.org}}</span
                   >
                 </div>
                 <div class="add_search" :class="{ active: this.copytosearch }">
@@ -207,7 +207,7 @@
                 </div>
               </li>
               <li>
-                <strong>숨은참조</strong>
+                <strong>{{lang.bcopy}}</strong>
                 <div>
                   <ul class="list_add clfix">
                     <li
@@ -223,12 +223,12 @@
                         </dl>
                         <span
                           @click="ScheduleOrgDataDelete(value, 'BlindCopyTo')"
-                          >삭제</span
+                          >{{lang.remove}}</span
                         >
                       </div>
                     </li>
                     <li class="new_addr">
-                      <label for="cryinput" class="blind">숨은참조</label>
+                      <label for="cryinput" class="blind">{{lang.bcopy}}</label>
                       <textarea
                         @click="
                           [
@@ -253,7 +253,7 @@
                     </li>
                   </ul>
                   <span class="c_organ" @click="orgClick('BlindCopyTo')"
-                    >조직도</span
+                    >{{lang.org}}</span
                   >
                 </div>
                 <div
@@ -283,13 +283,13 @@
             </ul>
           </li>
           <li class="cal_place">
-            <strong>장소</strong>
+            <strong>{{lang.place}}</strong>
             <div>
               <input type="text" v-model="place" />
             </div>
           </li>
           <li class="att_file">
-            <strong>첨부파일</strong>
+            <strong>{{lang.attach}}</strong>
               <span class="tit_clip" @click="submitFile()" />
 
             <div>
@@ -321,16 +321,12 @@
     <div class="rere_modal" :class="{ active: rmodalon }">
       <!--8월 12일 추가됨 반복예약-->
       <div class="rere_con">
-        <strong>반복설정</strong>
-        <p>행사가 반복될 때</p>
+        <strong>{{lang.repsetting}}</strong>
+        <p>{{lang.whenrep}}</p>
         <ul>
           <li>
             <select id="rere_box" v-model="RepeatUnit">
-              <option value="D" selected>일 단위</option>
-              <option value="W">주 단위</option>
-              <option value="MD">월 단위(날짜)</option>
-              <option value="MP">월 단위(요일)</option>
-              <option value="Y">년 단위</option>
+              <option v-for="(value,name) in lang.unit" :key="name" :value="name">{{value}}</option>
             </select>
           </li>
           <li class="ri_adjust clfix">
@@ -341,9 +337,9 @@
                 name="sel01"
                 id="sel01"
               >
-                <option value="매일 반복" selected>매일 반복</option>
+                <option value="매일 반복" selected>{{lang.repp.day}}</option>
                 <option :value="fill(2, num)" v-for="num in 31" :key="num">
-                  {{ num }}일마다 반복
+                  {{ num }}{{lang.repp.eachday}}
                 </option>
               </select>
               <select
@@ -351,9 +347,9 @@
                 v-model="RepeatInterval"
                 id="sel02_1"
               >
-                <option value="매주 반복" selected>매주 반복</option>
+                <option value="매주 반복" selected>{{lang.repp.week}}</option>
                 <option :value="fill(2, num)" v-for="num in 8" :key="num">
-                  {{ num }}주마다 반복
+                  {{ num }}{{lang.repp.eachweek}}
                 </option>
               </select>
               <select
@@ -361,9 +357,9 @@
                 v-if="RepeatUnit == 'MD' || RepeatUnit == 'MP'"
                 id="sel03_1"
               >
-                <option value="매월 반복" selected>매월 반복</option>
+                <option value="매월 반복" selected>{{lang.repp.month}}</option>
                 <option :value="fill(2, num)" v-for="num in 12" :key="num">
-                  {{ num }}개월마다 반복
+                  {{ num }}{{lang.repp.eachmonth}}
                 </option>
               </select>
               <select
@@ -371,9 +367,9 @@
                 v-if="RepeatUnit == 'Y'"
                 id="sel05_1"
               >
-                <option value="매년 반복" selected>매년 반복</option>
+                <option value="매년 반복" selected>{{lang.repp.year}}</option>
                 <option :value="fill(2, num)" v-for="num in 10" :key="num">
-                  {{ num }}년마다 반복
+                  {{ num }}{{lang.repp.eachyear}}
                 </option>
               </select>
             </div>
@@ -393,7 +389,7 @@
                   v-for="(value, index) in daysSort"
                   :key="index"
                 >
-                  {{ value }}요일
+                  {{ value }}{{lang.yuil}}
                 </option>
               </select>
               <select
@@ -402,7 +398,7 @@
                 v-if="RepeatUnit == 'MD'"
               >
                 <option :value="fill(2, num)" v-for="num in 31" :key="num">
-                  {{ num }}일
+                  {{ num }}{{lang.day}}
                 </option>
               </select>
               <select
@@ -415,18 +411,18 @@
                   :value="v.index"
                   :key="i"
                 >
-                  {{ v.str }}요일
+                  {{ v.str }}{{lang.yuil}}
                 </option>
               </select>
             </div>
           </li>
         </ul>
-        <p>행사가 반복되는 기간</p>
+        <p>{{lang.reppeiod}}</p>
         <ul class="inp_wrap">
           <li class="clfix term">
             <select id="selectbox" v-model="RepeatHow">
-              <option value="U" selected>종료</option>
-              <option value="F">기간</option>
+              <option value="U" selected>{{lang.end}}</option>
+              <option value="F">{{lang.period}}</option>
             </select>
           </li>
           <li class="clfix date_inp">
@@ -434,15 +430,15 @@
             <div class="clfix" :class="{ active: RepeatHow == 'F' }">
               <span><input type="text" v-model="RepeatFor" /></span>
               <select v-model="RepeatForUnit">
-                <option value="D">일</option>
-                <option value="W">주</option>
-                <option value="M">개월</option>
-                <option value="Y">년</option>
+                <option value="D">{{lang.day}}</option>
+                <option value="W">{{lang.week}}</option>
+                <option value="M">{{lang.month}}</option>
+                <option value="Y">{{lang.year}}</option>
               </select>
             </div>
           </li>
         </ul>
-        <span class="time_mo_btn" @click="rClick('rere')">확인</span>
+        <span class="time_mo_btn" @click="rClick('rere')">{{lang.check}}</span>
         <span class="modal_close rereclose" @click="RBtnremove"></span>
       </div>
     </div>
@@ -458,6 +454,12 @@ import { Editor, EditorContent } from "tiptap";
 import Namo from "../editor/namo.vue";
 export default {
   created() {
+    this.lang = this.GetScheduleL.write;
+    var language = this.lang;
+    this.category = language.category;
+    this.daysSort = language.daysSort.split(",");
+    this.weekSort = language.weekSort.split(",");
+
     var params = JSON.parse(this.$route.query.data);
 
     if (this.GetEdit) {
@@ -541,15 +543,6 @@ export default {
       copytosearchkeyword: "",
       sendtosearchkeyword: "",
       ExpireDate: "",
-      category: [
-        { 3: "회의" },
-        { 0: "약속" },
-        { 2: "행사" },
-        { 1: "기념일" },
-        { 4: "리마인더" },
-      ],
-      daysSort: ["일", "월", "화", "수", "목", "금", "토"],
-      weekSort: ["첫번째", "두번째", "세번째", "네번째", "마지막"],
       RepeatUnit: "D",
       RepeatInterval: "01",
       RepeatAdjust_W: "00",
@@ -620,6 +613,10 @@ export default {
       }
     },
     async AddOrg(who, value, what) {
+      var data = {};
+      data.item = value;
+      data.point = who;
+      this.$store.commit("OrgDataAdd",data);
       await this.$store.commit("AddOrg", {
         who,
         value,

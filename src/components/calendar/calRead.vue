@@ -4,11 +4,18 @@
       <em
         ><a @click="RouterBack"
           ><img src="../../mobile/img/wmail_back.png" alt="" /></a
-        >일정</em
+        >{{ lang.schedule }}</em
       >
-      <div v-if="this.GetMyInfo.info.notesid==this.calData.authorId" class="rdcal_icons">
-        <span class="rdcal_edit"><a @click="Edit()">편집</a></span>
-        <span class="rdcal_edit_del" @click="Del">삭제</span>
+      <div
+        v-if="this.GetMyInfo.info.notesid == this.calData.authorId"
+        class="rdcal_icons"
+      >
+        <span class="rdcal_edit fw_bold"
+          ><a @click="Edit()">{{ lang.modify }}</a></span
+        >
+        <span class="rdcal_edit_del fw_bold" @click="Del">{{
+          lang.remove
+        }}</span>
       </div>
     </div>
     <div class="m_contents08 srl">
@@ -22,23 +29,23 @@
       </div>
       <ul class="rd_list">
         <li>
-          <span>일자</span>
+          <span>{{ lang.date }}</span>
           <div>{{ this.params.date }}</div>
         </li>
         <li
           v-if="!(calData.category == '기념일' || calData.category == '행사')"
         >
-          <span>시간</span>
+          <span>{{ lang.time }}</span>
           <div>{{ this.params.time }}</div>
         </li>
         <li>
-          <span>위치</span>
+          <span>{{ lang.where }}</span>
           <div>
             {{ this.calData.place }}
           </div>
         </li>
         <li v-if="calData.sendTo.length > 0">
-          <span>참석자</span>
+          <span>{{ lang.send }}</span>
           <div>
             <em
               class="per_item"
@@ -49,7 +56,7 @@
           </div>
         </li>
         <li v-if="calData.copyTo.length > 0">
-          <span>참조자</span>
+          <span>{{ lang.copy }}</span>
           <div>
             <em
               class="per_item"
@@ -60,21 +67,20 @@
           </div>
         </li>
         <li v-if="calData.attachInfo.length > 0">
-          <span>첨부파일</span>
-          <ul class="file_list">
-            <li
-              v-for="(value, index) in calData.attachInfo"
-              :key="index"
-            ><a :href="value.url" download>
-              {{ value.name }}
+          <span>{{ lang.attach }}</span>
+          <ul class="file_list" v-if="!sat">
+            <li v-for="(value, index) in calData.attachInfo" :key="index">
+              <a :href="value.url" download>
+                {{ value.name }}
               </a>
             </li>
           </ul>
-          <!-- <Viewer
+          <Viewer
+            v-else
             className="file_list"
             :attaInfo="calData.attachInfo"
             :attach="true"
-          ></Viewer> -->
+          ></Viewer>
         </li>
       </ul>
       <!-- <div class="cal_info" v-html="GetSchedule.calDetail[GetSaveSchedule.detail.where].body"></div> -->
@@ -85,7 +91,10 @@
         :editor="GetSchedule.calDetail[GetSaveSchedule.detail.where].body"
         ref="editor"
       ></Namo> -->
-      <div class="cal_info" v-html="GetSchedule.calDetail[GetSaveSchedule.detail.where].body"></div>
+      <div
+        class="cal_info"
+        v-html="GetSchedule.calDetail[GetSaveSchedule.detail.where].body"
+      ></div>
       <!-- <editor-content class="cal_info" :editor="editor" /> -->
     </div>
   </div>
@@ -95,17 +104,23 @@
 import { mapState, mapGetters } from "vuex";
 import { Editor, EditorContent } from "tiptap";
 // import Namo from "../editor/namo.vue";
+import configjson from "../../config/config.json";
 import Viewer from "../editor/viewer.vue";
 export default {
   created() {
+    this.lang = this.GetScheduleL.read;
+    this.daysSort = this.lang.daySort.split(",");
+
     this.calData =
       this.GetSchedule.calDetail[this.GetSaveSchedule.detail.where];
     var date = this.calData.startdate;
-    var currentDay = new Date(date.replaceAll("-", "/"));
+    var redate = this.replaceAll(date, "-", "/");
+    var currentDay = new Date(redate);
     var theDayOfWeek = currentDay.getDay();
     this.params = JSON.parse(this.$route.query.data);
 
-    this.today = date.replaceAll("-", ".") + `(${this.daysSort[theDayOfWeek]})`;
+    this.today =
+      this.replaceAll(date, "-", ".") + `(${this.daysSort[theDayOfWeek]})`;
   },
   components: {
     EditorContent,
@@ -118,12 +133,14 @@ export default {
       "GetSaveSchedule",
       "GetSaveScheduleList",
     ]),
-    ...mapGetters("mainjs",["GetMyInfo"]),
+    ...mapGetters("mainjs", ["GetMyInfo"]),
+    sat() {
+      return configjson.sat;
+    },
   },
   data() {
     return {
       editor: null,
-      daysSort: ["일", "월", "화", "수", "목", "금", "토"],
       today: "",
     };
   },
@@ -137,6 +154,9 @@ export default {
     this.editor.destroy();
   },
   methods: {
+    replaceAll(str, searchStr, replaceStr) {
+      return str.split(searchStr).join(replaceStr);
+    },
     fill(width, number) {
       number = number + ""; //number를 문자열로 변환하는 작업
       var str = "";

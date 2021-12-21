@@ -1,15 +1,15 @@
 <template>
+  <!-- @mousedown="Or_bg"
+    @touchstart="Or_bg" -->
   <li
-    @mousedown="Or_bg"
-    @touchstart="Or_bg"
     :class="[
       { or_bg: lastClass },
       { a_last_deps: lastClass },
       { o_depth02: !lastClass },
-      { active: this.clicked },
+      { active: isSelect },
     ]"
   >
-    <div >
+    <div>
       <b @click="toggle" :class="{ on: this.isOpen }"></b>
       <span @click="MailOrgData"
         >{{ item.name }}
@@ -29,7 +29,9 @@
         :modalAutoOrg="modalAutoOrg"
         :createdOrg="createdOrg"
         :appDept="appDept"
+        :appPath="appPath"
         @PickItem="GetItem"
+        @DelPickItem="DelItem"
       ></org-item>
     </ul>
   </li>
@@ -66,7 +68,8 @@ export default {
     item: Object,
     modalAutoOrg: Number,
     createdOrg: Boolean,
-    appDept:String
+    appDept: String,
+    appPath: Array,
   },
   data: function () {
     return {
@@ -77,7 +80,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(["autosearchorg","org"]),
+    ...mapState(["autosearchorg", "org"]),
     ...mapGetters("mainjs", ["GetMyInfo"]),
 
     // 다른것들을 끌어왔을때 렝스가 1이상이면
@@ -99,22 +102,37 @@ export default {
       }
       return true;
     },
+    isSelect() {
+      // for(var i=0; i<this.appPath.length;i++){
+      // var here = this;
+      // var result = this.appPath.findIndex(function (itemone, idx) {
+      //   return itemone.approvalInfo.email == here.item.email;
+      // });
+      // if (this.clicked) {
+      //   return true;
+      // } else {
+      //   if (result !== -1) {
+      //     return false;
+      //   }
+      // }
+      return false;
+    },
   },
   watch: {
-    async modalAutoOrg() {
-      if (this.item.kinds == "Department" && this.children.length === 0) {
-        this.GetChildren();
-        this.$emit("SetcreatedOrg");
-      }
-      var auto = this.autosearchorg[this.org.pointer];
-      var result = auto.findIndex(
-        (element) => element.shortname === this.item.shortname
-      );
-      if (result !== -1) {
-        this.$emit("OpenFolder");
-        this.clicked = true;
-      }
-    },
+    // async modalAutoOrg() {
+      // if (this.item.kinds == "Department" && this.children.length === 0) {
+      //   this.GetChildren();
+      //   this.$emit("SetcreatedOrg");
+      // }
+      // var auto = this.autosearchorg[this.org.pointer];
+      // var result = auto.findIndex(
+      //   (element) => element.shortname === this.item.shortname
+      // );
+      // if (result !== -1) {
+      //   this.$emit("OpenFolder");
+      //   this.clicked = true;
+      // }
+    // },
   },
   methods: {
     OpenFolder() {
@@ -122,7 +140,6 @@ export default {
       this.isOpen = true;
     },
     toggle() {
-      
       if (this.item.kinds == "Department" && this.children.length === 0) {
         this.GetChildren();
       }
@@ -132,11 +149,17 @@ export default {
       this.children = await this.$store.dispatch("Org", this.item);
     },
     MailOrgData() {
-      if (this.item.kinds == "Person") {
-        this.$emit("PickItem",this.item);
+      if (this.item.kinds == "Person" ) {
+        this.$emit("PickItem", this.item);
       }
-      // this.$store.commit("SearchOrgInit");
-      this.clicked = false;
+      // if (this.item.kinds == "Person" && !this.clicked) {
+      //   this.clicked = true;
+
+      //   this.$emit("PickItem", this.item);
+      // } else if (this.item.kinds == "Person" && this.clicked) {
+      //   this.clicked = false;
+      //   this.$emit("DelPickItem", this.item);
+      // }
     },
     Or_bg() {
       if (this.item.kinds == "Person") {
@@ -144,7 +167,10 @@ export default {
       }
     },
     GetItem(item) {
-      this.$emit("PickItem",item);
+      this.$emit("PickItem", item);
+    },
+    DelItem(item) {
+      this.$emit("DelPickItem", item);
     },
   },
 };

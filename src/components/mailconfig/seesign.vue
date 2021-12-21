@@ -2,21 +2,21 @@
   <div>
     <h2 class="mail_st_header">
       <router-link :to="{name:'sign'}"> <img src="../../mobile/img/wmail_back.png" alt="" /> </router-link
-      >서명 보기
-      <span><router-link :to="{name:'modifysign'}">편집</router-link></span>
+      >{{lang.title}}
+      <span><router-link :to="{name:'modifysign'}">{{lang.edit}}</router-link></span>
     </h2>
     <div class="m_contents07">
       <ul>
         <li>
-          <span>제목</span>
+          <span>{{lang.subject}}</span>
           <div>
             <p>{{GetSignView.subject}}</p>
           </div>
         </li>
         <li>
-          <span>설정</span>
+          <span>{{lang.setting}}</span>
           <div v-if="GetSignView.default">
-            <p>기본 서명</p>
+            <p>{{lang.default}}</p>
           </div>
         </li>
         <li class="texteditor">
@@ -32,7 +32,7 @@
             ---------------------------------------------------------
           </div> -->
           <!-- <Namo :editor="GetSignView.body" :read="true" ref="editor"></Namo> -->
-          <div v-html="replace(GetSignView.body)"></div>
+          <div v-html="GetSignView.body" style="height:auto;"></div>
           <!-- <editor-content :editor="editor" /> -->
         </li>
       </ul>
@@ -71,11 +71,9 @@ export default {
     ...mapGetters("mailjs",["GetSignView"]),
   },
   created(){
+    this.lang = this.GetMConfigL.readsign;
   },
   methods: {
-    replace(data){
-      return data.replaceAll( "</p><p>", '');
-    },
     Back() {
       this.$router.go(-1);
     },

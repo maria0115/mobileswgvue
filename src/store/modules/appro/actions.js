@@ -6,7 +6,7 @@ export default {
     AppSearch({ state, commit, rootState }, data) {
         data.size = rootState.configjs.store.config.listcount;
         rootState.tf = true;
-        AppSearch(data)
+        return AppSearch(data)
             .then((res) => {
                 rootState.tf = false;
 

@@ -1,7 +1,7 @@
 <template>
   <div>
     <ul class="btm_btn clfix">
-      <li class="home"><router-link :to="{ name: 'root' }"></router-link></li>
+      <li class="home"><router-link :to="{ name: 'main' }"></router-link></li>
       <li class="back" @click="RouterBack"><a></a></li>
       <li class="go" @click="RouterGo"><a></a></li>
       <li class="btm_menu" @click="BtmMenu"><a></a></li>
@@ -10,7 +10,7 @@
         <a><em class="allim_num">23</em></a>
       </li> -->
     </ul>
-    <div class="btm_menu_list">
+    <div class="btm_menu_list" @click="Close">
       <div class="list_inner">
         <ul class="clfix">
           <li v-for="(value, name) in GetCategory['main']" :key="name">
@@ -21,7 +21,7 @@
             >
           </li>
         </ul>
-        <em class="close_btn"></em>
+        <!-- <em class="close_btn"></em> -->
       </div>
     </div>
     <OrgFooter
@@ -49,7 +49,7 @@
             >
               <a>
                 <dl>
-                  <dt v-if="value.data.allDay">종일</dt>
+                  <dt v-if="value.data.allDay">{{lang.allday}}</dt>
                   <dt v-else>
                     {{ value.data.starttime.split(":")[0] }}:{{
                       value.data.starttime.split(":")[1]
@@ -67,12 +67,12 @@
           <div class="no_schedule" v-else>
             <div>
               <span></span>
-              <p>등록된 일정이 없습니다.<br />일정을 등록하세요</p>
+              <p>{{lang.havenotschedule}}<br />{{lang.beregister}}</p>
             </div>
           </div>
         </div>
         <div class="con_ft" @click="Write">
-          <span>일정쓰기</span>
+          <span>{{header.schedule}}{{header.write}}</span>
         </div>
       </div>
     </div>
@@ -85,7 +85,10 @@ import PersonCard from "./PersonCard.vue";
 import OrgFooter from "./OrgFooter.vue";
 import { CategoryList } from "../api/index.js";
 export default {
-  created() {},
+  created() {
+    this.lang = this.GetScheduleL.list;
+    this.header = this.GetScheduleL.header;
+  },
   beforeDestroy() {
     this.calListClose();
   },
@@ -117,11 +120,11 @@ export default {
   },
 
   methods: {
-    Close(e){
+    Close(e) {
       var LayerPopup = $(".btm_menu_list");
-        if(LayerPopup.has(e.target).length === 0){
-          this.CloseHam();
-        }
+      if (LayerPopup.has(e.target).length === 0) {
+        $(".btm_menu_list").removeClass("active");
+      }
     },
     Write() {
       this.$router.push({
@@ -168,13 +171,34 @@ export default {
     // SetHeader(data) {
     //   this.$store.commit("SetHeader", data);
     // },
-    MenuGo(value) {
+    async MenuGo(value) {
       this.categorys = this.GetCategory[value.lnbid];
+      if (!this.categorys) {
+        this.categorys = await this.$store.dispatch(
+          "CategoryList",
+          value.lnbid
+        );
+      }
       var name = "";
       value.top = value.lnbid;
       name = `${value.category}first`;
       if (value.category == "board") {
         name = `${value.category}list`;
+        if (value.type == "board") {
+          this.$router.push({
+            name: name,
+            query: {
+              type: value.type,
+              data: JSON.stringify({
+                lnbid: this.categorys[0].lnbid,
+                type: value.type,
+                top:value.top,
+                title: this.categorys[0].title,
+              }),
+            },
+          });
+          return;
+        }
       } else if (value.category === "approval") {
         var approve = this.ThisCategory("approve");
         // this.SetHeader({
@@ -185,19 +209,21 @@ export default {
         // });
         this.$router.push({
           name: name,
-          query:{data:JSON.stringify({
-          title: approve.title,
-          type: approve.category,
-          top: value.top,
-          lnbid: approve.lnbid,
-        }) }
+          query: {
+            data: JSON.stringify({
+              title: approve.title,
+              type: approve.category,
+              top: value.top,
+              lnbid: approve.lnbid,
+            }),
+          },
         });
         return;
       }
       // this.SetHeader(value);
       this.$router.push({
         name: name,
-        query: {data:JSON.stringify(value)}
+        query: { data: JSON.stringify(value) },
       });
     },
     InitMenu(id) {
@@ -224,7 +250,7 @@ export default {
     RouterBack() {
       // this.SetHeader(this.GetHeader.prevmenu);
       this.$store.commit("mailjs/Back");
-      this.$store.commit("SetBack",true);
+      this.$store.commit("SetBack", true);
       this.$router.go(-1);
     },
     // 후 url 이동
@@ -241,12 +267,14 @@ export default {
       console.log("routerlink");
     },
     orgClick(to) {
+      $(".btm_menu_list").removeClass("active");
+
       this.modalon = true;
     },
     calListClose() {
       this.$store.commit("calendarjs/calListOpen", false);
     },
-    BtmMenu(){
+    BtmMenu() {
       // alert("jquery 안됨")
     },
   },

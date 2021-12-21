@@ -11,6 +11,7 @@ import configjs from './modules/config';
 import calendarjs from './modules/calendar';
 import approjs from './modules/appro';
 import boardjs from './modules/board';
+import bookjs from './modules/book';
 
 
 import createPersistedState from 'vuex-persistedstate';
@@ -34,6 +35,9 @@ const dataState = createPersistedState({
         'store.header',
         'mainjs.store.myinfo',
         'searchjs.store.data',
+        'bookjs.store.unid',
+        'bookjs.store.nowroom',
+        'bookjs.store.edit',
     ]
 })
 Vue.use(VueX)
@@ -47,12 +51,13 @@ export const store = new VueX.Store({
         mailjs,
         configjs,
         calendarjs,
-        approjs
+        approjs,
+        bookjs,
     },
     plugins: [dataState],
     state: {
         tf: false, // 로딩화면 온오프
-        back:{isBacked: false,page:0,top:0}, // 뒤로가기
+        back: { isBacked: false, page: 0, top: 0 }, // 뒤로가기
 
         langa: { locale: "ko" },    //locale default 설정
 
@@ -69,7 +74,8 @@ export const store = new VueX.Store({
             CopyTo: [],
             BlindCopyTo: []
         },
-        listOfCategory:{},
+        orgdata: [],
+        listOfCategory: {},
 
     },
     mutations,
@@ -95,6 +101,24 @@ export const store = new VueX.Store({
         },
         GetMailLanguage: (state) => {
             return state.store.language.mail;
+        },
+        GetAppL: (state) => {
+            return state.store.language.approval;
+        },
+        GetMConfigL: (state) => {
+            return state.store.language.mailconfig;
+        },
+        GetBoardL: (state) => {
+            return state.store.language.board;
+        },
+        GetBookL: (state) => {
+            return state.store.language.reservation;
+        },
+        GetScheduleL: (state) => {
+            return state.store.language.schedule;
+        },
+        GetCommonL: (state) => {
+            return state.store.language.common;
         },
         GetCategory: (state) => {
             return state.store.category;

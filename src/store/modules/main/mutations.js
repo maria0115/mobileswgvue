@@ -4,6 +4,9 @@ export default {
     MyInfo(state, { res }) {
         state.store.myinfo = res;
     },
+    MyInfoMaster(state, data) {
+        state.store.myinfo.master = data;
+    },
     // 메일 데이터
     Mail(state, { res, mailtype, category }) {
         state.main.data.mailtype[mailtype][category].data = res;

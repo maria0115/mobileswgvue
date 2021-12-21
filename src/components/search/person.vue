@@ -5,7 +5,7 @@
         <h2>{{ GetSearchLanguage.menu[path] }} 정보</h2>
         <ul v-if="datacheck">
           <li v-for="(value, name) in this.sortdata[path].data" :key="name">
-            <a href="">
+            <a>
               <div>
                 <span
                   ><img
@@ -18,7 +18,7 @@
               <ul>
                 <li>
                   <span>{{ GetSearchLanguage[path].dept }} : </span
-                  >{{ value.dept }}
+                  >{{ setWord(value.dept) }}
                 </li>
                 <li>
                   <span>{{ GetSearchLanguage[path].position }} : </span
@@ -120,7 +120,7 @@ export default {
     getTime(date) {
       var moment = require("moment");
       var localTime = moment.utc(date).toDate();
-      localTime = moment(localTime).format("YYYY년 MM월 DD일 HH시 mm분 ss초");
+      localTime = moment(localTime).format("YYYY-MM-DD HHmm");
       return localTime;
     },
     // 데이터 값 (ko:zzz,en:xxx) 다국어 처리
