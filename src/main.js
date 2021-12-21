@@ -19,7 +19,7 @@ Vue.use(VDragged)
 // Vue.use(VueHead)
 
 import Meta from 'vue-meta'
-import language from "@/mixin/language.js";
+import common from "@/mixin/common.js";
 Vue.use(Meta);
 
 // Vue.use(VueCookies);
@@ -27,7 +27,7 @@ Vue.config.productionTip = false;
 // import VTooltip from 'v-tooltip'
 // Vue.prototype.mainmenu = config.config.main.menuportlet;
 Vue.prototype.customFolder = "";
-Vue.mixin(language)
+Vue.mixin(common)
 new Vue({
   store,
   router,

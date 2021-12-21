@@ -251,9 +251,10 @@ export default {
       data.root_unid = detail.root_unid;
       data.boardType = this.GetStoreBoard.path;
       this.$store.dispatch("boardjs/Likeit", data).then((res) => {
+        console.log(res)
         if (res) {
-          if (res.msgcode == "success") {
-            this.GetStoreBoard.detail.like_cnt = parseInt(detail.like_cnt) + 1;
+          this.GetStoreBoard.detail.like_cnt = parseInt(res.like_cnt);
+          if (res.result == 200||res.result == "200"||res.result == "success") {
             this.GetStoreBoard.detail.isLike = false;
           }
         }

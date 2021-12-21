@@ -381,7 +381,6 @@ import Namo from "../editor/namo.vue";
 export default {
   async created() {
     this.lang = this.GetMailLanguage.write;
-    console.log(this.lang);
     // this.$store.commit("mailjs/MailOrgDataInit");
     this.Body_Text = `${this.GetMail.writeForm.greetings}<p></p><p></p>${this.GetMail.writeForm.signature}<p></p><p></p>`;
     this.isEdit = this.$route.query.isEdit;
@@ -590,9 +589,11 @@ export default {
       formData.append("ocxBCopyTo", ocxBCopyTo);
       formData.append("Subject", this.Subject);
       // namo editor 본문 내용 받아오기
-      // let editorData ="본문";
-      let editorData =
-        this.$refs.editor.$refs.namo.contentWindow.crosseditor.GetBodyValue();
+      let editorData = "";
+      this.Config().env == "dev"
+        ? (editorData = "본문")
+        : (editorData =
+            this.$refs.editor.$refs.namo.contentWindow.crosseditor.GetBodyValue());
       formData.append("Body_Text", editorData);
 
       var impor = 2;
@@ -706,9 +707,38 @@ export default {
             });
         }
       } else {
-        var formData = this.FormSet();
         // 사람이 한사람이라도 없으면
-        if (menu === "save") {
+        if (menu === "send") {
+          if (this.sendtosearchkeyword.length > 0) {
+            await this.AddOrgEnter("SendTo", this.sendtosearchkeyword);
+          }
+          if (this.copytosearchkeyword.length > 0) {
+            await this.AddOrgEnter("CopyTo", this.copytosearchkeyword);
+          }
+          if (this.blindcopytosearchkeyword.length > 0) {
+            await this.AddOrgEnter(
+              "BlindCopyTo",
+              this.blindcopytosearchkeyword
+            );
+          }
+          if (this.org.SendTo.length === 0) {
+            alert(this.GetCommonL.comment.send);
+            return;
+          } else if (this.org.SendTo.length > 0 && this.org.SendTo[0].id) {
+            var formData = this.FormSet();
+
+            this.$store.dispatch("mailjs/MailWrite", formData).then((res) => {
+              if (res) {
+                this.$store.commit("OrgDataInit");
+                this.$router.push({ name: "sent_detail" });
+              }
+            });
+            return;
+          } else {
+            alert("수신인을 다시 지정하세요.");
+          }
+        } else if (menu === "save") {
+          var formData = this.FormSet();
           // 저장가능
           this.$store
             .dispatch("mailjs/MailSave", {
@@ -822,6 +852,7 @@ export default {
       this.sendtosearchkeyword = "";
       this.copytosearchkeyword = "";
       this.blindcopytosearchkeyword = "";
+      return;
     },
     async AddOrg(who, value, what) {
       var data = {};

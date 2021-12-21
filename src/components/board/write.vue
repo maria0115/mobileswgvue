@@ -8,7 +8,7 @@
       </h2>
       <div>
         <span class="save fw_bold" @click="Send">{{lang.save}}</span>
-        <span class="cancel fw_bold" @click="Cancel">{{lang.cancle}}</span>
+        <span class="cancel fw_bold" @click="Cancel">{{lang.cancel}}</span>
       </div>
     </div>
     <div class="m_contents03">

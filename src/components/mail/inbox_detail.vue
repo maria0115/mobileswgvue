@@ -47,7 +47,7 @@
                     { active02: onecheck(index) },
                     { on: mail.checkBtn.editclicked },
                   ]"
-                  :value="{ unid: item.unid, key: index }"
+                  :value="{ unid: item.unid, key: index,type:item.folderName }"
                   v-model="mail.checkBtn.checkedNames"
                 />
                 <dl @click="MailDetail(item.unid, item.folderName)">

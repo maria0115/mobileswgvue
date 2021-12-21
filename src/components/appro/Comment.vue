@@ -11,7 +11,7 @@
       </div>
       <div>
         <span class="impor_mo_btn" @click="AgreeNReject">{{ lang.ok }}</span>
-        <span class="modal_cancel" @click="ModalOff">{{ lang.cancle }}</span>
+        <span class="modal_cancel" @click="ModalOff">{{ lang.cancel }}</span>
       </div>
     </div>
   </div>

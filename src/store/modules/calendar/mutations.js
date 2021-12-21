@@ -80,19 +80,21 @@ export default {
                     var time2arr = [];
                     // d.push(time);
                     data.forEach((time2, j) => {
-                        var starttime2 = time2.startdate.split('-').join("") + time2.starttime.split(':').join("");
-                        var endtime2 = time2.enddate.split('-').join("") + time2.endtime.split(':').join("");
-                        let st2 = parseInt(starttime2);
-                        let et2 = parseInt(endtime2);
-                        if (st1 >= st2 && st1 <= et2 || et1 >= st2 && et1 <= et2 || st2 >= st1 && st2 <= et1 || et2 >= st1 && et2 <= et1) {
-                            // isOverlap = true;
-                            // d[rank] = d[rank] || [];
-                            // d[rank].push(time2);
-                            time2.left = rank;
-                            rank++;
+                        if (!time2.allDay) {
+                            var starttime2 = time2.startdate.split('-').join("") + time2.starttime.split(':').join("");
+                            var endtime2 = time2.enddate.split('-').join("") + time2.endtime.split(':').join("");
+                            let st2 = parseInt(starttime2);
+                            let et2 = parseInt(endtime2);
+                            if (st1 >= st2 && st1 <= et2 || et1 >= st2 && et1 <= et2 || st2 >= st1 && st2 <= et1 || et2 >= st1 && et2 <= et1) {
+                                // isOverlap = true;
+                                // d[rank] = d[rank] || [];
+                                // d[rank].push(time2);
+                                time2.left = rank;
+                                rank++;
 
-                        } else {
-                            isOverlap = false;
+                            } else {
+                                isOverlap = false;
+                            }
                         }
                     })
                     time.width = rank;
@@ -110,7 +112,6 @@ export default {
             data = {};
             data.data = d;
             data.allday = timeAllObj;
-            console.log(data)
         }
 
         state.schedule.data.calList[which] = data;

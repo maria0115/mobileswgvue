@@ -1,5 +1,6 @@
 {
     "packageName":"swgMobile",
+    "env":"dev",
     "company":"saerom",
     "extension":["doc","docx","jpg","jpeg","png","gif","psd","ai","img","pdf","ppt","pptx","vod","mp3","mp4","xls","xlsx","zip"],
     "description_systemmode": "system,light,dark",

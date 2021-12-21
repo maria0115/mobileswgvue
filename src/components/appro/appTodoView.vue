@@ -135,7 +135,7 @@ export default {
     if (this.detail.status == "mutualing") {
       this.morePlus = {
         agree: more.mutualing.agree,
-        reject: more.mutualing.agree,
+        reject: more.mutualing.reject,
         view: more.view,
       };
     }

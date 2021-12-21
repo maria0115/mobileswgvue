@@ -143,9 +143,10 @@ export default {
   methods: {
     Relay() {
       if (this.mail.checkBtn.checkedNames.length > 0) {
-        var unid = this.mail.checkBtn.checkedNames[0].unid;
+        var item = this.mail.checkBtn.checkedNames[0];
+        var unid = item.unid;
         // this.$store.commit("checkedNamesPush", this.GetMailDetail.unid);
-        this.$store.dispatch("mailjs/MailDetail", unid);
+        this.$store.dispatch("mailjs/MailDetail", item);
         this.$store.commit("mailjs/MailDetailUnid", unid);
         this.$store.commit("mailjs/From", "Relay");
         this.$router.push({ name: "WriteMail" });

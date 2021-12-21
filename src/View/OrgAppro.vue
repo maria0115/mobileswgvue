@@ -4,7 +4,7 @@
       <form @submit.prevent>
         <div>
           <div>
-            <strong>{{ this.title[appDept] }}</strong>
+            <strong>{{this.lang.title}}</strong>
             <div>
               <input
                 type="text"

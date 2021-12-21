@@ -114,10 +114,8 @@ export default {
     // this.morePlus = language.morePlus;
     // this.title = language.title;
     // this.commonl = this.GetCommonL;
-    console.log(language)
     var more = language.morePlus;
     this.title = language.title;
-    console.log(more.view)
     this.morePlus.view = more.view;
     this.params = JSON.parse(this.$route.query.data);
     if (this.detail.isCollect) {
@@ -126,6 +124,7 @@ export default {
     if (this.detail.agreeBtn) {
       // this.morePlus = { view: "원문 보기",deleteItem: "삭제", };
       if (this.detail.status == "mutualing") {
+        
         this.morePlus.agree = more.mutualing.agree;
         this.morePlus.reject = more.mutualing.reject;
       } else {
@@ -190,7 +189,7 @@ export default {
         // formData.append("approve", "recallall");
         // data = formData;
         this.agreeNreject = true;
-        this.nowBtn = e;
+        this.nowBtn = value;
         return;
       } else if (value == "agreeNreject") {
         let formData = new FormData();

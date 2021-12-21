@@ -157,7 +157,6 @@ export default {
     mailDelete(state, { type }) {
         var data = state.mail.data[type].data.data;
         var checked = state.mail.checkBtn.checkedNames;
-        console.log(checked,data)
         for (var i = 0; i < checked.length; i++) {
             data = data.filter((element) => element.unid !== checked[i].unid);
         }

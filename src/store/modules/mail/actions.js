@@ -323,7 +323,6 @@ export default {
 
     },
     async MailDetail({ state, rootState, commit }, { unid, type }) {
-        console.log(unid, type)
         return await MailDetail(unid, type)
             .then(response => {
 

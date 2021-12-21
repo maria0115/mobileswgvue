@@ -326,7 +326,6 @@ export default {
       data.start = start;
       data.end = last;
       data.today = this.fulldate;
-      console.log(this.fulldate, data);
       this.$store.dispatch("calendarjs/CalList", { data, which: "month" });
       if (weekOfDays.length > 0) dates.push(weekOfDays);
       this.nextMonthStart = weekOfDays[0];
