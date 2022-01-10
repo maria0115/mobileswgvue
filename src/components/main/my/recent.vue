@@ -2,12 +2,10 @@
   <div class="m_posts">
     <strong desc="최근게시물">{{ portlet.title }}</strong>
     <ul>
-      <li
-        v-for="(value, name) in this.lists"
-        :key="name"
-      >
+      <li v-for="(value, name) in this.lists" :key="name">
         <a @click="Read(value)"
-          ><em v-if="value.category">[{{ value.category }}]</em>{{ value.subject }}</a
+          ><em v-if="value.category">[{{ value.category }}]</em
+          >{{ value.subject }}</a
         >
       </li>
     </ul>
@@ -25,10 +23,10 @@
           name: `boardlist`,
           query: {
             data: JSON.stringify({
-              lnbid: portlet.lnbid,
+              lnbid: params.lnbid,
               type: portlet.type,
               top: portlet.lnbid,
-              title: portlet.title,
+              title: params.title,
             }),
           },
         }"
@@ -42,11 +40,18 @@ import { mapGetters, mapState } from "vuex";
 export default {
   props: ["portlet"],
   async created() {
-    this.portlet.page = 0;
-      this.portlet.size = 5;
-    this.lists = await this.$store.dispatch("ListOfCategory", this.portlet);
+    this.params = this.portlet;
+    var res = await this.$store.dispatch("CategoryList", this.portlet.lnbid);
+    this.params = JSON.parse(JSON.stringify(res[0]));
+    if (res.length > 0) {
+      res[0].page = 0;
+      res[0].size = 5;
+      res[0].category = "board";
+      res[0].type = this.portlet.type;
+      this.lists = await this.$store.dispatch("ListOfCategory", res[0]);
 
       this.$forceUpdate();
+    }
   },
   data() {
     return {
@@ -66,9 +71,9 @@ export default {
           menu: this.portlet.type,
           unid: value.unid,
           type: this.portlet.type,
-          title: this.portlet.title,
-          lnbid: this.portlet.lnbid,
-          top:this.portlet.lnbid,
+          title: this.params.title,
+          lnbid: this.params.lnbid,
+          top: this.portlet.lnbid,
         });
       }
     },

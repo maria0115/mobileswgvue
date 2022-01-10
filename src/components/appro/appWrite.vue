@@ -191,17 +191,12 @@
           <li class="reason">
             <strong>{{ lang.comment }}</strong>
             <div>
-              <!-- <editor-content :editor="editor" /> -->
               <textarea v-model="TmpsComment"></textarea>
             </div>
           </li>
           <li class="reason">
             <strong>{{ lang.body }}</strong>
-            <!-- <div> -->
-            <editor-content :editor="editor" />
-            <!-- {{Body_Text}}
-              <textarea v-html="Body_Text"></textarea> -->
-            <!-- </div> -->
+            <textarea v-model="Body_Text"></textarea>
           </li>
           <li class="file_add">
             <strong>{{ lang.attach }}</strong>
@@ -249,7 +244,6 @@ import BtnPlus from "./btnPlus.vue";
 import SubMenu from "./menu.vue";
 import { mapState, mapGetters } from "vuex";
 import Org from "../../View/OrgAppro.vue";
-import { Editor, EditorContent } from "tiptap";
 export default {
   created() {
     const language = this.GetAppL.appwrite;
@@ -285,20 +279,12 @@ export default {
   },
   mounted() {
     this.fileinit = this.$refs.file.files;
-
-    this.editor = new Editor({
-      content: this.Body_Text,
-    });
   },
   components: {
     BackHeader,
     SubMenu,
     BtnPlus,
     Org,
-    EditorContent,
-  },
-  beforeDestroy() {
-    this.editor.destroy();
   },
   data() {
     return {
@@ -306,7 +292,6 @@ export default {
       thisform: "",
       appPath: [],
       appDept: "sAppList1",
-      editor: null,
       file: [],
       modalon: false,
       modalAutoOrg: 0,
@@ -334,7 +319,7 @@ export default {
   },
   computed: {
     ...mapState(["autosearchorg", "org"]),
-    ...mapGetters(["GetHeader"]),
+    ...mapGetters(["GetHeader", "GetCategory"]),
     ...mapGetters("mainjs", ["GetMyInfo"]),
     ...mapGetters("mailjs", ["GetMail"]),
     ...mapState("approjs", ["detail"]),
@@ -425,10 +410,7 @@ export default {
             // if(e=="raise"){
             this.params.type = "";
             // this.SetHeader(this.params);
-            this.$router.push({
-              name: "appapproving",
-              query: { data: JSON.stringify(this.params) },
-            });
+            this.$router.go(-1);
 
             // }else if(e=="draft"){
             // this.$router.push({name:'appdraft',query:{data:JSON.stringify(this.params)}})

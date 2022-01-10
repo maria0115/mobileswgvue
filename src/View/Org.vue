@@ -109,16 +109,38 @@ import { mapState, mapGetters } from "vuex";
 import OrgItem from "./orgitemview.vue";
 export default {
   created() {
+    if(this.send.length>0){
+      for(var item of this.send){
+        this.$store.commit("OrgDataAdd",item);
+      }
+    }
     this.lang = this.GetCommonL.org;
 
     var data = {};
     this.$store.dispatch("mailjs/InitOrg", data);
   },
+  mounted(){
+  },
   props: {
     modalon: Boolean,
+    send: {
+      type: Array,
+      default: function () {
+        return [];
+      }
+    },
   },
   components: {
     OrgItem,
+    
+
+  },
+  watch:{
+    send(newval){
+      for(var item of newval){
+        this.$store.commit("OrgDataAdd",item);
+      }
+    },
   },
   computed: {
     ...mapState(["autosearchorg", "org", "orgdata"]),
@@ -137,6 +159,8 @@ export default {
   beforeDestroy() {
     this.$store.commit("mailjs/From", "");
     this.$store.commit("OrgDataInit");
+    this.$store.commit("InitOrgData");
+
     // this.$store.commit("OrgDataInit");
   },
   methods: {

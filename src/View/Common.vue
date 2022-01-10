@@ -8,6 +8,11 @@
 <script>
 export default {
   created() {
+
+
+    // document.documentElement.style.setProperty('--main-bg-color', this.Option().mainBgColor);
+
+    
     if (this.$route.name === "root") {
       for (var item of this.languages) {
         this.getLanguage(item);

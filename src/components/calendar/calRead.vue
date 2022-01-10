@@ -21,11 +21,13 @@
     <div class="m_contents08 srl">
       <div class="con_body_top">
         <span>{{ calData.subject }}</span>
-        <em
+        <em v-if="Option().inotes"
           ><b class="cate">{{ calData.category }}</b>
           /
           <b class="open">{{ calData.secret }}</b></em
-        >
+        ><em v-else>
+          {{ calData.category }}
+        </em>
       </div>
       <ul class="rd_list">
         <li>
@@ -38,7 +40,7 @@
           <span>{{ lang.time }}</span>
           <div>{{ this.params.time }}</div>
         </li>
-        <li>
+        <li v-if="Option().inotes">
           <span>{{ lang.where }}</span>
           <div>
             {{ this.calData.place }}
@@ -70,7 +72,7 @@
           <span>{{ lang.attach }}</span>
           <ul class="file_list" v-if="!sat">
             <li v-for="(value, index) in calData.attachInfo" :key="index">
-              <a :href="value.url" download>
+              <a @click="openDownload(value.url)">
                 {{ value.name }}
               </a>
             </li>
@@ -83,18 +85,18 @@
           ></Viewer>
         </li>
       </ul>
-      <!-- <div class="cal_info" v-html="GetSchedule.calDetail[GetSaveSchedule.detail.where].body"></div> -->
-      <!-- <Namo
+      <Body
+        class="cal_info"
         id="memo_t"
+        :body="GetSchedule.calDetail[GetSaveSchedule.detail.where].body"
+        ref="Body"
         :read="true"
         did="calendar"
-        :editor="GetSchedule.calDetail[GetSaveSchedule.detail.where].body"
-        ref="editor"
-      ></Namo> -->
-      <div
+      />
+      <!-- <div
         class="cal_info"
         v-html="GetSchedule.calDetail[GetSaveSchedule.detail.where].body"
-      ></div>
+      ></div> -->
       <!-- <editor-content class="cal_info" :editor="editor" /> -->
     </div>
   </div>
@@ -103,7 +105,7 @@
 <script>
 import { mapState, mapGetters } from "vuex";
 import { Editor, EditorContent } from "tiptap";
-// import Namo from "../editor/namo.vue";
+import Namo from "../editor/namo.vue";
 import configjson from "../../config/config.json";
 import Viewer from "../editor/viewer.vue";
 export default {
@@ -124,7 +126,7 @@ export default {
   },
   components: {
     EditorContent,
-    // Namo,
+    Namo,
     Viewer,
   },
   computed: {

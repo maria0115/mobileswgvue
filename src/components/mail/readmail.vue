@@ -6,18 +6,26 @@
           ><img src="../../mobile/img/wmail_back.png" alt="" /></a
       ></em>
       <div class="rdmail_icons">
-        <span class="rd_reply fw_bold" @click="Replay('Reply')">{{lang.reply}}</span>
-        <span class="rd_relay" v-if="!isDraft()" @click="Replay('Relay')"
-          >{{lang.fw}}</span
-        >
-        <span class="rd_relay fw_bold" v-else @click="Edit()">{{lang.edit}}</span>
-        <span class="rd_del fw_bold" @click="mailDelete">{{lang.delete}}</span>
+        <span class="rd_reply fw_bold" @click="Replay('Reply')">{{
+          lang.reply
+        }}</span>
+        <span class="rd_relay" v-if="!isDraft()" @click="Replay('Relay')">{{
+          lang.fw
+        }}</span>
+        <span class="rd_relay fw_bold" v-else @click="Edit()">{{
+          lang.edit
+        }}</span>
+        <span class="rd_del fw_bold" @click="mailDelete">{{
+          lang.delete
+        }}</span>
         <span class="rd_more"></span>
         <ul class="more_box">
-          <li class="move">{{lang.move}}</li>
-          <li @click="SpamSet" v-if="!isDraft()">{{lang.spam}}</li>
-          <li @click="Replay('AllReply')">{{lang.allreply}}</li>
-          <li v-if="path.includes('trash')" @click="MailRecovery">{{lang.recovery}}</li>
+          <li class="move">{{ lang.move }}</li>
+          <li @click="SpamSet" v-if="!isDraft()">{{ lang.spam }}</li>
+          <li @click="Replay('AllReply')">{{ lang.allreply }}</li>
+          <li v-if="path.includes('trash')" @click="MailRecovery">
+            {{ lang.recovery }}
+          </li>
         </ul>
       </div>
     </div>
@@ -42,7 +50,7 @@
           </div>
           <ul class="re_refer_div">
             <li class="clfix refer01">
-              <strong>{{lang.sender}}</strong>
+              <strong>{{ lang.sender }}</strong>
               <div>
                 <span
                   v-for="(value, index) in GetMailDetail.sendTo"
@@ -55,7 +63,7 @@
               </div>
             </li>
             <li class="clfix refer02">
-              <strong>{{lang.copyto}}</strong>
+              <strong>{{ lang.copyto }}</strong>
               <div>
                 <span
                   v-for="(value, index) in GetMailDetail.copyTo"
@@ -92,7 +100,7 @@
           <FollowUp :unid="clickedUnid"></FollowUp>
         </div>
         <div class="add_file clfix">
-          <strong>{{lang.attach}}</strong>
+          <strong>{{ lang.attach }}</strong>
           <ul v-if="!sat">
             <li
               v-for="(value, index) in GetMailDetail.attach"
@@ -104,11 +112,11 @@
                   :src="`../../mobile/img/icon_${fileImg(value.name)}.png`"
                   alt=""
               /></span>
-              <div>
-                <a :href="value.url" download>
-                  <p>{{ value.name }}</p>
-                  <em>({{ value.size }})</em>
-                </a>
+              <div @click="openDownload(value.url)">
+                <!-- <a :href="value.url" download> -->
+                <p>{{ value.name }}</p>
+                <em>({{ value.size }})</em>
+                <!-- </a> -->
               </div>
             </li>
           </ul>
@@ -124,14 +132,14 @@
           보내드립니다. 감사합니다.
         </div> -->
         <div class="rdm_edit">
-          <!-- <Namo
+          <Body
             id="memo_t"
+            :body="GetMailDetail.body"
+            ref="Body"
             :read="true"
-            :editor="GetMailDetail.body"
             did="mail"
-            ref="editor"
-          ></Namo> -->
-          <div v-html="GetMailDetail.body"></div>
+          />
+          <!-- <div v-html="GetMailDetail.body"></div> -->
         </div>
 
         <!-- <editor-content
@@ -149,14 +157,14 @@ import { mapState, mapGetters } from "vuex";
 import MoveFile from "./movefile.vue";
 import { Editor, EditorContent } from "tiptap";
 import configjson from "../../config/config.json";
-// import Namo from "../editor/namo.vue";
+import Namo from "../editor/namo.vue";
 import Viewer from "../editor/viewer.vue";
 import FollowUp from "./folloup.vue";
 export default {
   components: {
     MoveFile,
     EditorContent,
-    // Namo,
+    Namo,
     Viewer,
     FollowUp,
   },
@@ -184,6 +192,17 @@ export default {
     this.$store.commit("mailjs/checkedNamesPush", this.GetMailDetail.unid);
   },
   methods: {
+    downloadFile(value) {
+      window.open(value.url, "Download");
+      // const blob = new Blob([value.url], { type: "text/plain" });
+      // const url = window.URL.createObjectURL(blob);
+      // const a = document.createElement("a");
+      // a.href = value.url;
+      // a.download = `${value.name}`;
+      // a.click();
+      // a.remove();
+      // window.URL.revokeObjectURL(url);
+    },
     isDraft() {
       if (this.GetfolderName) {
         return this.GetfolderName.indexOf("draft") !== -1;

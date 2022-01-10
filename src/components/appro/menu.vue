@@ -59,6 +59,7 @@ export default {
     // this.params = this.GetHeader.menu;
     // this.category = this.GetCategory[this.params.top];
     CategoryList2(this.params.top).then((res) => {
+      this.$store.commit("CategoryList", { id:"app", list: res.data });
       this.category = res.data;
     });
     // this.$store.dispatch("approjs/GetApprovalList", { type: "draft" });

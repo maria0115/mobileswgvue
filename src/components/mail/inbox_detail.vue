@@ -1,7 +1,18 @@
 <template>
   <div>
     <div class="m_contents02">
-      <form @submit.prevent>
+      <!-- <template slot="top-block" slot-scope="props">
+          <div class="top-load-wrapper" :key="props.stateText">
+            <div
+              class="loading-container"
+              :style="settranslateY"
+              v-if="isLoading"
+            >
+              <div class="loading"></div>
+            </div>
+          </div>
+        </template> -->
+      <form class="formdiv" @submit.prevent>
         <ul>
           <swipe-list
             v-if="this.mail.data[this.path].data.data"
@@ -47,7 +58,11 @@
                     { active02: onecheck(index) },
                     { on: mail.checkBtn.editclicked },
                   ]"
-                  :value="{ unid: item.unid, key: index,type:item.folderName }"
+                  :value="{
+                    unid: item.unid,
+                    key: index,
+                    type: item.folderName,
+                  }"
                   v-model="mail.checkBtn.checkedNames"
                 />
                 <dl @click="MailDetail(item.unid, item.folderName)">
@@ -96,23 +111,10 @@
               <i class="trash" @click="mailDelete(item, index)"></i>
             </template>
           </swipe-list>
-          <infinite-loading
-            @infinite="infiniteHandler"
-            :identifier="infiniteId"
-            ref="infiniteLoading"
-            spinner="waveDots"
-          >
-            <div slot="no-more" style="padding: 10px 0px">
-              {{ commonl.end }}
-            </div>
-            <div slot="no-results" style="padding: 10px 0px">
-              {{ commonl.end }}
-            </div>
-            <div slot="error">
-              Error message, click
-              <router-link :to="{ name: 'mail' }">here</router-link> to retry
-            </div>
-          </infinite-loading>
+          <Infinite
+            @infiniteHandler="infiniteHandler"
+            :infiniteId="infiniteId"
+          ></Infinite>
         </ul>
       </form>
     </div>
@@ -141,7 +143,6 @@
 <script>
 import BtnPlus from "../../View/BtmBtn.vue";
 import config from "../../config/config.json";
-import InfiniteLoading from "vue-infinite-loading";
 import { mapState, mapGetters } from "vuex";
 import { MailSearch, Mail } from "../../api/index.js";
 import "vue-swipe-actions/dist/vue-swipe-actions.css";
@@ -150,9 +151,12 @@ import ListHeader from "./listheader.vue";
 import MoveFile from "./movefile.vue";
 import Folder from "./folder.vue";
 import FollowUp from "./folloup.vue";
+import Infinite from "@/components/common/infinite.vue";
+
 export default {
+  // mixins: [pmixin],
+
   components: {
-    InfiniteLoading,
     SwipeOut,
     SwipeList,
     ListHeader,
@@ -160,6 +164,7 @@ export default {
     Folder,
     BtnPlus,
     FollowUp,
+    Infinite,
   },
   data() {
     return {
@@ -192,6 +197,9 @@ export default {
         return "custom";
       }
     },
+  },
+  beforeDestroy() {
+    PullToRefresh.destroyAll();
   },
   beforeRouteLeave(to, from, next) {
     // this.$refs.infiniteLoading.$emit('$InfiniteLoading:reset');
@@ -230,31 +238,16 @@ export default {
 
       option.searchword = this.GetMailConfig.searchOption.searchword;
       option.size = this.GetConfig.listcount;
-      if (this.mailSearchPath.includes(this.path)) {
-        for (var i = 0; i < this.back.page; i++) {
-          this.page++;
-          option.page = this.page;
-          var result = await MailSearch(option);
-          result = result.data.data;
-          if (result) {
-            this.mail.data[this.path].data.data =
-              this.mail.data[this.path].data.data.concat(result);
-          }
-        }
-      } else {
-        for (var i = 0; i < this.back.page; i++) {
-          this.page++;
-          option.page = this.page;
-          var result = await Mail(option);
-          result = result.data.data;
-          if (result) {
-            this.mail.data[this.path].data.data =
-              this.mail.data[this.path].data.data.concat(result);
-          }
+      for (var i = 0; i < this.back.page; i++) {
+        this.page++;
+        option.page = this.page;
+        if (this.mailSearchPath.includes(this.path)) {
+          await this.initMailSearch(option);
+        } else {
+          await this.initMail(option);
         }
       }
       this.infiniteId++;
-      this.$store.commit("SetBack", false);
       this.$forceUpdate();
       // window.scroll({ top: this.back.top, behavior: "smooth" });
       var scrollentity = $("html,body");
@@ -263,14 +256,55 @@ export default {
       }
       scrollentity.animate({ scrollTop: this.back.top }, 500);
     }
+    this.$store.commit("SetBack", false);
   },
   mounted() {
     if ("ontouchstart" in document.documentElement !== true) {
       this.checkEvent = "mouse";
     }
+    this.setPullTo();
   },
-
   methods: {
+    async initMailSearch(option) {
+      var result = await MailSearch(option);
+      result = result.data.data;
+      if (result) {
+        this.mail.data[this.path].data.data =
+          this.mail.data[this.path].data.data.concat(result);
+      }
+      return;
+    },
+    async initMail(option) {
+      var result = await Mail(option);
+      result = result.data.data;
+      if (result) {
+        this.mail.data[this.path].data.data =
+          this.mail.data[this.path].data.data.concat(result);
+      }
+      return;
+    },
+    async Refresh() {
+      this.$store.commit("mailjs/MailSearchOptionInit");
+      this.mail.data[this.path].data.data = [];
+      this.GetMail[this.path].page = 0;
+      var option = {};
+      if (this.mailSearchPath.includes(this.path)) {
+        option = this.GetMail[this.path];
+        option.mailtype = this.path;
+
+        option.searchType = this.path;
+        option.searchfield = this.GetMailConfig.searchOption.searchfield;
+
+        option.searchword = this.GetMailConfig.searchOption.searchword;
+        option.size = this.GetConfig.listcount;
+        await this.initMailSearch(option);
+      } else {
+        option = this.GetMail[this.path];
+        option.size = this.GetConfig.listcount;
+        await this.initMail(option);
+      }
+      this.infiniteInit();
+    },
     followUp(unid) {
       this.clickedUnid = unid;
     },

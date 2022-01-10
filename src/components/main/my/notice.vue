@@ -77,7 +77,7 @@ export default {
   transform: translateY(-50%);
   width: 2.18rem;
   height: 1.37rem;
-  background: #655da7;
+  background: var(--main-bg-color);
   text-align: center;
   font-size: 0.81rem;
   color: #fff;

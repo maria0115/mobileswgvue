@@ -80,6 +80,9 @@
           <div v-else-if="value.category === 'board' && value.service">
             <Recent :portlet="value"></Recent>
           </div>
+          <div v-else-if="value.category === 'loglist' && value.service">
+            <Log :portlet="value"></Log>
+          </div>
         </div>
       </div>
     </div>
@@ -94,6 +97,7 @@ import Approving from "./my/approving.vue";
 import Schedule from "./my/schedule.vue";
 import Book from "./my/reservation.vue";
 import Recent from "./my/recent.vue";
+import Log from "./my/log.vue";
 import $ from "jquery";
 
 export default {
@@ -117,6 +121,7 @@ export default {
     Schedule,
     Recent,
     Book,
+    Log,
   },
   computed: {
     ...mapState("mainjs", ["main"]),

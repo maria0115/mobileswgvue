@@ -1,10 +1,15 @@
 import {
-    OrgAutoSearch, GetLanguage, Login, InitOrg, Org, CategoryList, ListOfCategory, DocView,Logout
+    OrgAutoSearch, GetLanguage, Login, InitOrg, Org, CategoryList, ListOfCategory, DocView, Logout
 } from '../api/index.js';
-import { setRawCookie } from 'tiny-cookie';
+import { setRawCookie,removeCookie } from 'tiny-cookie';
 import cookie from 'vue-cookies';
 import config from '../config/config.json';
 import router from '../router/index'
+var firstDot = window.location.hostname.indexOf(".");
+
+        var domain = window.location.hostname.substring(
+            firstDot == -1 ? 0 : firstDot+1
+        );
 export default {
     SetHeader({ dispatch, commit }, data) {
 
@@ -27,25 +32,20 @@ export default {
             })
     },
     CategoryList({ state, commit }, id) {
-        state.tf = true;
         return CategoryList(id)
             .then((res) => {
-                state.tf = false;
-
                 if (res.status !== 200) {
                     return false;
                 } else {
-
                     commit("CategoryList", { id, list: res.data });
                     return res.data;
-
                 }
-
             })
     },
     logout(s) {
-        cookie.set("LtpaToken", "");
-        cookie.set("language", "");
+        
+        cookie.remove("LtpaToken", null, domain);
+        cookie.remove("language", null, domain);
 
         if (!JSON.parse(localStorage.getItem("idSave"))) {
             localStorage.setItem(`${config.packageName}id`, "");
@@ -54,12 +54,12 @@ export default {
         localStorage.setItem(`${config.packageName}pass`, "");
         var info = JSON.parse(localStorage.getItem(`${config.packageName}deviceInformation`));
         Logout(info)
-        .then((res) => {
-            if(res.data.success){
+            .then((res) => {
+                if (res.data.success) {
+                    return;
+                }
                 return;
-            }
-            return;
-        })
+            })
         return;
     },
     setLogin() {
@@ -88,7 +88,7 @@ export default {
                         //     
 
                         // }else{
-                        setRawCookie(key, res.data.cookies[key]);
+                        setRawCookie(key, res.data.cookies[key],{domain});
 
                         // }
 
@@ -129,10 +129,10 @@ export default {
             })
     },
     async Org({ state, commit, dispatch }, data) {
-        state.tf = true;
+        // state.tf = true;
         var chdata = await Org(data)
             .then((res) => {
-                state.tf = false;
+                // state.tf = false;
                 return res.data;
 
             })
@@ -158,7 +158,7 @@ export default {
 
             })
     },
-    tf({ state }, {data}) {
+    tf({ state }, { data }) {
         state.tf = data;
     },
 

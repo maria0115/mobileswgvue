@@ -7,15 +7,15 @@
         >{{ this.params.title }}
       </h2>
       <div>
-        <span class="save fw_bold" @click="Send">{{lang.save}}</span>
-        <span class="cancel fw_bold" @click="Cancel">{{lang.cancel}}</span>
+        <span class="save fw_bold" @click="Send">{{ lang.save }}</span>
+        <span class="cancel fw_bold" @click="Cancel">{{ lang.cancel }}</span>
       </div>
     </div>
     <div class="m_contents03">
       <form @submit.prevent>
         <ul class="wn_top">
           <li class="tit_line clfix">
-            <strong>{{lang.author}}</strong>
+            <strong>{{ lang.author }}</strong>
             <div>
               {{ this.GetMyInfo.info.name }}
               {{ this.GetMyInfo.info.position }} /
@@ -23,40 +23,40 @@
             </div>
           </li>
           <li class="tit_line clfix">
-            <strong>{{lang.created}}</strong>
+            <strong>{{ lang.created }}</strong>
             <div>
               {{ nowTime() }}
             </div>
           </li>
           <!-- v-if="GetStoreBoard.path!=='education'&&GetStoreBoard.path!=='congratulate'" -->
           <li class="tit_line date_ch_t clfix" v-if="this.options.isUseTerm">
-            <strong>{{lang.term}}</strong>
+            <strong>{{ lang.term }}</strong>
             <div class="clfix">
               <select v-model="term">
-                <option value="1M">{{lang['M1']}}</option>
-                <option value="3M">{{lang['M3']}}</option>
-                <option value="6M">{{lang['M6']}}</option>
-                <option value="1Y">{{lang['Y1']}}</option>
-                <option value="all">{{lang.everlasting}}</option>
+                <option value="1M">{{ lang["M1"] }}</option>
+                <option value="3M">{{ lang["M3"] }}</option>
+                <option value="6M">{{ lang["M6"] }}</option>
+                <option value="1Y">{{ lang["Y1"] }}</option>
+                <option value="all">{{ lang.everlasting }}</option>
               </select>
             </div>
           </li>
           <li class="tit_line com_line clfix" v-if="this.options.isUseReply">
-            <strong>{{lang.comment}}</strong>
+            <strong>{{ lang.comment }}</strong>
             <div>
               <span @click="Reply(0)"
                 ><em
                   class="sv_radio"
                   :class="{ active: isAllowReply == 0 }"
                 ></em
-                >{{lang.notallow}}</span
+                >{{ lang.notallow }}</span
               >
               <span @click="Reply(1)"
                 ><em
                   class="sv_radio"
                   :class="{ active: isAllowReply == 1 }"
                 ></em
-                >{{lang.allow}}</span
+                >{{ lang.allow }}</span
               >
             </div>
           </li>
@@ -65,7 +65,7 @@
             v-if="Object.keys(this.options.categoryall).length > 0"
           >
             <!--교육,업무게시판은 클래스bullet display:none;해주세요-->
-            <strong><font class="f_red">*</font>{{lang.head}}</strong>
+            <strong><font class="f_red">*</font>{{ lang.head }}</strong>
             <!-- <div class="notice" style="display: none">
               <select>
                 <option value="전체">전체</option>
@@ -76,7 +76,7 @@
             </div> -->
             <div class="free_board" style="display: block">
               <select v-model="category">
-                <option value="">{{lang.all}}</option>
+                <option value="">{{ lang.all }}</option>
                 <option
                   v-for="(value, index) in options.categoryall"
                   :key="index"
@@ -88,13 +88,13 @@
             </div>
           </li>
           <li class="tit_line tit_input clfix">
-            <strong>{{lang.title}}</strong>
+            <strong>{{ lang.title }}</strong>
             <div>
               <input type="text" v-model="Subject" />
             </div>
           </li>
           <li class="tit_line att_file active">
-            <strong>{{lang.attach}}</strong>
+            <strong>{{ lang.attach }}</strong>
             <span class="tit_clip" @click="submitFile()"></span>
             <input
               multiple
@@ -115,13 +115,7 @@
           </li>
         </ul>
         <div class="noti_con" style="padding: 0">
-          <!-- <editor-content :editor="editor" /> -->
-          <Namo
-            :read="false"
-            :editor="Body_Text"
-            did="board"
-            ref="editor"
-          ></Namo>
+          <Body :body="Body_Text" ref="Body" :read="false" did="board" />
         </div>
       </form>
     </div>
@@ -130,13 +124,10 @@
 
 <script>
 import { mapState, mapGetters } from "vuex";
-import { Editor, EditorContent } from "tiptap";
-import Namo from "../editor/namo.vue";
 export default {
   computed: {
     ...mapGetters("mainjs", ["GetMyInfo"]),
-    ...mapGetters("boardjs", ["GetStoreBoard"]),
-    ...mapState("boardjs", ["options"]),
+    ...mapGetters("boardjs", ["GetStoreBoard", "options"]),
     ...mapGetters(["GetHeader"]),
   },
   created() {
@@ -152,14 +143,13 @@ export default {
     }
 
     if (this.GetStoreBoard.edit) {
+      console.log("edit", this.GetStoreBoard.detail);
       this.file = this.GetStoreBoard.detail.attach;
       this.Body_Text = this.GetStoreBoard.detail.body;
       this.Subject = this.GetStoreBoard.detail.subject;
-      this.isAllowReply = "0";
-
-      if (this.GetStoreBoard.detail.isAllowReply) {
-        this.isAllowReply = "1";
-      }
+      this.GetStoreBoard.detail.isAllowReply
+        ? (this.isAllowReply = "1")
+        : (this.isAllowReply = "0");
       if (this.GetStoreBoard.detail.startDate) {
         var moment = require("moment");
         var startDate = moment(this.GetStoreBoard.detail.startDate);
@@ -182,22 +172,13 @@ export default {
   },
   mounted() {
     this.fileinit = this.$refs.file.files;
-    this.editor = new Editor({
-      content: this.Body_Text,
-    });
   },
   beforeDestroy() {
-    this.editor.destroy();
     this.$store.commit("boardjs/EditMode", false);
-  },
-  components: {
-    EditorContent,
-    Namo,
   },
   data: function () {
     return {
       file: [],
-      editor: null,
       Subject: "",
       Body_Text: "",
       isAllowReply: 1,
@@ -265,10 +246,7 @@ export default {
       formData.append("subject", this.Subject);
       formData.append("lnbid", this.params.lnbid);
 
-      // let editorData = "자유게시판";
-      let editorData =
-        this.$refs.editor.$refs.namo.contentWindow.crosseditor.GetBodyValue();
-
+      let editorData = this.$refs.Body.getBody();
       formData.append("body", editorData);
       // formData.append("body", this.editor.getHTML());
 
@@ -276,7 +254,10 @@ export default {
       formData.append("category1", this.category);
       var categoryall_nm = "";
 
-      if (Object.keys(this.options.categoryall).length > 0&&this.category!=="") {
+      if (
+        Object.keys(this.options.categoryall).length > 0 &&
+        this.category !== ""
+      ) {
         categoryall_nm = this.options.categoryall[this.category].categoryall_nm;
       }
 
@@ -288,22 +269,22 @@ export default {
       //   this.term;
 
       var now = new Date(); //2021-08-23 00:00:00 ZE9 오늘날짜
-      now.setMonth(now.getMonth() + 1);
       var y = now.getFullYear();
-      var m = this.fill(2, now.getMonth());
+      const nowMonth = now.getMonth() + 1;
+      var m = this.fill(2, nowMonth);
       var d = this.fill(2, now.getDate());
 
-      var FromDate = `${y}-${m}-${d} 00:00:00 ZE9`; //2021-08-23 00:00:00 ZE9 오늘날짜
+      var FromDate = `${y}-${m}-${d} 00:00:00`; //2021-08-23 00:00:00 ZE9 오늘날짜
       var ToDate = null;
       var isEtermity = "";
       if (this.term == "1M") {
-        now.setMonth(now.getMonth() + 1);
+        now.setMonth(nowMonth + 1);
       } else if (this.term == "3M") {
-        now.setMonth(now.getMonth() + 3);
+        now.setMonth(nowMonth + 3);
       } else if (this.term == "6M") {
-        now.setMonth(now.getMonth() + 6);
+        now.setMonth(nowMonth + 6);
       } else if (this.term == "1Y") {
-        now.setFullYear(now.getFullYear() + 1);
+        now.setFullYear(y + 1);
       } else {
         isEtermity = 1;
       }
@@ -314,7 +295,7 @@ export default {
       if (m == "00") {
         m = "01";
       }
-      ToDate = `${y}-${m}-${d} 00:00:00 ZE9`; //2021-08-23 00:00:00 ZE9 오늘날짜
+      ToDate = `${y}-${m}-${d} 00:00:00`; //2021-08-23 00:00:00 ZE9 오늘날짜
 
       formData.append("isEternity", isEtermity);
       formData.append("FromDate", FromDate);

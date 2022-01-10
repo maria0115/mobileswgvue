@@ -195,7 +195,7 @@ export default {
       data.page = this.mail.searchOption.page;
 
       data.searchType = this.path;
-      data.searchfield = "";
+      data.searchfield = "all";
 
       var searchfield = this.mail.searchOption.searchfield;
       for (var i = 0; i < searchfield.length; i++) {

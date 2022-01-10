@@ -1,14 +1,11 @@
 export default {
     GetBoardSet(state,data){
-        state.options = data;
+        state.store.options = data;
     },
     EditMode(state,boo){
         state.store.board.edit = boo;
-
     },
     BoardDetailData(state, data) {
-        
-        
         state.store.board.detail = data;
     },
     BoardReplyInfo(state,data){

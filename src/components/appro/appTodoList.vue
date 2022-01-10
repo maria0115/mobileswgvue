@@ -8,13 +8,8 @@
     ></Header>
     <SubMenu :isOpen="isOpen" @CloseHam="CloseHam"></SubMenu>
     <div class="a_contents06">
-      <form @submit.prevent>
+      <form @submit.prevent class="formdiv">
         <ul class="app06_list">
-          <!-- ref="list"
-            class="card"
-            :disabled="!enabled"
-            :items="GetApproval[this.path].data.data"
-            item-key="id" -->
           <li
             v-for="(item, index) in this.GetApproval[this.path].data.data"
             :key="index"
@@ -49,33 +44,13 @@
               </div>
             </a>
           </li>
-          <infinite-loading
-            @infinite="infiniteHandler"
-            :identifier="infiniteId"
-            ref="infiniteLoading"
-            spinner="waveDots"
-          >
-            <div slot="no-more" style="padding: 10px 0px">
-              {{ commonl.end }}
-            </div>
-            <div slot="no-results" style="padding: 10px 0px">
-              {{ commonl.end }}
-            </div>
-            <div slot="error">
-              Error message, click
-              <!-- @click.native="SetHeader(params)" -->
-              <router-link
-                :to="{
-                  name: `appapprove`,
-                  query: { data: JSON.stringify(params) },
-                }"
-                >here</router-link
-              >
-              to retry
-            </div>
-          </infinite-loading>
+          <Infinite
+            @infiniteHandler="infiniteHandler"
+            :infiniteId="infiniteId"
+          ></Infinite>
         </ul>
       </form>
+      <!-- </pull-to> -->
     </div>
     <BtnPlus :menu="morePlus" @BtnClick="BtnClick"></BtnPlus>
     <Search @SetSearchWord="SetSearchWord"></Search>
@@ -87,30 +62,27 @@ import Header from "./header.vue";
 import SubMenu from "./menu.vue";
 import Search from "./search.vue";
 import BtnPlus from "./btnPlus.vue";
-import InfiniteLoading from "vue-infinite-loading";
+import Infinite from "@/components/common/infinite.vue";
 import { mapState, mapGetters } from "vuex";
 import { Approval, AppSearch } from "../../api/index.js";
 import { SwipeList, SwipeOut } from "vue-swipe-actions";
 import config from "../../config/config.json";
 import "vue-swipe-actions/dist/vue-swipe-actions.css";
-import option from "@/config/option.json";
 export default {
   async created() {
     const language = this.GetAppL.todolist;
     this.commonl = this.GetCommonL;
     this.morePlus = {};
     this.morePlus.write = language.morePlus.write;
-    if (!this.Option()) {
+    if (!this.Option().appWrite) {
       this.morePlus = {};
     }
     this.params = JSON.parse(this.$route.query.data);
     // this.params = this.GetHeader.menu;
     this.$store.commit("approjs/AppSaveFrom", this.params.type);
     this.category = this.GetCategory[this.params.top];
-    this.Init();
-    this.option.page = this.page;
-    this.option.type = this.path;
-    this.option.size = this.GetConfig.listcount;
+    this.appInit();
+
     if (this.back.isBacked) {
       for (var i = 0; i < this.back.page; i++) {
         this.page++;
@@ -130,7 +102,6 @@ export default {
         );
       }
       this.infiniteId++;
-      this.$store.commit("SetBack", false);
       this.$forceUpdate();
       // window.scroll({ top: this.back.top, behavior: "smooth" });
       var scrollentity = $("html,body");
@@ -139,10 +110,16 @@ export default {
       }
       scrollentity.animate({ scrollTop: this.back.top }, 500);
     }
+    this.$store.commit("SetBack", false);
   },
-  mounted() {},
+  beforeDestroy() {
+    PullToRefresh.destroyAll();
+  },
+  mounted() {
+    this.setPullTo();
+  },
   components: {
-    InfiniteLoading,
+    Infinite,
     Header,
     SwipeOut,
     SwipeList,
@@ -189,17 +166,18 @@ export default {
     };
   },
   methods: {
-    Option() {
-      return option[config.company].appWrite;
+    Refresh() {
+      this.appInit();
+      return this.$store
+        .dispatch("approjs/GetApprovalList", { type: this.path })
+        .then((res) => {
+          return;
+        });
     },
     SetHeader(data) {
       this.$store.dispatch("SetHeader", data);
     },
-    Init() {
-      this.infiniteId += 1;
-      this.page = 0;
-      return;
-    },
+
     BtnClick(value) {
       if (value == "write") {
         var caidx = this.category.findIndex((item, idx) => {
@@ -236,7 +214,7 @@ export default {
         this.$store.dispatch("approjs/AppSearch", this.option).then((res) => {
           if (res) {
             this.$forceUpdate();
-            this.Init();
+            this.infiniteInit();
           }
         });
       } else {
@@ -245,7 +223,7 @@ export default {
           .then((res) => {
             if (res) {
               this.$forceUpdate();
-              this.Init();
+              this.infiniteInit();
             }
           });
       }

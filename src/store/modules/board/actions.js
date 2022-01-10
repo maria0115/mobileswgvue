@@ -7,11 +7,9 @@ export default {
     GetBoardSet({ state,commit }, {lnbid,type}){
         return GetBoardSet({lnbid,type})
         .then((res) => {
-            // rootState.tf = false;
             if (res.status !== 200) {
                 return false;
             } else {
-                console.log(res.data)
                 commit("GetBoardSet", res.data);
                 return res.data;
             }
@@ -184,10 +182,17 @@ export default {
                 } else {
                     commit("BoardDetailData", res.data)
                     if (!comment) {
+                        // var str = `{
+                        //     'type':'board',
+                        //     'lnbid':'bbs0002',
+                        //     'title':'그룹사공지',
+                        //     'top':'freebrd_W0001'
+                        //     }`;
                         router.push(
                             {
                                 name: 'boardread',
                                 query: { data: JSON.stringify({ type, lnbid,title,top }) }
+                                // query:{data:str}
                             });
                             return true;
                     }

@@ -11,6 +11,8 @@ global.$ = jQuery
 import 'babel-polyfill';
 import config from "./config/config.json";
 import VDragged from 'v-dragged'
+import pullto from "./mobile/js/pullto.js";
+global.PullToRefresh = pullto;
 // sync(store, router, { moduleName: 'header' } )
 Vue.use(VDragged) 
 

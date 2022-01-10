@@ -5,25 +5,25 @@
       <form action="">
         <ul class="cf_w_top">
           <li class="cfw_name">
-            <strong>{{lang.roomname}}</strong>
+            <strong>{{ lang.roomname }}</strong>
             <div>
               <p>{{ this.detail.roomName }}</p>
             </div>
           </li>
           <li class="cfw_title">
-            <strong>{{lang.title}}</strong>
+            <strong>{{ lang.title }}</strong>
             <div>
               <p>{{ this.detail.subject }}</p>
             </div>
           </li>
           <li class="cf_w_date">
-            <strong>{{lang.period}}</strong>
+            <strong>{{ lang.period }}</strong>
             <div>
               <p>{{ this.SetTime(this.detail.startDate) }}</p>
             </div>
           </li>
           <li class="cf_w_time cf_w_time2">
-            <strong>{{lang.time}}</strong>
+            <strong>{{ lang.time }}</strong>
             <div>
               <p>
                 <span>{{ this.detail.startTime }}</span
@@ -32,14 +32,16 @@
             </div>
           </li>
           <li class="cf_w_att3">
-            <strong><b>{{lang.author}}</b></strong>
+            <strong
+              ><b>{{ lang.author }}</b></strong
+            >
             <div>
               <p>{{ this.detail.author }}</p>
               <!-- <em class="re_more"></em> -->
             </div>
           </li>
           <li class="cf_w_att2 active">
-            <strong>{{lang.send}}</strong>
+            <strong>{{ lang.send }}</strong>
             <div>
               <p v-if="this.detail.peoples[0]">
                 <span
@@ -51,10 +53,10 @@
             </div>
           </li>
           <li class="cf_w_att3" v-if="this.detail.attachInfo.length > 0">
-            <strong>{{lang.attach}}</strong>
+            <strong>{{ lang.attach }}</strong>
             <div class="" v-if="!sat">
               <p v-for="(value, index) in this.detail.attachInfo" :key="index">
-                <a :href="value.url" download>
+                <a @click="openDownload(value.url)">
                   {{ value.name }}
                 </a>
               </p>
@@ -68,7 +70,13 @@
           </li>
           <li class="cf_w_memo2">
             <div>
-              <p v-html="this.detail.body"></p>
+              <Body
+                id="memo_t"
+                :body="this.detail.body"
+                ref="Body"
+                :read="true"
+                did="calendar"
+              />
             </div>
           </li>
         </ul>
@@ -88,13 +96,15 @@ import Header from "./header.vue";
 import Org from "../../View/Org.vue";
 import { mapState, mapGetters } from "vuex";
 import Comment from "./Comment.vue";
+import Namo from "../editor/namo.vue";
+
 import configjson from "../../config/config.json";
 import Viewer from "../editor/viewer.vue";
 
 export default {
-  created(){
+  created() {
     this.lang = this.GetBookL.read;
-    this.btnarr = this.lang.btnarr
+    this.btnarr = this.lang.btnarr;
   },
   computed: {
     ...mapState("bookjs", ["detail"]),
@@ -107,6 +117,7 @@ export default {
     Org,
     Comment,
     Viewer,
+    Namo,
   },
   methods: {
     CommentM(comment) {

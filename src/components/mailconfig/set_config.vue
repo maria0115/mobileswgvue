@@ -36,7 +36,7 @@
             >
           </li></router-link
         >
-        <router-link v-if="Option()" :to="{ name: 'delay' }"
+        <router-link v-if="Option().mailDelay" :to="{ name: 'delay' }"
           ><li>
             <a
               >{{lang.dely}}<span>
@@ -53,7 +53,6 @@
 <script>
 import { mapState, mapGetters } from "vuex";
 import config from "@/config/config.json";
-import option from "@/config/option.json";
 export default {
   created(){
     this.lang = this.GetMConfigL.setconfig;
@@ -64,9 +63,7 @@ export default {
     ...mapGetters("mailjs",["GetMailConfig"])
   },
   methods: {
-    Option(){
-      return option[config.company].mailDelay;
-    },
+    
     Back() {
       this.$router.go(-1);
     },

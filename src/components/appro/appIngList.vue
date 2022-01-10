@@ -8,39 +8,40 @@
     ></Header>
     <SubMenu :isOpen="isOpen" @CloseHam="CloseHam"></SubMenu>
     <div class="a_contents06">
-      <form @submit.prevent>
+      <form @submit.prevent class="formdiv">
         <ul class="app06_list">
           <li
             v-for="(value, index) in GetApproval.approving.data.data"
             :key="index"
-          ><div>
-            <a>
-              <span class="ing_sta">
-                <em
-                  class="active"
-                  v-if="value.approved < value.approvalinfo.length"
-                  >{{ value.approvalinfo[value.approved].approvalKind }}</em
-                >
-                <em class="active" v-else>{{
-                  value.approvalinfo[value.approved - 1].approvalKind
-                }}</em>
-              </span>
-              <div class="s_text" @click="Read(value)">
-                <em>{{ value.category }}</em>
-                <strong>{{ value.subject }}</strong>
-                <p>
-                  {{ value.approvalinfo[0].author }}
-                  {{ value.approvalinfo[0].position }}/{{
-                    value.approvalinfo[0].authordept
-                  }}<span>{{ transDate(value.created) }}</span>
-                </p>
-              </div>
-              <div class="icons">
-                <span class="opin" v-if="value.coment"></span>
-                <span class="clip" v-if="value.attach"></span>
-              </div>
-            </a>
-            <b class="st_more"></b>
+          >
+            <div>
+              <a>
+                <span class="ing_sta">
+                  <em
+                    class="active"
+                    v-if="value.approved < value.approvalinfo.length"
+                    >{{ value.approvalinfo[value.approved].approvalKind }}</em
+                  >
+                  <em class="active" v-else>{{
+                    value.approvalinfo[value.approved - 1].approvalKind
+                  }}</em>
+                </span>
+                <div class="s_text" @click="Read(value)">
+                  <em>{{ value.category }}</em>
+                  <strong>{{ value.subject }}</strong>
+                  <p>
+                    {{ value.approvalinfo[0].author }}
+                    {{ value.approvalinfo[0].position }}/{{
+                      value.approvalinfo[0].authordept
+                    }}<span>{{ transDate(value.created) }}</span>
+                  </p>
+                </div>
+                <div class="icons">
+                  <span class="opin" v-if="value.coment"></span>
+                  <span class="clip" v-if="value.attach"></span>
+                </div>
+              </a>
+              <b class="st_more"></b>
             </div>
             <div class="app_status">
               <div class="status">
@@ -78,46 +79,26 @@
                     </dl>
                     <div>
                       <p v-if="v.approval">
-                        <i>({{language.apping}})</i>
+                        <i>({{ language.apping }})</i>
                       </p>
                       <em v-else-if="v.created && v.created.length > 0">
                         <p>{{ transDate(v.created) }}</p>
                         <p>{{ transTime(v.created) }}</p></em
                       >
-                      <p v-else><i>({{language.wating}})</i></p>
+                      <p v-else>
+                        <i>({{ language.wating }})</i>
+                      </p>
                     </div>
                   </div>
                 </div>
               </div>
               <span class="close_btn"></span>
             </div>
-            
           </li>
-          <infinite-loading
-            @infinite="infiniteHandler"
-            :identifier="infiniteId"
-            ref="infiniteLoading"
-            spinner="waveDots"
-          >
-            <div slot="no-more" style="padding: 10px 0px">
-              {{commonl.end}}
-            </div>
-            <div slot="no-results" style="padding: 10px 0px">
-              {{commonl.end}}
-            </div>
-            <div slot="error">
-              Error message, click
-              <!-- @click.native="SetHeader(params)" -->
-              <router-link
-                :to="{
-                  name: `appapproving`,
-                  query: { data: JSON.stringify(this.params) },
-                }"
-                >here</router-link
-              >
-              to retry
-            </div>
-          </infinite-loading>
+          <Infinite
+            @infiniteHandler="infiniteHandler"
+            :infiniteId="infiniteId"
+          ></Infinite>
         </ul>
       </form>
     </div>
@@ -132,29 +113,24 @@ import SubMenu from "./menu.vue";
 import Search from "./search.vue";
 import BtnPlus from "./btnPlus.vue";
 import { mapState, mapGetters } from "vuex";
-import InfiniteLoading from "vue-infinite-loading";
+import Infinite from "@/components/common/infinite.vue";
 import { Approval, AppSearch } from "../../api/index.js";
-import config from "@/config/config.json";
-import option from "@/config/option.json";
 export default {
   async created() {
     this.commonl = this.GetCommonL;
     this.language = this.GetAppL.inglist;
     this.morePlus = this.language.morePlus;
     this.title = this.language.title;
-    if(!this.Option()){
-      this.morePlus={}
+    if (!this.Option().appWrite) {
+      this.morePlus = {};
     }
     this.params = JSON.parse(this.$route.query.data);
     // this.params = this.GetHeader.menu;
     this.$store.commit("approjs/AppSaveFrom", this.params.type);
     // this.GetApproval.approving.data.data = this.GetApproval.approving.data.data;
     this.category = this.GetCategory[this.params.top];
-    this.Init();
+    this.appInit();
 
-    this.option.page = this.page;
-    this.option.type = "approving";
-    this.option.size = this.GetConfig.listcount;
     if (this.back.isBacked) {
       for (var i = 0; i < this.back.page; i++) {
         this.page++;
@@ -168,22 +144,36 @@ export default {
           result = await Approval(this.option);
           result = result.data.data;
         }
-        this.GetApproval.approving.data.data = this.wellconcat(this.GetApproval.approving.data.data, result);
+        this.GetApproval.approving.data.data = this.wellconcat(
+          this.GetApproval.approving.data.data,
+          result
+        );
       }
       this.infiniteId++;
-      this.$store.commit("SetBack", false);
       this.$forceUpdate();
       // window.scroll({ top: this.back.top, behavior: "smooth" });
-      var scrollentity = $('html,body');
-        if (navigator.userAgent.match(/(iPod|iPhone|iPad)/)) { scrollentity = $('html') }
-        scrollentity.animate({ scrollTop: this.back.top }, 500);
+      var scrollentity = $("html,body");
+      if (navigator.userAgent.match(/(iPod|iPhone|iPad)/)) {
+        scrollentity = $("html");
+      }
+      scrollentity.animate({ scrollTop: this.back.top }, 500);
     }
+    this.$store.commit("SetBack", false);
   },
-  mounted(){},
+  beforeDestroy() {
+    PullToRefresh.destroyAll();
+  },
+  mounted() {
+    this.setPullTo();
+  },
   beforeRouteLeave(to, from, next) {
     // this.infiniteId += 1;
-    this.$store.commit("SetTop", document.scrollingElement.scrollTop||window.scrollY||window.pageYOffset);
-
+    this.$store.commit(
+      "SetTop",
+      document.scrollingElement.scrollTop ||
+        window.scrollY ||
+        window.pageYOffset
+    );
 
     next();
   },
@@ -207,7 +197,7 @@ export default {
     SubMenu,
     Search,
     BtnPlus,
-    InfiniteLoading,
+    Infinite,
   },
   data() {
     return {
@@ -217,8 +207,13 @@ export default {
     };
   },
   methods: {
-    Option(){
-      return option[config.company].appWrite;
+    Refresh() {
+      return this.$store
+        .dispatch("approjs/GetApprovalList", { type: "approving" })
+        .then((res) => {
+          this.appInit();
+          return;
+        });
     },
     wellconcat(me, data) {
       if (me) {
@@ -226,11 +221,6 @@ export default {
       } else {
         return data;
       }
-    },
-    Init() {
-      this.infiniteId += 1;
-      this.page = 0;
-      return;
     },
     SetSearchWord(data) {
       this.option = data;
@@ -240,8 +230,8 @@ export default {
       if (data.keyword.length > 0) {
         this.$store.dispatch("approjs/AppSearch", this.option).then((res) => {
           if (res) {
+            this.infiniteInit();
             this.$forceUpdate();
-            this.Init();
           }
         });
       } else {
@@ -249,8 +239,8 @@ export default {
           .dispatch("approjs/GetApprovalList", this.option)
           .then((res) => {
             if (res) {
+              this.infiniteInit();
               this.$forceUpdate();
-              this.Init();
             }
           });
       }
@@ -284,6 +274,7 @@ export default {
     },
     // 스크롤 페이징
     infiniteHandler($state) {
+      console.log(this.option)
       if (!this.back.isBacked) {
         this.page++;
         // this.GetMail['inbox_detail'].size+= 1;
@@ -318,7 +309,10 @@ export default {
               if (data.length > 0) {
                 this.$store.commit("SetBackPage", option.page);
               }
-              this.GetApproval.approving.data.data = this.wellconcat(this.GetApproval.approving.data.data, data);
+              this.GetApproval.approving.data.data = this.wellconcat(
+                this.GetApproval.approving.data.data,
+                data
+              );
 
               this.$forceUpdate();
 
@@ -360,7 +354,10 @@ export default {
               if (data.length > 0) {
                 this.$store.commit("SetBackPage", option.page);
               }
-              this.GetApproval.approving.data.data = this.wellconcat(this.GetApproval.approving.data.data, data);
+              this.GetApproval.approving.data.data = this.wellconcat(
+                this.GetApproval.approving.data.data,
+                data
+              );
 
               this.$forceUpdate();
 
@@ -416,19 +413,54 @@ export default {
 </script>
 
 <style scoped>
-.app06_list li{padding:0 !important;height:auto !important;}
-.app06_list li > div:nth-child(1){height:5.43rem;position:relative;padding:0.62rem 1.06rem 0 3.93rem;}
-.app_status{position:relative;width:100%;height:0;background:#ebebeb;z-index:2;overflow:hidden;padding:0 1.87rem;}
-.app_status.active{height:100%;}
+.app06_list li {
+  padding: 0 !important;
+  height: auto !important;
+}
+.app06_list li > div:nth-child(1) {
+  height: 5.43rem;
+  position: relative;
+  padding: 0.62rem 1.06rem 0 3.93rem;
+}
+.app_status {
+  position: relative;
+  width: 100%;
+  height: 0;
+  background: #ebebeb;
+  z-index: 2;
+  overflow: hidden;
+  padding: 0 1.87rem;
+}
+.app_status.active {
+  height: 100%;
+}
 
-.dark .app_status{background:#232323;}
-.dark .status_slide > div > em:after{border-color:#959595;}
-.dark .status_slide > div.active > em:after{border-color:#ff743c;}
-.dark .status_slide > div dt{color:#c4c7ca;}
-.dark .status_slide > div dt b{color:#f2f2f2;}
-.dark .status_slide > div dd{color:#c4c7ca;}
-.dark .status_slide > div p{color:#c4c7ca;}
-.dark .status_slide > div p i{color:#c4c7ca;}
-.dark .close_btn{background:url(/mobile/img/main_sub_close_d.png)center no-repeat;background-size:100% 100%;}
-
+.dark .app_status {
+  background: #232323;
+}
+.dark .status_slide > div > em:after {
+  border-color: #959595;
+}
+.dark .status_slide > div.active > em:after {
+  border-color: #ff743c;
+}
+.dark .status_slide > div dt {
+  color: #c4c7ca;
+}
+.dark .status_slide > div dt b {
+  color: #f2f2f2;
+}
+.dark .status_slide > div dd {
+  color: #c4c7ca;
+}
+.dark .status_slide > div p {
+  color: #c4c7ca;
+}
+.dark .status_slide > div p i {
+  color: #c4c7ca;
+}
+.dark .close_btn {
+  background: url(/mobile/img/main_sub_close_d.png) center no-repeat;
+  background-size: 100% 100%;
+}
 </style>

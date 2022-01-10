@@ -1,5 +1,16 @@
 import axios from 'axios';
 // /api/approval?type=edit
+function LogDelete(data) {
+    var query = Object.entries(data).map(e => e.join('=')).join('&');
+    return axios({
+        method: 'delete',
+        url: `/api/loglist?${query}`,
+        data:data,
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+}
 function MailRecovery(unid) {
     return axios({
         method: 'get',
@@ -922,4 +933,5 @@ export {
     deleteBook,
     MailRecovery,
     MyreservationList,
+    LogDelete,
 }

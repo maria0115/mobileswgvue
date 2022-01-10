@@ -2,6 +2,9 @@
 export default {
     // info data
     MyInfo(state, { res }) {
+        if(res.info.notesid){
+            res.info.notesid = res.info.notesid.toUpperCase();
+        }
         state.store.myinfo = res;
     },
     MyInfoMaster(state, data) {

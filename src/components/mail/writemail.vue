@@ -318,15 +318,13 @@
           </li>
           <li class="mail_edit">
             <label for="mail_wri"></label>
-            <!-- <editor-content id="mail_wri" :editor="editor" /> -->
-            <Namo
+            <Body
               id="mail_wri"
+              :body="Body_Text"
+              ref="Body"
               :read="false"
-              :editor="Body_Text"
-              ref="editor"
               did="mail"
-            ></Namo>
-            <!-- <textarea name="" id="mail_wri" v-model="Body_Text"></textarea> -->
+            />
           </li>
         </ul>
         <div class="time_modal" :class="{ active: this.timemodal }">
@@ -374,9 +372,8 @@
 <script>
 import { mapState, mapGetters } from "vuex";
 import Org from "../../View/Org.vue";
-import { Editor, EditorContent } from "tiptap";
+
 import configjson from "../../config/config.json";
-import Namo from "../editor/namo.vue";
 // import EditorContent from "../mailconfig/EditorContent.vue";
 export default {
   async created() {
@@ -401,13 +398,9 @@ export default {
   },
   beforeDestroy() {
     clearInterval(this.delay);
-    this.editor.destroy();
   },
   mounted() {
     this.fileinit = this.$refs.file.files;
-    this.editor = new Editor({
-      content: this.Body_Text,
-    });
     var here = this;
 
     if (this.GetMailConfig.autosave.config.use) {
@@ -441,13 +434,10 @@ export default {
   },
   components: {
     Org,
-    EditorContent,
-    Namo,
   },
   data: function () {
     return {
       delay: null,
-      editor: null,
       isOpen: false,
       file: [],
       Importance: false, //일반메일
@@ -508,6 +498,7 @@ export default {
       this.tome = !this.tome;
       if (this.tome) {
         this.$store.commit("OrgDataInit");
+        this.$store.commit("InitOrgData");
 
         this.$store.dispatch("mailjs/ToMe").then((res) => {
           this.$store.commit("OrgPointer", "SendTo");
@@ -515,70 +506,20 @@ export default {
         });
       } else {
         this.$store.commit("OrgDataInit");
+        this.$store.commit("InitOrgData");
       }
     },
     FormSet() {
-      var SendTo = "";
-      for (var i = 0; i < this.org.SendTo.length; i++) {
-        if (i === this.org.SendTo.length - 1) {
-          SendTo += this.org.SendTo[i].id;
-        } else {
-          SendTo += this.org.SendTo[i].id + ";";
-        }
-      }
+      var inSendTo = this.org.SendTo.map((item) => item.name).join(";");
+      var SendTo = this.org.SendTo.map((item) => item.id).join(";");
+      var ocxSendTo = SendTo;
 
-      var inSendTo = "";
-      for (var i = 0; i < this.org.SendTo.length; i++) {
-        if (i === this.org.SendTo.length - 1) {
-          inSendTo += this.org.SendTo[i].name;
-        } else {
-          inSendTo += this.org.SendTo[i].name + ";";
-        }
-      }
+      var CopyTo = this.org.CopyTo.map((item) => item.id).join(";");
+      var ocxCopyTo = CopyTo;
 
-      var ocxSendTo = "";
-      for (var i = 0; i < this.org.SendTo.length; i++) {
-        if (i === this.org.SendTo.length - 1) {
-          ocxSendTo += this.org.SendTo[i].shortname;
-        } else {
-          ocxSendTo += this.org.SendTo[i].shortname + ";";
-        }
-      }
+      var BlindCopyTo = this.org.BlindCopyTo.map((item) => item.id).join(";");
+      var ocxBCopyTo = BlindCopyTo;
 
-      var CopyTo = "";
-      for (var i = 0; i < this.org.CopyTo.length; i++) {
-        if (i === this.org.CopyTo.length - 1) {
-          CopyTo += this.org.CopyTo[i].id;
-        } else {
-          CopyTo += this.org.CopyTo[i].id + ";";
-        }
-      }
-
-      var ocxCopyTo = "";
-      for (var i = 0; i < this.org.CopyTo.length; i++) {
-        if (i === this.org.CopyTo.length - 1) {
-          ocxCopyTo += this.org.CopyTo[i].shortname;
-        } else {
-          ocxCopyTo += this.org.CopyTo[i].shortname + ";";
-        }
-      }
-
-      var BlindCopyTo = "";
-      for (var i = 0; i < this.org.BlindCopyTo.length; i++) {
-        if (i === this.org.BlindCopyTo.length - 1) {
-          BlindCopyTo += this.org.BlindCopyTo[i].id;
-        } else {
-          BlindCopyTo += this.org.BlindCopyTo[i].id + ";";
-        }
-      }
-      var ocxBCopyTo = "";
-      for (var i = 0; i < this.org.BlindCopyTo.length; i++) {
-        if (i === this.org.BlindCopyTo.length - 1) {
-          ocxBCopyTo += this.org.BlindCopyTo[i].shortname;
-        } else {
-          ocxBCopyTo += this.org.BlindCopyTo[i].shortname + ";";
-        }
-      }
       let formData = new FormData();
       formData.append("SendTo", SendTo);
       formData.append("inSendTo", inSendTo);
@@ -589,11 +530,8 @@ export default {
       formData.append("ocxBCopyTo", ocxBCopyTo);
       formData.append("Subject", this.Subject);
       // namo editor 본문 내용 받아오기
-      let editorData = "";
-      this.Config().env == "dev"
-        ? (editorData = "본문")
-        : (editorData =
-            this.$refs.editor.$refs.namo.contentWindow.crosseditor.GetBodyValue());
+      let editorData = this.$refs.Body.getBody();
+
       formData.append("Body_Text", editorData);
 
       var impor = 2;
@@ -631,14 +569,7 @@ export default {
         for (var i = 0; i < this.addAttach.length; i++) {
           formData.append("attach", this.addAttach[i]);
         }
-        var Detachstr = "";
-        for (var i = 0; i < this.Detach.length; i++) {
-          if (i === this.Detach.length - 1) {
-            Detachstr += this.Detach[i].name;
-          } else {
-            Detachstr += this.Detach[i].name + ";";
-          }
-        }
+        var Detachstr = this.Detach.map((item) => item.name).join(";");
         formData.append("Detach", Detachstr);
         formData.append("unid", this.GetMailDetail.unid);
       } else {
@@ -735,7 +666,7 @@ export default {
             });
             return;
           } else {
-            alert("수신인을 다시 지정하세요.");
+            alert(this.GetCommonL.again);
           }
         } else if (menu === "save") {
           var formData = this.FormSet();

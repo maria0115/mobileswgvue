@@ -1,5 +1,5 @@
 <template>
-  <div id="app" ref="top" :class="{ dark: this.color }">
+  <div id="app" ref="top" :style="customStyle" :class="{ dark: this.color }">
     <!-- {{decodeURIComponent(this.$route.fullPath)}} -->
     <router-view :key="$route.fullPath"></router-view>
     <spinner :loading="tf"></spinner>
@@ -12,6 +12,7 @@
 import p from "./mobile/js/prefixfreemin.js";
 import slick from "./mobile/js/slick.js";
 import common from "./mobile/js/common.js";
+import pullto from "./mobile/js/pullto.js";
 import { mapState, mapGetters } from "vuex";
 import Spinner from "@/View/Spinner.vue";
 // import $ from "jquery";
@@ -29,6 +30,21 @@ export default {
         return true;
       }
     },
+    customStyle(){
+      return{
+        '--main-bg-color': this.Option().mainBgColor,
+        "--border-color":this.Option().borderColor,
+        "--image-color":this.Option().imageColor,
+        "--main-border-color":this.Option().mainBorderColor,
+        "--btn-bg-color":this.Option().btnBgColor,
+        "--my-info":this.Option().myInfo,
+        "--solid-color":this.Option().solidColor,
+        "--obj-color":this.Option().objColor,
+        "--icon-color":this.Option().iconColor,
+        "--today-color":this.Option().todayColor,
+        "--shadow-box-color":this.Option().shadowBoxColor,
+      }
+    },
   },
   created() {
     // this.$store.dispatch("getForm");
@@ -37,9 +53,8 @@ export default {
     
   },
   mounted() {
-
   },
-  mixin: [ p, slick,common],
+  mixin: [ p, slick,common,pullto],
 };
 </script>
 

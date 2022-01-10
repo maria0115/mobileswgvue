@@ -13,7 +13,7 @@
           @keyup.enter="login"
         />
       </div>
-      <select v-if="this.Option()" id="mult_lan" v-model="language">
+      <select v-if="this.Option().language" id="mult_lan" v-model="language">
         <option value="ko">한국어</option>
         <option value="en">English</option>
       </select>
@@ -36,7 +36,6 @@
 import { mapState, mapGetters } from "vuex";
 import cookie from "vue-cookies";
 import config from "@/config/config.json";
-import option from "@/config/option.json";
 export default {
   computed: {
     ...mapGetters("configjs", ["GetConfig"]),
@@ -76,8 +75,10 @@ export default {
     if (this.autoLogin && this.GetConfig.login) {
       this.id = localStorage.getItem(`${config.packageName}id`);
       this.password = localStorage.getItem(`${config.packageName}pass`);
-      if (this.password&&this.password.length > 0) {
-        this.login();
+      if (this.password && this.password.length > 0) {
+        if (!(this.Option().sso && this.Config().env == "dev")) {
+          this.login();
+        }
         return;
       }
     }
@@ -96,13 +97,10 @@ export default {
     };
   },
   methods: {
-    Logo(){
-      return require(`../mobile/img/main_logo_${this.Company()}.png`)
+    Logo() {
+      return require(`../mobile/img/main_logo_${this.Company()}.png`);
     },
-    Option(){
-      return option[config.company].language;
-    },
-    Company(){
+    Company() {
       return config.company;
     },
     login() {
@@ -130,8 +128,13 @@ export default {
           localStorage.setItem("autoLogin", false);
           localStorage.setItem(`${config.packageName}pass`, "");
           this.password = "";
-          cookie.set("LtpaToken", "");
-          cookie.set("language", "");
+          var firstDot = window.location.hostname.indexOf(".");
+
+          var domain = window.location.hostname.substring(
+            firstDot == -1 ? 0 : firstDot + 1
+          );
+          cookie.remove("LtpaToken", null, domain);
+          cookie.remove("language", null, domain);
           // console.log(this.$cookie.get("LtpaToken"))
         }
       });

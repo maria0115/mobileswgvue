@@ -94,7 +94,7 @@
                               .timeday"
                             :key="i"
                             class="schedule week_schedule"
-                            :style="timeStyle(v)"
+                            :style="timeStyle(v)+Style(v)"
                             @click="Detail(v)"
                           >
                             <div class="schedule_box">
@@ -199,9 +199,10 @@ export default {
 
     MoveChange(arg) {
       this.dateMove(arg);
-      this.Send();
     },
     Send() {
+      this.setFull();
+      this.ReDate();
       this.SetthisWeek();
       this.$store.dispatch("calendarjs/CalList", {
         data: this.SendSet(),
@@ -210,8 +211,6 @@ export default {
     },
     Init() {
       this.InitSet();
-      this.Send();
-
     },
     SendSet() {
       var send = {};
@@ -229,8 +228,6 @@ export default {
       this.min += this.hour * 60;
       this.now = this.min + 74.88;
       this.calendarDataSet(arg);
-      this.Send();
-
     },
     SetthisWeek() {
       for (var i = 0; i < this.daysSort.length; i++) {
@@ -267,7 +264,7 @@ export default {
     },
     changeDate(date) {
       this.SetDate(date);
-      this.calendarData();
+      this.Send();
     },
     async Detail(value) {
       this.$store.commit("calendarjs/SaveScheduleUnid", {
@@ -293,6 +290,12 @@ export default {
         }
       }
       return false;
+    },
+    Style(value){
+      if(!this.Option().inotes){
+        return `;background: ${value.color}`;
+      }
+      return "";
     },
   },
 };

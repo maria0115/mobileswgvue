@@ -15,7 +15,7 @@ import { dataStore } from './board/modules';
 import createPersistedState from 'vuex-persistedstate';
 const dataState = createPersistedState({
     // paths: ['store.board'],
-    paths: ['store.board']
+    paths: ['store.board','store.options']
 
 })
 Vue.use(VueX)
@@ -28,7 +28,7 @@ export default {
     plugins: [dataState],
     state: {
         board: config.board,
-        options:{},
+        
 
     },
     mutations,
@@ -39,6 +39,9 @@ export default {
         },
         GetBoard: (state) => {
             return state.board.data;
+        },
+        options: (state) => {
+            return state.store.options;
         },
 
     },

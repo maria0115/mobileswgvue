@@ -19,7 +19,7 @@
           <span class="search_icon" @click="SearchWord(searchQuery)">
             <img src="../mobile/img/search_icon.png" alt="검색하기" />
           </span>
-          <span v-if="this.Option()" class="voi_btn" @click="checkApi">
+          <span v-if="this.Option().voicesearch" class="voi_btn" @click="checkApi">
             <img src="../mobile/img/voi_icon.png" alt="음성검색" />
           </span>
         </div>
@@ -66,8 +66,6 @@
 import { mapState, mapGetters } from "vuex";
 import $ from "jquery";
 let qwe = null;
-import config from "@/config/config.json";
-import option from "@/config/option.json";
 export default {
   created() {
     // 다국어 처리
@@ -125,9 +123,6 @@ export default {
     document.addEventListener("click", this.click);
   },
   methods: {
-    Option(){
-      return option[config.company].voicesearch;
-    },
     // 검색어 삭제
     wordReset() {
       this.searchQuery = "";

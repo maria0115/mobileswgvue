@@ -1,39 +1,37 @@
 <template>
   <div>
     <h2 class="mail_st_header">
-      <router-link :to="{name:'sign'}"> <img src="../../mobile/img/wmail_back.png" alt="" /> </router-link
-      >{{lang.title}}
-      <span><router-link :to="{name:'modifysign'}">{{lang.edit}}</router-link></span>
+      <router-link :to="{ name: 'sign' }">
+        <img src="../../mobile/img/wmail_back.png" alt="" /> </router-link
+      >{{ lang.title }}
+      <span
+        ><router-link :to="{ name: 'modifysign' }">{{
+          lang.edit
+        }}</router-link></span
+      >
     </h2>
     <div class="m_contents07">
       <ul>
         <li>
-          <span>{{lang.subject}}</span>
+          <span>{{ lang.subject }}</span>
           <div>
-            <p>{{GetSignView.subject}}</p>
+            <p>{{ GetSignView.subject }}</p>
           </div>
         </li>
         <li>
-          <span>{{lang.setting}}</span>
+          <span>{{ lang.setting }}</span>
           <div v-if="GetSignView.default">
-            <p>{{lang.default}}</p>
+            <p>{{ lang.default }}</p>
           </div>
         </li>
         <li class="texteditor">
-          <!-- <div v-html="GetSignView.body">
-            ---------------------------------------------------------<br />
-            이정인 책임연구원<br />
-            (주)새롬정보시스템/디자인팀<br />
-            153-704 서울시 금천구 가산디지털1로 219 벽산디지털 밸리 <br />
-            6차 601호 <br />
-            Tel : (02) 2105-2548 H.P: 010-6612-5764<br />
-            E-mail : jeongin@saerom.co.kr<br />
-            http://www.saerom.co.kr<br />
-            ---------------------------------------------------------
-          </div> -->
-          <!-- <Namo :editor="GetSignView.body" :read="true" ref="editor"></Namo> -->
-          <div v-html="GetSignView.body" style="height:auto;"></div>
-          <!-- <editor-content :editor="editor" /> -->
+          <Body
+            style="height: auto"
+            :body="GetSignView.body"
+            ref="Body"
+            :read="true"
+            did="mail"
+          />
         </li>
       </ul>
     </div>
@@ -42,7 +40,7 @@
 
 <script>
 import { mapState, mapGetters } from "vuex";
-import { Editor,EditorContent  } from "tiptap";
+import { Editor, EditorContent } from "tiptap";
 // import Namo from '../editor/namo.vue';
 export default {
   components: {
@@ -50,13 +48,13 @@ export default {
     // Namo
   },
   beforeDestroy() {
-    this.editor.destroy()
+    this.editor.destroy();
   },
-  mounted(){
+  mounted() {
     this.editor = new Editor({
       content: this.GetSignView.body,
-      editable:false,
-    })
+      editable: false,
+    });
   },
   data() {
     return {
@@ -68,9 +66,9 @@ export default {
     };
   },
   computed: {
-    ...mapGetters("mailjs",["GetSignView"]),
+    ...mapGetters("mailjs", ["GetSignView"]),
   },
-  created(){
+  created() {
     this.lang = this.GetMConfigL.readsign;
   },
   methods: {

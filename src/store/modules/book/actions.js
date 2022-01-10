@@ -1,40 +1,40 @@
 import {
-    reservationList, roomList, BookDetail,BookWrite,deleteBook,MyreservationList
+    reservationList, roomList, BookDetail, BookWrite, deleteBook, MyreservationList
 } from '../../../api/index';
 // import router from '../../../router/index';
 export default {
-    MyreservationList({state,commit},date){
+    MyreservationList({ state, commit }, date) {
         MyreservationList(date)
-        .then(res=>{
-            if (res.status !== 200) {
-                return false;
-            } else {
-                commit("MyreservationList",res.data);
-                return res.data;
-            }
-        })
+            .then(res => {
+                if (res.status !== 200) {
+                    return false;
+                } else {
+                    commit("MyreservationList", res.data);
+                    return res.data;
+                }
+            })
 
     },
-    deleteBook({state,},data){
+    deleteBook({ state, }, data) {
         return deleteBook(data)
-        .then(res=>{
-            if (res.status !== 200) {
-                return false;
-            } else {
-                return res.data;
-            }
-        })
+            .then(res => {
+                if (res.status !== 200) {
+                    return false;
+                } else {
+                    return res.data;
+                }
+            })
 
     },
-    BookWrite({state},{data,type}){
-        return BookWrite(data,type)
-        .then(res=>{
-            if (res.status !== 200) {
-                return false;
-            } else {
-                return res.data;
-            }
-        })
+    BookWrite({ state }, { data, type }) {
+        return BookWrite(data, type)
+            .then(res => {
+                if (res.status !== 200) {
+                    return false;
+                } else {
+                    return res.data;
+                }
+            })
 
     },
     BookDetail({ state, commit }, data) {
@@ -44,7 +44,7 @@ export default {
                     return false;
                 } else {
                     commit("SaveUnid", data.unid);
-                    commit("BookDetail",res.data);
+                    commit("BookDetail", res.data);
                     return res.data;
                 }
 
@@ -52,10 +52,11 @@ export default {
             })
 
     },
-    reservationList({ state, commit }, data) {
+    reservationList({ rootState, state, commit }, data) {
+        rootState.tf = true;
         return reservationList(data)
             .then((res) => {
-                // rootState.tf = false;
+                rootState.tf = false;
                 if (res.status !== 200) {
                     return false;
                 } else {

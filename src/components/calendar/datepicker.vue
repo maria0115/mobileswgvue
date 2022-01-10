@@ -89,6 +89,7 @@ export default {
             formattedDate=here.date;
             var redate = here.replaceAll(formattedDate,".", "/");
             here.myDatepicker.selectDate(new Date(redate));
+            return;
           }
           here.$emit("ChangeDate",formattedDate);
         }

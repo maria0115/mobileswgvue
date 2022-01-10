@@ -3,27 +3,35 @@
     <h2 class="mail_st_header">
       <router-link :to="{ name: 'greet' }">
         <img src="../../mobile/img/wmail_back.png" alt="" /> </router-link
-      >{{lang.title}}
-      <span><router-link :to="{ name: 'modifygreet' }">{{lang.edit}}</router-link></span>
+      >{{ lang.title }}
+      <span
+        ><router-link :to="{ name: 'modifygreet' }">{{
+          lang.edit
+        }}</router-link></span
+      >
     </h2>
     <div class="m_contents07">
       <ul>
         <li>
-          <span>{{lang.subject}}</span>
+          <span>{{ lang.subject }}</span>
           <div>
             <p>{{ GetGreetView.subject }}</p>
           </div>
         </li>
         <li>
-          <span>{{lang.setting}}</span>
+          <span>{{ lang.setting }}</span>
           <div v-if="GetGreetView.default">
-            <p>{{lang.default}}</p>
+            <p>{{ lang.default }}</p>
           </div>
         </li>
         <li class="texteditor">
-          <!-- <Namo :editor="GetGreetView.body" :read="true" ref="editor"></Namo> -->
-          <div v-html="GetGreetView.body" style="height:auto;"></div>
-          <!-- <editor-content :editor="editor" /> -->
+          <Body
+            style="height: auto"
+            :body="GetGreetView.body"
+            ref="Body"
+            :read="true"
+            did="mail"
+          />
         </li>
       </ul>
     </div>
@@ -35,7 +43,7 @@ import { mapState, mapGetters } from "vuex";
 import { Editor, EditorContent } from "tiptap";
 // import Namo from "../editor/namo.vue";
 export default {
-  created(){
+  created() {
     this.lang = this.GetMConfigL.readgreet;
   },
   components: {

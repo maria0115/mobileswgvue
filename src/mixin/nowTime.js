@@ -65,6 +65,21 @@ let NowTime = {
         },
     },
     methods: {
+        
+        GetHoliday() {
+            var data = {};
+            data.year = this.year;
+            data.month = this.fill(2, this.month);
+            data.menu = "holiday";
+
+            this.$store.dispatch("calendarjs/Holiday", data);
+        },
+        setFull() {
+            this.fulldate = `${this.year}.${this.fill(2, this.month)}.${this.fill(
+                2,
+                this.today
+            )}`;
+        },
         Start(e) {
             this.startX = e.touches[0].pageX - e.touches[0].target.offsetLeft;
             this.check = true;
@@ -109,7 +124,7 @@ let NowTime = {
         },
         timeStyle(value) {
             if (!value.allDay) {
-               
+
                 var s = moment(`2000-01-01 ${value.starttime}`, "YYYYMMDDHHmmss");
                 var start = s.valueOf();
                 var startmin = s.minutes();
@@ -132,7 +147,6 @@ let NowTime = {
         },
         dateMove(arg) {
             var moment = require("moment");
-            this.ReDate();
             if (arg > 0) {
                 this.fulldate = moment(this.redate).add(this.days, "d").format("YYYY.MM.DD");
             } else {
@@ -142,6 +156,8 @@ let NowTime = {
             this.year = parseInt(this.fulldate.split(".")[0]);
             this.month = parseInt(this.fulldate.split(".")[1]);
             this.today = parseInt(this.fulldate.split(".")[2]);
+            this.setFull();
+
         },
         InitForm() {
             var currentDay = new Date();
@@ -152,10 +168,8 @@ let NowTime = {
             this.month = this.currentMonth;
             this.today = currentDay.getDate();
             this.currentDay = this.today;
-            this.fulldate = `${this.year}.${this.fill(2, this.month)}.${this.fill(
-                2,
-                this.today
-            )}`;
+            this.setFull();
+
         },
         InitSet() {
             var currentDay = new Date();
@@ -169,24 +183,18 @@ let NowTime = {
 
             this.theDayOfWeek = currentDay.getDay();
         },
+        fullSetting(arg) {
+            var moment = require("moment");
+            var d = `${this.year}-${this.month}-${this.today}`;
+            var red = moment(d).clone().add(arg, "months");
+            this.month = red.format("MM");
+            this.year = red.format("YYYY");
+            this.today = red.format("DD");
+        },
+
         calendarDataSet(arg) {
-            if (arg < 0) {
-                this.month -= 1;
-            } else if (arg === 1) {
-                this.month += 1;
-            }
-            if (this.month === 0) {
-                this.year -= 1;
-                this.month = 12;
-            } else if (this.month > 12) {
-                this.year += 1;
-                this.month = 1;
-            }
-            this.fulldate = `${this.year}.${this.fill(2, this.month)}.${this.fill(
-                2,
-                this.today
-            )}`;
-            this.ReDate();
+            this.fullSetting(arg);
+            this.setFull();
         },
         SetDate(date) {
             this.year = parseInt(date.split(".")[0]);

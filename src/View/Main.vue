@@ -22,7 +22,7 @@
             <span class="allim_num">2</span>
           </div> -->
         </div>
-        <SearchHeader></SearchHeader>
+        <SearchHeader v-if="this.Option().searchbar"></SearchHeader>
       </div>
       <!-- 햄버거 -->
       <div class="main_sub">
@@ -285,7 +285,7 @@
       </div>
       <btm-btn
         v-if="
-          (Category == 'mainmail' || Category == 'mainapproval') && Option()
+          (Category == 'mainmail' || Category == 'mainapproval') && Option().appWrite
         "
       ></btm-btn>
       <btm-btn v-else-if="Category == 'mainmail'"></btm-btn>
@@ -309,7 +309,6 @@ import Org from "./Org.vue";
 import BtmBtn from "./BtmBtn.vue";
 import { CategoryList } from "../api/index.js";
 import config from "@/config/config.json";
-import option from "@/config/option.json";
 export default {
   components: {
     SearchHeader,
@@ -426,13 +425,7 @@ export default {
   },
   methods: {
     Logo(){
-      return require(`../mobile/img/main_logo_${this.Company()}.png`)
-    },
-    Company(){
-      return config.company;
-    },
-    Option() {
-      return option[config.company].appWrite;
+      return require(`../mobile/img/main_logo_${this.Config().company}.png`)
     },
     scrollToTop() {
       //

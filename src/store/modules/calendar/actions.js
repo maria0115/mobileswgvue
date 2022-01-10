@@ -27,15 +27,11 @@ export default {
         // rootState.tf = true;
         var result = await Holiday(data)
             .then(response => {
-                rootState.tf = false;
+                // rootState.tf = false;
                 if (response.status !== 200) {
                     return false;
                 } else {
-                    if (response.data.item) {
-                        return response.data.item;
-                    } else {
-                        return {};
-                    }
+                    return response.data;
                 }
             })
 
@@ -80,13 +76,15 @@ export default {
     },
     CalList({ state, commit, rootState }, { data, which }) {
         rootState.tf = true;
+        commit("delCalList",{which});
         CalList(data)
             .then((res) => {
-                rootState.tf = false;
                 if (res.status !== 200) {
+                    rootState.tf = false;
                     return false;
                 } else {
                     commit("CalList", { data: res.data, which, option: data })
+                    rootState.tf = false;
                     return true;
 
                 }

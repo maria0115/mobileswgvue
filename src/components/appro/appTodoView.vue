@@ -65,7 +65,7 @@
                   v-for="(value, index) in this.detail.attachInfo"
                   :key="index"
                 >
-                  <a :href="value.url" download>{{ value.name }}</a>
+                  <a  @click="openDownload(value.url)">{{ value.name }}</a>
                   <!-- <div class="file_btn">
                     <span class="open_btn" @click="attOpen(value.path)"
                       >열기</span

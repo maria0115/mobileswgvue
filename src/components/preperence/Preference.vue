@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Header header="설정" header_desc="설정"></Header>
+    <Header :header="GetCommonL.setting" header_desc="설정"></Header>
 
     <div class="content01">
       <form @submit.prevent>
@@ -19,7 +19,7 @@
               </li>
             </ul>
           </li>
-          <li v-if="this.Option()">
+          <li v-if="this.Option().alarmeti">
             <h2>{{ this.GetLanguageConfig.allim.setallim }}</h2>
             <ul>
               <li>
@@ -126,8 +126,6 @@
 import { mapGetters, mapState } from "vuex";
 import Header from "./header.vue";
 import $ from "jquery";
-import config from "@/config/config.json";
-import option from "@/config/option.json";
 export default {
   components: {
     Header,
@@ -157,9 +155,6 @@ export default {
     },
   },
   methods: {
-    Option(){
-      return option[config.company].alarmeti;
-    },
     // click 시 해당 설정값 db에 입력
     setConfig(menu) {
       var classarr = this.$refs[menu].getAttribute("class").split(" ");

@@ -79,15 +79,16 @@
         ></Viewer>
       </div>
       <!-- <div class="noti_con" v-html="GetStoreBoard.detail.body"></div> -->
-
-      <!-- <Namo
-        id="memo_t"
-        :read="true"
-        :editor="GetStoreBoard.detail.body"
-        did="board"
-        ref="editor"
-      ></Namo> -->
-      <div class="noti_con" v-html="GetStoreBoard.detail.body"></div>
+      <div class="rdm_edit">
+        <Body
+          id="noti_con"
+          :body="GetStoreBoard.detail.body"
+          ref="Body"
+          :read="true"
+          did="board"
+        />
+      </div>
+      <!-- <div class="noti_con" v-html="GetStoreBoard.detail.body"></div> -->
       <!-- <editor-content class="noti_con" :editor="editor" /> -->
       <div
         v-if="GetStoreBoard.detail.useLike"
@@ -177,14 +178,12 @@
 
 <script>
 import { mapState, mapGetters } from "vuex";
-import { Editor, EditorContent } from "tiptap";
 import configjson from "../../config/config.json";
-// import Namo from "../editor/namo.vue";
+import Namo from "../editor/namo.vue";
 import Viewer from "../editor/viewer.vue";
 export default {
   components: {
-    EditorContent,
-    // Namo,
+    Namo,
     Viewer,
   },
   created() {
@@ -192,18 +191,8 @@ export default {
     // this.params = this.GetHeader.menu;
     this.params = JSON.parse(this.$route.query.data);
   },
-  mounted() {
-    this.editor = new Editor({
-      content: this.GetStoreBoard.detail.body,
-      editable: false,
-    });
-  },
-  beforeDestroy() {
-    this.editor.destroy();
-  },
   data() {
     return {
-      editor: null,
       CBody: "",
       PBody: "",
       Cclicked: "",
@@ -251,10 +240,13 @@ export default {
       data.root_unid = detail.root_unid;
       data.boardType = this.GetStoreBoard.path;
       this.$store.dispatch("boardjs/Likeit", data).then((res) => {
-        console.log(res)
         if (res) {
           this.GetStoreBoard.detail.like_cnt = parseInt(res.like_cnt);
-          if (res.result == 200||res.result == "200"||res.result == "success") {
+          if (
+            res.result == 200 ||
+            res.result == "200" ||
+            res.result == "success"
+          ) {
             this.GetStoreBoard.detail.isLike = false;
           }
         }
@@ -440,9 +432,6 @@ export default {
           this.Read();
         }
       });
-    },
-    openDownload(url) {
-      location.href = url;
     },
   },
 };

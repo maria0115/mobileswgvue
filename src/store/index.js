@@ -12,13 +12,14 @@ import calendarjs from './modules/calendar';
 import approjs from './modules/appro';
 import boardjs from './modules/board';
 import bookjs from './modules/book';
-
+import logjs from './modules/log';
 
 import createPersistedState from 'vuex-persistedstate';
 const dataState = createPersistedState({
     paths: [
         'approjs.store.app',
         'boardjs.store.board',
+        'boardjs.store.options',
         'calendarjs.store.schedulelist',
         'calendarjs.store.schedule',
         'calendarjs.store.edit',
@@ -53,6 +54,7 @@ export const store = new VueX.Store({
         calendarjs,
         approjs,
         bookjs,
+        logjs,
     },
     plugins: [dataState],
     state: {

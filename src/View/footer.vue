@@ -49,7 +49,7 @@
             >
               <a>
                 <dl>
-                  <dt v-if="value.data.allDay">{{lang.allday}}</dt>
+                  <dt v-if="value.data.allDay">{{ lang.allday }}</dt>
                   <dt v-else>
                     {{ value.data.starttime.split(":")[0] }}:{{
                       value.data.starttime.split(":")[1]
@@ -67,12 +67,12 @@
           <div class="no_schedule" v-else>
             <div>
               <span></span>
-              <p>{{lang.havenotschedule}}<br />{{lang.beregister}}</p>
+              <p>{{ lang.havenotschedule }}<br />{{ lang.beregister }}</p>
             </div>
           </div>
         </div>
         <div class="con_ft" @click="Write">
-          <span>{{header.schedule}}{{header.write}}</span>
+          <span>{{ header.schedule }}{{ header.write }}</span>
         </div>
       </div>
     </div>
@@ -192,7 +192,7 @@ export default {
               data: JSON.stringify({
                 lnbid: this.categorys[0].lnbid,
                 type: value.type,
-                top:value.top,
+                top: value.top,
                 title: this.categorys[0].title,
               }),
             },
@@ -201,23 +201,19 @@ export default {
         }
       } else if (value.category === "approval") {
         var approve = this.ThisCategory("approve");
-        // this.SetHeader({
-        //   title: approve.title,
-        //   type: approve.category,
-        //   top: value.top,
-        //   lnbid: approve.lnbid,
-        // });
-        this.$router.push({
-          name: name,
-          query: {
-            data: JSON.stringify({
-              title: approve.title,
-              type: approve.category,
-              top: value.top,
-              lnbid: approve.lnbid,
-            }),
-          },
-        });
+         if (approve) {
+          this.$router.push({
+            name: name,
+            query: {
+              data: JSON.stringify({
+                title: approve.title,
+                type: approve.category,
+                top: value.top,
+                lnbid: approve.lnbid,
+              }),
+            },
+          });
+        }
         return;
       }
       // this.SetHeader(value);

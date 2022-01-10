@@ -4,8 +4,8 @@
       <div class="basic_header on">
         <h2>{{ Title }}</h2>
         <div>
-          <span class="e_edit"></span
-          ><!--관리자 모드일때 노출되어야함-->
+          <!-- <span class="e_edit"></span> -->
+          <!--관리자 모드일때 노출되어야함-->
           <span class="sub_search"></span>
         </div>
         <span class="sub_ham" @click="OpenHam"></span>
@@ -26,7 +26,7 @@
       </div> -->
     </div>
     <div class="m_contents02">
-      <form @submit.prevent>
+      <form @submit.prevent class="formdiv">
         <ul class="board_list">
           <li v-for="(value, index) in lists" :key="index">
             <a @click="Read(value)">
@@ -47,37 +47,19 @@
                 </dt>
                 <dd>
                   {{ value.author }}<span>{{ transTime(value.created) }}</span
-                  ><em class="like">{{ value.likecnt }}</em>
+                  ><em class="like" v-if="options.isUseLike">{{ value.likecnt }}</em>
                 </dd>
               </dl>
               <span :class="{ clip: value.attach }"></span>
             </a>
           </li>
-          <infinite-loading
-            @infinite="infiniteHandler"
-            :identifier="infiniteId"
-            ref="infiniteLoading"
-            spinner="waveDots"
-          >
-            <div slot="no-more" style="padding: 10px 0px">
-              {{ commonl.end }}
-            </div>
-            <div slot="no-results" style="padding: 10px 0px">
-              {{ commonl.end }}
-            </div>
-            <div slot="error">
-              Error message, click
-              <router-link
-                :to="{
-                  name: `boardlist`,
-                }"
-                >here</router-link
-              >
-              to retry
-            </div>
-          </infinite-loading>
+          <Infinite
+            @infiniteHandler="infiniteHandler"
+            :infiniteId="infiniteId"
+          ></Infinite>
         </ul>
       </form>
+      <!-- </pull-to> -->
     </div>
     <SubMenu
       :isOpen="isOpen"
@@ -111,10 +93,10 @@
 import SubMenu from "./menu.vue";
 import Search from "./search.vue";
 import WBtn from "./BtnW.vue";
-import InfiniteLoading from "vue-infinite-loading";
 import { BoardSearch, ListOfCategory } from "../../api/index.js";
 import { mapState, mapGetters } from "vuex";
-// import $ from "jquery";
+
+import Infinite from "@/components/common/infinite.vue";
 
 export default {
   async created() {
@@ -123,14 +105,7 @@ export default {
     this.lang = this.GetBoardL.list;
     this.params = JSON.parse(this.$route.query.data);
     this.$store.commit("boardjs/BoardWritePath", this.params.type);
-    this.option.page = this.page;
-    this.option.category = "board";
-    this.option.size = this.GetConfig.listcount;
-    this.option.type = this.params.type;
-    this.option.lnbid = this.params.lnbid;
-    this.option.boardType = this.params.type;
-    this.option.searchword = "";
-    this.option.searchType = "0";
+
     this.Init();
     if (this.back.isBacked) {
       var res = await this.$store.dispatch("ListOfCategory", this.option);
@@ -145,7 +120,6 @@ export default {
       this.infiniteId++;
       // window.scroll({ top: this.back.top, behavior: "smooth" });
       this.$forceUpdate();
-      this.$store.commit("SetBack", false);
       var scrollentity = $("html,body");
       if (navigator.userAgent.match(/(iPod|iPhone|iPad)/)) {
         scrollentity = $("html");
@@ -158,8 +132,14 @@ export default {
         this.$forceUpdate();
       });
     }
+    this.$store.commit("SetBack", false);
   },
-  mounted() {},
+  beforeDestroy() {
+    PullToRefresh.destroyAll();
+  },
+  mounted() {
+    this.setPullTo();
+  },
   beforeRouteLeave(to, from, next) {
     this.$store.commit(
       "SetTop",
@@ -171,7 +151,7 @@ export default {
     next();
   },
   components: {
-    InfiniteLoading,
+    Infinite,
     SubMenu,
     Search,
     WBtn,
@@ -187,7 +167,7 @@ export default {
   },
   computed: {
     ...mapState("mainjs", ["main"]),
-    ...mapGetters("boardjs", ["GetBoard"]),
+    ...mapGetters("boardjs", ["GetBoard","options"]),
     ...mapGetters("configjs", ["GetConfig"]),
     ...mapGetters(["GetCategory", "GetHeader"]),
     ...mapState(["listOfCategory", "back"]),
@@ -210,9 +190,26 @@ export default {
     SetHeader(data) {
       this.$store.dispatch("SetHeader", data);
     },
+    Refresh() {
+      this.Init();
+      return this.$store.dispatch("ListOfCategory", this.option).then((res) => {
+        // this.Init();
+        this.lists = res;
+        this.$forceUpdate();
+        return;
+      });
+    },
     Init() {
-      this.infiniteId += 1;
       this.page = 0;
+      this.option.page = this.page;
+      this.option.category = "board";
+      this.option.size = this.GetConfig.listcount;
+      this.option.type = this.params.type;
+      this.option.lnbid = this.params.lnbid;
+      this.option.boardType = this.params.type;
+      this.option.searchword = "";
+      this.option.searchType = "0";
+      this.infiniteId += 1;
       return;
     },
     SetSearchWord({ searchfield, searchword }) {
@@ -225,7 +222,7 @@ export default {
         this.$store.dispatch("boardjs/BoardSearch", this.option).then((res) => {
           this.lists = res;
           this.$forceUpdate();
-          this.Init();
+          this.infiniteInit();
         });
       } else {
         this.option.type = this.params.type;
@@ -233,7 +230,8 @@ export default {
         this.$store.dispatch("ListOfCategory", this.option).then((res) => {
           this.lists = res;
           this.$forceUpdate();
-          this.Init();
+          this.infiniteId += 1;
+          // this.Init();
         });
       }
     },
@@ -251,7 +249,7 @@ export default {
           type: type,
           lnbid: this.params.lnbid,
           title: this.params.title,
-          top:this.params.top,
+          top: this.params.top,
         });
       }
     },

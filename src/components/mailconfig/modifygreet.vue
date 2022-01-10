@@ -1,33 +1,34 @@
 <template>
   <div>
     <h2 class="mail_st_header">
-      <router-link :to="{name:'SeeGreet'}">
+      <router-link :to="{ name: 'SeeGreet' }">
         <img src="../../mobile/img/wmail_back.png" alt="" /> </router-link
-      >{{lang.title}}
+      >{{ lang.title }}
       <div>
-        <span class="save fw_bold" @click="Modify"><a>{{lang.save}}</a></span>
-        <span class="delet fw_bold" @click="Delete"><a>{{lang.delete}}</a></span>
+        <span class="save fw_bold" @click="Modify"
+          ><a>{{ lang.save }}</a></span
+        >
+        <span class="delet fw_bold" @click="Delete"
+          ><a>{{ lang.delete }}</a></span
+        >
       </div>
     </h2>
     <div class="m_contents06">
       <form @submit.prevent>
         <ul>
           <li>
-            <span>{{lang.subject}}</span>
+            <span>{{ lang.subject }}</span>
             <input type="text" v-model="subject" />
           </li>
           <li>
-            <span>{{lang.setting}}</span>
+            <span>{{ lang.setting }}</span>
             <div @click="defaultCheck">
-              <em class="sig_check" :class="{ active: this.default }"></em>{{lang.default}}
+              <em class="sig_check" :class="{ active: this.default }"></em
+              >{{ lang.default }}
             </div>
           </li>
           <li>
-            <Namo :editor="body" :read="false" did="greet" ref="editor"></Namo>
-            <!-- <textarea contenteditable="true" :value="GetGreetView.body">
-안녕하세요 디자인팀 홍길동입니다.
-                    </textarea
-            > -->
+            <Body :body="body" ref="Body" :read="false" did="greet" />
           </li>
         </ul>
       </form>
@@ -37,9 +38,6 @@
 
 <script>
 import { mapState, mapGetters } from "vuex";
-import { Editor,EditorContent } from "tiptap";
-import Namo from '../editor/namo.vue';
-// import EditorContent from "./EditorContent.vue";
 export default {
   created() {
     this.lang = this.GetMConfigL.modifygreet;
@@ -47,44 +45,34 @@ export default {
     this.body = this.GetGreetView.body;
     this.subject = this.GetGreetView.subject;
   },
-  mounted() {
-    // this.content = this.GetGreetView.body;
-    this.editor = new Editor({
-      content: this.body,
-    })
-  },
-  beforeDestroy() {
-    this.editor.destroy();
-  },
   data() {
     return {
       default: false,
-      editor: null,
       content: "",
       body: "",
       subject: "",
     };
   },
-
   computed: {
-    ...mapGetters("mailjs",["GetGreetView"]),
-  },
-  components: {
-    EditorContent,Namo
+    ...mapGetters("mailjs", ["GetGreetView"]),
   },
   methods: {
-    Delete(){
-      this.$store.dispatch("mailjs/SignGreetDelete","greet");
+    Delete() {
+      this.$store.dispatch("mailjs/SignGreetDelete", "greet");
     },
     async Modify() {
-      let editorData = this.$refs.editor.$refs.namo.contentWindow.crosseditor.GetBodyValue();
+      let editorData = this.$refs.Body.getBody();
+
       this.GetGreetView.body = editorData;
       // this.GetGreetView.body = this.editor.getHTML();
       this.GetGreetView.subject = this.subject;
       this.GetGreetView.default = this.default;
-      var result = await this.$store.dispatch("mailjs/GreetEdit", this.GetGreetView);
-      if(result){
-        this.$router.push({ name: 'greet' });
+      var result = await this.$store.dispatch(
+        "mailjs/GreetEdit",
+        this.GetGreetView
+      );
+      if (result) {
+        this.$router.push({ name: "greet" });
       }
     },
     Back() {

@@ -112,6 +112,13 @@ module.exports = {
           '^/api/reservation': ''
         }
       },
+      '/api/loglist': {
+        target: 'http://localhost:4001/api/loglist',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/api/loglist': ''
+        }
+      },
       
     }
   },

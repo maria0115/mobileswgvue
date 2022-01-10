@@ -98,6 +98,9 @@ export default {
     // this.params = this.GetHeader.menu;
 
   },
+  mounted(){
+    
+  },
   methods: {
     MailDetail(unid) {
       this.$router.push({ name: "ReadMail", params: { unid } });

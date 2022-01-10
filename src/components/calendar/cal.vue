@@ -77,6 +77,7 @@
                     dates.length - 1 === idx && nextMonthStart > day,
                     idx === 0 && day >= lastMonthStart
                   )"
+                  :style="Style(value)"
                   :key="index"
                   :class="[
                     { all_day: value.data.allDay },
@@ -193,54 +194,29 @@ export default {
     isHoliday(day) {
       var data = {};
       const holiday = this.GetSchedule.holiday;
-
-      if (Object.keys(holiday).length > 0 && Array.isArray(holiday)) {
-        // 여러개일때
-        for (var i = 0; i < holiday.length; i++) {
-          if (parseInt(String(holiday[i].locdate).substring(6)) == day) {
-            data.boo = true;
-            data.name = holiday[i].dateName;
-            return data;
-          }
-        }
-        data.boo = false;
-        return data;
-      } else if (Object.keys(holiday).length > 0) {
-        // 하나일때
-        if (parseInt(String(holiday.locdate).substring(6)) == day) {
+      for (var i = 0; i < holiday.length; i++) {
+        var harr = holiday[i].startdate.split("-");
+        if (harr[harr.length-1] == day) {
           data.boo = true;
-          data.name = holiday.dateName;
+          data.name = holiday[i].subject;
           return data;
         }
-        data.boo = false;
-        return data;
-      } else {
-        data.boo = false;
-        return data;
       }
+      data.boo = false;
+      return data;
     },
     showDate(date) {
       this.date = date;
     },
-    async MoveChange(arg) {
-      // var moment = require("moment");
-      if (arg < 0) {
-        this.month -= 1;
-      } else if (arg === 1) {
-        this.month += 1;
-      }
-      if (this.month === 0) {
-        this.year -= 1;
-        this.month = 12;
-      } else if (this.month > 12) {
-        this.year += 1;
-        this.month = 1;
-      }
-      this.fulldate = `${this.year}.${this.fill(2, this.month)}.01`;
-      // alert(this.fulldate)
+    MoveChange(arg) {
+      this.fullSetting(arg);
+      this.setFull();
 
-      // this.selectedMonth = moment(`${this.year}/${this.month}`, "yyyyMM");
-      await this.Rest();
+      // this.Setting();
+    },
+    Setting() {
+      this.setFull();
+      this.Rest();
       this.premonth = this.month;
       const [monthFirstDay, monthLastDate, lastMonthLastDate] =
         this.getFirstDayLastDate(this.year, this.month);
@@ -300,11 +276,14 @@ export default {
       var last = "";
       var nextmonth = this.month;
       var nextyear = this.year;
-      if (this.month + 1 > 12) {
-        nextmonth = 1;
-        nextyear = this.year + 1;
-      }
+
       if (len > 0 && len < 7) {
+        if (this.month + 1 > 12) {
+          nextmonth = 1;
+          nextyear += 1;
+        } else {
+          nextmonth = this.month + 1;
+        }
         // last = len + 1;
         last = `${nextyear}-${this.fill(2, nextmonth)}-${this.fill(
           2,
@@ -336,7 +315,7 @@ export default {
         this.year = parseInt(e["_i"].split(".")[0]);
         this.month = parseInt(e["_i"].split(".")[1]);
 
-        this.MoveChange();
+        this.Setting();
       }
     },
     Today() {
@@ -344,26 +323,18 @@ export default {
     },
     Init() {
       this.InitForm();
-
-      this.MoveChange();
       return;
     },
     Rest() {
       if (this.premonth !== this.month) {
-        var data = {};
-        data.year = this.year;
-        data.month = this.fill(2, this.month);
-        data.menu = "holiday";
-
-        this.$store.dispatch("calendarjs/Holiday", data);
+        this.GetHoliday();
       }
       return;
     },
     changeDate(date) {
-      // alert("changeDate")
       this.SetDate(date);
 
-      this.MoveChange();
+      this.Setting();
     },
     async Detail(day, next, last, yuil) {
       var data = await this.isAllday(day, next, last);
@@ -417,6 +388,12 @@ export default {
           }),
         },
       });
+    },
+    Style(value) {
+      if (!this.Option().inotes) {
+        return { background: value.data.color, color: "#fff" };
+      }
+      return "";
     },
   },
 };

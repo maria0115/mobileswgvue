@@ -97,12 +97,12 @@ const router = new Router({
     {
       path: '/',
       name: "home",
-      redirect:"/mobile_index",
+      redirect: "/mobile_index",
     },
     {
       path: '/mobile_index',
       name: 'root',
-      
+
       // beforeEnter: (to, from, next) => {
       //   console.log("계속들어오니 /mobile_index")
       //   store.dispatch("GetLanguage", { app: "search" });
@@ -125,7 +125,7 @@ const router = new Router({
           component: Main,
           name: 'main',
           beforeEnter: (to, from, next) => {
-            
+
             store.dispatch("CategoryList", "");
             store.dispatch("mainjs/GetMyInfo");
             store.dispatch("GetLanguage", { app: "main" })
@@ -202,22 +202,13 @@ const router = new Router({
               component: board,
               name: 'mainboard',
               beforeEnter: (to, from, next) => {
-                // store.dispatch("CategoryList",to.params.type)
-                // .then((res) => {
-                //   console.log(res,"CategoryList");
-                // });
-                // store.dispatch("mainjs/GetBoard", {
-                //   boardtype: "notice",
-                //   category: "more",
-                // });
-                // store.dispatch("mainjs/GetBoard", {
-                //   boardtype: "education",
-                //   category: "more",
-                // });
-                // store.dispatch("mainjs/GetBoard", {
-                //   boardtype: "congratulate",
-                //   category: "more",
-                // });
+                next();
+              },
+            }, {
+              path: 'log',
+              component: () => import('@/components/main/log.vue'),
+              name: 'mainloglist',
+              beforeEnter: (to, from, next) => {
                 next();
               },
             }, {
@@ -802,7 +793,7 @@ const router = new Router({
           redirect: 'approval_more/approve',
           beforeEnter: (to, from, next) => {
             if (to.query.data) {
-              var params = JSON.parse(to.query.data)
+              var params = JSON.parse(to.query.data);
               store.dispatch("CategoryList", params.lnbid);
 
             }
@@ -939,14 +930,6 @@ const router = new Router({
               name: 'appformList_all',
               path: 'docform',
               component: appDocForm,
-              beforeEnter: (to, from, next) => {
-                // store.dispatch("approjs/DocApproval", { type: "formList_all" })
-                // store.dispatch("approjs/DocApproval", { type: "formList_recent" })
-                // store.dispatch("approjs/DocApproval", { type: "formList_favorite" })
-                // .then(() => {
-                next();
-                // })
-              },
             }, {
               name: 'appwrite',
               path: 'write',
@@ -973,27 +956,28 @@ const router = new Router({
           component: Board,
           children: [
             {
+              path: 'loglist',
+              name: 'loglist',
+              component: () => import('@/components/log/list.vue'),
+            },
+            {
+              path: 'loglist',
+              component: () => import('@/components/log/list.vue'),
+              name: 'loglistfirst',
+            },
+            {
               path: 'list',
               name: 'boardlist',
               component: BoardList,
               beforeEnter: (to, from, next) => {
-                // store.dispatch("boardjs/BoardSearch", { boardType: to.params.type,lnbid:to.params.lnbid});
-                // console.log("boardlist","hey")
+                var params = JSON.parse(to.query.data);
+                store.dispatch("boardjs/GetBoardSet", { lnbid: params.lnbid, type: params.type })
+                  .then(() => {
+                    next();
 
-                // var data = {};
-                // data.page = 0;
-                // // data.size = 10;
-                // data.category = 'board';
-                // data.size = store.state.configjs.store.config.listcount;
-                // data.type = to.params.type;
-                // data.lnbid = to.params.lnbid;
-
-                // store.dispatch("ListOfCategory", data)
-                //   .then(() => {
-                next();
-                // })
+                  })
+                // next();
               },
-
             },
             {
               path: 'education',
@@ -1027,30 +1011,11 @@ const router = new Router({
               path: 'read',
               name: 'boardread',
               component: BoardRead,
-              beforeEnter: (to, from, next) => {
-                // store.dispatch("GetApprovalList", { type: "draft" })
-                // .then(() => {
-                next();
-                // })
-              },
-
             },
             {
               path: 'write',
               name: 'boardwrite',
               component: BoardWrite,
-              beforeEnter: (to, from, next) => {
-                // store.dispatch("GetApprovalList", { type: "draft" })
-                // .then(() => {
-                var params = JSON.parse(to.query.data);
-                store.dispatch("boardjs/GetBoardSet", { lnbid: params.lnbid, type: params.type })
-                  .then(() => {
-                    next();
-
-                  })
-                // })
-              },
-
             },
           ]
         },
@@ -1110,10 +1075,6 @@ const router = new Router({
               path: 'write',
               name: 'reservationWrite',
               component: ReservationWrite,
-              beforeEnter: (to, from, next) => {
-                next();
-              },
-
             },
             {
               path: 'read',
@@ -1136,15 +1097,26 @@ const router = new Router({
     },
 
 
-  ]
+  ],
+  scrollBehavior(to, from, savedPosition) {
+    return { x: 0, y: 0 }
+  }
 })
 import axios from 'axios';
 import { roomList } from '../api';
+import config from "@/config/config.json";
+import option from "@/config/option.json";
 router.beforeEach((to, from, next) => {
   store.commit("OrgDataInit");
+
+  if (option[config.company].sso && config.env == "dev") {
+    to.name !== 'login'?next({ name: 'login' }):next();
+    return;
+  }
   // let isLogged = ... 
   // /login URL은 로그인 페이지 
   // to.meta.isLogged && !isLogged ? next({ path: '/login', replace: true }) : next() 
+
   if (to.name === 'login') {
     next();
     return;

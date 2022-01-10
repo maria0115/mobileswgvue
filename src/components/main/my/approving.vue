@@ -34,7 +34,7 @@
             </span>
           </div>
           <em>{{ value.category }}</em>
-          <strong>{{ value.subject }}{{ TopIdx() }}</strong>
+          <strong>{{ value.subject }}</strong>
           <div v-if="nowApprover(value)" class="per_info clfix">
             <span class="basic_img on">
               <em class="no_img" :style="randomColor()"
@@ -290,7 +290,7 @@ export default {
 }
 .app_slide .slick-slide .per_info dl dd {
   font-size: 0.81rem;
-  color: #655da7;
+  color: var(--main-bg-color);
   line-height: 1;
   margin-top: 0.31rem;
 }

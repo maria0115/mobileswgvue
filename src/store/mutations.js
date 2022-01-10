@@ -29,9 +29,15 @@ export default {
         });
 
         state.org['SendTo'] = send;
+        var resend = send.map(item => {
+            return { point: "SendTo", item };
+        })
+        state.orgdata = resend;
         state.org['CopyTo'] = copy;
-        console.log(state.org)
-
+        var recopy = copy.map(item => {
+            return { point: "CopyTo", item };
+        })
+        state.orgdata.join(recopy);
     },
     SetBack(state, value) {
         state.back.isBacked = value;
@@ -68,7 +74,6 @@ export default {
         state.org.pointer = point;
     },
     OrgData(state, data) {
-
         var org = state.org[state.org.pointer];
         if (data.kinds === "Department") {
             data.id = data.mycode;
@@ -90,20 +95,22 @@ export default {
                 }
             }) == idx1;
         });
-        state.org[state.org.pointer] = result;
-
+        state.org[state.org.pointer] = JSON.parse(JSON.stringify(result));
+        state.orgdata = result.map(item => {
+            return { point: state.org.pointer, item };
+        });
     },
     duplicateRemove(state) {
         state.orgdata = state.orgdata.filter(function (item1, idx1) {
             return state.orgdata.findIndex(function (item2, idx) {
-                return item1.item.notesId == item2.item.notesId && item1.point == item2.point;
+                return (item1.item.notesId == item2.item.notesId && item1.item.id == item2.item.id) && item1.point == item2.point;
             }) == idx1;
         });
 
     },
     OrgDataAdd(state, item) {
         var result = state.orgdata.findIndex((item1, idx) => {
-            return item1.item.notesId == item.item.notesId && item1.point == item.point;
+            return (item1.item.notesId == item.item.notesId && item1.item.id == item.item.id) && item1.point == item.point;
         });
 
         if (result == -1) {

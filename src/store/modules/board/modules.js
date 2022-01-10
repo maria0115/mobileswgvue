@@ -5,6 +5,8 @@ export const dataStore = {
             unid:"",
             parents:[],
             edit:false,
+            
         },
+        options:{},
     }
 }

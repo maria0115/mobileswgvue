@@ -48,32 +48,30 @@
                           :key="timei"
                         ></li>
                       </ul>
-                      <div
-                        
-                      >
+                      <div>
                         <!-- <div
                           class="schedule time_schedule"
                           v-for="(v, i) in isToday(value)"
                           :key="i"
                           
                         > -->
-                          <div
+                        <div
                           v-for="(value, index) in GetSchedule.calList.day.data"
-                        :key="index"
-                            class="schedule_box"
-                            @click="Detail(value)" :style="SetStyle(value)"
-                          >
-                            <!-- value-if="!value.allDay" -->
-                            <p>
-                              <em class="time"
-                                >{{ value.starttime
-                                }}
-                                ~ {{ value.endtime
-                                }}</em
-                              >
-                              <span class="con">{{ value.subject }}</span>
-                            </p>
-                          </div>
+                          :key="index"
+                          class="schedule_box"
+                          @click="Detail(value)"
+                          :style="SetStyle(value) + Style(value)"
+                        >
+                          <!-- value-if="!value.allDay" -->
+                          <p>
+                            <em class="time" :style="fontColor()"
+                              >{{ value.starttime }} ~ {{ value.endtime }}</em
+                            >
+                            <span class="con" :style="fontColor()">{{
+                              value.subject
+                            }}</span>
+                          </p>
+                        </div>
                         <!-- </div> -->
                       </div>
                     </div>
@@ -136,10 +134,10 @@ export default {
     };
   },
   methods: {
-    SetStyle(value){
-      var per = 100/value.width;
-      var left = 100/(value.width-value.left)-per;
-      return this.timeStyle(value)+`width: ${per}%;left: ${left}%;`;
+    SetStyle(value) {
+      var per = 100 / value.width;
+      var left = 100 / (value.width - value.left) - per;
+      return this.timeStyle(value) + `width: ${per}%;left: ${left}%;`;
     },
     Write(time) {
       this.$store.commit("calendarjs/isEdit", false);
@@ -166,18 +164,18 @@ export default {
     },
     MoveChange(arg) {
       this.dateMove(arg);
-      this.Send();
+      // this.Send();
     },
     Init() {
       this.InitSet();
       // var redate = this.fulldate.replaceAll(".", "/");
       // var redate = this.replaceAll(this.fulldate, ".", "/");
 
-      this.Send();
+      // this.Send();
     },
     calendarData(arg) {
       this.calendarDataSet(arg);
-      this.Send();
+      // this.Send();
       // var redate = this.fulldate.replaceAll(".", "/");
     },
     Send() {
@@ -196,11 +194,25 @@ export default {
         this.min += hour * 60;
         this.now = this.min + 74.88;
         this.SetDate(date);
+        this.setFull();
+        this.ReDate();
+        this.Send();
 
-        this.calendarData();
+        // this.calendarData();
       }
     },
-
+    Style(value) {
+      if (!this.Option().inotes) {
+        return `;background: ${value.color}`;
+      }
+      return "";
+    },
+    fontColor() {
+      if (!this.Option().inotes) {
+        return `;color: #fff`;
+      }
+      return "";
+    },
     async Detail(value) {
       //
       this.$store.commit("calendarjs/SaveScheduleUnid", {

@@ -5,27 +5,28 @@
       <form @submit.prevent>
         <ul class="cf_w_top">
           <li class="cf_w_name">
-            <strong>{{lang.top}}</strong>
+            <strong>{{ lang.top }}</strong>
             <div>
               <p>{{ GetNowRoom.floor }} - {{ GetNowRoom.title }}</p>
             </div>
           </li>
           <li class="cf_w_title">
-            <strong>{{lang.title}}</strong>
+            <strong>{{ lang.title }}</strong>
             <div>
               <input type="text" v-model="Subject" />
             </div>
           </li>
           <li class="cf_w_day">
-            <strong>{{lang.date}}</strong>
+            <strong>{{ lang.date }}</strong>
             <div>
               <div>
                 <span @click="selectOption('D')">
-                  <em :class="{ click: this.ScheduleType == 'D' }"></em>{{lang.daybook}}
+                  <em :class="{ click: this.ScheduleType == 'D' }"></em
+                  >{{ lang.daybook }}
                 </span>
                 <span @click="selectOption('R')">
                   <em :class="{ click: this.ScheduleType == 'R' }"></em
-                  >{{lang.repbook}}
+                  >{{ lang.repbook }}
                 </span>
               </div>
               <div>
@@ -40,7 +41,7 @@
             </div>
           </li>
           <li class="cf_w_time">
-            <strong>{{lang.starttime}}</strong>
+            <strong>{{ lang.starttime }}</strong>
             <div>
               <div>
                 <select v-model="SHour">
@@ -66,7 +67,7 @@
             </div>
           </li>
           <li class="cf_w_time">
-            <strong>{{lang.endtime}}</strong>
+            <strong>{{ lang.endtime }}</strong>
             <div>
               <div>
                 <select v-model="EHour">
@@ -92,20 +93,24 @@
             </div>
           </li>
           <li class="cf_w_date" v-if="this.ScheduleType == 'R'">
-            <strong>{{lang.repeat}}</strong>
+            <strong>{{ lang.repeat }}</strong>
             <div>
               <div>
                 <span @click="SetRepeatUnit('D')">
-                  <em :class="{ click: RepeatUnit == 'D' }"></em>{{lang.dayoption}}
+                  <em :class="{ click: RepeatUnit == 'D' }"></em
+                  >{{ lang.dayoption }}
                 </span>
                 <span @click="SetRepeatUnit('W')">
-                  <em :class="{ click: RepeatUnit == 'W' }"></em>{{lang.weekoption}}
+                  <em :class="{ click: RepeatUnit == 'W' }"></em
+                  >{{ lang.weekoption }}
                 </span>
                 <span @click="SetRepeatUnit('MP')">
-                  <em :class="{ click: RepeatUnit == 'MP' }"></em>{{lang.week2option}}
+                  <em :class="{ click: RepeatUnit == 'MP' }"></em
+                  >{{ lang.week2option }}
                 </span>
                 <span @click="SetRepeatUnit('M')">
-                  <em :class="{ click: RepeatUnit == 'M' }"></em>{{lang.monthoption}}
+                  <em :class="{ click: RepeatUnit == 'M' }"></em
+                  >{{ lang.monthoption }}
                 </span>
               </div>
               <div v-if="RepeatUnit == 'D'" @click="setEveryWeekday()">
@@ -114,62 +119,73 @@
                   class="check_b"
                   :class="{ active: this.EveryWeekday == '' }"
                 ></span>
-                <p>{{lang.weekday}}</p>
+                <p>{{ lang.weekday }}</p>
               </div>
             </div>
           </li>
-          <li class="cf_w_date" v-if="this.ScheduleType == 'R'">
-            <strong>{{lang.weekday}}</strong>
+          <li
+            class="cf_w_date"
+            v-if="this.ScheduleType == 'R' && RepeatUnit !== 'D'"
+          >
+            <strong>{{ lang.condition }}</strong>
             <div>
-              <div v-if="RepeatUnit=='W'">
+              <div v-if="RepeatUnit == 'W'">
                 <select v-model="WeekDay">
                   <option
-                    :value="index+1"
+                    :value="index + 1"
                     v-for="(value, index) in daysSort"
                     :key="index"
                   >
-                    {{ value }}{{lang.day}}
+                    {{ value }}{{ lang.day }}
                   </option>
                 </select>
               </div>
-              <div v-if="RepeatUnit=='MP'">
+              <div v-if="RepeatUnit == 'MP'">
                 <select v-model="RepeatAdjust_W2">
-                  <option :value="index+1"
+                  <option
+                    :value="index + 1"
                     v-for="(value, index) in mpSort"
-                    :key="index">{{value}}</option>
+                    :key="index"
+                  >
+                    {{ value }}
+                  </option>
                 </select>
-                <b>{{lang.week}}</b>
+                <b>{{ lang.week }}</b>
                 <select v-model="WeekDay">
                   <option
-                    :value="index+1"
+                    :value="index + 1"
                     v-for="(value, index) in daysSort"
                     :key="index"
                   >
-                    {{ value }}{{lang.day}}
+                    {{ value }}{{ lang.day }}
                   </option>
                 </select>
               </div>
-              <div v-if="RepeatUnit=='M'">
+              <div v-if="RepeatUnit == 'M'">
                 <select v-model="RepeatAdjust_W1">
-                  <option :value="index+1"
+                  <option
+                    :value="index + 1"
                     v-for="(value, index) in weekSort"
-                    :key="index">{{value}}</option>
+                    :key="index"
+                  >
+                    {{ value }}
+                  </option>
                 </select>
-                <b>{{lang.week}}</b>
+                <b>{{ lang.week }}</b>
                 <select v-model="WeekDay">
                   <option
-                    :value="index+1"
+                    :value="index + 1"
                     v-for="(value, index) in daysSort"
                     :key="index"
                   >
-                    {{ value }}{{lang.day}}
+                    {{ value }}{{ lang.day }}
                   </option>
                 </select>
               </div>
             </div>
           </li>
           <li class="cf_w_att">
-            <strong>{{lang.attendants}}</strong>
+            <strong>{{ lang.attendants }}</strong>
             <div>
               <ul class="list_add clfix">
                 <li
@@ -183,13 +199,15 @@
                       <dt>{{ value.name }} / {{ value.department }}</dt>
                       <dd>{{ value.email }}</dd>
                     </dl>
-                    <span @click="ScheduleOrgDataDelete(value, 'SendTo')"
-                      >{{lang.delete}}</span
-                    >
+                    <span @click="ScheduleOrgDataDelete(value, 'SendTo')">{{
+                      lang.delete
+                    }}</span>
                   </div>
                 </li>
                 <li class="new_addr">
-                  <label for="toinput" class="blind">{{lang.attendants}}</label>
+                  <label for="toinput" class="blind">{{
+                    lang.attendants
+                  }}</label>
                   <textarea
                     @click="
                       [
@@ -248,7 +266,7 @@
           />
           <!--추가됨-->
           <li class="att_file">
-            <strong>{{lang.attach}}</strong>
+            <strong>{{ lang.attach }}</strong>
             <span class="tit_clip" @click="submitFile()" />
 
             <div>
@@ -263,31 +281,29 @@
           <li class="cf_w_mailing">
             <div @click="Mailing()">
               <span :class="{ active: isMailling }"></span>
-              <p>{{lang.comment}}</p>
+              <p>{{ lang.comment }}</p>
             </div>
           </li>
           <li class="cf_w_memo">
-            <!-- <textarea id="memo_t" v-model="Body_Text"></textarea> -->
-            <Namo
+            <Body
               id="memo_t"
+              :body="Body_Text"
+              ref="Body"
               :read="false"
               did="calendar"
-              :editor="Body_Text"
-              ref="editor"
-            ></Namo>
+            />
           </li>
         </ul>
       </form>
     </div>
-    <Org :modalon="modalon" @ModalOff="ModalOff"></Org>
+    <Org :send="send" :modalon="modalon" @ModalOff="ModalOff"></Org>
   </div>
 </template>
 
 <script>
 import Header from "./header.vue";
 import Org from "../../View/Org.vue";
-import Namo from "../editor/namo.vue";
-// GetMyInfo
+
 import { mapState, mapGetters } from "vuex";
 
 export default {
@@ -297,7 +313,6 @@ export default {
     this.daysSort = this.lang.daysSort.split(",");
     this.weekSort = this.lang.weekSort.split(",");
     this.mpSort = this.lang.mpSort.split(";");
-
 
     if (this.isEdit) {
       if (!(Object.keys(this.detail).length > 0)) {
@@ -316,12 +331,17 @@ export default {
       this.Body_Text = this.detail.body;
       this.Subject = this.detail.subject;
       this.org.SendTo = this.detail.peoples;
+
+      this.send = this.org.SendTo.map((item) => {
+        return { point: "SendTo", item };
+      });
+      console.log(this.send);
       this.file = this.detail.attachInfo;
     } else {
       this.params = JSON.parse(this.$route.query.data);
       var dates = new Date();
       var hour = dates.getHours();
-      this.SHour = `${this.fill(2, hour+1)}`;
+      this.SHour = `${this.fill(2, hour + 1)}`;
       this.SMin = `00`;
 
       this.EHour = `${this.fill(2, hour + 2)}`;
@@ -349,13 +369,13 @@ export default {
   components: {
     Header,
     Org,
-    Namo,
   },
   beforeDestroy() {
     // this.$store.commit("OrgDataInit");
   },
   data() {
     return {
+      send: [],
       modalon: false,
       SHour: "",
       SMin: "",
@@ -410,9 +430,9 @@ export default {
       formData.append("EHour", this.EHour);
       formData.append("EMin", this.EMin);
       // this.Body_Text = "test11";
-      this.Body_Text =
-        this.$refs.editor.$refs.namo.contentWindow.crosseditor.GetBodyValue();
-      formData.append("Body", this.Body_Text);
+      let editorData = this.$refs.Body.getBody();
+
+      formData.append("Body", editorData);
 
       formData.append("ScheduleType", this.ScheduleType);
       formData.append("RepeatUnit", this.RepeatUnit);
@@ -427,6 +447,7 @@ export default {
       formData.append("Attendee", Attendee);
 
       var master = this.GetMyInfo.master;
+      console.log(this.GetMyInfo);
       formData.append("MeetMasterFull", master.approvalInfo);
       formData.append("MeetMaster", master.id);
       formData.append("MeetMasterName", master.shortname);
@@ -511,7 +532,7 @@ export default {
       var data = {};
       data.item = value;
       data.point = who;
-      this.$store.commit("OrgDataAdd",data);
+      this.$store.commit("OrgDataAdd", data);
       await this.$store.commit("AddOrg", {
         who,
         value,

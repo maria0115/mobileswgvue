@@ -35,7 +35,7 @@ export default {
   position: absolute;
   left: 6px;
   width: 13px;
-  background: #655da7;
+  background: var(--main-bg-color);
   animation: lds-facebook 1.2s cubic-bezier(0, 0.5, 0.5, 1) infinite;
 }
 .lds-facebook div:nth-child(1) {

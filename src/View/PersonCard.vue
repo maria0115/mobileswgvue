@@ -1,5 +1,9 @@
 <template>
-  <div class="con09_inner" v-if="Object.keys(item).length>0" :class="{ active: this.modalon }">
+  <div
+    class="con09_inner"
+    v-if="Object.keys(item).length > 0"
+    :class="{ active: this.modalon }"
+  >
     <strong
       ><em>{{ item.shortname }}</em
       >{{ item.name.split(" ")[1] }}/ {{ item.department }}</strong
@@ -16,8 +20,12 @@
         > -->
       </span>
       <ul>
-        <li><span>{{lang.comPhone}}:</span>{{ item.office }}</li>
-        <li><span>{{lang.phone}}:</span>{{ item.mobile }}</li>
+        <li>
+          <span>{{ lang.comPhone }}:</span>{{ item.office }}
+        </li>
+        <li>
+          <span>{{ lang.phone }}:</span>{{ item.mobile }}
+        </li>
         <li><span>email:</span>{{ item.email }}</li>
       </ul>
     </div>
@@ -25,13 +33,13 @@
       <li>
         <a :href="`tel:${item.office}`">
           <span></span>
-          <em>{{lang.comPhone}}</em>
+          <em>{{ lang.comPhone }}</em>
         </a>
       </li>
       <li>
         <a :href="`tel:${item.mobile}`">
           <span></span>
-          <em>{{lang.phone}}</em>
+          <em>{{ lang.phone }}</em>
         </a>
       </li>
       <li>
@@ -53,10 +61,9 @@
 
 <script>
 export default {
-  created(){
+  created() {
     // console.log(this.item.photo);
     this.lang = this.GetCommonL.org;
-
   },
   props: {
     item: Object,
@@ -67,13 +74,13 @@ export default {
       this.$emit("ModalOff");
     },
     GoEmail() {
-      this.$store.commit("OrgPointer","SendTo");
-      this.$store.commit("OrgData",this.item);
-      this.$router.replace({name:'WriteMail'}).catch(error => {
-        if(error.name != "NavigationDuplicated" ){
+      this.$router.replace({ name: "WriteMail" }).catch((error) => {
+        if (error.name != "NavigationDuplicated") {
           throw error;
         }
       });
+      this.$store.commit("OrgPointer", "SendTo");
+      this.$store.commit("OrgData", this.item);
     },
   },
 };
