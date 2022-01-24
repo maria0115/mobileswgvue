@@ -129,7 +129,7 @@ export default {
   width: 1rem;
   height: 0.81rem;
   content: "";
-  background: url(/mobile/img/mail_icon09.png) center no-repeat;
+  background: url(/mobile/img/mail_icon09.svg) center no-repeat;
   background-size: 1rem 0.81rem;
 }
 .nt_list_menu li h3 a {

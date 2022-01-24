@@ -1,20 +1,28 @@
 <template>
   <div>
-    <div
-      v-if="(this.Option().editor === 'textarea' && read)"
-      v-html="Body_Text"
-    ></div>
+    <!-- <Basic
+      v-if="read"
+      style="padding:0.93rem;"
+      :body="Body_Text"
+    /> -->
+    <TipTap
+      v-if="this.Option().editor === 'tiptap'"
+      :body="Body_Text"
+      :read="read"
+      ref="tiptap"
+    />
+    <!-- <TipTap
+      v-else-if="this.Option().editor === 'tiptap'"
+      :body="Body_Text"
+      :read="read"
+      ref="tiptap"
+    /> -->
     <textarea
       v-else-if="this.Option().editor === 'textarea'"
       v-model="Body_Text"
       ref="textarea"
     ></textarea>
-    <TipTap
-      v-else-if="this.Option().editor === 'tiptap'"
-      :body="Body_Text"
-      :read="read"
-      ref="tiptap"
-    />
+    
     <Namo
       v-else-if="this.Option().editor === 'namo'"
       :read="read"
@@ -22,21 +30,47 @@
       :body="Body_Text"
       ref="namo"
     ></Namo>
+    <Synap v-else-if="this.Option().editor === 'synap'"
+      :read="read"
+      :did="did"
+      :body="Body_Text"
+      ref="synap"
+      />
   </div>
 </template>
 
 <script>
 import Namo from "@/components/editor/namo.vue";
 import TipTap from "@/components/editor/tiptap.vue";
-
+import Basic from "@/components/editor/basic.vue"
+import Synap from "@/components/editor/synapb.vue"
 export default {
-  created() {
-    this.Body_Text = this.body;
+  async created() {
+    // var test2 = document.createElement("span"); // body에 추가할 span 태그를 추가
+    this.Body_Text = this.body; // innerHTML을 사용하여 text를 html로 파싱 후 자식노드로 추가
+    // test2.innerHTML = this.body;
+    // var iframes;
+    // var here = this;
+    // $(test2).ready(function () {
+    //   iframes = $(test2).find("iframe");
+    //   // console.log(iframes)
+    //   iframes.attr('onload',null);
+    //   // console.log(test2.innerHTML)
+    //   here.Body_Text = test2.innerHTML;
+    //   // here.$forceUpdate();
+    // });    
   },
   props: ["body", "did", "read"],
   components: {
     Namo,
     TipTap,
+    Basic,
+    Synap,
+  },
+  data(){
+    return{
+      Body_Text:""
+    }
   },
   methods: {
     getBody() {
@@ -48,6 +82,9 @@ export default {
         return this.$refs.tiptap.editor.getHTML();
       } else if (this.Option().editor === "namo") {
         return this.$refs.namo.$refs.namo.contentWindow.crosseditor.GetBodyValue();
+      }else if(this.Option().editor === "synap"){
+        var synap = this.$refs.synap;
+        return synap.GetBody();
       }
       return "";
     },

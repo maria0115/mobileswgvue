@@ -5,7 +5,7 @@
       <form @submit.prevent>
         <div>
           <div>
-            <strong>{{lang.title}}</strong>
+            <strong>{{ lang.title }}</strong>
             <div>
               <input
                 type="text"
@@ -19,7 +19,7 @@
               <div class="btns">
                 <span class="del_btn" @click="delBtn"><em></em></span>
                 <span class="search_icon" @click="SetAutoOrg"
-                  ><img src="../mobile/img/search_icon.png" alt="검색하기"
+                  ><img src="../mobile/img/search_icon.svg" alt="검색하기"
                 /></span>
               </div>
             </div>
@@ -58,24 +58,24 @@
           :class="{ active: this.listtoggle }"
           v-if="orgdata.length > 0"
         >
-        <div>
           <div>
-            <div v-for="(value, index) in orgdata" :key="index">
-              <select v-model="value.point" @change="dupRemove">
-                <option value="SendTo">{{lang.receive}}</option>
-                <option value="CopyTo">{{lang.cc}}</option>
-                <option value="BlindCopyTo">{{lang.bcc}}</option>
-              </select>
-              <span
-                >{{ value.item.name
-                }}<em v-if="value.item.email"
-                  >&lt;{{ value.item.email }}&gt;</em
-                ></span
-              >
-              <em class="list_close" @click="OrgDataDel(value, index)"></em>
+            <div>
+              <div v-for="(value, index) in orgdata" :key="index">
+                <select v-model="value.point" @change="dupRemove">
+                  <option value="SendTo">{{ lang.receive }}</option>
+                  <option value="CopyTo">{{ lang.cc }}</option>
+                  <option value="BlindCopyTo">{{ lang.bcc }}</option>
+                </select>
+                <span
+                  >{{ value.item.name
+                  }}<em v-if="value.item.email"
+                    >&lt;{{ value.item.email }}&gt;</em
+                  ></span
+                >
+                <em class="list_close" @click="OrgDataDel(value, index)"></em>
+              </div>
             </div>
           </div>
-        </div>
           <span class="hidden_btn" @click="listToggle"></span>
         </div>
         <ul class="organlist">
@@ -96,7 +96,7 @@
           </span>
         </ul>
         <div class="o_organ_ft">
-          <span class="ps_add" @click="SetDataOrg">{{lang.ok}}</span>
+          <span class="ps_add" @click="SetDataOrg">{{ lang.ok }}</span>
         </div>
       </form>
       <span class="modal_close" @click="ModalOff"></span>
@@ -109,9 +109,9 @@ import { mapState, mapGetters } from "vuex";
 import OrgItem from "./orgitemview.vue";
 export default {
   created() {
-    if(this.send.length>0){
-      for(var item of this.send){
-        this.$store.commit("OrgDataAdd",item);
+    if (this.send.length > 0) {
+      for (var item of this.send) {
+        this.$store.commit("OrgDataAdd", item);
       }
     }
     this.lang = this.GetCommonL.org;
@@ -119,26 +119,23 @@ export default {
     var data = {};
     this.$store.dispatch("mailjs/InitOrg", data);
   },
-  mounted(){
-  },
+  mounted() {},
   props: {
     modalon: Boolean,
     send: {
       type: Array,
       default: function () {
         return [];
-      }
+      },
     },
   },
   components: {
     OrgItem,
-    
-
   },
-  watch:{
-    send(newval){
-      for(var item of newval){
-        this.$store.commit("OrgDataAdd",item);
+  watch: {
+    send(newval) {
+      for (var item of newval) {
+        this.$store.commit("OrgDataAdd", item);
       }
     },
   },
@@ -215,12 +212,23 @@ export default {
       this.$store.commit("DeleteOrgData", { val, index });
     },
     OrgDataAdd(item) {
-      var result = this.orgdata.findIndex((item1, idx) => {
-        return (
-          item1.item.notesId == item.notesId && item1.point == this.org.pointer
-        );
-      });
-
+      var result = -1;
+      if (item.notesId) {
+        result = this.orgdata.findIndex((item1, idx) => {
+          return (
+            item1.item.notesId == item.notesId &&
+            item1.point == this.org.pointer
+          );
+        });
+      } else if (item.id) {
+        result = this.orgdata.findIndex((item1, idx) => {
+          return item1.item.id == item.id && item1.point == this.org.pointer;
+        });
+      } else if (item.mycode) {
+        result = this.orgdata.findIndex((item1, idx) => {
+          return item1.item.mycode == item.mycode && item1.point == this.org.pointer;
+        });
+      }
       if (result == -1) {
         this.orgdata.push({ point: this.org.pointer, item });
       }

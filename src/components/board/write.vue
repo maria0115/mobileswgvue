@@ -115,7 +115,7 @@
           </li>
         </ul>
         <div class="noti_con" style="padding: 0">
-          <Body :body="Body_Text" ref="Body" :read="false" did="board" />
+          <Body :body="Body_Text" style="height:100%" ref="Body" :read="false" did="board" />
         </div>
       </form>
     </div>

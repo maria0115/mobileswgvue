@@ -320,6 +320,7 @@
             <label for="mail_wri"></label>
             <Body
               id="mail_wri"
+              style="height:100%;"
               :body="Body_Text"
               ref="Body"
               :read="false"
@@ -469,13 +470,6 @@ export default {
       }
       return false;
     },
-    generateRandomCode(n) {
-      let str = "";
-      for (let i = 0; i < n; i++) {
-        str += Math.floor(Math.random() * 10);
-      }
-      return str;
-    },
     getExtensionOfFilename(filename) {
       var _fileLen = filename.length;
       var _lastDot = filename.lastIndexOf(".");
@@ -512,13 +506,13 @@ export default {
     FormSet() {
       var inSendTo = this.org.SendTo.map((item) => item.name).join(";");
       var SendTo = this.org.SendTo.map((item) => item.id).join(";");
-      var ocxSendTo = SendTo;
+      var ocxSendTo = this.org.SendTo.map((item) => item.shortname||item.name).join(";");
 
       var CopyTo = this.org.CopyTo.map((item) => item.id).join(";");
-      var ocxCopyTo = CopyTo;
+      var ocxCopyTo = this.org.CopyTo.map((item) => item.shortname||item.name).join(";");
 
       var BlindCopyTo = this.org.BlindCopyTo.map((item) => item.id).join(";");
-      var ocxBCopyTo = BlindCopyTo;
+      var ocxBCopyTo = this.org.BlindCopyTo.map((item) => item.shortname||item.name).join(";");
 
       let formData = new FormData();
       formData.append("SendTo", SendTo);

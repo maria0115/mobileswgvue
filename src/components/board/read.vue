@@ -50,29 +50,7 @@
         v-if="GetStoreBoard.detail.attach.length > 0"
       >
         <strong>{{ lang.attach }}</strong>
-        <ul v-if="!sat">
-          <li
-            class="active"
-            v-for="(value, index) in GetStoreBoard.detail.attach"
-            :key="index"
-          >
-            <span
-              ><img
-                :src="`../../mobile/img/icon_${fileImg(value.name)}.png`"
-                alt=""
-            /></span>
-            <div>
-              <a @click="openDownload(value.url)">
-                <!-- <a :href="value.url"> -->
-                <p>{{ value.name }}</p>
-                <em>({{ value.size }})</em>
-              </a>
-            </div>
-          </li>
-        </ul>
-
         <Viewer
-          v-else
           className=""
           :attaInfo="GetStoreBoard.detail.attach"
           :attach="true"
@@ -82,6 +60,7 @@
       <div class="rdm_edit">
         <Body
           id="noti_con"
+          style="height:100%"
           :body="GetStoreBoard.detail.body"
           ref="Body"
           :read="true"
@@ -178,14 +157,7 @@
 
 <script>
 import { mapState, mapGetters } from "vuex";
-import configjson from "../../config/config.json";
-import Namo from "../editor/namo.vue";
-import Viewer from "../editor/viewer.vue";
 export default {
-  components: {
-    Namo,
-    Viewer,
-  },
   created() {
     this.lang = this.GetBoardL.read;
     // this.params = this.GetHeader.menu;
@@ -204,26 +176,8 @@ export default {
     ...mapGetters("boardjs", ["GetStoreBoard"]),
     ...mapGetters("mainjs", ["GetMyInfo"]),
     ...mapGetters(["GetHeader"]),
-    sat() {
-      return configjson.sat;
-    },
   },
   methods: {
-    getExtensionOfFilename(filename) {
-      var _fileLen = filename.length;
-      var _lastDot = filename.lastIndexOf(".");
-      var _fileExt = filename.substring(_lastDot + 1, _fileLen).toLowerCase();
-
-      return _fileExt;
-    },
-    fileImg(name) {
-      var dot = this.getExtensionOfFilename(name);
-
-      if (configjson.extension.indexOf(dot) !== -1) {
-        return dot;
-      }
-      return "etc";
-    },
     DeleteBoard() {
       var data = {};
       data.boardType = this.GetStoreBoard.path;

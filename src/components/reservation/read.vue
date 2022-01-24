@@ -1,7 +1,7 @@
 <template>
   <div class="modal_wrap">
     <Header :btnArr="btnarr" @BtnClick="BtnClick"></Header>
-    <div class="m_contents10 srl">
+    <div class="m_contents10 srl" style="height:calc(100vh - 6.25rem);">
       <form action="">
         <ul class="cf_w_top">
           <li class="cfw_name">
@@ -54,30 +54,22 @@
           </li>
           <li class="cf_w_att3" v-if="this.detail.attachInfo.length > 0">
             <strong>{{ lang.attach }}</strong>
-            <div class="" v-if="!sat">
-              <p v-for="(value, index) in this.detail.attachInfo" :key="index">
-                <a @click="openDownload(value.url)">
-                  {{ value.name }}
-                </a>
-              </p>
-            </div>
             <Viewer
-              v-else
-              className="file_list"
-              :attaInfo="calData.attachInfo"
+              className=""
+              :attaInfo="this.detail.attachInfo"
               :attach="true"
             ></Viewer>
           </li>
-          <li class="cf_w_memo2">
-            <div>
-              <Body
-                id="memo_t"
-                :body="this.detail.body"
-                ref="Body"
-                :read="true"
-                did="calendar"
-              />
-            </div>
+          <li class="rdm_edit" style="height:calc(100vh - 25.375rem);">
+            <Body
+              class="cf_w_memo2"
+              style="height: 100%;width:100%"
+              id="memo_t"
+              :body="this.detail.body"
+              ref="Body"
+              :read="true"
+              did="calendar"
+            />
           </li>
         </ul>
       </form>
@@ -96,10 +88,8 @@ import Header from "./header.vue";
 import Org from "../../View/Org.vue";
 import { mapState, mapGetters } from "vuex";
 import Comment from "./Comment.vue";
-import Namo from "../editor/namo.vue";
 
 import configjson from "../../config/config.json";
-import Viewer from "../editor/viewer.vue";
 
 export default {
   created() {
@@ -116,8 +106,6 @@ export default {
     Header,
     Org,
     Comment,
-    Viewer,
-    Namo,
   },
   methods: {
     CommentM(comment) {

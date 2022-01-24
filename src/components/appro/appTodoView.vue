@@ -26,7 +26,8 @@
           <li v-if="detail.approvalInfo">
             <h3 :class="{ active: appActive }">
               <a @click="isOpenApp"
-                >{{lang.appinfo}} <em>({{ this.detail.approvalInfo.length }})</em></a
+                >{{ lang.appinfo }}
+                <em>({{ this.detail.approvalInfo.length }})</em></a
               >
             </h3>
             <div :class="{ active: appActive }">
@@ -56,26 +57,12 @@
           <li class="app_file" v-if="this.detail.attachInfo.length > 0">
             <h3 :class="{ active: attActive }">
               <a @click="isOpenAtt"
-                >{{lang.attach}} <em>({{ this.detail.attachInfo.length }})</em></a
+                >{{ lang.attach }}
+                <em>({{ this.detail.attachInfo.length }})</em></a
               >
             </h3>
             <div :class="{ active: attActive }">
-              <ul v-if="!sat">
-                <li
-                  v-for="(value, index) in this.detail.attachInfo"
-                  :key="index"
-                >
-                  <a  @click="openDownload(value.url)">{{ value.name }}</a>
-                  <!-- <div class="file_btn">
-                    <span class="open_btn" @click="attOpen(value.path)"
-                      >열기</span
-                    >
-                    <span class="save_btn">저장</span>
-                  </div> -->
-                </li>
-              </ul>
               <Viewer
-                v-else
                 className=""
                 :attaInfo="this.detail.attachInfo"
                 :attach="true"
@@ -86,14 +73,6 @@
         <div class="line03">
           <a v-html="detail.body" style="overflow-x: auto"></a>
         </div>
-        <!-- <div class="line04 clfix">
-          <form @submit.prevent>
-            <strong>결재의견</strong>
-            <div>
-              <input type="text" v-on:input="comment = $event.target.value" />
-            </div>
-          </form>
-        </div> -->
       </div>
       <BtnPlus :menu="morePlus" @BtnClick="BtnClick"></BtnPlus>
       <Viewer className="" :attach="false" ref="viewer"></Viewer>
@@ -112,8 +91,6 @@ import SubMenu from "./menu.vue";
 import BtnPlus from "./btnPlus.vue";
 import Comment from "./Comment.vue";
 import { mapState, mapGetters } from "vuex";
-import Viewer from "../editor/viewer.vue";
-
 import config from "@/config/config.json";
 export default {
   created() {
@@ -153,7 +130,6 @@ export default {
     BackHeader,
     SubMenu,
     BtnPlus,
-    Viewer,
     Comment,
   },
   data() {
@@ -185,7 +161,10 @@ export default {
         });
         return;
       } else if (e == "view") {
-        this.OriginView();
+        this.OriginView({
+          url: this.detail.openurl,
+          name: this.detail.subject,
+        });
         return;
       }
 
@@ -216,23 +195,6 @@ export default {
     },
     isOpenAtt() {
       this.attActive = !this.attActive;
-    },
-    attOpen(url) {
-      window.open(url);
-    },
-    OriginView() {
-      // location.href = config.originPage + this.detail.openurl;
-      // node 원문보기
-      this.$router.push({
-        name: "originalPage",
-        params: { url: this.detail.openurl },
-      });
-      // 첨부변환서버 원문보기
-      // this.$refs.viewer.goOriginView({
-      //   url: this.detail.openurl,
-      //   name: this.detail.subject,
-      // });
-      // this.$refs.viewer.goOriginView({url:this.detail.openurl, name:this.detail.subject});
     },
   },
 };

@@ -26,7 +26,8 @@
           <li v-if="detail.approvalInfo">
             <h3 :class="{ active: appActive }">
               <a @click="isOpenApp"
-                >{{this.lang.appinfo}} <em>({{ detail.approvalInfo.length }})</em></a
+                >{{ this.lang.appinfo }}
+                <em>({{ detail.approvalInfo.length }})</em></a
               >
             </h3>
             <div :class="{ active: appActive }">
@@ -56,26 +57,12 @@
           <li class="app_file" v-if="this.detail.attachInfo.length > 0">
             <h3 :class="{ active: attActive }">
               <a @click="isOpenAtt"
-                >{{this.lang.attach}} <em>({{ this.detail.attachInfo.length }})</em></a
+                >{{ this.lang.attach }}
+                <em>({{ this.detail.attachInfo.length }})</em></a
               >
             </h3>
             <div :class="{ active: attActive }">
-              <ul v-if="!sat">
-                <li
-                  v-for="(value, index) in this.detail.attachInfo"
-                  :key="index"
-                >
-                  <a @click="openDownload(value.url)">{{ value.name }}</a>
-                  <!-- <div class="file_btn">
-                    <span class="open_btn" @click="attOpen(value.path)"
-                      >열기</span
-                    >
-                    <span class="save_btn">저장</span>
-                  </div> -->
-                </li>
-              </ul>
               <Viewer
-                v-else
                 className=""
                 :attaInfo="this.detail.attachInfo"
                 :attach="true"
@@ -107,7 +94,6 @@ import Comment from "./Comment.vue";
 import config from "@/config/config.json";
 
 import { mapState, mapGetters } from "vuex";
-import Viewer from "../editor/viewer.vue";
 export default {
   created() {
     const language = this.GetAppL.ingread;
@@ -124,7 +110,6 @@ export default {
     if (this.detail.agreeBtn) {
       // this.morePlus = { view: "원문 보기",deleteItem: "삭제", };
       if (this.detail.status == "mutualing") {
-        
         this.morePlus.agree = more.mutualing.agree;
         this.morePlus.reject = more.mutualing.reject;
       } else {
@@ -146,7 +131,6 @@ export default {
     BackHeader,
     SubMenu,
     BtnPlus,
-    Viewer,
     Comment,
   },
   data() {
@@ -156,7 +140,7 @@ export default {
       appActive: false,
       attActive: false,
       agreeNreject: false,
-      morePlus:{}
+      morePlus: {},
     };
   },
   methods: {
@@ -179,7 +163,10 @@ export default {
         });
         return;
       } else if (value == "view") {
-        this.OriginView();
+        this.OriginView({
+          url: this.detail.openurl,
+          name: this.detail.subject,
+        });
         return;
       } else if (value === "deleteItem") {
         data = this.detail;
@@ -246,20 +233,6 @@ export default {
     },
     attOpen(url) {
       window.open(url);
-    },
-    OriginView() {
-      // location.href = config.originPage + this.detail.openurl;
-      // node 원문보기
-      this.$router.push({
-        name: "originalPage",
-        params: { url: this.detail.openurl },
-      });
-      // 첨부변환서버 원문보기
-      // this.$refs.viewer.goOriginView({
-      //   url: this.detail.openurl,
-      //   name: this.detail.subject,
-      // });
-      // this.$refs.viewer.goOriginView({url:this.detail.openurl, name:this.detail.subject});
     },
   },
 };

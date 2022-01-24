@@ -65,7 +65,7 @@ let NowTime = {
         },
     },
     methods: {
-        
+
         GetHoliday() {
             var data = {};
             data.year = this.year;
@@ -184,12 +184,15 @@ let NowTime = {
             this.theDayOfWeek = currentDay.getDay();
         },
         fullSetting(arg) {
-            var moment = require("moment");
-            var d = `${this.year}-${this.month}-${this.today}`;
-            var red = moment(d).clone().add(arg, "months");
-            this.month = red.format("MM");
-            this.year = red.format("YYYY");
-            this.today = red.format("DD");
+            if (arg) {
+                var moment = require("moment");
+                var d = `${this.year}-${this.month}-${this.today}`;
+                var red = moment(d,"YYYY-MM-DD").add(arg, "months");
+
+                this.month = red.format("MM");
+                this.year = red.format("YYYY");
+                this.today = red.format("DD");
+            }
         },
 
         calendarDataSet(arg) {

@@ -2,7 +2,6 @@
   'use strict';
 
   window.cssCircleMenu = function(el) {
-    console.log("와이라는교")
     var $menu = document.querySelector(el);
     console.log($menu)
     var $menuToggle = $menu ? $menu.querySelector('.js-menu-toggle') : undefined;

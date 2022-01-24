@@ -17,10 +17,10 @@
             <em></em>
           </span>
           <span class="search_icon" @click="SearchWord(searchQuery)">
-            <img src="../mobile/img/search_icon.png" alt="검색하기" />
+            <img src="../mobile/img/search_icon.svg" alt="검색하기" />
           </span>
           <span v-if="this.Option().voicesearch" class="voi_btn" @click="checkApi">
-            <img src="../mobile/img/voi_icon.png" alt="음성검색" />
+            <img src="../mobile/img/voi_icon.svg" alt="음성검색" />
           </span>
         </div>
       </form>

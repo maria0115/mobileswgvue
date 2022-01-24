@@ -86,7 +86,7 @@
           <div class="m_app">
             <router-link :to="{ name: 'calmonth' }">
               <span
-                ><img src="../../mobile/img/cal_icon_w.png" alt="일정"
+                ><img src="../../mobile/img/cal_icon_w.svg" alt="일정"
               /></span>
               <em>일정</em>
             </router-link>
@@ -101,7 +101,7 @@
               }"
             >
               <span
-                ><img src="../../mobile/img/board_icon_p.png" alt="공지사항"
+                ><img src="../../mobile/img/board_icon_p.svg" alt="공지사항"
               /></span>
               <em>게시판</em>
             </router-link>
@@ -116,7 +116,7 @@
               }"
             >
               <span
-                ><img src="../../mobile/img/noti_icon_p.png" alt="공지사항"
+                ><img src="../../mobile/img/noti_icon_p.svg" alt="공지사항"
               /></span>
               <em>공지사항</em>
             </router-link>

@@ -5,8 +5,16 @@
         <h2>{{ GetSearchLanguage.menu[this.path] }}</h2>
         <ul v-if="datacheck">
           <li v-for="(value, name) in this.sortdata[path].data" :key="name">
-            <a @click="openView(value)">
-            <!-- <a :href="this.path === 'approval' ? openView(value) : value.originalurl"> -->
+            <a
+              @click="
+                OriginView({
+                  url: value.originalurl,
+                  category: value.category,
+                  name: value.subject,
+                })
+              "
+            >
+              <!-- <a :href="this.path === 'approval' ? openView(value) : value.originalurl"> -->
               <h3>{{ value.subject }}</h3>
               <div class="clfix">
                 <em>{{ setWord(value.author) }}</em>
@@ -31,7 +39,8 @@
             </div>
             <div slot="error">
               Error message, click
-              <router-link :to="{name:this.$route.name}">here</router-link> to retry
+              <router-link :to="{ name: this.$route.name }">here</router-link>
+              to retry
             </div>
           </infinite-loading>
         </ul>
@@ -44,7 +53,6 @@
 <script>
 import { mapState, mapGetters } from "vuex";
 import { Search } from "../../api/index.js";
-import Viewer from "../editor/viewer.vue";
 import InfiniteLoading from "vue-infinite-loading";
 import config from "../../config/search.json";
 import config2 from "../../config/config.json";
@@ -52,15 +60,14 @@ import config2 from "../../config/config.json";
 export default {
   components: {
     InfiniteLoading,
-    Viewer
   },
   computed: {
-    ...mapState([ "langa",]),
-    ...mapState("searchjs",["sortdata",  "searchInfiniteId"]),
+    ...mapState(["langa"]),
+    ...mapState("searchjs", ["sortdata", "searchInfiniteId"]),
     ...mapGetters("searchjs", ["data"]),
 
     ...mapGetters(["GetSearchLanguage"]),
-    ...mapGetters("configjs",["GetConfig"]),
+    ...mapGetters("configjs", ["GetConfig"]),
     // image 파일을 가지고 있는 url 반환
     url() {
       return config.search.category;
@@ -99,7 +106,7 @@ export default {
     next();
   },
   methods: {
-    setUrl(url){
+    setUrl(url) {
       return config2.originPage + url;
     },
     // utc time to local time, transformat
@@ -164,18 +171,6 @@ export default {
         .catch((err) => {
           console.error(err);
         });
-    },
-    openView(value){
-      console.log(value)
-      if(value.originalurl !== ""){ 
-        this.$router.push({
-            name: "originalPage",
-            params: { url: value.originalurl,category:value.category},
-          });
-      }
-      // if(value.originalurl !== ""){ 
-      //   this.$refs.viewer.goOriginView({url:value.originalurl, name:value.subject});
-      // }
     },
   },
 };

@@ -26,7 +26,7 @@
           ></router-link>
         </span>
       </div>
-      <div class="con02">
+      <div class="con02" v-if="this.sortdata.approval !== undefined && this.sortdata.approval.data.length!==0" >
         <h2>{{GetSearchLanguage.menu.approval}}</h2>
         <ul v-if="this.sortdata.approval !== undefined">
           <li v-for="(value, name) in this.sortdata.approval.data" :key="name">
@@ -44,28 +44,10 @@
           </li>
         </ul>
       </div>
-      <div class="con02">
+      <div class="con02" v-if="this.sortdata.board !== undefined && this.sortdata.board.data.length!==0">
         <h2>{{GetSearchLanguage.menu.board}}</h2>
         <ul v-if="this.sortdata.board !== undefined">
           <li v-for="(value, name) in this.sortdata.board.data" :key="name">
-            <a @click="openView(value)">
-            <!-- <a :href="setUrl(value.originalurl)"> -->
-              <h3>{{ value.subject }}</h3>
-              <div class="clfix">
-                <em>{{ setWord(value.author) }}</em>
-                <span>{{ getTime(value["created"]) }}</span>
-              </div>
-              <p>
-                {{ value.body }}
-              </p>
-            </a>
-          </li>
-        </ul>
-      </div>
-      <div class="con02">
-        <h2>{{GetSearchLanguage.menu.mail}}</h2>
-        <ul v-if="this.sortdata.mail !== undefined">
-          <li v-for="(value, name) in this.sortdata.mail.data" :key="name">
             <a @click="openView(value)">
             <!-- <a :href="setUrl(value.originalurl)"> -->
               <h3>{{ value.subject }}</h3>
@@ -87,14 +69,10 @@
 
 <script>
 import { mapState,mapGetters } from "vuex";
-import Viewer from "../editor/viewer.vue";
 import config from "../../config/search.json";
 import config2 from "../../config/config.json";
 
 export default {
-  components: {
-    Viewer,
-  },
   computed: {
     ...mapState([ "langa",]),
     ...mapState("searchjs",["sortdata"]),

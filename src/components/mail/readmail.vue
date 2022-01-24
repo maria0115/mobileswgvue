@@ -101,31 +101,11 @@
         </div>
         <div class="add_file clfix">
           <strong>{{ lang.attach }}</strong>
-          <ul v-if="!sat">
-            <li
-              v-for="(value, index) in GetMailDetail.attach"
-              :key="index"
-              class="active"
-            >
-              <span
-                ><img
-                  :src="`../../mobile/img/icon_${fileImg(value.name)}.png`"
-                  alt=""
-              /></span>
-              <div @click="openDownload(value.url)">
-                <!-- <a :href="value.url" download> -->
-                <p>{{ value.name }}</p>
-                <em>({{ value.size }})</em>
-                <!-- </a> -->
-              </div>
-            </li>
-          </ul>
           <Viewer
-            v-else
             className=""
             :attaInfo="GetMailDetail.attach"
             :attach="true"
-          ></Viewer>
+          />
         </div>
         <!-- <div class="rdm_edit" v-html="GetMailDetail.body">
           안녕하세요. 디자인 팀 안지영 입니다. 2021년 사내업무 및 유지 보수 내역
@@ -134,18 +114,13 @@
         <div class="rdm_edit">
           <Body
             id="memo_t"
+            style="height:100%"
             :body="GetMailDetail.body"
             ref="Body"
             :read="true"
             did="mail"
           />
-          <!-- <div v-html="GetMailDetail.body"></div> -->
         </div>
-
-        <!-- <editor-content
-          class="rdm_edit"
-          :editor="editor"
-        /> -->
       </form>
     </div>
     <MoveFile></MoveFile>
@@ -155,17 +130,11 @@
 <script>
 import { mapState, mapGetters } from "vuex";
 import MoveFile from "./movefile.vue";
-import { Editor, EditorContent } from "tiptap";
 import configjson from "../../config/config.json";
-import Namo from "../editor/namo.vue";
-import Viewer from "../editor/viewer.vue";
 import FollowUp from "./folloup.vue";
 export default {
   components: {
     MoveFile,
-    EditorContent,
-    Namo,
-    Viewer,
     FollowUp,
   },
   data: function () {
@@ -220,21 +189,8 @@ export default {
       const color = ["#bcbbdd", "#bbcbdd", "#bbddd7", "#d0d0d0"];
       return `background: ${color[Math.floor(Math.random() * 4)]}`;
     },
-    getExtensionOfFilename(filename) {
-      var _fileLen = filename.length;
-      var _lastDot = filename.lastIndexOf(".");
-      var _fileExt = filename.substring(_lastDot + 1, _fileLen).toLowerCase();
-
-      return _fileExt;
-    },
-    fileImg(name) {
-      var dot = this.getExtensionOfFilename(name);
-
-      if (configjson.extension.indexOf(dot) !== -1) {
-        return dot;
-      }
-      return "etc";
-    },
+    
+    
     Replay(value) {
       this.$store.commit("mailjs/From", value);
       this.$router.push({ name: "WriteMail" });

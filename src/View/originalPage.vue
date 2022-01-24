@@ -24,35 +24,14 @@ export default {
   },
   metaInfo() {
     return {
-      // title: "Welcome Mobile",
       meta: [
-        // { charset: "utf-8" },
-        // { "http-equiv": "X-UA-Compatible", content: "IE=edge" },
         {
           vmid: "viewport",
           name: "viewport",
           content: "width=device-width, initial-scale=1.0, maximum-scale=1.0",
         },
-        // {
-        //   name: "apple-mobile-web-app-capable",
-        //   content: "yes",
-        // },
-        // {
-        //   name: "apple-mobile-web-app-status-bar-style",
-        //   content: "black",
-        // },
-        // { vmid: "description", name: "description", content: "description" },
-        //  { name: 'description', content: 'My description' }
       ],
     };
-    // link: [
-    //   { rel: "icon", href: "/favicon.ico" },
-    //   // ...
-    // ],
-    // script: [
-    //   { type: "text/javascript", src: "/mobile/js/jquerymin.js" },
-    //   // ...
-    // ],
   },
   components: {
     Footer,

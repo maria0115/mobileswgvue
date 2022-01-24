@@ -70,44 +70,30 @@
         </li>
         <li v-if="calData.attachInfo.length > 0">
           <span>{{ lang.attach }}</span>
-          <ul class="file_list" v-if="!sat">
-            <li v-for="(value, index) in calData.attachInfo" :key="index">
-              <a @click="openDownload(value.url)">
-                {{ value.name }}
-              </a>
-            </li>
-          </ul>
           <Viewer
-            v-else
-            className="file_list"
+            className=""
             :attaInfo="calData.attachInfo"
             :attach="true"
           ></Viewer>
         </li>
       </ul>
-      <Body
-        class="cal_info"
-        id="memo_t"
-        :body="GetSchedule.calDetail[GetSaveSchedule.detail.where].body"
-        ref="Body"
-        :read="true"
-        did="calendar"
-      />
-      <!-- <div
-        class="cal_info"
-        v-html="GetSchedule.calDetail[GetSaveSchedule.detail.where].body"
-      ></div> -->
-      <!-- <editor-content class="cal_info" :editor="editor" /> -->
+      <div class="rdm_edit" style="height:calc(100vh - 25.375rem);">
+        <Body
+          class="cal_info"
+          style="height: 100%"
+          id="memo_t"
+          :body="GetSchedule.calDetail[GetSaveSchedule.detail.where].body"
+          ref="Body"
+          :read="true"
+          did="calendar"
+        />
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import { mapState, mapGetters } from "vuex";
-import { Editor, EditorContent } from "tiptap";
-import Namo from "../editor/namo.vue";
-import configjson from "../../config/config.json";
-import Viewer from "../editor/viewer.vue";
 export default {
   created() {
     this.lang = this.GetScheduleL.read;
@@ -124,11 +110,6 @@ export default {
     this.today =
       this.replaceAll(date, "-", ".") + `(${this.daysSort[theDayOfWeek]})`;
   },
-  components: {
-    EditorContent,
-    Namo,
-    Viewer,
-  },
   computed: {
     ...mapGetters("calendarjs", [
       "GetSchedule",
@@ -136,37 +117,15 @@ export default {
       "GetSaveScheduleList",
     ]),
     ...mapGetters("mainjs", ["GetMyInfo"]),
-    sat() {
-      return configjson.sat;
-    },
   },
   data() {
     return {
-      editor: null,
       today: "",
     };
-  },
-  mounted() {
-    this.editor = new Editor({
-      content: this.calData.body,
-      editable: false,
-    });
-  },
-  beforeDestroy() {
-    this.editor.destroy();
   },
   methods: {
     replaceAll(str, searchStr, replaceStr) {
       return str.split(searchStr).join(replaceStr);
-    },
-    fill(width, number) {
-      number = number + ""; //number를 문자열로 변환하는 작업
-      var str = "";
-      for (var i = 0; i < width - number.length; i++) {
-        str = str + "0";
-      }
-      str = str + number;
-      return str;
     },
     async Del() {
       var data = {};
@@ -231,9 +190,6 @@ export default {
           })`;
       }
       return day;
-    },
-    attachClick(url) {
-      window.open(url);
     },
     Edit() {
       this.$store.commit("calendarjs/isEdit", true);

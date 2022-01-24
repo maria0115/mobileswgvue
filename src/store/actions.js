@@ -1,16 +1,25 @@
 import {
     OrgAutoSearch, GetLanguage, Login, InitOrg, Org, CategoryList, ListOfCategory, DocView, Logout
 } from '../api/index.js';
-import { setRawCookie,removeCookie } from 'tiny-cookie';
+import {jsonPost} from '@/api/editor';
+import { setRawCookie, removeCookie } from 'tiny-cookie';
 import cookie from 'vue-cookies';
 import config from '../config/config.json';
-import router from '../router/index'
+
 var firstDot = window.location.hostname.indexOf(".");
 
-        var domain = window.location.hostname.substring(
-            firstDot == -1 ? 0 : firstDot+1
-        );
+var domain = window.location.hostname.substring(
+    firstDot == -1 ? 0 : firstDot + 1
+);
 export default {
+    editorJsonPost({ state, commit },data){
+        console.log(data)
+        return jsonPost(data)
+        .then((res) => {
+            res.status !== 200?res = false:res=res.data;
+            return res;
+        })
+    },
     SetHeader({ dispatch, commit }, data) {
 
         commit("SetHeader", data);
@@ -43,7 +52,7 @@ export default {
             })
     },
     logout(s) {
-        
+
         cookie.remove("LtpaToken", null, domain);
         cookie.remove("language", null, domain);
 
@@ -88,7 +97,7 @@ export default {
                         //     
 
                         // }else{
-                        setRawCookie(key, res.data.cookies[key],{domain});
+                        setRawCookie(key, res.data.cookies[key], { domain });
 
                         // }
 

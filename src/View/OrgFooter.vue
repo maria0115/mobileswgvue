@@ -19,7 +19,7 @@
               <div class="btns">
                 <span class="del_btn" @click="delBtn"><em></em></span>
                 <span class="search_icon" @click="SetAutoOrg"
-                  ><img src="../mobile/img/search_icon.png" alt="검색하기"
+                  ><img src="../mobile/img/search_icon.svg" alt="검색하기"
                 /></span>
               </div>
             </div>

@@ -21,10 +21,6 @@
             {
                 "datatype": "document",
                 "name": "board"
-            },
-            {
-                "datatype": "document",
-                "name": "mail"
             }
         ]
     }

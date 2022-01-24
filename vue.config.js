@@ -14,111 +14,27 @@ module.exports = {
       //   // 프록시 요청을 보낼 서버의 주소
       //   target: 'http://localhost:3000'
       // },
-      '/api/folderTree': {
-        target: 'http://localhost:4001/api/folderTree',
+      '/api': {
+        target: 'http://localhost:4001/api',
         changeOrigin: true,
         pathRewrite: {
-          '^/api/folderTree': ''
-        }
+          '^/api': ''
+        },
       },
-      '/api/navigation': {
-        target: 'http://localhost:4001/api/navigation',
+      '/search': {
+        target: 'http://localhost:4001/search',
         changeOrigin: true,
         pathRewrite: {
-          '^/api/navigation': ''
-        }
+          '^/search': ''
+        },
       },
-      '/api/form': {
-        target: 'http://localhost:4001/api/form',
+      '/SynapDocViewServer':{
+        target: 'http://125.7.235.206:8080/SynapDocViewServer',
         changeOrigin: true,
         pathRewrite: {
-          '^/api/form': ''
+          '^/SynapDocViewServer': ''
         }
-      },
-      '/api/config': {
-        target: 'http://localhost:4001/api/config',
-        changeOrigin: true,
-        pathRewrite: {
-          '^/api/config': ''
-        }
-      },
-      '/api/languages': {
-        target: 'http://localhost:4001/api/languages',
-        changeOrigin: true,
-        pathRewrite: {
-          '^/api/languages': ''
-        }
-      },
-      '/api/keyword': {
-        target: 'http://localhost:4001/api/keyword',
-        changeOrigin: true,
-        pathRewrite: {
-          '^/api/keyword': ''
-        }
-      },
-      '/search/search': {
-        target: 'http://localhost:4000/search/search',
-        changeOrigin: true,
-        pathRewrite: {
-          '^/search/search': ''
-        }
-      },
-      '/api/approval': {
-        target: 'http://localhost:4001/api/approval',
-        changeOrigin: true,
-        pathRewrite: {
-          '^/api/approval': ''
-        }
-      },
-      '/api/board': {
-        target: 'http://localhost:4001/api/board',
-        changeOrigin: true,
-        pathRewrite: {
-          '^/api/board': ''
-        }
-      },
-      '/api/schedule': {
-        target: 'http://localhost:4001/api/schedule',
-        changeOrigin: true,
-        pathRewrite: {
-          '^/api/schedule': ''
-        }
-      },
-      '/api/mail': {
-        target: 'http://localhost:4001/api/mail',
-        changeOrigin: true,
-        pathRewrite: {
-          '^/api/mail': ''
-        }
-      },
-      '/api/myinfo': {
-        target: 'http://localhost:4001/api/myinfo',
-        changeOrigin: true,
-        pathRewrite: {
-          '^/api/myinfo': ''
-        }
-      },
-      '/api/login': {
-        target: 'http://localhost:4001/api/login',
-        changeOrigin: true,
-        pathRewrite: {
-          '^/api/login': ''
-        }
-      },
-      '/api/reservation': {
-        target: 'http://localhost:4001/api/reservation',
-        changeOrigin: true,
-        pathRewrite: {
-          '^/api/reservation': ''
-        }
-      },
-      '/api/loglist': {
-        target: 'http://localhost:4001/api/loglist',
-        changeOrigin: true,
-        pathRewrite: {
-          '^/api/loglist': ''
-        }
-      },
+      }
       
     }
   },

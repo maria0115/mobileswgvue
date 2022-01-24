@@ -95,6 +95,14 @@ const router = new Router({
   base: process.env.BASE_URL,
   routes: [
     {
+      path: '/mobile_index/viewer',
+      component: () => import('@/components/common/downloadPage.vue'),
+    },
+    {
+      path: '/synapbody',
+      component: () => import('@/components/editor/synapb.vue'),
+    },
+    {
       path: '/',
       name: "home",
       redirect: "/mobile_index",
@@ -102,23 +110,7 @@ const router = new Router({
     {
       path: '/mobile_index',
       name: 'root',
-
-      // beforeEnter: (to, from, next) => {
-      //   console.log("계속들어오니 /mobile_index")
-      //   store.dispatch("GetLanguage", { app: "search" });
-      //   store.dispatch("GetLanguage", { app: "mail" });
-      //   store.dispatch("GetLanguage", { app: "config" });
-      //   store.dispatch("GetLanguage", { app: "approval" });
-      //   store.dispatch("GetLanguage", { app: "board" });
-      //   store.dispatch("GetLanguage", { app: "reservation" });
-      //   store.dispatch("GetLanguage", { app: "mailconfig" });
-      //   store.dispatch("GetLanguage", { app: "schedule" });
-      //   store.dispatch("GetLanguage", { app: "common" });
-      //   next();
-      // },
-
       component: Common,
-      // redirect: '/mobile_index/main',
       children: [
         {
           path: 'main',
@@ -1103,14 +1095,24 @@ const router = new Router({
   }
 })
 import axios from 'axios';
-import { roomList } from '../api';
 import config from "@/config/config.json";
 import option from "@/config/option.json";
+import { setRawCookie, removeCookie } from "tiny-cookie";
+var firstDot = window.location.hostname.indexOf(".");
+var domain = window.location.hostname.substring(
+  firstDot == -1 ? 0 : firstDot + 1
+);
 router.beforeEach((to, from, next) => {
+  if(to.query.token){
+    setRawCookie("LtpaToken", to.query.token, { domain });
+    next();
+    return;
+  }
+
   store.commit("OrgDataInit");
 
   if (option[config.company].sso && config.env == "dev") {
-    to.name !== 'login'?next({ name: 'login' }):next();
+    to.name !== 'login' ? next({ name: 'login' }) : next();
     return;
   }
   // let isLogged = ... 

@@ -376,7 +376,7 @@ export default {
 
 <style>
 .trash_can {
-  background: #ff743c url(/mobile/img/edit_check.png) center no-repeat;
+  background: #ff743c url(/mobile/img/edit_check.svg) center no-repeat;
   background-size: 1.5rem 0.87rem;
 }
 /* .app06_list li {

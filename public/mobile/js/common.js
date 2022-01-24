@@ -144,16 +144,16 @@ $(function () {
     //     }
     // });
 
-    // $('body').on('click','.e_edit',function(){
+    // $('body').on('click','.noti .e_edit.active',function(){
     //     $('.edit_header').addClass('on');
     //     $('.basic_header').removeClass('on');
     //     $('.edit_check').addClass('on');
     //     $('.basic_img').removeClass('on');
     // });
-    // $('body').on('click','.mail_back',function(){
+    // $('body').on('click','.noti .mail_back',function(){
     //     $('.edit_header').removeClass('on');
     //     $('.basic_header').addClass('on');
-    //     $('.edit_check').removeClass('on');
+    //     // $('.edit_check').removeClass('on');
     //     $('.basic_img').addClass('on');
     // });
     $('body').on('click', '.edit_more', function () {
@@ -164,13 +164,17 @@ $(function () {
     });
     $('body').on('click', '.move_bg', function () {
         $('.move_file').removeClass('on');
-        $('.edit_check.on').removeClass('active02');
-        $('.edit_check.on').removeClass('active');
-        $('.edit_check').removeClass('on');
         $('.edit_header').removeClass('on');
         $('.basic_header').addClass('on');
         $('.basic_img').addClass('on');
         $('.more_box').removeClass('on');
+    });
+    $('body').on('click','.color_chart h3',function(){
+        $(this).siblings('ul').fadeToggle();
+    });
+    $('body').on('load','#bodyIFrame',function(){
+        console.log("iframe 로드 됏다")
+        $('#bodyIFrame').off("load.fReadIframeContent");
     });
     // $('body').on('click','.all_btn',function(){
     //     $('.edit_check.on').toggleClass('active');
@@ -354,10 +358,10 @@ $(function () {
     });
     // 결제중 문서
     $('body').on('click', '.st_more', function () {
-        $('.app_status').removeClass('active');
-        $('.st_more').removeClass('active');
-        $(this).addClass('active');
-        $(this).parent('li').find('.app_status').addClass('active');
+        // $('.app_status').removeClass('active');
+        // $('.st_more').removeClass('active');
+        $(this).toggleClass('active');
+        $(this).parent('div').siblings('.app_status').toggleClass('active');
     });
     $('body').on('click', '.close_btn', function () {
 

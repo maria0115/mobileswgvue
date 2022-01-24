@@ -2,7 +2,7 @@
     "packageName":"swgMobile",
     "env":"product",
     "env_desc":"dev = 에디터 사용x sso(true) = 로그인인증x, product = 에디터 사용o sso",
-    "company":"saerom",
+    "company":"kiturami",
     "extension":["doc","docx","jpg","jpeg","png","gif","psd","ai","img","pdf","ppt","pptx","vod","mp3","mp4","xls","xlsx","zip"],
     "description_systemmode": "system,light,dark",
     "systemcolor": "light",
@@ -10,11 +10,17 @@
     "description_config": "/setting/config 페이지 변수 초기화",
     "noticeSpeed":2.5,
     "namoURL":"/dwp/com/sys/gwlib.nsf/crosseditor_mobile?ReadForm&did=",
+    "synap":{
+        "synapHost":"http://125.7.235.206",
+        "synapBody":"/crosseditor/synap/SynapEditor/index.html",
+        "synapViewPort":"8080",
+        "synapViewUrl":"/SynapDocViewServer/test"
+    },
     "objEzXURL":"http://125.7.235.220:81/DG_viewer/viewer/document/docviewer.do/",
     "originPage":"/dwp/com/portal/main.nsf/wfrmpage?ReadForm&url=",
     "sat": false,
     "config": {
-        "login": true,
+        "login": false,
         "alarm": {
             "today": true,
             "mail": false,
