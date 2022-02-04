@@ -74,6 +74,7 @@
             className=""
             :attaInfo="calData.attachInfo"
             :attach="true"
+            :unid="calData.unid"
           ></Viewer>
         </li>
       </ul>

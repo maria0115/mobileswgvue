@@ -62,4 +62,5 @@ export default {
 @import "./mobile/css/common.css";
 @import "./mobile/css/style.css";
 @import "./mobile/css/slick.css";
+@import "./mobile/css/font.css";
 </style>

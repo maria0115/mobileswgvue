@@ -16,7 +16,8 @@ import Spinner from "@/View/Spinner.vue";
 import config from "@/config/config.json";
 
 export default {
-  created() {},
+  created() {
+  },
   data() {
     return {
       tf: false,

@@ -33,26 +33,30 @@ export default {
         synapEditorConfig,
         this.body
       );
+      if(this.read){
+        this.editor.setMode('preview');
+        this.editor.execCommand('hideDimLayer');
+      }
     },
     GetBody() {
       return this.editor.getPublishingHtml();
     },
     addScript() {
       let scripts = [
-        "../../assets/synap/synapeditor.config.js",
-        "../../assets/synap/synapeditor.min.js",
-        "../../assets/synap/plugins/shapeEditor/shapeEditor.min.js",
-        "../../assets/synap/plugins/personalDataProtection/personalDataProtection.min.js",
-        "../../assets/synap/plugins/characterPicker/characterPicker.min.js",
-        "../../assets/synap/plugins/webAccessibilityChecker/webAccessibilityChecker.min.js",
-        "../../assets/synap/plugins/tuiImageEditor/tuiImageEditor.min.js",
-        "../../assets/synap/plugins/horizontalLineExtension/horizontalLineExtension.min.js",
-        "../../assets/synap/plugins/quoteExtension/quoteExtension.min.js",
-        "../../assets/synap/externals/formulaParser/formula-parser.min.js",
-        // "../../assets/synap/externals/SEDocModelParser/SEDocModelParser.min.js",
-        "../../assets/synap/externals/SEShapeManager/SEShapeManager.min.js",
-        // "../../assets/synap/externals/codeMirror/codemirror.min.js",
-        // "../../assets/synap/externals/codeMirror/xml.min.js",
+        "../../mobile/synap/synapeditor.config.js",
+        "../../mobile/synap/synapeditor.min.js",
+        "../../mobile/synap/plugins/shapeEditor/shapeEditor.min.js",
+        "../../mobile/synap/plugins/personalDataProtection/personalDataProtection.min.js",
+        "../../mobile/synap/plugins/characterPicker/characterPicker.min.js",
+        "../../mobile/synap/plugins/webAccessibilityChecker/webAccessibilityChecker.min.js",
+        "../../mobile/synap/plugins/tuiImageEditor/tuiImageEditor.min.js",
+        "../../mobile/synap/plugins/horizontalLineExtension/horizontalLineExtension.min.js",
+        "../../mobile/synap/plugins/quoteExtension/quoteExtension.min.js",
+        "../../mobile/synap/externals/formulaParser/formula-parser.min.js",
+        // "../../mobile/synap/externals/SEDocModelParser/SEDocModelParser.min.js",
+        "../../mobile/synap/externals/SEShapeManager/SEShapeManager.min.js",
+        // "../../mobile/synap/externals/codeMirror/codemirror.min.js",
+        // "../../mobile/synap/externals/codeMirror/xml.min.js",
       ];
       for (let i = 0, len = scripts.length; i < len; i++) {
         let script = document.createElement("script");
@@ -67,12 +71,12 @@ export default {
 };
 </script>
 <style>
-@import "../../assets/synap/externals/codeMirror/codemirror.min.css";
-@import "../../assets/synap/plugins/quoteExtension/quoteExtension.min.css";
-@import "../../assets/synap/plugins/webAccessibilityChecker/webAccessibilityChecker.min.css";
-@import "../../assets/synap/plugins/tuiImageEditor/tuiImageEditor.min.css";
-@import "../../assets/synap/plugins/characterPicker/characterPicker.min.css";
-@import "../../assets/synap/plugins/personalDataProtection/personalDataProtection.min.css";
-@import "../../assets/synap/plugins/shapeEditor/shapeEditor.min.css";
-@import "../../assets/synap/synapeditor.min.css";
+@import "../../mobile/synap/externals/codeMirror/codemirror.min.css";
+@import "../../mobile/synap/plugins/quoteExtension/quoteExtension.min.css";
+@import "../../mobile/synap/plugins/webAccessibilityChecker/webAccessibilityChecker.min.css";
+@import "../../mobile/synap/plugins/tuiImageEditor/tuiImageEditor.min.css";
+@import "../../mobile/synap/plugins/characterPicker/characterPicker.min.css";
+@import "../../mobile/synap/plugins/personalDataProtection/personalDataProtection.min.css";
+@import "../../mobile/synap/plugins/shapeEditor/shapeEditor.min.css";
+@import "../../mobile/synap/synapeditor.min.css";
 </style>

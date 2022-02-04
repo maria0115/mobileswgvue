@@ -4,7 +4,7 @@
       v-for="(value, index) in attaInfo"
       :key="index"
       class="active"
-      @click="openDownload(value.url)"
+      @click="openDownload(value)"
     >
       <span
         ><img :src="`../../mobile/img/icon_${fileImg(value.name)}.png`" alt=""
@@ -23,29 +23,28 @@
 <script>
 // 여긴 뷰어
 export default {
-  props: ["attaInfo", "attach", "className"],
+  props: ["attaInfo", "attach", "className","unid"],
   methods: {
-    openDownload(url) {
+    openDownload(value) {
       // url = window.location.origin + url;
       // location.href = "https://gwmobile.krb.co.kr"+url
+      console.log(value)
+      value.unid = this.unid;
+      // return;
       var data = {};
       data.fileType = "URL";
-      data.filePath = url;
+      data.filePath = value.url||value.openurl;
       data.fid = this.generateRandomCode(10);
       data.kind = "synap";
       data.accessCookieData = btoa(`{"LtpaToken":"${this.getToKen()}"}`);
       this.$store.dispatch("editorJsonPost", data).then((res) => {
         if (res.key) {
           var goto = `${window.location.origin}/mobile_index/viewer`;
-          var href = "";
-          this.isMobile()
-            ? (href = `m60call://browser?urladdress=${goto}?url=${
-                res.viewUrlPath
-              }&token=${this.getToKen()}`)
-            : (href = `${goto}?url=${
-                res.viewUrlPath
-              }&token=${this.getToKen()}`);
-          location.href = href;
+          if (!this.isMobile()) {
+            location.href = `${goto}?url=${value.url}&token=${encodeURIComponent(this.getToKen())}`;
+          } else {
+            location.href = `m60call://browser?urladdress=${goto}?url=${value.url}&token=${this.getToKen()}`;
+          }
         }
       });
     },

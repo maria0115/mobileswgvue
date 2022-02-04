@@ -97,7 +97,9 @@ export default {
                         //     
 
                         // }else{
+                            console.log(cookie.get("LtpaToken"));
                         setRawCookie(key, res.data.cookies[key], { domain });
+                        console.log(cookie.get("LtpaToken"));
 
                         // }
 

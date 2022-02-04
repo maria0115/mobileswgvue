@@ -17,6 +17,7 @@
     v-else-if="isOption('synap')"
     :attaInfo="attaInfo"
     ref="editor"
+    :unid="unid"
     :attach="attach"
     :className="className"
   />
@@ -29,7 +30,7 @@ import Download from "@/components/editor/download.vue";
 export default {
   created(){
   },
-  props: ["attach", "className", "attaInfo"],
+  props: ["attach", "className", "attaInfo","unid"],
   components: {
     Sat,
     Synap,

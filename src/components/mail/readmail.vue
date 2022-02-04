@@ -105,6 +105,7 @@
             className=""
             :attaInfo="GetMailDetail.attach"
             :attach="true"
+            :unid="GetMailDetail.unid"
           />
         </div>
         <!-- <div class="rdm_edit" v-html="GetMailDetail.body">

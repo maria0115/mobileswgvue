@@ -54,6 +54,7 @@
           className=""
           :attaInfo="GetStoreBoard.detail.attach"
           :attach="true"
+          :unid="GetStoreBoard.detail.unid"
         ></Viewer>
       </div>
       <!-- <div class="noti_con" v-html="GetStoreBoard.detail.body"></div> -->

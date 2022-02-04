@@ -25,11 +25,13 @@ export default {
   methods: {
     openDownload(url) {
       var goto = `${window.location.origin}/mobile_index/viewer`;
-      var href = "";
-      this.isMobile()
-        ? (href = `m60call://browser?urladdress=${goto}?url=${url}&token=${this.getToKen()}`)
-        : (href = `${goto}?url=${url}&token=${this.getToKen()}`);
-      location.href = href;
+      if (!this.isMobile()) {
+        location.href = `${goto}?url=${url}&token=${encodeURIComponent(
+          this.getToKen()
+        )}`;
+      } else {
+        location.href = `m60call://browser?urladdress=${goto}?url=${url}&token=${this.getToKen()}`;
+      }
     },
   },
 };

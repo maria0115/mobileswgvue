@@ -66,6 +66,7 @@
                 className=""
                 :attaInfo="this.detail.attachInfo"
                 :attach="true"
+                :unid="this.detail"
               ></Viewer>
             </div>
           </li>
@@ -166,6 +167,7 @@ export default {
         this.OriginView({
           url: this.detail.openurl,
           name: this.detail.subject,
+          unid:this.detail.unid,
         });
         return;
       } else if (value === "deleteItem") {

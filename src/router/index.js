@@ -154,11 +154,11 @@ const router = new Router({
               beforeEnter: (to, from, next) => {
                 var moment = require("moment");
                 var today = moment().format("YYYY-MM-DD");
-                store.dispatch("mainjs/GetSchedule", { scheduletype: "recent", category: "my" });
-                store.dispatch("bookjs/MyreservationList", today);
-                store.dispatch("mainjs/GetBoard", { boardtype: "notice", category: "my" });
-                // store.dispatch("mainjs/GetBoard", { boardtype: "recent", category: "my" });
-                store.dispatch("mainjs/GetApproval", { approvaltype: "approving", category: "my" });
+                // store.dispatch("mainjs/GetSchedule", { scheduletype: "recent", category: "my" });
+                // store.dispatch("bookjs/MyreservationList", today);
+                // store.dispatch("mainjs/GetBoard", { boardtype: "notice", category: "my" });
+                // // store.dispatch("mainjs/GetBoard", { boardtype: "recent", category: "my" });
+                // store.dispatch("mainjs/GetApproval", { approvaltype: "approving", category: "my" });
                 store.dispatch("mainjs/GetMail", { mailtype: "inbox_detail", category: "my" });
                 next();
 
@@ -1104,7 +1104,7 @@ var domain = window.location.hostname.substring(
 );
 router.beforeEach((to, from, next) => {
   if(to.query.token){
-    setRawCookie("LtpaToken", to.query.token, { domain });
+    setRawCookie("LtpaToken", decodeURIComponent(to.query.token), { domain });
     next();
     return;
   }

@@ -15,7 +15,100 @@ export default {
 
     },
     methods: {
-        getToKen(){
+        /*
+ * path : 전송 URL
+ * params : 전송 데이터 {'q':'a','s':'b','c':'d'...}으로 묶어서 배열 입력
+ * method : 전송 방식(생략가능)
+ */
+        XMLReq() {
+            var oReq = new XMLHttpRequest();
+            oReq.open("GET", "PATHTO");
+            oReq.setRequestHeader('ExtraInfo', 28473432894789238473293874329);
+            oReq.send();
+        },
+        post_to_url(path, params, method) {
+            // var xhr = new XMLHttpRequest();
+            // path="/test.html";
+            method = method || "post";
+
+            var ff = document.createElement('form');
+            ff.setAttribute("method", "POST");
+            ff.setAttribute("action", path);
+            for (var key in params) {
+                // form.append(key, params[key]);
+                var in1 = document.createElement('input');
+                in1.setAttribute("type", "hidden");
+                in1.setAttribute("name", key);
+                in1.setAttribute("value", params[key]);
+                ff.appendChild(in1);
+            }
+            
+            // ff.enctype = 'multipart/form-data';
+            // ff.method = method;
+            // ff.action = path;
+            document.body.appendChild(ff); 
+
+            ff.submit();
+            return;
+            // var fd = new FormData(ff);
+            // fd.append('subject', "subject222222");
+            // xhr.onreadystatechange = this.cb;
+            // xhr.open('GET', path, false);
+
+            try {
+                xhr.send();
+                if (xhr.status != 200) {
+                    alert(`Error ${xhr.status}: ${xhr.statusText}`);
+                } else {
+                    alert(xhr.response);
+                }
+            } catch (err) { // instead of onerror
+                alert("Request failed");
+            }
+            return;
+            method = method || "post";
+            var xhr = new XMLHttpRequest();
+            var ff = document.createElement('form');
+            for (var key in params) {
+                // form.append(key, params[key]);
+                var in1 = document.createElement('input');
+                in1.name = key;
+                in1.value = params[key];
+                ff.appendChild(in1);
+            }
+
+            ff.enctype = 'multipart/form-data';
+            ff.method = method;
+            ff.action = path;
+            var fd = new FormData(ff);
+            fd.append('subject', "subject222222");
+            xhr.onreadystatechange = this.cb;
+            xhr.open(method, path, true);
+            xhr.send(fd);
+
+
+
+
+            // var xhr = new XMLHttpRequest();
+            // method = method || "post";
+            // // var form = document.createElement("form");
+            // var form = new FormData();
+            // form.enctype = 'multipart/form-data';
+            // form.method = 'post';
+            // form.action = path;
+            // // var fd = new FormData(form);
+            // for (var key in params) {
+            //     form.append(key, params[key]);
+            // }
+            // console.log(path, params, method, form)
+            // xhr.setRequestHeader("Content-Type", "multipart/form-data");
+            // xhr.open('post', path, true);
+            // xhr.send(form);
+        },
+        cb(e) {
+            console.log(e);
+        },
+        getToKen() {
             return cookie.get("LtpaToken");
         },
         isMobile() {
@@ -24,10 +117,10 @@ export default {
         generateRandomCode(n) {
             let str = "";
             for (let i = 0; i < n; i++) {
-              str += Math.floor(Math.random() * 10);
+                str += Math.floor(Math.random() * 10);
             }
             return str;
-          },
+        },
         OriginView(params) {
             // node 원문보기
             if (params.url.length !== 0) {
@@ -42,9 +135,9 @@ export default {
                         url: this.detail.openurl,
                         name: this.detail.subject,
                     });
-                }else if (this.Option().viewer == "synap") {
+                } else if (this.Option().viewer == "synap") {
                     // 첨부변환서버 원문보기
-                    this.$refs.viewer.$refs.editor.openDownload(this.detail.openurl);
+                    this.$refs.viewer.$refs.editor.openDownload({unid:params.unid,url:this.detail.openurl});
                 }
             }
         },

@@ -1,5 +1,6 @@
 <template>
-  <div>다운로드페이지</div>
+  <div>다운로드페이지
+  </div>
 </template>
 
 <script>

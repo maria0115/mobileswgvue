@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&family=Nanum+Myeongjo:wght@400;700;800&family=Noto+Sans+KR:wght@100;300;400;500;700;900&family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap');
+/* @import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&family=Nanum+Myeongjo:wght@400;700;800&family=Noto+Sans+KR:wght@100;300;400;500;700;900&family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap'); */
 
 img{max-width:100%;}
 
@@ -942,7 +942,7 @@ li.app_file li .file_btn span{display:inline-block;font-size:0.75rem;color:#1212
 /*  */
 
 /* 결재할 문서 개별 체크 css */
-.check_box{position:absolute;top:0;right:0;width:4.37rem;height:100%;background:#ff743c url(/mobile/img/edit_check.svg)center no-repeat;background-size:1.5rem 0.87rem;} 
+.check_box{position:absolute;top:0;right:0;width:4.37rem;height:100%;background:#ff743c url(/mobile/img/edit_check.png)center no-repeat;background-size:1.5rem 0.87rem;} 
 
 
 /* 결재 양식함 
@@ -1182,7 +1182,7 @@ app04->파일명 mob_app_ docform로 변경됨 7월 29일 전체 수정 */
 .basic_img em{display:inline-block;width:2.5rem;height:2.5rem;line-height:2.5rem;text-align:center;border-radius:50%;}
 .basic_img em b{font-size:1.25rem;color:#fff;font-weight:400;}
 
-.e_edit{width:1.12rem;height:1.12rem;border:0.06rem solid #fff;border-radius:0.31rem;background:url(/mobile/img/edit_check.svg)center no-repeat;background-size:0.75rem 0.5rem;cursor:pointer;}
+.e_edit{width:1.12rem;height:1.12rem;border:0.06rem solid #fff;border-radius:0.31rem;background:url(/mobile/img/edit_check.png)center no-repeat;background-size:0.75rem 0.5rem;cursor:pointer;}
 .edit_check{display:none;position:absolute;top:50%;left:1.3rem;transform:translateY(-50%);appearance:none;border:0.12rem solid #e7e7e7;border-radius:50%;width:1.37rem;height:1.37rem;}
 .edit_check.on{display:block;}
 .edit_check.on.active{background:url(/mobile/img/pick_ch.png)center no-repeat;border:none;background-size:1.37rem 1.37rem;}
@@ -2345,7 +2345,8 @@ li.cf_w_memo #memo_t{width:100%;height:100%;font-size:0.93rem;color:#444;line-he
 
 /* 로그인페이지  */
 .main_wrap{height:100vh;padding-top:10.62rem;background:#fff;}
-.main_logo{margin:0 auto;width:11.81rem;height:2.37rem;}
+.main_logo{margin:0 auto;width:11.81rem;height:2.37rem;text-align:center;}
+.main_logo img{display:inline-block;}
 /* .main_logo img{display:inline-block;width:11.81rem;height:2.37rem;} */
 .login_input{margin:1.87rem auto 0;width:17.62rem;}
 .login_input input{width:100%;height:2.68rem;border:0.06rem solid #ebeef3;border-radius:0.31rem;appearance:none;padding-left:2.5rem;outline:none;font-size:1rem;color:#787879;}

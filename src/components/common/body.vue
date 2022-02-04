@@ -22,7 +22,7 @@
       v-model="Body_Text"
       ref="textarea"
     ></textarea>
-    
+
     <Namo
       v-else-if="this.Option().editor === 'namo'"
       :read="read"
@@ -30,20 +30,29 @@
       :body="Body_Text"
       ref="namo"
     ></Namo>
-    <Synap v-else-if="this.Option().editor === 'synap'"
+    <Synap
+      v-else-if="this.Option().editor === 'synap'"
       :read="read"
       :did="did"
       :body="Body_Text"
       ref="synap"
-      />
+    />
+    <Raonk
+      v-else-if="this.Option().editor === 'raonk'"
+      :read="read"
+      :did="did"
+      :body="Body_Text"
+      ref="raonk"
+    />
   </div>
 </template>
 
 <script>
 import Namo from "@/components/editor/namo.vue";
+import Raonk from "@/components/editor/raonk.vue";
 import TipTap from "@/components/editor/tiptap.vue";
-import Basic from "@/components/editor/basic.vue"
-import Synap from "@/components/editor/synapb.vue"
+import Basic from "@/components/editor/basic.vue";
+import Synap from "@/components/editor/synapb.vue";
 export default {
   async created() {
     // var test2 = document.createElement("span"); // body에 추가할 span 태그를 추가
@@ -58,19 +67,20 @@ export default {
     //   // console.log(test2.innerHTML)
     //   here.Body_Text = test2.innerHTML;
     //   // here.$forceUpdate();
-    // });    
+    // });
   },
-  props: ["body", "did", "read"],
+  props: ["body", "did", "read",],
   components: {
     Namo,
     TipTap,
     Basic,
     Synap,
+    Raonk,
   },
-  data(){
-    return{
-      Body_Text:""
-    }
+  data() {
+    return {
+      Body_Text: "",
+    };
   },
   methods: {
     getBody() {
@@ -82,7 +92,9 @@ export default {
         return this.$refs.tiptap.editor.getHTML();
       } else if (this.Option().editor === "namo") {
         return this.$refs.namo.$refs.namo.contentWindow.crosseditor.GetBodyValue();
-      }else if(this.Option().editor === "synap"){
+      } else if (this.Option().editor === "raonk") {
+        return this.$refs.raonk.$refs.raonk.contentWindow.RAONKEDITOR.GetHtmlValue({type:'htmlexwithdoctype'},'xfe');
+      } else if (this.Option().editor === "synap") {
         var synap = this.$refs.synap;
         return synap.GetBody();
       }

@@ -10,6 +10,7 @@
     "description_config": "/setting/config 페이지 변수 초기화",
     "noticeSpeed":2.5,
     "namoURL":"/dwp/com/sys/gwlib.nsf/crosseditor_mobile?ReadForm&did=",
+    "raonkURL":"/dwp/com/sys/gwlib.nsf/xfe_mo?ReadForm&did=",
     "synap":{
         "synapHost":"http://125.7.235.206",
         "synapBody":"/crosseditor/synap/SynapEditor/index.html",

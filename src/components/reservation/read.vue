@@ -58,6 +58,7 @@
               className=""
               :attaInfo="this.detail.attachInfo"
               :attach="true"
+              :unid="this.detail.unid"
             ></Viewer>
           </li>
           <li class="rdm_edit" style="height:calc(100vh - 25.375rem);">
