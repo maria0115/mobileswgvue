@@ -1,50 +1,54 @@
 <template>
-  <div>
-    <!-- <Basic
+  <!-- <Basic
       v-if="read"
       style="padding:0.93rem;"
       :body="Body_Text"
     /> -->
-    <TipTap
-      v-if="this.Option().editor === 'tiptap'"
-      :body="Body_Text"
-      :read="read"
-      ref="tiptap"
-    />
-    <!-- <TipTap
+  <OpenField
+    v-if="isOpenField&&read"
+    :body="Body_Text"
+    :read="read"
+    ref="openfield"
+  />
+  <TipTap
+    v-else-if="this.Option().editor === 'tiptap'"
+    :body="Body_Text"
+    :read="read"
+    ref="tiptap"
+  />
+  <!-- <TipTap
       v-else-if="this.Option().editor === 'tiptap'"
       :body="Body_Text"
       :read="read"
       ref="tiptap"
     /> -->
-    <textarea
-      v-else-if="this.Option().editor === 'textarea'"
-      v-model="Body_Text"
-      ref="textarea"
-    ></textarea>
+  <textarea
+    v-else-if="this.Option().editor === 'textarea'"
+    v-model="Body_Text"
+    ref="textarea"
+  ></textarea>
 
-    <Namo
-      v-else-if="this.Option().editor === 'namo'"
-      :read="read"
-      :did="did"
-      :body="Body_Text"
-      ref="namo"
-    ></Namo>
-    <Synap
-      v-else-if="this.Option().editor === 'synap'"
-      :read="read"
-      :did="did"
-      :body="Body_Text"
-      ref="synap"
-    />
-    <Raonk
-      v-else-if="this.Option().editor === 'raonk'"
-      :read="read"
-      :did="did"
-      :body="Body_Text"
-      ref="raonk"
-    />
-  </div>
+  <Namo
+    v-else-if="this.Option().editor === 'namo'"
+    :read="read"
+    :did="did"
+    :body="Body_Text"
+    ref="namo"
+  ></Namo>
+  <Synap
+    v-else-if="this.Option().editor === 'synap'"
+    :read="read"
+    :did="did"
+    :body="Body_Text"
+    ref="synap"
+  />
+  <Raonk
+    v-else-if="this.Option().editor === 'raonk'"
+    :read="read"
+    :did="did"
+    :body="Body_Text"
+    ref="raonk"
+  />
 </template>
 
 <script>
@@ -53,6 +57,7 @@ import Raonk from "@/components/editor/raonk.vue";
 import TipTap from "@/components/editor/tiptap.vue";
 import Basic from "@/components/editor/basic.vue";
 import Synap from "@/components/editor/synapb.vue";
+import OpenField from "@/components/editor/openfield.vue";
 export default {
   async created() {
     // var test2 = document.createElement("span"); // body에 추가할 span 태그를 추가
@@ -69,13 +74,19 @@ export default {
     //   // here.$forceUpdate();
     // });
   },
-  props: ["body", "did", "read",],
+  props: ["body", "did", "read"],
+  computed: {
+    isOpenField() {
+      return this.body.toLowerCase().indexOf("openfield") !== -1;
+    },
+  },
   components: {
     Namo,
     TipTap,
     Basic,
     Synap,
     Raonk,
+    OpenField,
   },
   data() {
     return {
@@ -93,7 +104,10 @@ export default {
       } else if (this.Option().editor === "namo") {
         return this.$refs.namo.$refs.namo.contentWindow.crosseditor.GetBodyValue();
       } else if (this.Option().editor === "raonk") {
-        return this.$refs.raonk.$refs.raonk.contentWindow.RAONKEDITOR.GetHtmlValue({type:'htmlexwithdoctype'},'xfe');
+        return this.$refs.raonk.$refs.raonk.contentWindow.RAONKEDITOR.GetHtmlValue(
+          { type: "htmlexwithdoctype" },
+          "xfe"
+        );
       } else if (this.Option().editor === "synap") {
         var synap = this.$refs.synap;
         return synap.GetBody();

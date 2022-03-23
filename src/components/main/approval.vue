@@ -1,4 +1,5 @@
 <template>
+<div class="main_tab">
   <div id="app_tab">
     <div class="in_box01" v-if="this.menuOfCategoryIdx('approve') !== -1">
       <strong desc="결재할 문서"
@@ -146,7 +147,7 @@
         src="../../mobile/img/down_arrow2.png"
         alt="더보기"
     /></span>
-  </div>
+  </div></div>
 </template>
 
 <script>

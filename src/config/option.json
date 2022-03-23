@@ -1,14 +1,14 @@
 {
     "saerom": {
-        "appWrite": false,
-        "mailDelay": false,
+        "appWrite": true,
+        "mailDelay": true,
         "language": true,
         "voicesearch": false,
         "alarmeti": true,
         "inotes": true,
         "sso":false,
-        "searchbar":false,
-        "editor":"synap",
+        "searchbar":true,
+        "editor":"namo",
         "editor_desc":"textarea,synap,namo,tiptap = 기본값",
         "attach":"synap",
         "attach_desc":"download, sat, synap",
@@ -24,7 +24,9 @@
         "objColor":"#9999cc",
         "iconColor":"#746ac3",
         "todayColor":"#9691e1",
-        "shadowBoxColor":"#d5d2ed"
+        "shadowBoxColor":"#d5d2ed",
+        "tome":true,
+        "drm":false
     },
     "kogene": {
         "appWrite": false,
@@ -48,7 +50,9 @@
         "objColor":"#9999cc",
         "iconColor":"#746ac3",
         "todayColor":"#9691e1",
-        "shadowBoxColor":"#d5d2ed"
+        "shadowBoxColor":"#d5d2ed",
+        "tome":true,
+        "drm":false
     },
     "kiturami": {
         "appWrite": false,
@@ -72,36 +76,14 @@
         "objColor":"#6bbeee",
         "iconColor":"#038bda",
         "todayColor":"#51bfff",
-        "shadowBoxColor":"#71b8e0"
-    },
-    "h": {
-        "appWrite": true,
-        "mailDelay": false,
-        "language": true,
-        "voicesearch": false,
-        "alarmeti": true,
-        "inotes": true,
-        "sso":true,
-        "searchbar":false,
-        "editor":"synap",
-        "attach":"synap",
-        "viewer":"synap",
-        "mainBgColor":"#007AC3",
-        "borderColor":"#3999d1",
-        "imageColor":"#45ade9",
-        "mainBorderColor":"#34779e",
-        "btnBgColor":"#0ba2fa",
-        "myInfo":"#19306d",
-        "solidColor":"#2e6280",
-        "objColor":"#6bbeee",
-        "iconColor":"#038bda",
-        "todayColor":"#51bfff",
-        "shadowBoxColor":"#71b8e0"
+        "shadowBoxColor":"#71b8e0",
+        "tome":true,
+        "drm":false
     },
     "pantech": {
-        "appWrite": true,
+        "appWrite": false,
         "mailDelay": true,
-        "language": true,
+        "language": false,
         "voicesearch": false,
         "alarmeti": true,
         "inotes": true,
@@ -120,6 +102,37 @@
         "objColor":"#6bbeee",
         "iconColor":"#038bda",
         "todayColor":"#51bfff",
-        "shadowBoxColor":"#71b8e0"
+        "shadowBoxColor":"#71b8e0",
+        "tome":true,
+        "drm":false
+    },
+    "ace": {
+        "appWrite": true,
+        "mailDelay": true,
+        "language": true,
+        "voicesearch": false,
+        "alarmeti": true,
+        "inotes": true,
+        "sso":false,
+        "searchbar":true,
+        "editor":"namo",
+        "editor_desc":"textarea,synap,namo,tiptap = 기본값",
+        "attach":"synap",
+        "attach_desc":"download, sat, synap",
+        "viewer":"synap",
+        "viewer_desc":"origin, sat, synap",
+        "mainBgColor":"#007AC3",
+        "borderColor":"#3999d1",
+        "imageColor":"#45ade9",
+        "mainBorderColor":"#34779e",
+        "btnBgColor":"#0ba2fa",
+        "myInfo":"#19306d",
+        "solidColor":"#2e6280",
+        "objColor":"#6bbeee",
+        "iconColor":"#038bda",
+        "todayColor":"#51bfff",
+        "shadowBoxColor":"#71b8e0",
+        "tome":true,
+        "drm":true
     }
 }

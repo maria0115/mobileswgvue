@@ -29,6 +29,8 @@
         :modalAutoOrg="modalAutoOrg"
         :createdOrg="createdOrg"
         @OpenCard="OpenCard"
+        :modalon="modalon"
+        @SetcreatedOrg="SetcreatedOrg"
       ></org-item>
     </ul>
   </li>
@@ -39,32 +41,15 @@ import { mapState, mapGetters } from "vuex";
 export default {
   name: "OrgItem",
   async created() {
-    // item이 person이아니고 department면 무조건
-    // child 뽑기
-    var full = this.GetMyInfo.info.fullOrgCode;
-    var pathidx = full.findIndex((item) => {
-      return item == this.item.mycode;
-    });
-    if (pathidx !== -1) {
-      this.GetChildren();
-      this.OpenFolder();
-    }
-    if (this.createdOrg) {
-      this.GetChildren();
-      var auto = this.autosearchorg[this.org.pointer];
-      var result = auto.findIndex(
-        (element) => element.shortname === this.item.shortname
-      );
-      if (result !== -1) {
-        this.$emit("OpenFolder");
-        this.clicked = true;
-      }
+    if(this.modalon){
+      this.Setting();
     }
   },
   props: {
     item: Object,
     modalAutoOrg: Number,
     createdOrg: Boolean,
+    modalon: Boolean,
   },
   data: function () {
     return {
@@ -72,6 +57,7 @@ export default {
       children: [],
       click: false,
       clicked: false,
+      set: false,
     };
   },
   computed: {
@@ -99,22 +85,31 @@ export default {
     },
   },
   watch: {
-    // async modalAutoOrg() {
-    // if (this.item.kinds == "Department" && this.children.length === 0) {
-    //   this.GetChildren();
-    //   this.$emit("SetcreatedOrg");
-    // }
-    // var auto = this.autosearchorg[this.org.pointer];
-    // var result = auto.findIndex(
-    //   (element) => element.shortname === this.item.shortname
-    // );
-    // if (result !== -1) {
-    //   this.$emit("OpenFolder");
-    //   this.clicked = true;
-    // }
-    // },
+    async modalAutoOrg() {
+      if (this.modalon) {
+        this.Setting();
+      }
+    },
   },
   methods: {
+    Setting() {
+      var full = this.GetMyInfo.info.fullOrgCode;
+      var pathidx = full.findIndex((item) => {
+        return item == this.item.mycode;
+      });
+
+      if (
+        this.item.kinds == "Department" &&
+        this.children.length === 0 &&
+        pathidx !== -1
+      ) {
+        this.GetChildren();
+        this.OpenFolder();
+      }
+    },
+    SetcreatedOrg() {
+      this.$emit("SetcreatedOrg");
+    },
     OpenCard(i) {
       this.$emit("OpenCard", i);
     },

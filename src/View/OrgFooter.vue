@@ -64,6 +64,7 @@
               :modalAutoOrg="modalAutoOrg"
               @OpenFolder="OpenFolder"
               :createdOrg="createdOrg"
+              :modalon="modalon"
               @SetcreatedOrg="SetcreatedOrg"
               @OpenCard="OpenCard"
             ></org-item>
@@ -83,7 +84,6 @@ export default {
     this.lang = this.GetCommonL.org;
 
     var data = {};
-    // console.log(this.GetMyInfo,this.GetMail.org.trans)
     this.$store.dispatch("mailjs/InitOrg", data);
   },
   props: {
@@ -97,6 +97,14 @@ export default {
 
     ...mapGetters("mailjs", ["GetMail"]),
     // ...mapGetters("mainjs", ["GetMyInfo"]),
+  },
+  watch:{
+    modalon(newval){
+      if(newval){
+        this.SetcreatedOrg();
+      }
+      
+    },
   },
   data: function () {
     return {
@@ -132,15 +140,13 @@ export default {
       }
     },
     SetAutoOrg() {
-      console.log("hhi", this.autosearchorg[this.org.pointer].length);
       if (this.autosearchorg[this.org.pointer].length > 0) {
         this.search = true;
-        console.log(this.search);
       }
       // this.modalAutoOrg += 1;
     },
     SetcreatedOrg() {
-      // this.createdOrg = true;
+      this.modalAutoOrg++;
     },
     Close(e) {
       var LayerPopup = $(".add_search");

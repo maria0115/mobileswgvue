@@ -41,6 +41,7 @@ export default {
   props: ["portlet"],
   async created() {
     this.params = this.portlet;
+    console.log(this.portlet.lnbid)
     var res = await this.$store.dispatch("CategoryList", this.portlet.lnbid);
     this.params = JSON.parse(JSON.stringify(res[0]));
     if (res.length > 0) {

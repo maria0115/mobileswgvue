@@ -49,7 +49,7 @@
         class="add_file nt_file clfix"
         v-if="GetStoreBoard.detail.attach.length > 0"
       >
-        <strong>{{ lang.attach }}</strong>
+        <strong>{{ lang.attach }}<em class="file_more"></em></strong>
         <Viewer
           className=""
           :attaInfo="GetStoreBoard.detail.attach"
@@ -183,6 +183,7 @@ export default {
       var data = {};
       data.boardType = this.GetStoreBoard.path;
       data.unid = this.GetStoreBoard.detail.unid;
+      data.lnbid = this.params.lnbid;
       this.$store.dispatch("boardjs/DeleteBoard", data).then((result) => {
         if (result) {
           this.GoList();
@@ -194,6 +195,7 @@ export default {
       var detail = this.GetStoreBoard.detail;
       data.root_unid = detail.root_unid;
       data.boardType = this.GetStoreBoard.path;
+      data.lnbid = this.params.lnbid;
       this.$store.dispatch("boardjs/Likeit", data).then((res) => {
         if (res) {
           this.GetStoreBoard.detail.like_cnt = parseInt(res.like_cnt);
@@ -360,15 +362,15 @@ export default {
         data.unid = this.GetStoreBoard.unid;
       }
       data.my_unid = this.Eclicked;
+      data.lnbid = this.params.lnbid;
 
       this.$store.dispatch("boardjs/WriteReply", data).then((res) => {
         if (res.msgcode == "success") {
           var redata = {};
           redata.type = this.params.type;
           redata.rootunid = this.GetStoreBoard.detail.root_unid;
-          this.$store.dispatch("boardjs/ReplyInfo", redata).then((response) => {
-            this.GetStoreBoard.detail.reply = response;
-          });
+          redata.lnbid = this.params.lnbid;
+          this.Read();
         }
       });
       this.Eclicked = "";
@@ -392,8 +394,9 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .ProseMirror {
   border: 0;
 }
+.rdm_edit{height:calc(100vh - 13.437rem);}
 </style>

@@ -223,7 +223,7 @@ export default {
           return response.data.data;
         })
         .then((data) => {
-          setTimeout(() => {
+          this.timeout = setTimeout(() => {
             if (data) {
               if (data.length > 0) {
                 this.$store.commit("SetBackPage", option.page);

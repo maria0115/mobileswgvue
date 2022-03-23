@@ -154,7 +154,7 @@ export default {
             data = data[this.path].data;
           }
 
-          setTimeout(() => {
+          this.timeout = setTimeout(() => {
             if (data.length) {
               this.sortdata[this.path].data =
                 this.sortdata[this.path].data.concat(data);

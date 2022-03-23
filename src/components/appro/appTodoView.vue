@@ -10,8 +10,8 @@
           <em>{{ this.detail.category }}</em>
           <strong>{{ this.detail.subject }}</strong>
           <div class="clfix">
-            <em v-for="(value, index) in this.detail.approvalInfo" :key="index">
-              <span v-if="value.approval">{{ value.approvalKind }}</span>
+            <em v-if="this.isApproval().length>0">
+              <span>{{ this.isApproval() }}</span>
             </em>
             <dl>
               <dt>
@@ -36,7 +36,7 @@
                   v-for="(value, index) in this.detail.approvalInfo"
                   :key="index"
                 >
-                  <span>{{ value.approvalKind }}</span>
+                  <span :class="{active:value.approval}">{{ value.approvalKind }}</span>
                   <div>
                     <strong
                       >{{ value.author }} {{ value.authorposition }} /
@@ -79,6 +79,7 @@
       <Viewer className="" :attach="false" ref="viewer"></Viewer>
     </div>
     <Comment
+      :nowBtn="this.morePlus[this.nowBtn]"
       :isOpen="agreeNreject"
       @ModalOff="ModalOff"
       @AgreeNReject="AgreeNReject"
@@ -140,9 +141,21 @@ export default {
       appActive: false,
       attActive: false,
       agreeNreject: false,
+      nowBtn:""
+
     };
   },
   methods: {
+    isApproval(){
+      var info = this.detail.approvalInfo;
+      for(var i in info){
+        if(info[i].approval){
+          return info[i].approvalKind;
+        }
+
+      }
+      return "";
+    },
     ModalOff() {
       this.agreeNreject = false;
     },
@@ -172,18 +185,23 @@ export default {
 
       this.agreeNreject = true;
       this.nowBtn = e;
+      // console.log(this.nowBtn)
     },
     AgreeNReject(comment) {
-      let formData = new FormData();
-      formData.append("openurl", this.detail.openurl);
-      formData.append("comment", comment);
-      formData.append("approve", this.nowBtn);
-
-      this.$store.dispatch("approjs/agreeNreject", formData).then((res) => {
-        if (res) {
-          this.$router.go(-1);
-        }
-      });
+      if(confirm("제출 하시겠습니까")==true){
+        let formData = new FormData();
+        formData.append("openurl", this.detail.openurl);
+        formData.append("comment", comment);
+        formData.append("approve", this.nowBtn);
+  
+        this.$store.dispatch("approjs/agreeNreject", formData).then((res) => {
+          if (res) {
+            this.$router.go(-1);
+          }
+        });
+      }else{
+        return;
+      }
     },
     // utc 시간 to local 시간
     transTime(time) {

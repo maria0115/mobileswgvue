@@ -24,7 +24,7 @@ export default {
     },
     methods: {
         refresh(loaded) {
-            setTimeout(() => {
+            this.timeout = setTimeout(() => {
                 this.Refresh();
 
                 loaded("done");

@@ -32,7 +32,9 @@
                   v-for="(value, index) in this.org.SendTo"
                   :key="index"
                 >
-                  {{ isShortName(value) }}
+                  <div>
+                    {{ isShortName(value) }}
+                  </div>
                   <div class="del_add">
                     <dl>
                       <dt v-if="value.department">
@@ -76,6 +78,7 @@
               </ul>
               <div>
                 <span
+                  v-if="this.Option().tome"
                   class="tome"
                   :class="{ active: this.tome }"
                   @click="ToMe"
@@ -115,7 +118,9 @@
                     v-for="(value, index) in this.org.CopyTo"
                     :key="index"
                   >
-                    {{ isShortName(value) }}
+                    <div>
+                      {{ isShortName(value) }}
+                    </div>
                     <div class="del_add">
                       <dl>
                         <dt>{{ value.name }} / {{ value.department }}</dt>
@@ -188,7 +193,9 @@
                     v-for="(value, index) in this.org.BlindCopyTo"
                     :key="index"
                   >
-                    {{ isShortName(value) }}
+                    <div>
+                      {{ isShortName(value) }}
+                    </div>
                     <div class="del_add">
                       <dl>
                         <dt>{{ value.name }} / {{ value.department }}</dt>
@@ -312,15 +319,20 @@
               ></span
               >{{ lang.reservation }}
             </p>
-            <span v-if="this.ExpireDate && this.time && this.dispreserve"
-              >{{ this.ExpireDate }}<em>{{ this.time }}</em></span
+            <span
+              v-if="
+                this.ExpireDate && this.SMin && this.STime && this.dispreserve
+              "
+              >{{ this.ExpireDate
+              }}<em>{{ this.STime }}:{{ this.SMin }}</em></span
             >
           </li>
           <li class="mail_edit">
             <label for="mail_wri"></label>
             <Body
+              v-if="bodystatus"
               id="mail_wri"
-              style="height:100%;"
+              style="height: 100%"
               :body="Body_Text"
               ref="Body"
               :read="false"
@@ -381,19 +393,23 @@ export default {
     this.lang = this.GetMailLanguage.write;
     // this.$store.commit("mailjs/MailOrgDataInit");
     this.Body_Text = `${this.GetMail.writeForm.greetings}<p></p><p></p>${this.GetMail.writeForm.signature}<p></p><p></p>`;
+    // var obody = await this.getBody();
     this.isEdit = this.$route.query.isEdit;
+    this.body = this.GetMailDetail.body;
+    await this.urlBody();
     if (this.from === "Relay") {
       this.file = this.GetMailDetail.attach;
       this.Subject = this.GetMailDetail.forwardMail.subject;
-      this.Body_Text += `${this.GetMailDetail.forwardMail.body}<br><br><br>${this.GetMailDetail.body}`;
+      this.Body_Text += `${this.GetMailDetail.forwardMail.body}<br><br><br>${this.Body}`;
     } else if (this.from === "Reply" || this.from === "AllReply") {
       this.Subject = this.GetMailDetail.replyMail.subject;
-      this.Body_Text += `${this.GetMailDetail.replyMail.body}<br><br><br>${this.GetMailDetail.body}`;
+      this.Body_Text += `${this.GetMailDetail.replyMail.body}<br><br><br>${this.Body}`;
     } else if (this.isDraftEdit()) {
       this.file = this.GetMailDetail.attach;
       this.Subject = this.GetMailDetail.subject;
-      this.Body_Text = this.GetMailDetail.body;
+      this.Body_Text = this.Body;
     }
+    this.bodystatus = true;
 
     this.randomkey = await this.generateRandomCode(32);
   },
@@ -438,6 +454,7 @@ export default {
   },
   data: function () {
     return {
+      bodystatus: false,
       delay: null,
       isOpen: false,
       file: [],
@@ -464,6 +481,13 @@ export default {
     };
   },
   methods: {
+    async getBody() {
+      if (this.GetMailDetail.body && this.GetMailDetail.body.length > 0) {
+        return await this.$store.dispatch("mailjs/GetBody", this.GetMailDetail);
+      } else {
+        return "";
+      }
+    },
     isDraftEdit() {
       if (this.GetfolderName) {
         return this.GetfolderName.indexOf("draft") !== -1 && this.isEdit;
@@ -506,13 +530,19 @@ export default {
     FormSet() {
       var inSendTo = this.org.SendTo.map((item) => item.name).join(";");
       var SendTo = this.org.SendTo.map((item) => item.id).join(";");
-      var ocxSendTo = this.org.SendTo.map((item) => item.shortname||item.name).join(";");
+      var ocxSendTo = this.org.SendTo.map(
+        (item) => item.shortname || item.name
+      ).join(";");
 
       var CopyTo = this.org.CopyTo.map((item) => item.id).join(";");
-      var ocxCopyTo = this.org.CopyTo.map((item) => item.shortname||item.name).join(";");
+      var ocxCopyTo = this.org.CopyTo.map(
+        (item) => item.shortname || item.name
+      ).join(";");
 
       var BlindCopyTo = this.org.BlindCopyTo.map((item) => item.id).join(";");
-      var ocxBCopyTo = this.org.BlindCopyTo.map((item) => item.shortname||item.name).join(";");
+      var ocxBCopyTo = this.org.BlindCopyTo.map(
+        (item) => item.shortname || item.name
+      ).join(";");
 
       let formData = new FormData();
       formData.append("SendTo", SendTo);

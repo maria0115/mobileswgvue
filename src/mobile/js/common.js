@@ -357,11 +357,13 @@ $(function () {
         $(this).parent('h3').siblings('div').toggleClass('active');
     });
     // 결제중 문서
+    // 22.02.16수정
     $('body').on('click', '.st_more', function () {
         // $('.app_status').removeClass('active');
         // $('.st_more').removeClass('active');
         $(this).toggleClass('active');
         $(this).parent('div').siblings('.app_status').toggleClass('active');
+
     });
     $('body').on('click', '.close_btn', function () {
 
@@ -369,6 +371,10 @@ $(function () {
         $(this).parent('div').removeClass('active')
         // $(this).parent('div').siblings('.s_text').find('.st_more').removeClass('active');
         $(this).parent('div').siblings('.st_more').removeClass('active');
+        // 22.02.16수정
+        $(this).parent('div').siblings('div').find('.st_more').removeClass('active');
+        $(this).parent('.app_status').removeClass('active');
+        // 
         // $(this).parent('div').parent('div').removeClass('active');
         // $(this).parent('div').parent('div').removeClass('active');
         // $(this).parent('div').parent('div').siblings('.st_more').removeClass('active');
@@ -517,4 +523,12 @@ $(function () {
     $('body').on('click', '.new_addr textarea', function () {
         $(this).parent('li').parent('ul').parent('div').siblings('div.add_search').toggleClass('active');
     });/*27일 추가됨*/
+
+    // 22.02.15 추가
+    $('body').on('click','.file_more',function(){
+        $(this).toggleClass('active');
+        $('.add_file ul').slideToggle();
+        $('.cal_add_file ul').slideToggle();
+    });
+
 });

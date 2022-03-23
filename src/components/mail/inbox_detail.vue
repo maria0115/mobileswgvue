@@ -30,6 +30,7 @@
               ></em
             > -->
                 <span
+                 @click="MailDetail(item.unid, item.folderName)"
                   class="basic_img"
                   v-if="item.sender"
                   :class="[{ on: mail.checkBtn.photoon }]"
@@ -81,6 +82,8 @@
                         >{{ lang.cc }}</em
                       >
                     </div>
+                    <span>{{ transTime(item.created)
+                    }}</span>
                   </dt>
                   <dd>
                     <b :class="[{ impor_icon: item.importance }]"></b
@@ -89,8 +92,7 @@
                 </dl>
                 <div class="impor">
                   <p>
-                    {{ transTime(item.created)
-                    }}<em
+                    <em
                       v-if="
                         item.followup !== undefined && path !== 'mail_trash'
                       "
@@ -376,7 +378,7 @@ export default {
           return response.data.data;
         })
         .then((data) => {
-          setTimeout(() => {
+          this.timeout = setTimeout(() => {
             if (data) {
               if (data.length > 0) {
                 this.$store.commit("SetBackPage", option.page);
@@ -409,7 +411,7 @@ export default {
           return response.data.data;
         })
         .then((data) => {
-          setTimeout(() => {
+          this.timeout = setTimeout(() => {
             if (data) {
               if (data.length > 0) {
                 this.$store.commit("SetBackPage", option.page);

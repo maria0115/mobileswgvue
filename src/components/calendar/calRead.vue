@@ -68,8 +68,8 @@
             >
           </div>
         </li>
-        <li v-if="calData.attachInfo.length > 0">
-          <span>{{ lang.attach }}</span>
+        <li v-if="calData.attachInfo.length > 0" class="cal_add_file">
+          <span>{{ lang.attach }}<em class="file_more"></em></span>
           <Viewer
             className=""
             :attaInfo="calData.attachInfo"
@@ -78,7 +78,7 @@
           ></Viewer>
         </li>
       </ul>
-      <div class="rdm_edit" style="height:calc(100vh - 25.375rem);">
+      <div class="rdm_edit" >
         <Body
           class="cal_info"
           style="height: 100%"
@@ -125,9 +125,6 @@ export default {
     };
   },
   methods: {
-    replaceAll(str, searchStr, replaceStr) {
-      return str.split(searchStr).join(replaceStr);
-    },
     async Del() {
       var data = {};
       data.unid = this.GetSaveSchedule.detail.unid;

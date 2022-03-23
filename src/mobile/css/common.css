@@ -4,6 +4,9 @@
 * html .clfix {height:1%;} /* Hides from IE-mac */
 .clfix {zoom:1;}
 html,body {width:100%;}
+
+/* 22.02.25 */
+*{-webkit-text-size-adjust:none;}
 html {/*overflow-y:scroll;*/ overflow-x:hidden; box-sizing:border-box;}
 *, *:before, *:after{box-sizing:inherit;}
 /* *{

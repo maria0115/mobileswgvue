@@ -2,7 +2,7 @@
     "packageName":"swgMobile",
     "env":"product",
     "env_desc":"dev = 에디터 사용x sso(true) = 로그인인증x, product = 에디터 사용o sso",
-    "company":"kiturami",
+    "company":"ace",
     "extension":["doc","docx","jpg","jpeg","png","gif","psd","ai","img","pdf","ppt","pptx","vod","mp3","mp4","xls","xlsx","zip"],
     "description_systemmode": "system,light,dark",
     "systemcolor": "light",

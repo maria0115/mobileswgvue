@@ -10,8 +10,8 @@
           <em>{{ this.detail.category }}</em>
           <strong>{{ this.detail.subject }}</strong>
           <div class="clfix">
-            <em v-for="(value, index) in detail.approvalInfo" :key="index">
-              <span v-if="value.approval">{{ value.approvalKind }}</span>
+            <em v-if="this.isApproval().length>0">
+              <span>{{ this.isApproval() }}</span>
             </em>
             <dl>
               <dt>
@@ -36,7 +36,7 @@
                   v-for="(value, index) in this.detail.approvalInfo"
                   :key="index"
                 >
-                  <span>{{ value.approvalKind }}</span>
+                  <span :class="{active:value.approval}">{{ value.approvalKind }}</span>
                   <div>
                     <strong
                       >{{ value.author }} {{ value.authorposition }} /
@@ -72,13 +72,16 @@
           </li>
         </ul>
         <div class="line03">
-          <a v-html="detail.body" style="overflow-x: auto"></a>
+          <a v-html="detail.body" v-if="detail.body.length>0" style="overflow-x: auto"></a>
+          <span v-else @click="goOrigin" class="origi_btn">원문보기</span>
         </div>
       </div>
       <BtnPlus :menu="morePlus" @BtnClick="BtnClick"></BtnPlus>
       <Viewer className="" :attach="false" ref="viewer"></Viewer>
     </div>
     <Comment
+      :nowBtn="this.morePlus[this.nowBtn]"
+    
       :isOpen="agreeNreject"
       @ModalOff="ModalOff"
       @AgreeNReject="AgreeNReject"
@@ -142,14 +145,32 @@ export default {
       attActive: false,
       agreeNreject: false,
       morePlus: {},
+      nowBtn:""
     };
   },
   methods: {
+    isApproval(){
+      var info = this.detail.approvalInfo;
+      for(var i in info){
+        if(info[i].approval){
+          return info[i].approvalKind;
+        }
+
+      }
+      return "";
+    },
     ModalOff() {
       this.agreeNreject = false;
     },
     SetHeader(data) {
       this.$store.dispatch("SetHeader", data);
+    },
+    goOrigin(){
+      this.OriginView({
+          url: this.detail.openurl,
+          name: this.detail.subject,
+          unid:this.detail.unid,
+        });
     },
     BtnClick(value) {
       var data = undefined;
@@ -203,16 +224,20 @@ export default {
       });
     },
     AgreeNReject(comment) {
-      let formData = new FormData();
-      formData.append("openurl", this.detail.openurl);
-      formData.append("comment", comment);
-      formData.append("approve", this.nowBtn);
-
-      this.$store.dispatch("approjs/agreeNreject", formData).then((res) => {
-        if (res) {
-          this.$router.go(-1);
-        }
-      });
+      if(confirm("제출 하시겠습니까")==true){
+        let formData = new FormData();
+        formData.append("openurl", this.detail.openurl);
+        formData.append("comment", comment);
+        formData.append("approve", this.nowBtn);
+  
+        this.$store.dispatch("approjs/agreeNreject", formData).then((res) => {
+          if (res) {
+            this.$router.go(-1);
+          }
+        });
+      }else{
+        return;
+      }
     },
     attOpen(path) {
       window.open(path);

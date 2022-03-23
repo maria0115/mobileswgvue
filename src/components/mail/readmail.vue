@@ -99,8 +99,8 @@
           ></span>
           <FollowUp :unid="clickedUnid"></FollowUp>
         </div>
-        <div class="add_file clfix">
-          <strong>{{ lang.attach }}</strong>
+        <div class="add_file clfix"  v-if="GetMailDetail.attach.length>0">
+          <strong>{{ lang.attach }}<em class="file_more"></em></strong>
           <Viewer
             className=""
             :attaInfo="GetMailDetail.attach"
@@ -112,6 +112,10 @@
           안녕하세요. 디자인 팀 안지영 입니다. 2021년 사내업무 및 유지 보수 내역
           보내드립니다. 감사합니다.
         </div> -->
+        <div style="font-size: .93rem;color: #999;">
+          <strong>본문 내의 링크 기능은 스미싱등 보안 상의 이유로 제공 하지 않습니다.</strong>
+        </div>
+        
         <div class="rdm_edit">
           <Body
             id="memo_t"

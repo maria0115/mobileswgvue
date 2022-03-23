@@ -6,12 +6,18 @@
 <script>
 export default {
   created() {
-    this.addScript();
+    if (typeof synapEditorConfig !== "undefined") {
+      this.addScript();
+    }
   },
   mounted() {
-    setTimeout(() => {
+    if (typeof synapEditorConfig !== "undefined") {
       this.initEditor();
-    },500);
+    } else {
+      this.timeout = setTimeout(() => {
+        this.initEditor();
+      }, 900);
+    }
   },
   props: ["body", "read", "did"],
   computed: {
@@ -28,14 +34,16 @@ export default {
   },
   methods: {
     initEditor() {
-      this.editor = new SynapEditor(
-        "synapEditor",
-        synapEditorConfig,
-        this.body
-      );
-      if(this.read){
-        this.editor.setMode('preview');
-        this.editor.execCommand('hideDimLayer');
+      var conf = synapEditorConfig;
+      if (this.read) {
+        conf["editor.mobile.toolbar"] = [];
+        conf["editor.toolbar"] = [];
+      }
+      this.editor = new SynapEditor("synapEditor", conf, this.body);
+      if (this.read) {
+        this.editor.setMode("preview");
+        this.editor.execCommand("hideDimLayer");
+        this.editor.execCommand("hideAllPopup");
       }
     },
     GetBody() {
@@ -45,16 +53,16 @@ export default {
       let scripts = [
         "../../mobile/synap/synapeditor.config.js",
         "../../mobile/synap/synapeditor.min.js",
-        "../../mobile/synap/plugins/shapeEditor/shapeEditor.min.js",
-        "../../mobile/synap/plugins/personalDataProtection/personalDataProtection.min.js",
-        "../../mobile/synap/plugins/characterPicker/characterPicker.min.js",
-        "../../mobile/synap/plugins/webAccessibilityChecker/webAccessibilityChecker.min.js",
-        "../../mobile/synap/plugins/tuiImageEditor/tuiImageEditor.min.js",
-        "../../mobile/synap/plugins/horizontalLineExtension/horizontalLineExtension.min.js",
-        "../../mobile/synap/plugins/quoteExtension/quoteExtension.min.js",
-        "../../mobile/synap/externals/formulaParser/formula-parser.min.js",
-        // "../../mobile/synap/externals/SEDocModelParser/SEDocModelParser.min.js",
-        "../../mobile/synap/externals/SEShapeManager/SEShapeManager.min.js",
+        // "../../mobile/synap/plugins/shapeEditor/shapeEditor.min.js",
+        // "../../mobile/synap/plugins/personalDataProtection/personalDataProtection.min.js",
+        // "../../mobile/synap/plugins/characterPicker/characterPicker.min.js",
+        // "../../mobile/synap/plugins/webAccessibilityChecker/webAccessibilityChecker.min.js",
+        // "../../mobile/synap/plugins/tuiImageEditor/tuiImageEditor.min.js",
+        // "../../mobile/synap/plugins/horizontalLineExtension/horizontalLineExtension.min.js",
+        // "../../mobile/synap/plugins/quoteExtension/quoteExtension.min.js",
+        // "../../mobile/synap/externals/formulaParser/formula-parser.min.js",
+        // // "../../mobile/synap/externals/SEDocModelParser/SEDocModelParser.min.js",
+        // "../../mobile/synap/externals/SEShapeManager/SEShapeManager.min.js",
         // "../../mobile/synap/externals/codeMirror/codemirror.min.js",
         // "../../mobile/synap/externals/codeMirror/xml.min.js",
       ];

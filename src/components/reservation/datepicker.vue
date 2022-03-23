@@ -105,10 +105,6 @@ export default {
       var formattedDate = `${value.year}.${value.month}.${value.day}`;
       this.$emit("ChangeDate", formattedDate);
     },
-    // 자동완성 글 입력된 검색어로 자르기
-    replaceAll(str, searchStr, replaceStr) {
-      return str.split(searchStr).join(replaceStr);
-    },
     fill(width, str) {
       var n = String(str);
       return n.length >= width

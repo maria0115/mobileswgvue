@@ -88,6 +88,9 @@ export default {
     SearchHeader,
     Footer
   },
+  beforeDestroy(){
+    this.$store.commit("searchjs/WordReset");
+  },
   computed: {
     ...mapState("searchjs",[
       "sortdata",

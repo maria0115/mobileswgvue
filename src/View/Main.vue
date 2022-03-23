@@ -85,7 +85,7 @@
               GetMainLanguage.hamburger.button.edit
             }}</span>
             <ul class="clfix">
-              <div v-for="(value, name) in this.menuposition" :key="name">
+              <div v-for="(value, name) in this.menuposition" :style="IS(value.service)" :key="name">
                 <li @click="MenuGo(!edit, value)" v-if="value.service">
                   <a>
                     <span>
@@ -211,7 +211,7 @@
               :class="[
                 {
                   active:
-                    Category === `main${value.category}` && value.type == Type,
+                    Category === `main${value.category}` && value.type == Type && value.lnbid==Gnb,
                 },
               ]"
               class="tab"
@@ -223,6 +223,9 @@
               <a @click="MainGo(value)">{{ value.title }}</a>
             </li>
           </span>
+          <li class="tab">
+            <a @click="POrgClick()">조직도</a>
+          </li>
         </ul>
       </div>
       <!-- <ul class="list-group drag p20">
@@ -281,17 +284,29 @@
           this.GetConfig.display == 'menu'
         " -->
       <div class="logout" des="main2">
-        <span @click="logout"><a>{{GetCommonL.footer.logout}}</a></span>
+        <span @click="logout"
+          ><a>{{ GetCommonL.footer.logout }}</a></span
+        >
       </div>
       <btm-btn
         v-if="
-          (Category == 'mainmail' || Category == 'mainapproval') && Option().appWrite
+          (Category == 'mainmail' || Category == 'mainapproval') &&
+          Option().appWrite
         "
       ></btm-btn>
       <btm-btn v-else-if="Category == 'mainmail'"></btm-btn>
       <div v-else class="top_btn" @click="scrollToTop()"></div>
-
-      <Org :modalon="modalon" @ModalOff="ModalOff"></Org>
+      <OrgFooter
+        @CardOpen="CardOpen"
+        :modalon="orgon"
+        @ModalOff="OrgOff"
+      ></OrgFooter>
+      <PersonCard
+        @ModalOff="CardOff"
+        :item="cardItem"
+        :modalon="cardon"
+      ></PersonCard>
+      <!-- <Org :modalon="modalon" @ModalOff="ModalOff"></Org> -->
     </div>
   </div>
 </template>
@@ -307,6 +322,8 @@ import $ from "jquery";
 import draggable from "vuedraggable";
 import Org from "./Org.vue";
 import BtmBtn from "./BtmBtn.vue";
+import PersonCard from "./PersonCard.vue";
+import OrgFooter from "./OrgFooter.vue";
 import { CategoryList } from "../api/index.js";
 import config from "@/config/config.json";
 export default {
@@ -315,6 +332,8 @@ export default {
     draggable,
     Org,
     BtmBtn,
+    OrgFooter,
+    PersonCard,
   },
   data() {
     return {
@@ -325,6 +344,9 @@ export default {
       oncategory: "my",
       modalAutoOrg: 0,
       modalon: false,
+      orgon: false,
+      cardItem: {},
+      cardon: false,
       mainmenu: [],
     };
   },
@@ -373,8 +395,13 @@ export default {
       var params = JSON.parse(this.$route.query.data);
       return params["type"];
     },
+    Gnb() {
+      var params = JSON.parse(this.$route.query.data);
+      return params["lnbid"];
+    },
   },
   created() {
+    
     // font size setting
     if (this.GetConfig.font.size == "small") {
       $("html").addClass("small");
@@ -424,8 +451,23 @@ export default {
     }
   },
   methods: {
-    Logo(){
-      return require(`../mobile/img/main_logo_${this.Config().company}.png`)
+    CardOff() {
+      this.cardon = false;
+    },
+    CardOpen(item) {
+      this.cardon = true;
+      this.cardItem = item;
+    },
+    OrgOff() {
+      this.orgon = false;
+    },
+    POrgClick(to) {
+      // $(".btm_menu_list").removeClass("active");
+
+      this.orgon = true;
+    },
+    Logo() {
+      return require(`../mobile/img/main_logo_${this.Config().company}.png`);
     },
     scrollToTop() {
       //
@@ -513,20 +555,20 @@ export default {
         if (value.category == "board") {
           name = `${value.category}list`;
           if (value.type == "board") {
-          this.$router.push({
-            name: name,
-            query: {
-              type: value.type,
-              data: JSON.stringify({
-                lnbid: this.categorys[0].lnbid,
+            this.$router.push({
+              name: name,
+              query: {
                 type: value.type,
-                top:value.top,
-                title: this.categorys[0].title,
-              }),
-            },
-          });
-          return;
-        }
+                data: JSON.stringify({
+                  lnbid: this.categorys[0].lnbid,
+                  type: value.type,
+                  top: value.top,
+                  title: this.categorys[0].title,
+                }),
+              },
+            });
+            return;
+          }
         } else if (value.category === "approval") {
           var approve = this.ThisCategory("approve");
           this.$router.push({
@@ -695,11 +737,12 @@ export default {
     GoHome() {
       this.$router.push({ name: "main" });
     },
+    
   },
 };
 </script>
 
-<style>
+<style scoped>
 .button {
   margin-top: 35px;
 }
@@ -721,5 +764,11 @@ export default {
 }
 .list-group-item i {
   cursor: pointer;
+}
+.all_organ_modal {
+  z-index: 1000;
+}
+.con09_inner {
+  z-index: 1001;
 }
 </style>

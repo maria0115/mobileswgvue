@@ -65,7 +65,7 @@
             v-if="Object.keys(this.options.categoryall).length > 0"
           >
             <!--교육,업무게시판은 클래스bullet display:none;해주세요-->
-            <strong><font class="f_red">*</font>{{ lang.head }}</strong>
+            <strong>{{ lang.head }}<font class="f_red">*</font></strong>
             <!-- <div class="notice" style="display: none">
               <select>
                 <option value="전체">전체</option>

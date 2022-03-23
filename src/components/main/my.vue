@@ -102,6 +102,7 @@ import $ from "jquery";
 
 export default {
   async created() {
+    
     this.menu = this.GetConfig.main.menuportlet;
     const result = this.menu.findIndex((item) => {
       return item.category == "approval";
@@ -192,8 +193,25 @@ export default {
 
       this.positionxy.push(increase * (180.0 / Math.PI) * -i);
     }
+    if (!this.GetMyInfo.master) {
+      this.getMaster();
+    }
   },
   methods: {
+    async getMaster() {
+      var full = this.GetMyInfo.info.fullOrgCode;
+      var children = await this.$store.dispatch("Org", {
+        companycode: full[0],
+        mycode: full[full.length - 1],
+      });
+
+      var meidx = children.findIndex((item) => {
+          return item.notesId == this.GetMyInfo.info.notesid;
+        });
+        if (meidx !== -1) {
+          this.$store.commit("mainjs/MyInfoMaster", children[meidx]);
+        }
+    },
     menuOfCategoryIdx(menu) {
       if (this.categorys) {
         return this.categorys.findIndex(function (item, idx) {

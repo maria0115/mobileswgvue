@@ -23,7 +23,7 @@
           </div>
         </li>
         <li class="cal_color">
-          <strong>테스트</strong>
+          <strong>Color</strong>
           <div class="color_chart">
             <div>
               <h3>
@@ -356,6 +356,10 @@ export default {
       this.params = JSON.parse(this.$route.query.data);
       var dates = new Date();
       var hour = dates.getHours();
+      var moment = require("moment");
+      
+      this.date = moment().format("YYYY-MM-DD");
+
       this.SHour = `${this.fill(2, hour + 1)}`;
       this.SMin = `00`;
 
@@ -672,7 +676,7 @@ export default {
 }
 
 .dark .color_chart h3 {
-  border-color: #232323 !important;
+  border-color: #565656 !important;
   background: #000 url(/mobile/img/more_refer.png) right 0.87rem center
     no-repeat;
   background-size: 0.56rem 0.37rem;

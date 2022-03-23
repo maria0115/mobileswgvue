@@ -155,9 +155,6 @@ export default {
       }
       return array;
     },
-    replaceAll(str, searchStr, replaceStr) {
-      return str.split(searchStr).join(replaceStr);
-    },
     Write(time) {
       this.$store.commit("bookjs/isEdit", false);
       var datestr = this.replaceAll(this.fulldate, ".", "-");
@@ -341,5 +338,6 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
+.m_contents09{margin-top:12.605rem;}
 </style>

@@ -25,12 +25,15 @@ export default {
   methods: {
     openDownload(url) {
       var goto = `${window.location.origin}/mobile_index/viewer`;
-      if (!this.isMobile()) {
-        location.href = `${goto}?url=${url}&token=${encodeURIComponent(
-          this.getToKen()
-        )}`;
+      var setToken = this.replaceAll(this.getToKen(), "+", "$SIS$");
+      if (this.isApp()) {
+        location.href = `m60call://browser?urladdress=${goto}?url=${encodeURIComponent(
+          url
+        )}&token=${encodeURIComponent(setToken)}`;
       } else {
-        location.href = `m60call://browser?urladdress=${goto}?url=${url}&token=${this.getToKen()}`;
+        location.href = `${goto}?url=${encodeURIComponent(
+          url
+        )}&token=${encodeURIComponent(setToken)}`;
       }
     },
   },

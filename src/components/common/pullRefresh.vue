@@ -52,7 +52,7 @@ export default {
   },
   methods: {
     refresh(loaded) {
-      setTimeout(() => {
+      this.timeout = setTimeout(() => {
         console.log("hi");
 
         loaded("done");

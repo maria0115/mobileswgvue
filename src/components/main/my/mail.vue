@@ -24,6 +24,8 @@
                   >{{ lang.cc }}</em
                 >
               </div>
+              <span>{{ transTime(value.created)
+              }}</span>
             </dt>
             <!-- 7월 5일 div태그 추가됨 -->
             <dd>
@@ -33,12 +35,10 @@
             <!-- 7월 05일 중요메일 느낌표 태그 추가됨-->
           </dl>
           <div class="impor">
-            <p>
-              {{ transTime(value.created)
-              }}<span
+            <p @click="followUp(value.unid)">
+              <span
                 class="star"
                 :class="{ active: value.followup }"
-                @click="followUp(value.unid)"
                 :src="`/mobile/img/star${important(value.followup)}.png`"
                 alt="중요메일"
               />

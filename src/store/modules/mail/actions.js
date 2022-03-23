@@ -1,5 +1,5 @@
 import {
-    MailDetail, FollowupSet, MailAutoSave, MailDelay, MailWrite,
+    MailDetail, FollowupSet, MailAutoSave, MailDelay, MailWrite,GetBody,
     MailRealDelete,
     FollowUpInfo,
     MailSearch,
@@ -21,6 +21,16 @@ import {
 } from '../../../api/index';
 import router from '../../../router/index';
 export default {
+    GetBody({ state,rootState  }, data){
+        return GetBody(data)
+        .then((res) => {
+            if (res.status !== 200) {
+                return false;
+            } else {
+                return res.data;
+            }
+        })
+    },
     MailRecovery({ state,rootState  }, ) {
         var checkedNames = state.mail.checkBtn.checkedNames;
         if (checkedNames.length > 0) {
@@ -252,11 +262,12 @@ export default {
 
         // 
         // rootState.tf = true;
-        InitOrg(data)
+        return InitOrg(data)
             .then((res) => {
                 // rootState.tf = false;
 
                 commit("MailOrgTransData", res.data);
+                return res.data;
             })
     },
     GETMailDelay({ state, rootState }) {

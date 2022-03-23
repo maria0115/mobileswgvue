@@ -6,15 +6,46 @@ import cookie from 'vue-cookies';
 import Body from "@/components/common/body.vue"
 import Viewer from "@/components/common/viewer.vue"
 export default {
+    beforeDestroy() {
+        clearTimeout(this.timeout);
+    },
+    data() {
+        return {
+            timeout: null
+        }
+    },
     components: {
         Body,
         Viewer
     },
     computed: {
+        ...mapState("mailjs", ["from"]),
+        ...mapGetters("mailjs", ["GetMailDetail"]),
         ...mapGetters(["GetAppL", "GetMConfigL", "GetBoardL", "GetBookL", "GetScheduleL", "GetCommonL"]),
 
     },
     methods: {
+        async urlBody() {
+            this.Body = this.body;
+            if (
+                this.from === "Relay" ||
+                this.from === "AllReply" ||
+                this.from === "Reply" ||
+                this.isDraftEdit()
+            ) {
+                if (this.body && this.body.length > 0) {
+                    this.Body = await this.$store.dispatch(
+                        "mailjs/GetBody",
+                        this.GetMailDetail
+                    );
+                    return;
+                } else {
+                    this.Body = "";
+                    return;
+                }
+            }
+            return;
+        },
         /*
  * path : 전송 URL
  * params : 전송 데이터 {'q':'a','s':'b','c':'d'...}으로 묶어서 배열 입력
@@ -26,6 +57,12 @@ export default {
             oReq.setRequestHeader('ExtraInfo', 28473432894789238473293874329);
             oReq.send();
         },
+        IS(service){
+            if(!service){
+              return {display:"none"};
+            }
+            return {};
+          },
         post_to_url(path, params, method) {
             // var xhr = new XMLHttpRequest();
             // path="/test.html";
@@ -42,11 +79,11 @@ export default {
                 in1.setAttribute("value", params[key]);
                 ff.appendChild(in1);
             }
-            
+
             // ff.enctype = 'multipart/form-data';
             // ff.method = method;
             // ff.action = path;
-            document.body.appendChild(ff); 
+            document.body.appendChild(ff);
 
             ff.submit();
             return;
@@ -105,6 +142,9 @@ export default {
             // xhr.open('post', path, true);
             // xhr.send(form);
         },
+        replaceAll(str, searchStr, replaceStr) {
+            return str.split(searchStr).join(replaceStr);
+        },
         cb(e) {
             console.log(e);
         },
@@ -113,6 +153,15 @@ export default {
         },
         isMobile() {
             return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        },
+        isApp() {
+            var device = JSON.parse(
+                localStorage.getItem(`${this.Config().packageName}deviceInformation`)
+            );
+            if (device.deviceId && device.deviceId.length > 0) {
+                return true;
+            }
+            return false;
         },
         generateRandomCode(n) {
             let str = "";
@@ -124,7 +173,7 @@ export default {
         OriginView(params) {
             // node 원문보기
             if (params.url.length !== 0) {
-                if (this.Option().viewer == "origin") {
+                if (this.Option().viewer == "origin"||this.detail.isMig) {
                     this.$router.push({
                         name: "originalPage",
                         params,
@@ -137,7 +186,7 @@ export default {
                     });
                 } else if (this.Option().viewer == "synap") {
                     // 첨부변환서버 원문보기
-                    this.$refs.viewer.$refs.editor.openDownload({unid:params.unid,url:this.detail.openurl});
+                    this.$refs.viewer.$refs.editor.openDownload({ unid: params.unid, url: this.detail.openurl });
                 }
             }
         },

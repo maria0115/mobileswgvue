@@ -7,7 +7,8 @@
 
 <script>
 export default {
-  created() {    
+  created() {
+    
     if (this.$route.name === "root") {
       for (var item of this.languages) {
         this.getLanguage(item);
@@ -36,6 +37,7 @@ export default {
     getLanguage(app) {
       this.$store.dispatch("GetLanguage", { app });
     },
+    
   },
 };
 </script>

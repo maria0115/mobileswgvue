@@ -5,10 +5,11 @@ export default {
     // main의 info
     GetMyInfo({ commit, rootState }) {
         rootState.tf = true;
-        MyInfo()
+        return MyInfo()
             .then(response => {
                 rootState.tf = false;
                 commit('MyInfo', { res: response.data })
+                return
             });
     },
     // mail data

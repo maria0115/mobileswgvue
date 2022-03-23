@@ -138,6 +138,11 @@ export default {
         this.$store.commit("OrgDataAdd", item);
       }
     },
+    // modalon(newval){
+    //   if(newval){
+        
+    //   }
+    // },
   },
   computed: {
     ...mapState(["autosearchorg", "org", "orgdata"]),

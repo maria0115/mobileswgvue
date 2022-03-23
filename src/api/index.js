@@ -375,6 +375,16 @@ function writeForm() {
         },
     })
 }
+
+function GetBody(data){
+    return axios({
+        method: 'get',
+        url: `/api/mail?type=getBody&unid=${data.unid}`,
+        headers: {
+            'Content-Type': 'application/json'
+        },
+    })
+}
 // 공휴일
 function Holiday(data) {
     return axios({
@@ -934,4 +944,5 @@ export {
     MailRecovery,
     MyreservationList,
     LogDelete,
+    GetBody
 }

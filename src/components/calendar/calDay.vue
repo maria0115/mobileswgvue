@@ -234,5 +234,6 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
+.cal_header{position:fixed;top:0;left:0;right:0;width:100%;z-index:99;max-width:1080px;margin:0 auto;}
 </style>

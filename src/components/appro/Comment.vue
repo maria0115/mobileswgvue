@@ -1,7 +1,7 @@
 <template>
   <div class="opinion_modal" :class="{ active: isOpen }">
     <div class="opinion_con">
-      <strong>{{ lang.comment }}</strong>
+      <strong>{{ clang() }}</strong>
       <div class="text_con">
         <textarea
           name=""
@@ -24,6 +24,7 @@ export default {
   },
   props: {
     isOpen: Boolean,
+nowBtn:String,
   },
   data() {
     return {
@@ -31,6 +32,13 @@ export default {
     };
   },
   methods: {
+    clang(){
+      if(this.nowBtn){
+        return this.nowBtn+" "+this.lang.comment;
+      }else {
+        return this.lang.comment;
+      }
+    },
     ModalOff() {
       this.$emit("ModalOff");
     },

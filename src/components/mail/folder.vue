@@ -64,7 +64,7 @@
             </li>
             <li>
               <h3>
-                <router-link :to="{ name: 'mail_autoSave' }">{{
+                <router-link :to="{ name: 'mail_draft' }">{{
                   GetMailLanguage.title.mail_save
                 }}</router-link>
                 <em @click="depthDown($event, $parent)" class="down_m"></em>

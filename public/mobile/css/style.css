@@ -1,7 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700;800&family=Nanum+Myeongjo:wght@400;700;800&family=Noto+Sans+KR:wght@100;300;400;500;700;900&family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap');
 
-img{max-width:100%;}
-
+/* 22.02.07 수정
+img{max-width:100%;} */
+img{max-width:100%;height:100%;}
 :root {
   --main-bg-color: #655da7 ;
   --border-color:#7c76da;
@@ -259,7 +260,10 @@ textarea,input{font-family: 'Apple SD Gothic','Nanum Gothic', sans-serif;}
 /* 환경설정 페이지 끝 */
 
 /* 통합 검색 페이지 */
-.se_header{background:#fff;}
+/* 22.02.07 수정
+.se_header{background:#fff;} */
+.se_header{position:fixed;top:0;left:0;right:0;width:100%;margin:0 auto;z-index:999;}
+
 .search_bar > div:nth-child(1){padding:0.68rem 0.62rem 0.31rem;}/* 7월 20일 수정*/
 .auto_search{display:none;}
 .auto_search.on{display:block;padding-bottom:2.81rem;}
@@ -376,7 +380,10 @@ textarea,input{font-family: 'Apple SD Gothic','Nanum Gothic', sans-serif;}
 /* 통합검색 페이지 끝 */
 /* 메인 페이지 */
 .m_wrap{background:#f3f3f3;height:auto;padding-bottom:1.43rem;}
-.main_tabmenu{position:relative;background:#fff;padding:0.5rem 0.81rem;overflow:hidden;}
+/* 22.02.07 수정
+.main_tabmenu{position:relative;background:#fff;padding:0.5rem 0.81rem;overflow:hidden;} */
+.main_tabmenu{position:fixed;background:#fff;padding:0.5rem 0.81rem;overflow:hidden;top:6rem;lefT:0;right:0;margin:0 auto;width:100%;z-index:999;box-shadow:0 3px 4px rgb(0 0 0 / 8%);} 
+
 .main_menu{font-size:0;overflow-x:scroll;overflow-y:hidden;white-space:nowrap;}
 .main_menu li{display:inline-block;text-align:center;margin:0 0.62rem;}
 .main_menu li a{display:block;font-size:1rem;color:#333;line-height:2.12rem;font-weight:600;position:relative;}
@@ -476,10 +483,15 @@ textarea,input{font-family: 'Apple SD Gothic','Nanum Gothic', sans-serif;}
 .change li span{display:inline-block;font-size:0.93rem;color:#000;line-height:1.87rem;}
 .mar15 .change li{padding:0 0.5rem;background:url(/mobile/img/change_ham.png)right 0.5rem center no-repeat;background-size:0.68rem 0.43rem;}
 
+/* 22.02.07 추가 */
+.main_tab{margin-top:9.125rem;}
 
 /* 메인창에 my_tab 화면 */
 .m_more{position:absolute;top:0.75rem;right:1.25rem;width:1.43rem;height:1.43rem;border-radius:50%;background:var(--main-bg-color) url(/mobile/img/main_more.png)center no-repeat;background-size:0.37rem 0.56rem;}
 .m_more a{display:block;height:100%;}
+
+/* 22.02.07 추가 */
+#my_tab{padding-top:0.81rem;}
 
 #my_tab > div{position:relative;}
 #my_tab > div > strong{display:block;font-size:1.12rem;color:#363636;line-height:1;font-weight:600;}/*8월 23일 수정*/
@@ -1865,14 +1877,16 @@ app04->파일명 mob_app_ docform로 변경됨 7월 29일 전체 수정 */
 .con09_inner div ul li{margin-top:17px;font-size:15px;color:#474747;line-height:1;}
 .con09_inner div ul li span{display:inline-block;margin-right:6px;}
 .con09_inner > ul{margin-top:30px;font-size:0;}
-.con09_inner > ul li{display:inline-block;width:55px;}
+/* 22.02.07 수정
+.con09_inner > ul li{display:inline-block;width:55px;} */
+.con09_inner > ul li{display:inline-block;width:55px;vertical-align:top;}
 .con09_inner > ul li + li{margin-left:10px;}
 .con09_inner > ul li a{display:block;height:100%;font-size:0}
 .con09_inner > ul li a span{display:inline-block;width:50px;height:50px;border-radius:50%;overflow:hidden;}
 .con09_inner > ul li:nth-child(1) a span{background:var(--icon-color) url(/mobile/img/tel_icon.png)center no-repeat;background-size:20px 29px;}
 .con09_inner > ul li:nth-child(2) a span{background:var(--icon-color) url(/mobile/img/phone_icon.png)center no-repeat;background-size:17px 26px;}
 .con09_inner > ul li:nth-child(3) a span{background:var(--icon-color) url(/mobile/img/sms_icon.png)center no-repeat;background-size:27px 23px;}
-.con09_inner > ul li:nth-child(4) a span{background:var(--icon-color) url(/mobile/img/or_mail_icon.svg)center no-repeat;background-size:23px 18px;}
+.con09_inner > ul li:nth-child(4) a span{background:var(--icon-color) url(/mobile/img/or_mail_icon.png)center no-repeat;background-size:23px 18px;}
 .con09_inner > ul li a em{display:block;font-size:13px;color:#252525;line-height:1;margin-top:7px;}
 .con09_inner .modal_close{position:absolute;top:0.93rem;right:0.93rem;width:1.06rem;height:1.06rem;background:url(/mobile/img/modal_close.png)center no-repeat;background-size:0.75rem 0.75rem;cursor:pointer;}
 
@@ -2273,7 +2287,9 @@ li.cf_w_memo #memo_t{width:100%;height:100%;font-size:0.93rem;color:#444;line-he
 .cf_w_top > li div b{display:inline-block;font-size:0.87rem;color:#444;margin:0 0.312rem;}
 
 /* 회의실 현황  */
-.cf_header{background:var(--border-color);position:relative;}
+/* 22.02.07 수정
+.cf_header{background:var(--border-color);position:relative;} */
+.cf_header{background:var(--border-color);position:fixed;z-index:99;top:0;left:0;right:0;width:100%;margin:0 auto;}
 .cf_date{text-align:center;font-size:0;}
 .cf_date strong{font-size:1.12rem;color:#fff;display:block;line-height:3.12rem;}
 .cf_date > div{display:inline-block;position:relative;}
@@ -2320,7 +2336,7 @@ li.cf_w_memo #memo_t{width:100%;height:100%;font-size:0.93rem;color:#444;line-he
 .search_inner>ul.active{display:block;}
 
 .cf_search > div{border-bottom:0.06rem solid #ebebeb;}
-.cf_search div select{margin:0.187rem 0;height:2.5rem;appearance:none;border:0.06rem solid #e6e6e6;outline:none;width:100%;appearance:none;padding:0 2.375rem 0 0.81rem;background:#fff;font-size:0.87rem;color:#333;background:url(../img/more_refer.png)right 0.62rem center no-repeat;background-size:0.56rem 0.37rem;}
+.cf_search div select{margin:0.187rem 0;height:2.5rem;appearance:none;border:0.06rem solid #e6e6e6;outline:none;width:100%;appearance:none;padding:0 2.375rem 0 0.81rem;background:#fff;font-size:0.87rem;color:#333;background:url(/mobile/img/more_refer.png)right 0.62rem center no-repeat;background-size:0.56rem 0.37rem;}
 .cf_search div select:last-child{margin-bottom:1.25rem;}
 
 /*[21.11.17] .cf_search li a{display:block;position:relative;font-size:15px;color:#000;padding-left:20px;line-height:16px;} 변경됨*/

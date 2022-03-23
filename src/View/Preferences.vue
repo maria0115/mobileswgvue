@@ -52,6 +52,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
+.wrap{background:#f3f3f3;}
 .p_b50{padding-bottom:3.12rem;}
 </style>

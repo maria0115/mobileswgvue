@@ -118,10 +118,11 @@ const router = new Router({
           name: 'main',
           beforeEnter: (to, from, next) => {
 
-            store.dispatch("CategoryList", "");
             store.dispatch("mainjs/GetMyInfo");
+            store.dispatch("CategoryList", "");
             store.dispatch("GetLanguage", { app: "main" })
               .then((res) => {
+                console.log("setMode")
                 store.dispatch("configjs/setMode")
                   .then((res) => {
                     next();
@@ -158,7 +159,7 @@ const router = new Router({
                 // store.dispatch("bookjs/MyreservationList", today);
                 // store.dispatch("mainjs/GetBoard", { boardtype: "notice", category: "my" });
                 // // store.dispatch("mainjs/GetBoard", { boardtype: "recent", category: "my" });
-                // store.dispatch("mainjs/GetApproval", { approvaltype: "approving", category: "my" });
+                store.dispatch("mainjs/GetApproval", { approvaltype: "approving", category: "my" });
                 store.dispatch("mainjs/GetMail", { mailtype: "inbox_detail", category: "my" });
                 next();
 
@@ -531,6 +532,7 @@ const router = new Router({
                 // .then((r) =>{
                 if (store.state.mailjs.from == "Reply") {
                   store.commit("OrgData", store.state.mailjs.store.maildetail.author);
+                  
                 } else if (store.state.mailjs.from == "AllReply"
                   || (to.query.isEdit
                     && store.state.mailjs.store.folderName.indexOf("draft") !== -1)) {
@@ -1104,7 +1106,7 @@ var domain = window.location.hostname.substring(
 );
 router.beforeEach((to, from, next) => {
   if(to.query.token){
-    setRawCookie("LtpaToken", decodeURIComponent(to.query.token), { domain });
+    setRawCookie("LtpaToken", decodeURIComponent(to.query.token).split("$SIS$").join("+"), { domain });
     next();
     return;
   }

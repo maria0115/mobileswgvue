@@ -135,10 +135,6 @@ export default {
         this.allremove();
       }
     },
-    // 자동완성 글 입력된 검색어로 자르기
-    replaceAll(str, searchStr, replaceStr) {
-      return str.split(searchStr).join(replaceStr);
-    },
     // 카테고리 클릭시 class on
     Category(value) {
       this.oncategory = value;

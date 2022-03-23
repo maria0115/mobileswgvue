@@ -1,22 +1,23 @@
 <template>
-  <div id="board_tab">
-    <div :class="`board01`" v-for="(key, index) in categories" :key="index">
-      <strong>{{ key.title }}</strong>
-      <ul>
-        <li
-          :class="{ new: boo(value) }"
-          v-for="(value, i) in listOfCategory[key.lnbid]"
-          :key="i"
-        >
-          <a
-            ><strong v-if="value.category">[{{ value.category }}]</strong
-            >{{ value.subject }}</a
+  <div class="main_tab">
+    <div id="board_tab">
+      <div :class="`board01`" v-for="(key, index) in categories" :key="index">
+        <strong>{{ key.title }}</strong>
+        <ul>
+          <li
+            :class="{ new: boo(value) }"
+            v-for="(value, i) in listOfCategory[key.lnbid]"
+            :key="i"
           >
-        </li>
-      </ul>
+            <a
+              ><strong v-if="value.category">[{{ value.category }}]</strong
+              >{{ value.subject }}</a
+            >
+          </li>
+        </ul>
 
-      <span class="m_more">
-        <!-- @click.native="
+        <span class="m_more">
+          <!-- @click.native="
             SetHeader({
               lnbid: key.lnbid,
               type: key.type,
@@ -24,20 +25,21 @@
               title: key.title,
             })
           " -->
-        <router-link
-          :to="{
-            name: `${params.category}`,
-            query: {
-              data: JSON.stringify({
-                lnbid: params.lnbid,
-                type: params.type,
-                top: params.lnbid,
-                title: params.title,
-              }),
-            },
-          }"
-        ></router-link
-      ></span>
+          <router-link
+            :to="{
+              name: `${params.category}`,
+              query: {
+                data: JSON.stringify({
+                  lnbid: params.lnbid,
+                  type: params.type,
+                  top: params.lnbid,
+                  title: params.title,
+                }),
+              },
+            }"
+          ></router-link
+        ></span>
+      </div>
     </div>
   </div>
 </template>

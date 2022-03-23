@@ -1,4 +1,6 @@
 <template>
+<div class="main_tab">
+
   <div id="mail_tab">
     <div class="re_mail">
       <strong desc="받은 메일">{{ GetMainLanguage.portlet.receive }}</strong>
@@ -26,6 +28,7 @@
                     >{{lang.copyto}}</em
                   >
                 </div>
+                <span>{{ transTime(value.created) }}</span>
               </dt>
               <!-- 7월 5일 div태그 추가됨 -->
               <dd>
@@ -36,9 +39,8 @@
             </dl>
             <div class="impor">
               <p>
-                {{ transTime(value.created) }}
                 <span
-                  @click="followUp(value.unid)"
+                 @click="followUp(value.unid)"
                   class="star"
                   :class="{ active: value.followup }"
                 ></span>
@@ -68,6 +70,7 @@
       ></router-link>
     </div>
   </div>
+</div>
 </template>
 
 <script>

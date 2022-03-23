@@ -22,7 +22,7 @@ module.exports = {
         },
       },
       '/search': {
-        target: 'http://localhost:4001/search',
+        target: 'http://localhost:4000/search',
         changeOrigin: true,
         pathRewrite: {
           '^/search': ''

@@ -1,4 +1,6 @@
 <template>
+<div class="main_tab">
+
   <div id="board_tab">
     <div :class="`board01`" v-for="(key, index) in categories" :key="index">
       <strong>{{ key.title }}</strong>
@@ -47,7 +49,7 @@
         ></router-link
       ></span>
     </div>
-  </div>
+  </div></div>
 </template>
 
 <script>
