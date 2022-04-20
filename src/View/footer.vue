@@ -3,7 +3,7 @@
     <ul class="btm_btn clfix">
       <li class="home"><router-link :to="{ name: 'main' }"></router-link></li>
       <li class="back" @click="RouterBack"><a></a></li>
-      <li class="go" @click="RouterGo"><a></a></li>
+      <li class="go" :class="{isgo:isNotGo()}" @click="RouterGo"><a></a></li>
       <li class="btm_menu" @click="BtmMenu"><a></a></li>
       <li class="btm_organ" @click="orgClick()"><a></a></li>
       <!-- <li class="btm_allim">
@@ -88,8 +88,11 @@ export default {
   created() {
     this.lang = this.GetScheduleL.list;
     this.header = this.GetScheduleL.header;
+    this.hkey = history.state.key;
+    
   },
   beforeDestroy() {
+    this.$store.commit("pushHistory",this.hkey);
     this.calListClose();
   },
   computed: {
@@ -97,7 +100,7 @@ export default {
 
     ...mapState("mailjs", ["mail"]),
     ...mapState("calendarjs", ["calListOpen"]),
-    ...mapState(["org"]),
+    ...mapState(["org","history"]),
     ...mapGetters("mailjs", ["GetMailDetail", "GetMail", "GetMailConfig"]),
     ...mapGetters(["GetMainLanguage", "GetCategory", "GetHeader"]),
     path() {
@@ -120,6 +123,10 @@ export default {
   },
 
   methods: {
+    isNotGo(){
+      var index = this.history.indexOf(this.hkey);
+      return index==-1||index==this.history.length-1;
+    },
     Close(e) {
       var LayerPopup = $(".btm_menu_list");
       if (LayerPopup.has(e.target).length === 0) {

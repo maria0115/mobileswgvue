@@ -4,9 +4,15 @@
       <div class="in_top">
         <div class="clfix">
           <span class="basic_img on">
-            <em class="no_img" :style="randomColor()"
+            <img
+              v-if="GetMyInfo.photo !== undefined"
+              :src="GetMyInfo.photo"
+              alt=""
+              @error="$event.target.src = '../../mobile/img/img03.png'"
+            />
+            <!-- <em class="no_img" :style="randomColor()"
               ><b>{{ this.GetMyInfo.info.name.split("")[0] }}</b></em
-            >
+            > -->
           </span>
           <dl>
             <dt>
@@ -59,7 +65,7 @@ export default {
     // this.params = this.GetHeader.menu;
     // this.category = this.GetCategory[this.params.top];
     CategoryList2(this.params.top).then((res) => {
-      this.$store.commit("CategoryList", { id:"app", list: res.data });
+      this.$store.commit("CategoryList", { id: "app", list: res.data });
       this.category = res.data;
     });
     // this.$store.dispatch("approjs/GetApprovalList", { type: "draft" });

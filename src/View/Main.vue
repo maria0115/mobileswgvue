@@ -14,7 +14,11 @@
           >
           <h1 class="logo">
             <a @click="GoHome">
-              <img :src="Logo()" alt="로고" />
+              <img
+                :src="Logo()"
+                @error="$event.target.src = etcLogo()"
+                alt="로고"
+              />
             </a>
           </h1>
           <!-- <div class="allim_btn">
@@ -85,7 +89,11 @@
               GetMainLanguage.hamburger.button.edit
             }}</span>
             <ul class="clfix">
-              <div v-for="(value, name) in this.menuposition" :style="IS(value.service)" :key="name">
+              <div
+                v-for="(value, name) in this.menuposition"
+                :style="IS(value.service)"
+                :key="name"
+              >
                 <li @click="MenuGo(!edit, value)" v-if="value.service">
                   <a>
                     <span>
@@ -211,7 +219,9 @@
               :class="[
                 {
                   active:
-                    Category === `main${value.category}` && value.type == Type && value.lnbid==Gnb,
+                    Category === `main${value.category}` &&
+                    value.type == Type &&
+                    value.lnbid == Gnb,
                 },
               ]"
               class="tab"
@@ -224,7 +234,7 @@
             </li>
           </span>
           <li class="tab">
-            <a @click="POrgClick()">조직도</a>
+            <a @click="POrgClick()">{{ GetCommonL.org.title }}</a>
           </li>
         </ul>
       </div>
@@ -401,7 +411,6 @@ export default {
     },
   },
   created() {
-    
     // font size setting
     if (this.GetConfig.font.size == "small") {
       $("html").addClass("small");
@@ -441,6 +450,7 @@ export default {
         this.$router.replace({ name: "MyIcon" });
       }
     }
+    this.$store.commit("searchjs/WordReset");
   },
   mounted() {
     // dom이 생성된 후 font setting
@@ -467,6 +477,9 @@ export default {
       this.orgon = true;
     },
     Logo() {
+      if (this.Config().company == "ace") {
+        return `http://gw.ace-group.co.kr/dwplibs/images/common/logo-${this.GetMyInfo.info.fullOrgCode[1].split("ACEGROUP_")[1]}.svg`;
+      }
       return require(`../mobile/img/main_logo_${this.Config().company}.png`);
     },
     scrollToTop() {
@@ -485,7 +498,8 @@ export default {
       //   else clearTimeout(timeOut);
     },
     MainGo(value) {
-      if (value.category == "schedule" || value.category == "reservation") {
+      // value.category == "schedule" ||
+      if (value.category == "reservation") {
         this.$router.push({ name: `${value.category}first` });
       } else {
         this.$router
@@ -593,7 +607,8 @@ export default {
       }
     },
     MenuRouter(key) {
-      if (key === "schedule" || key === "reservation") {
+      // key === "schedule" ||
+      if (key === "reservation") {
         return `${key}_more`;
       }
       return key;
@@ -737,7 +752,6 @@ export default {
     GoHome() {
       this.$router.push({ name: "main" });
     },
-    
   },
 };
 </script>

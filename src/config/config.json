@@ -19,6 +19,7 @@
     },
     "objEzXURL":"http://125.7.235.220:81/DG_viewer/viewer/document/docviewer.do/",
     "originPage":"/dwp/com/portal/main.nsf/wfrmpage?ReadForm&url=",
+    "alphaSize":4,
     "sat": false,
     "config": {
         "login": false,
@@ -97,5 +98,96 @@
             "font": "Nanum Gothic"
         },
         "mode": "light"
-    }
+    },
+    "synapEditorConfig":{
+        "editor.license": "/mobile/synap/license.json",
+        "editor.defaultStyle": {
+          "Body": "font-family: Arial, Helvetica, sans-serif; font-size: 11pt; line-height: 1.2;",
+          "Iframe":"-webkit-touch-select:none; -ms-user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);",
+          "Div":"-webkit-touch-select:none; -ms-user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);",
+          "Paragraph":"-webkit-touch-select:none; -ms-user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);"
+      },
+        "editor.size.width": "100%",
+        "editor.size.height": "100%",
+        "editor.customStyle": {
+          "paragraph": [{
+            "name": "Dark Gray",
+            "style": {
+              "color": { "r": 98, "g": 98, "b": 98 }
+            }
+          }, {
+            "name": "Light Gray",
+            "style": {
+              "color": { "r": 220, "g": 220, "b": 220 }
+            }
+          }],
+          "textRun": [{
+            "name": "Mint 32 Bold",
+            "style": {
+              "bold": true,
+              "fontSize": {
+                "value": 32,
+                "unit": "pt"
+              },
+              "color": { "r": 57, "g": 182, "b": 184 }
+            }
+          }, {
+            "name": "Orange 24 Bold",
+            "style": {
+              "bold": true,
+              "fontSize": {
+                "value": 24,
+                "unit": "pt"
+              },
+              "color": { "r": 243, "g": 151, "b": 0 }
+            }
+          }]
+        },
+        "editor.import.maxSize": 10485760,
+        "editor.import.api": "/importDoc",
+        "editor.import.param": {},
+        "editor.import.headers": {},
+        "editor.upload.maxSize": 3145728,
+        "editor.upload.image.api": "/uploadImage",
+        "editor.upload.image.param": {},
+        "editor.upload.image.headers": {},
+        "editor.upload.video.api": "/uploadVideo",
+        "editor.upload.video.param": {},
+        "editor.upload.video.headers": {},
+        "editor.upload.file.api": "/uploadFile",
+        "editor.upload.file.param": {},
+        "editor.upload.file.headers": {},
+        "editor.buildOption.html": {
+          "peelOffDiv": false,
+          "alertDuplicateId": true,
+          "checkPreWrap": false
+        },
+        "editor.menu.show": false,
+        "editor.ui.button.size": null,
+        "editor.ui.button.icon.size": null,
+        "editor.contentFilter.allowScript": false,
+        "editor.mobile.toolbar": {
+          "main": [
+            "fullScreen", "paragraphStyle", "fontSize",
+            "bold", "italic", "underline", "strike",
+            "simpleFontColor", "simpleFontBackgroundColor"
+          ],
+          "text": [],
+          "table": [],
+          "img": [],
+          "div": [],
+          "video": []
+        },
+        "editor.toolbar": {
+          "main": [
+            "fullScreen", "paragraphStyle", "fontSize",
+            "bold", "italic", "underline", "strike",
+            "simpleFontColor", "simpleFontBackgroundColor"
+          ],
+          "text": [],
+          "img": [],
+          "div": [],
+          "video": []
+        }
+      }
 }

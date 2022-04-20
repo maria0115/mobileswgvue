@@ -115,7 +115,14 @@
           </li>
         </ul>
         <div class="noti_con" style="padding: 0">
-          <Body :body="Body_Text" style="height:100%" ref="Body" :read="false" did="board" />
+          <Body
+            :body="Body_Text"
+            :bodyurl="GetStoreBoard.detail.bodyurl"
+            style="height: 100%"
+            ref="Body"
+            :read="false"
+            did="board"
+          />
         </div>
       </form>
     </div>
@@ -130,7 +137,7 @@ export default {
     ...mapGetters("boardjs", ["GetStoreBoard", "options"]),
     ...mapGetters(["GetHeader"]),
   },
-  created() {
+  async created() {
     this.lang = this.GetBoardL.write;
     // this.params = this.GetHeader.menu;
     this.params = JSON.parse(this.$route.query.data);
@@ -143,9 +150,15 @@ export default {
     }
 
     if (this.GetStoreBoard.edit) {
-      console.log("edit", this.GetStoreBoard.detail);
       this.file = this.GetStoreBoard.detail.attach;
+      // this.Body = this.GetStoreBoard.detail.body;
       this.Body_Text = this.GetStoreBoard.detail.body;
+      // this.bodyurl = this.GetStoreBoard.detail.bodyurl;
+
+      // if (this.Body_Text && this.isOpenFiled(this.Body_Text)) {
+      //   await this.getUrlBody();
+      // }
+      // await this.getUrlBody();
       this.Subject = this.GetStoreBoard.detail.subject;
       this.GetStoreBoard.detail.isAllowReply
         ? (this.isAllowReply = "1")
@@ -231,15 +244,6 @@ export default {
         this.file = [];
       }
       this.Detach.push(value);
-    },
-    fill(width, number) {
-      number = number + ""; //number를 문자열로 변환하는 작업
-      var str = "";
-      for (var i = 0; i < width - number.length; i++) {
-        str = str + "0";
-      }
-      str = str + number;
-      return str;
     },
     Send() {
       let formData = new FormData();

@@ -8,23 +8,26 @@
             <ul>
               <li>
                 <label for="et01">{{this.GetAllim.starttime}}</label>
-                <input
+                <!-- <input
                   type="time"
                   name="s_time"
                   id="et01"
                   :value="GetConfig.etiquette.starttime"
                   v-on:input="setConfig($event, 'starttime')"
-                />
+                /> -->
+                <!-- :input="setConfig(start, 'starttime')" -->
+                <Time id="et01" v-model="start" :input="setConfig(start, 'starttime')"></Time>
               </li>
               <li>
                 <label for="et02">{{this.GetAllim.endtime}}</label>
-                <input
+                <!-- <input
                   type="time"
                   name="e_time"
                   id="et02"
                   :value="GetConfig.etiquette.endtime"
                   v-on:input="setConfig($event, 'endtime')"
-                />
+                /> -->
+                <Time id="et02" v-model="end" :input="setConfig(end, 'endtime')" ></Time>
               </li>
             </ul>
           </li>
@@ -38,8 +41,18 @@
 import { mapGetters } from "vuex";
 import Header from './header.vue';
 export default {
+  created(){
+    this.start = this.GetConfig.etiquette.starttime;
+    this.end = this.GetConfig.etiquette.endtime;
+  },
   components: {
     Header
+  },
+  data(){
+    return {
+      start :"",
+      end:"",
+    }
   },
   computed: {
     ...mapGetters("configjs",["GetConfig"]),
@@ -51,7 +64,7 @@ export default {
       this.$store.dispatch("configjs/setConfig", {
         menu: "etiquette",
         setting: menu,
-        value: event.target.value,
+        value: event,
       });
     },
   },

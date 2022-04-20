@@ -10,7 +10,7 @@
           <em>{{ this.detail.category }}</em>
           <strong>{{ this.detail.subject }}</strong>
           <div class="clfix">
-            <em v-if="this.isApproval().length>0">
+            <em v-if="this.isApproval().length > 0">
               <span>{{ this.isApproval() }}</span>
             </em>
             <dl>
@@ -36,7 +36,9 @@
                   v-for="(value, index) in this.detail.approvalInfo"
                   :key="index"
                 >
-                  <span :class="{active:value.approval}">{{ value.approvalKind }}</span>
+                  <span :class="{ active: value.approval }">{{
+                    value.approvalKind
+                  }}</span>
                   <div>
                     <strong
                       >{{ value.author }} {{ value.authorposition }} /
@@ -72,7 +74,31 @@
           </li>
         </ul>
         <div class="line03">
+          <!-- v-if="detail.body.length > 0" -->
           <a v-html="detail.body" style="overflow-x: auto"></a>
+          <!-- <span v-else @click="setOrigin" class="origi_btn">{{
+            lang.morePlus.view
+          }}</span> -->
+        </div>
+        <div class="line03" v-if="!isOrigin">
+          <span @click="setOrigin" class="origi_btn">{{
+            lang.morePlus.view
+          }}</span>
+        </div>
+        <div class="line03" v-else-if="isI()">
+          <span @click="goOrigin" class="origi_btn">{{ GetCommonL.zoom }}</span>
+        </div>
+        <div class="line04" v-if="isOrigin">
+          <iframe
+            :src="url"
+            style="
+              width: 100%;
+              height: 100%;
+              overflow: hidden;
+              border: 0px;
+              pointer-events: none;
+            "
+          ></iframe>
         </div>
       </div>
       <BtnPlus :menu="morePlus" @BtnClick="BtnClick"></BtnPlus>
@@ -118,6 +144,27 @@ export default {
         view: more.view,
       };
     }
+    if (this.detail.isEditBtn) {
+      this.morePlus.edit = more.edit;
+    }
+  },
+  mounted() {
+    if (this.isA()) {
+      this.setViewPort(
+        "width=device-width, initial-scale=1.0, maximum-scale=10.0, user-scalable=yes"
+      );
+    }
+  },
+  beforeDestroy() {
+    if (this.isA()) {
+      var views = document.querySelectorAll('[name="viewport"]');
+      for (var i = 0; i < views.length; i++) {
+        document.getElementsByTagName("head")[0].removeChild(views[i]);
+      }
+      this.setViewPort(
+        "width=device-width,initial-scale=1,minimum-scale=1,user-scalable=no"
+      );
+    }
   },
   computed: {
     // ...mapGetters("approjs", ["GetApproval"]),
@@ -141,18 +188,35 @@ export default {
       appActive: false,
       attActive: false,
       agreeNreject: false,
-      nowBtn:""
-
+      nowBtn: "",
+      url: "",
+      isOrigin: false,
     };
   },
   methods: {
-    isApproval(){
+    setOrigin() {
+      if (this.url.length == 0) {
+        this.getSrcUrl(
+          this.Config().originPage + this.detail.openurl + "&fullscroll=1"
+        ).then((res) => {
+          this.url = res;
+        });
+      }
+      this.isOrigin = !this.isOrigin;
+    },
+    goOrigin() {
+      this.OriginView({
+        url: this.detail.openurl,
+        name: this.detail.subject,
+        unid: this.detail.unid,
+      });
+    },
+    isApproval() {
       var info = this.detail.approvalInfo;
-      for(var i in info){
-        if(info[i].approval){
+      for (var i in info) {
+        if (info[i].approval) {
           return info[i].approvalKind;
         }
-
       }
       return "";
     },
@@ -163,7 +227,17 @@ export default {
       return this.$route.name;
     },
     BtnClick(e) {
-      if (e === "deleteItem") {
+      if (e == "edit") {
+        this.params.isedit = 1;
+        this.params.form = this.detail.formCode;
+        this.params.formtitle = this.detail.category;
+        // this.SetHeader(this.params);
+        this.$router.push({
+          name: "appwrite",
+          query: { data: JSON.stringify(this.params) },
+        });
+        return;
+      } else if (e === "deleteItem") {
         var data = this.detail;
         data.unid = this.GetSaveApproval.unid;
         data.deleteType = "draft";
@@ -178,7 +252,7 @@ export default {
         this.OriginView({
           url: this.detail.openurl,
           name: this.detail.subject,
-          unid:this.detail.unid,
+          unid: this.detail.unid,
         });
         return;
       }
@@ -188,20 +262,20 @@ export default {
       // console.log(this.nowBtn)
     },
     AgreeNReject(comment) {
-      if(confirm("제출 하시겠습니까")==true){
+      // if (confirm("제출 하시겠습니까") == true) {
         let formData = new FormData();
         formData.append("openurl", this.detail.openurl);
         formData.append("comment", comment);
         formData.append("approve", this.nowBtn);
-  
+
         this.$store.dispatch("approjs/agreeNreject", formData).then((res) => {
           if (res) {
             this.$router.go(-1);
           }
         });
-      }else{
-        return;
-      }
+      // } else {
+      //   return;
+      // }
     },
     // utc 시간 to local 시간
     transTime(time) {

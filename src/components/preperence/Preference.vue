@@ -108,7 +108,7 @@
                   <strong>{{ this.GetLanguageConfig.style.setfont }}</strong>
                 </router-link>
               </li>
-              <li>
+              <li v-if="Option().dark">
                 <router-link :to="{ name: 'setdark' }">
                   <strong>{{ this.GetLanguageConfig.style.setdark }}</strong>
                   <em></em>

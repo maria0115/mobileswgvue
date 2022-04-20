@@ -4,7 +4,7 @@
       <form @submit.prevent>
         <div>
           <div>
-            <strong>{{this.lang.title}}</strong>
+            <strong>{{ this.lang.title }}</strong>
             <div>
               <input
                 type="text"
@@ -55,27 +55,31 @@
         <div
           class="ch_list"
           :class="{ active: this.listtoggle }"
-          v-if="this.items[this.appDept].length > 0"
+          v-if="this.items[this.appDept] && this.items[this.appDept].length > 0"
         >
           <div>
             <div>
-            <div
-              v-for="(value, index) in this.items[this.appDept]"
-              :key="index"
-            >
-              <select v-if="appDept == 'sAppList1'" v-model="value.appadd" @change="dupRemove">
-                <option value="AP">{{lang.approval}}</option>
-                <option value="AG_S!@AG_M">{{lang.agreement}}</option></select
+              <div
+                v-for="(value, index) in this.items[this.appDept]"
+                :key="index"
               >
-              <span
-                >{{ value.approvalInfo.name
-                }}<em v-if="value.approvalInfo.email"
-                  >&lt;{{ value.approvalInfo.email }}&gt;</em
-                ></span
-              >
-              <em class="list_close" @click="OrgDataDel(value, index)"></em>
+                <select
+                  v-if="appDept == 'sAppList1'"
+                  v-model="value.appadd"
+                  @change="dupRemove"
+                >
+                  <option value="AP">{{ lang.approval }}</option>
+                  <option value="AG_S!@AG_M">{{ lang.agreement }}</option>
+                </select>
+                <span
+                  >{{ value.approvalInfo.name
+                  }}<em v-if="value.approvalInfo.email"
+                    >&lt;{{ value.approvalInfo.email }}&gt;</em
+                  ></span
+                >
+                <em class="list_close" @click="OrgDataDel(value, index)"></em>
+              </div>
             </div>
-          </div>
           </div>
           <span class="hidden_btn" @click="listToggle"></span>
         </div>
@@ -95,6 +99,7 @@
               :appPath="appPath"
               :appDept="appDept"
               @DelPickItem="DelItem"
+              :modalon="modalon"
             ></org-item>
           </span>
         </ul>
@@ -106,7 +111,7 @@
                 :class="{ active: appadd == 'AP' }"
                 @click="Add('AP')"
               ></em
-              >{{lang.approval}}</span
+              >{{ lang.approval }}</span
             >
             <span
               ><em
@@ -114,10 +119,10 @@
                 :class="{ active: appadd == 'AG_S!@AG_M' }"
                 @click="Add('AG_S!@AG_M')"
               ></em
-              >{{lang.agreement}}</span
+              >{{ lang.agreement }}</span
             >
           </div>
-          <span class="ps_add" @click="AddItem">{{lang.add}}</span>
+          <span class="ps_add" @click="AddItem">{{ lang.add }}</span>
         </div>
       </form>
       <span class="modal_close" @click="ModalOff"></span>
@@ -166,9 +171,14 @@ export default {
   },
   watch: {
     appPath: function (newValue) {
-      this.items[this.appDept] = [];
-      for(var i=0;i<newValue.length;i++){
-        this.items[this.appDept][i] = newValue[i];
+      this.items = { sAppList1: [], sAppList2: [] };
+      for (var i = 0; i < newValue.length; i++) {
+        this.items[newValue[i].appDept].push(newValue[i]);
+      }
+    },
+    modalon(newval) {
+      if (newval) {
+        this.SetcreatedOrg();
       }
     },
   },
@@ -274,6 +284,7 @@ export default {
     //   this.$emit("ModalOff");
     // },
     AddItem() {
+      console.log(this.appDept, "AddItem");
       this.$emit("AddItem", this.items[this.appDept]);
       this.$emit("ModalOff");
     },
@@ -305,6 +316,7 @@ export default {
     },
     SetcreatedOrg() {
       // this.createdOrg = true;
+      this.modalAutoOrg++;
     },
     Close(e) {
       var LayerPopup = $(".add_search");
@@ -327,6 +339,7 @@ export default {
         data.approvalInfo = pick;
         data.appadd = this.appadd;
         data.appDept = this.appDept;
+        console.log(this.appDept, "PickItem");
         // this.$emit("AddItem", result);
         // // this.appadd = "AP";
         // this.$emit("ModalOff");

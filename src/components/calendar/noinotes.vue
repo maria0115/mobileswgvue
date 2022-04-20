@@ -57,13 +57,15 @@
               </span>
             </div>
             <div>
-              <input type="date" v-model="date" />
+              <!-- <input type="date" v-model="date" /> -->
+              <Date v-model="date"></Date>
               <em v-if="this.ScheduleType == 'R'">~</em>
-              <input
+              <!-- <input
                 v-if="this.ScheduleType == 'R'"
                 v-model="enddate"
                 type="date"
-              />
+              /> -->
+              <Date v-if="this.ScheduleType == 'R'" v-model="enddate"></Date>
             </div>
           </div>
         </li>
@@ -305,6 +307,7 @@
           <Body
             id="memo_t"
             :body="Body_Text"
+            :bodyurl="detail.bodyurl"
             ref="Body"
             :read="false"
             did="calendar"
@@ -343,6 +346,10 @@ export default {
       this.EHour = end[0];
       this.EMin = end[1];
       this.Body_Text = this.detail.body;
+      // this.bodyurl = this.detail.bodyurl;
+      // if (this.Body_Text && this.isOpenFiled(this.Body_Text)) {
+      //   await this.getUrlBody();
+      // }
       this.Subject = this.detail.subject;
       this.org.SendTo = JSON.parse(JSON.stringify(this.detail.sendToInfo));
       var senddata = this.org.SendTo.map((item) => {
@@ -385,6 +392,7 @@ export default {
   },
   data() {
     return {
+      detail:{},
       colorposition: "#e7a1a2",
       color: 1,
       onCategory: 1,

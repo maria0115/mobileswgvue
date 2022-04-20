@@ -2,7 +2,11 @@
   <div class="wrap btm_b">
     <div class="main_wrap">
       <h1 class="main_logo">
-        <img :src="Logo()" alt="로고" />
+        <img
+          :src="Logo()"
+          @error="$event.target.src = etcLogo()"
+          alt="로고"
+        />
       </h1>
       <div class="login_input">
         <input type="text" placeholder="id" v-model="id" />
@@ -98,6 +102,9 @@ export default {
   },
   methods: {
     Logo() {
+      if (this.Config().company == "ace") {
+        return `http://gw.ace-group.co.kr/dwplibs/images/login/login_logo.png`;
+      }
       return require(`../mobile/img/main_logo_${this.Company()}.png`);
     },
     Company() {
@@ -116,14 +123,24 @@ export default {
         idSave: this.idSave,
         autoLogin: this.autoLogin,
         data: this.query,
+        lang: this.language.toLowerCase(),
       };
       this.$store.dispatch("login", data).then((res) => {
         if (res.success) {
           this.setConfig();
-          this.$router.push({ name: "root" });
+          this.$router.push({ name: "home" });
         } else {
           if (res.alert) {
-            alert("로그인 실패, reason = > " + res.message);
+            // alert("로그인 실패, reason = > " + res.message);
+            if (res.count) {
+              alert(
+                this.GetCommonL.login[res.message]
+                  .replace("\\n", "\n")
+                  .replace("#count#", res.count)
+              );
+            } else {
+              alert(this.GetCommonL.login[res.message].replace("\\n", "\n"));
+            }
           }
           localStorage.setItem("autoLogin", false);
           localStorage.setItem(`${config.packageName}pass`, "");

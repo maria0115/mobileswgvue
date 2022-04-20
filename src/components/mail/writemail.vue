@@ -70,7 +70,6 @@
                           'sendtosearch',
                           $event.target.value
                         ),
-                        showAddSearch('sendtosearch'),
                       ]
                     "
                   ></textarea>
@@ -155,7 +154,6 @@
                             'copytosearch',
                             $event.target.value
                           ),
-                          showAddSearch('copytosearch'),
                         ]
                       "
                     ></textarea>
@@ -230,7 +228,6 @@
                             'blindcopytosearch',
                             $event.target.value
                           ),
-                          showAddSearch('blindcopytosearch'),
                         ]
                       "
                     ></textarea>
@@ -288,16 +285,18 @@
                 v-for="(value, index) in this.file"
                 :key="index"
               >
-                <span
-                  ><img
-                    :src="`../../mobile/img/icon_${fileImg(value.name)}.png`"
-                    alt=""
-                /></span>
                 <div>
-                  <p>{{ value.name }}</p>
-                  <em v-if="from === ''">({{ value.size }})</em>
-                  <em v-else>({{ value.size }})</em>
-                  <span class="file_del" @click="FileDel(value)"></span>
+                  <span
+                    ><img
+                      :src="`../../mobile/img/icon_${fileImg(value.name)}.png`"
+                      alt=""
+                  /></span>
+                  <div>
+                    <p>{{ value.name }}</p>
+                    <em v-if="from === ''">({{ value.size }})</em>
+                    <em v-else>({{ value.size }})</em>
+                    <span class="file_del" @click="FileDel(value)"></span>
+                  </div>
                 </div>
               </li>
             </ul>
@@ -334,6 +333,7 @@
               id="mail_wri"
               style="height: 100%"
               :body="Body_Text"
+              :bodyurl="false"
               ref="Body"
               :read="false"
               did="mail"
@@ -346,7 +346,10 @@
             <ul>
               <li>
                 <em>{{ lang.day }}</em>
-                <div><input type="date" v-model="ExpireDate" /></div>
+                <div>
+                  <!-- <input type="date" v-model="ExpireDate" /> -->
+                  <Date v-model="ExpireDate"></Date>
+                </div>
               </li>
               <li>
                 <em>{{ lang.time }}</em>
@@ -376,7 +379,7 @@
             <span class="modal_close" @click="disReservation"></span>
           </div>
         </div>
-        <Org :modalon="modalon" @ModalOff="ModalOff"></Org>
+        <Org :modalon="modalon" :ismail="true" @ModalOff="ModalOff"></Org>
       </form>
     </div>
   </div>
@@ -395,8 +398,11 @@ export default {
     this.Body_Text = `${this.GetMail.writeForm.greetings}<p></p><p></p>${this.GetMail.writeForm.signature}<p></p><p></p>`;
     // var obody = await this.getBody();
     this.isEdit = this.$route.query.isEdit;
-    this.body = this.GetMailDetail.body;
-    await this.urlBody();
+    this.Body = this.GetMailDetail.body;
+    this.bodyurl = this.GetMailDetail.bodyurl;
+    if (this.Body && this.isOpenFiled(this.Body)) {
+      await this.getUrlBody();
+    }
     if (this.from === "Relay") {
       this.file = this.GetMailDetail.attach;
       this.Subject = this.GetMailDetail.forwardMail.subject;
@@ -409,6 +415,15 @@ export default {
       this.Subject = this.GetMailDetail.subject;
       this.Body_Text = this.Body;
     }
+
+    var moment = require("moment");
+    this.ExpireDate = moment().format("YYYY-MM-DD");
+    var nowmin = moment().format("mm");
+    var upmin = parseInt(nowmin.split("")[0]) + 1 + "0";
+    var cha = upmin - nowmin;
+    this.STime = moment().add(cha, "m").format("HH");
+    this.SMin = moment().add(cha, "m").format("mm");
+
     this.bodystatus = true;
 
     this.randomkey = await this.generateRandomCode(32);
@@ -481,6 +496,14 @@ export default {
     };
   },
   methods: {
+    async getUrlBody() {
+      if (this.Config().env == "dev") {
+        this.Body = this.Option().host + this.Body;
+      }
+      this.Body = await this.$store.dispatch("getUrlBody", this.Body);
+
+      return;
+    },
     async getBody() {
       if (this.GetMailDetail.body && this.GetMailDetail.body.length > 0) {
         return await this.$store.dispatch("mailjs/GetBody", this.GetMailDetail);
@@ -529,17 +552,23 @@ export default {
     },
     FormSet() {
       var inSendTo = this.org.SendTo.map((item) => item.name).join(";");
-      var SendTo = this.org.SendTo.map((item) => item.id).join(";");
+      var SendTo = this.org.SendTo.map((item) => item.id || item.email).join(
+        ";"
+      );
       var ocxSendTo = this.org.SendTo.map(
         (item) => item.shortname || item.name
       ).join(";");
 
-      var CopyTo = this.org.CopyTo.map((item) => item.id).join(";");
+      var CopyTo = this.org.CopyTo.map((item) => item.id || item.email).join(
+        ";"
+      );
       var ocxCopyTo = this.org.CopyTo.map(
         (item) => item.shortname || item.name
       ).join(";");
 
-      var BlindCopyTo = this.org.BlindCopyTo.map((item) => item.id).join(";");
+      var BlindCopyTo = this.org.BlindCopyTo.map(
+        (item) => item.id || item.email
+      ).join(";");
       var ocxBCopyTo = this.org.BlindCopyTo.map(
         (item) => item.shortname || item.name
       ).join(";");
@@ -631,7 +660,10 @@ export default {
         return;
       }
 
-      if (this.org.SendTo.length > 0 && this.org.SendTo[0].id) {
+      if (
+        this.org.SendTo.length > 0 &&
+        (this.org.SendTo[0].id || this.org.SendTo[0].email)
+      ) {
         var formData = this.FormSet();
         // 사람이 한사람이라도 있으면
         // 전송가능
@@ -690,15 +722,21 @@ export default {
             });
             return;
           } else {
+            console.log("여기오니this.org", this.org);
+
             alert(this.GetCommonL.again);
           }
         } else if (menu === "save") {
           var formData = this.FormSet();
+          var type = "draftSave";
+          if (this.isDraftEdit()) {
+            type = "draft_edit";
+          }
           // 저장가능
           this.$store
             .dispatch("mailjs/MailSave", {
               data: formData,
-              menu: "draftSave",
+              menu: type,
             })
             .then((res) => {
               if (res) {
@@ -785,9 +823,9 @@ export default {
 
           this.$store.dispatch("OrgAutoSearch", data);
 
-          this.showAddSearch(who);
+          this.showAddSearch(keyword);
         } else {
-          this.removeAddSearch(who);
+          this.removeAddSearch(keyword);
         }
       }
     },
@@ -795,18 +833,30 @@ export default {
       const color = ["#bcbbdd", "#bbcbdd", "#bbddd7", "#d0d0d0"];
       return `background: ${color[Math.floor(Math.random() * 4)]}`;
     },
-    AddOrgEnter(who, value) {
+    async AddOrgEnter(who, value) {
+      var searcharr = await this.$store.dispatch("OrgAutoSearch", {
+        who,
+        keyword: value,
+      });
+      this.removeAddSearch(`${who.toLowerCase()}search`);
       var data = {};
-
-      data.id = value;
-      data.scheduleId = value;
-      data.name = value;
-      data.shortname = value;
-      data.email = value;
+      if (searcharr.length > 0) {
+        data = searcharr[0];
+      } else {
+        data.id = value;
+        data.scheduleId = value;
+        data.name = value;
+        data.shortname = value;
+        data.email = value;
+      }
       this.$store.commit("AddOrg", { who, value: data });
       this.sendtosearchkeyword = "";
       this.copytosearchkeyword = "";
       this.blindcopytosearchkeyword = "";
+
+      this.$store.commit("OrgDataAdd", { item: data, point: who });
+      this.$store.commit("SearchOrgInit");
+
       return;
     },
     async AddOrg(who, value, what) {
@@ -822,7 +872,7 @@ export default {
     },
     removeAddSearch(value) {
       this[value] = false;
-      this.$store.commit("SearchOrgInit");
+      // this.$store.commit("SearchOrgInit");
     },
     showAddSearch(value) {
       this[value] = true;
@@ -862,12 +912,3 @@ export default {
   },
 };
 </script>
-
-<style>
-.tome.active {
-  font-size: 0.75rem;
-  color: #fff;
-  background: #655da7;
-  border-color: #655da7;
-}
-</style>

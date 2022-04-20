@@ -8,7 +8,7 @@ import router from './router/index.js';
 import jQuery from 'jquery'
 global.$ = jQuery
 // jQuery.mobile.loader.prototype.options.disabled = true;
-import 'babel-polyfill';
+// import 'babel-polyfill';
 import config from "./config/config.json";
 import VDragged from 'v-dragged'
 import pullto from "./mobile/js/pullto.js";

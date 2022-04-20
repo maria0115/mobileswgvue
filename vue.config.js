@@ -2,7 +2,7 @@ require('events').EventEmitter.defaultMaxListeners = 50;
 module.exports = {
   lintOnSave: false,
   configureWebpack: {
-    entry: ["babel-polyfill", "./src/main.js"],
+    entry: ["./src/main.js"],
   },
   transpileDependencies: ['tiptap','tiptap-commands','tiptap-utils','vue-swipe-actions'],
   // 개발 서버 설정

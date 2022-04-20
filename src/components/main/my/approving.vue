@@ -1,6 +1,6 @@
 <template>
   <div class="m_app_ing">
-    <strong desc="결재 중 문서">{{ portlet.title }}</strong>
+    <strong desc="결재 할 문서">{{ portlet.title }}</strong>
     <em class="tooltip" :class="{ active: active }"
       ><strong v-for="(value, name) in tooltipText" :key="name"
         ><div>{{ `${value}` }}</div></strong
@@ -9,12 +9,12 @@
     <div class="app_slide">
       <VueSlickCarousel
         v-bind="settings"
-        v-if="main.data.approvaltype.approving.my.data.length > 0"
+        v-if="main.data.approvaltype.approve.my.data.length > 0"
       >
         <div
-          v-for="(value, name) in main.data.approvaltype.approving.my.data"
+          v-for="(value, name) in main.data.approvaltype.approve.my.data"
           :key="name"
-          @click="Read(value, 'approving')"
+          @click="Read(value, 'approve')"
         >
           <div class="icons">
             <span class="opin"></span>
@@ -35,24 +35,24 @@
           </div>
           <em>{{ value.category }}</em>
           <strong>{{ value.subject }}</strong>
-          <div v-if="nowApprover(value)" class="per_info clfix">
+          <div v-if="value.author" class="per_info clfix">
             <span class="basic_img on">
               <em class="no_img" :style="randomColor()"
-                ><b>{{ nowApprover(value).author.split("")[0] }}</b></em
+                ><b>{{ value.author.split("")[0] }}</b></em
               >
             </span>
             <dl>
               <dt>
-                {{ nowApprover(value).authorposition }}
-                {{ nowApprover(value).author }}
-                {{ nowApprover(value).authordept }}
+                {{ value.authorposition }}
+                {{ value.author }}
+                {{ value.authordept }}
               </dt>
               <dd>{{ transTime(value.created) }}</dd>
             </dl>
           </div>
           <div class="counter">
-            <em>{{ value.approved }}</em
-            >/<span>{{ value.totalApprover }}</span>
+            <em>{{ value.status.split("/")[0].trim() }}</em
+            >/<span>{{ value.status.split("/")[1] }}</span>
           </div>
           <ul class="m_paying">
             <li
@@ -69,24 +69,27 @@
     </div>
       <!-- @click.native="
         SetHeader({
-          type: 'approving',
+          type: 'approve',
           lnbid: '',
           top: GetCategory['main'][TopIdx()].lnbid,
-          title: portlet.approval.approving,
+          title: portlet.approval.approve,
         }) 
       " -->
-    <router-link
+    <!-- <router-link
       :to="{
-        name: 'appapproving',
+        name: 'appapprove',
         query: {data:JSON.stringify({
-          type: 'approving',
-          lnbid: '',
+          type: 'approve',
+          lnbid: approve.lnbid,
           top: portlet.lnbid,
-          title: portlet.title,
+          title: approve.title,
         })}
       }"
       ><span class="m_more"><a></a></span
-    ></router-link>
+    ></router-link> -->
+    <a @click="goApproval()"
+      ><span class="m_more"><a></a></span
+    ></a>
   </div>
 </template>
 
@@ -105,9 +108,10 @@ export default {
       this.params.lnbid
     );
     var ingidx = categorys.findIndex(function (item, idx) {
-      return item.category == "approving";
+      return item.category == "approve";
     });
-    this.approving = categorys[ingidx];
+    this.approve = categorys[ingidx];
+    console.log(this.approve)
     this.$forceUpdate();
   },
   components: { VueSlickCarousel },
@@ -123,6 +127,7 @@ export default {
   },
   data() {
     return {
+      approve:{},
       active: false,
       tooltipText: [""],
       checkEvent: "touch",
@@ -136,6 +141,26 @@ export default {
   },
   props: ["portlet"],
   methods: {
+    goApproval() {
+      var data = {
+        name: "mainapproval",
+        query: { data: JSON.stringify(this.portlet) },
+      };
+      if (this.portlet.type.indexOf("success") !== -1) {
+        data = {
+          name: `app${this.params.type}`,
+          query: {
+            data: JSON.stringify({
+              type: this.params.type,
+              lnbid: "",
+              top: this.portlet.lnbid,
+              title: this.portlet.title,
+            }),
+          },
+        };
+      }
+      this.$router.push(data);
+    },
     TopIdx() {
       return this.GetCategory["main"].findIndex(function (item, idx) {
         return item.category === "approval";
@@ -193,16 +218,16 @@ export default {
         openurl: value.openurl,
       });
       // this.SetHeader({
-      //       title: this.portlet.approval.approving,
+      //       title: this.portlet.approval.approve,
       //     });
       this.$router.push({
-        name: `approvingview`,
+        name: `approveview`,
         query: {
           data: JSON.stringify({
-            type: this.approving.type||this.approving.category,
-            lnbid: this.approving.lnbid,
+            type: this.approve.type||this.approve.category,
+            lnbid: this.approve.lnbid,
             top: this.params.lnbid,
-            title: this.approving.title,
+            title: this.approve.title,
           }),
         },
       });

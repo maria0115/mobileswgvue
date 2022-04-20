@@ -1,5 +1,5 @@
 import {
-    OrgAutoSearch, GetLanguage, Login, InitOrg, Org, CategoryList, ListOfCategory, DocView, Logout
+    getUrlBody,OrgAutoSearch, GetLanguage, Login, InitOrg, Org, CategoryList, ListOfCategory, DocView, Logout
 } from '../api/index.js';
 import {jsonPost} from '@/api/editor';
 import { setRawCookie, removeCookie } from 'tiny-cookie';
@@ -12,8 +12,19 @@ var domain = window.location.hostname.substring(
     firstDot == -1 ? 0 : firstDot + 1
 );
 export default {
+    getUrlBody({ state, commit },url){
+        state.tf = true;
+        return getUrlBody(url)
+        .then((res) => {
+            state.tf = false;
+            if (res.status == 200) {
+                return res.data;
+            }else{
+                return false;
+            }
+        })
+    },
     editorJsonPost({ state, commit },data){
-        console.log(data)
         return jsonPost(data)
         .then((res) => {
             res.status !== 200?res = false:res=res.data;
@@ -75,9 +86,12 @@ export default {
         const idSave = localStorage.getItem("idSave");
         const autoLogin = localStorage.getItem("autoLogin");
     },
+    
     login({ state, commit }, credentials) {
 
-
+        if(credentials.lang){
+            setRawCookie('language', credentials.lang, { domain });
+        }
         state.tf = true;
         return Login(credentials)
             .then((res) => {
@@ -97,9 +111,9 @@ export default {
                         //     
 
                         // }else{
-                            console.log(cookie.get("LtpaToken"));
+                            
                         setRawCookie(key, res.data.cookies[key], { domain });
-                        console.log(cookie.get("LtpaToken"));
+                        
 
                         // }
 
@@ -125,7 +139,7 @@ export default {
     },
     OrgAutoSearch({ state, commit }, data) {
         state.tf = true;
-        OrgAutoSearch(data)
+        return OrgAutoSearch(data)
             .then((res) => {
                 state.tf = false;
 
@@ -133,7 +147,9 @@ export default {
                     return false;
                 } else {
 
-                    commit("AutoSearchOrg", { data: res.data, menu: data })
+                    commit("AutoSearchOrg", { data: res.data, menu: data });
+                    
+                    return res.data;
 
                 }
 
@@ -194,7 +210,7 @@ export default {
 
                 return response.data;
                 // .then(res=>{
-                //     console.log(res);
+                //     
                 //     return;
                 // })
             });

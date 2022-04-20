@@ -4,9 +4,14 @@
       <div class="in_top">
         <div class="clfix">
           <span class="basic_img on">
-            <em class="no_img" :style="randomColor()"
+            <!-- <em class="no_img" :style="randomColor()"
               ><b>{{ this.GetMyInfo.info.name.split("")[0] }}</b></em
-            >
+            > -->
+            <img
+              v-if="GetMyInfo.photo !== undefined"
+              :src="GetMyInfo.photo"
+              alt=""
+              @error="$event.target.src = '../../mobile/img/img03.png'" />
           </span>
           <dl>
             <dt>

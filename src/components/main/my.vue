@@ -60,7 +60,9 @@
           </li>
         </ul>
       </div> -->
-
+      <!-- {{date}}{{time}}
+<Date v-model="date"></Date>
+<Time v-model="time"></Time> -->
         <div v-for="(value, name) in GetConfig.main.portlet" :key="name">
           <div v-if="value.category === 'mail' && value.service">
             <Mail :portlet="value"></Mail>
@@ -114,6 +116,7 @@ export default {
         this.menu[result].lnbid
       );
     }
+    
   },
   components: {
     Mail,
@@ -123,6 +126,7 @@ export default {
     Recent,
     Book,
     Log,
+    
   },
   computed: {
     ...mapState("mainjs", ["main"]),
@@ -138,6 +142,7 @@ export default {
   },
   data() {
     return {
+      date:"2022-04-14",
       min: 0,
       didyouclick: false,
       preclientX: 0,
@@ -151,6 +156,7 @@ export default {
       premove: 0,
       cw: "",
       gag: 0,
+      time:null,
       cirarr: [
         { key: 0, value: "hi1" },
         { key: 1, value: "hi2" },
@@ -193,25 +199,10 @@ export default {
 
       this.positionxy.push(increase * (180.0 / Math.PI) * -i);
     }
-    if (!this.GetMyInfo.master) {
-      this.getMaster();
-    }
+    
   },
   methods: {
-    async getMaster() {
-      var full = this.GetMyInfo.info.fullOrgCode;
-      var children = await this.$store.dispatch("Org", {
-        companycode: full[0],
-        mycode: full[full.length - 1],
-      });
-
-      var meidx = children.findIndex((item) => {
-          return item.notesId == this.GetMyInfo.info.notesid;
-        });
-        if (meidx !== -1) {
-          this.$store.commit("mainjs/MyInfoMaster", children[meidx]);
-        }
-    },
+    
     menuOfCategoryIdx(menu) {
       if (this.categorys) {
         return this.categorys.findIndex(function (item, idx) {

@@ -325,15 +325,6 @@ export default {
     GetClass({data,type}) {
       type=="floorList"?this.data.category = data.code:this.data.category=this.classList[0].code;
     },
-    fill(width, number) {
-      number = number + ""; //number를 문자열로 변환하는 작업
-      var str = "";
-      for (var i = 0; i < width - number.length; i++) {
-        str = str + "0";
-      }
-      str = str + number;
-      return str;
-    },
   },
 };
 </script>

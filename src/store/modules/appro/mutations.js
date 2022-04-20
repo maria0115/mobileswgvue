@@ -1,5 +1,8 @@
 
 export default {
+    SetSearchOption(state,data){
+        state.searchoption =data;
+    },
     GetApprovalList(state,{data,menu}){
         state.approval.data[menu].data = data;
         return;

@@ -6,7 +6,7 @@
           ><img src="../../mobile/img/wmail_back.png" alt="" /></a
         >{{ params.title }}
       </h2>
-      <div v-if="GetStoreBoard.detail.isWriter || GetStoreBoard.detail.isAdmin">
+      <div v-if="(GetStoreBoard.detail.isWriter || GetStoreBoard.detail.isAdmin)&&Option().boardwrite">
         <span class="edit fw_bold" @click="Edit">{{ lang.modify }}</span>
         <span class="del fw_bold" @click="DeleteBoard">{{ lang.remove }}</span>
       </div>
@@ -63,6 +63,7 @@
           id="noti_con"
           style="height:100%"
           :body="GetStoreBoard.detail.body"
+          :bodyurl="GetStoreBoard.detail.bodyurl"
           ref="Body"
           :read="true"
           did="board"

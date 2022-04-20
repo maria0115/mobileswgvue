@@ -2,7 +2,7 @@
   <div>
     <div id="tab02">
       <div class="con01">
-        <h2>{{ GetSearchLanguage.menu[path] }} 정보</h2>
+        <h2>{{ GetSearchLanguage.menu[path] }}</h2>
         <ul v-if="datacheck">
           <li v-for="(value, name) in this.sortdata[path].data" :key="name">
             <a>

@@ -1,5 +1,15 @@
 import axios from 'axios';
 // /api/approval?type=edit
+// 초기 조직도
+function getUrlBody(url) {
+    return axios({
+        method: 'get',
+        url,
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+}
 function LogDelete(data) {
     var query = Object.entries(data).map(e => e.join('=')).join('&');
     return axios({
@@ -944,5 +954,6 @@ export {
     MailRecovery,
     MyreservationList,
     LogDelete,
-    GetBody
+    GetBody,
+    getUrlBody
 }

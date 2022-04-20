@@ -26,7 +26,12 @@
         "todayColor":"#9691e1",
         "shadowBoxColor":"#d5d2ed",
         "tome":true,
-        "drm":false
+        "drm":false,
+        "boardRolling":true,
+        "host":"http://m60.saerom.co.kr",
+        "dark":true,
+        "boardwrite":true,
+        "alpha":false
     },
     "kogene": {
         "appWrite": false,
@@ -52,7 +57,12 @@
         "todayColor":"#9691e1",
         "shadowBoxColor":"#d5d2ed",
         "tome":true,
-        "drm":false
+        "drm":false,
+        "boardRolling":true,
+        "host":"http://mgw.kogene.co.kr",
+        "dark":true,
+        "boardwrite":true,
+        "alpha":false
     },
     "kiturami": {
         "appWrite": false,
@@ -78,7 +88,13 @@
         "todayColor":"#51bfff",
         "shadowBoxColor":"#71b8e0",
         "tome":true,
-        "drm":false
+        "drm":false,
+        "boardRolling":true,
+        "host":"http://gwmobile.krb.co.kr",
+        "dark":true,
+        "boardwrite":true,
+        "alpha":false
+
     },
     "pantech": {
         "appWrite": false,
@@ -104,7 +120,12 @@
         "todayColor":"#51bfff",
         "shadowBoxColor":"#71b8e0",
         "tome":true,
-        "drm":false
+        "drm":false,
+        "boardRolling":true,
+        "host":"http://m.pcnieng.com",
+        "dark":true,
+        "boardwrite":true,
+        "alpha":false
     },
     "ace": {
         "appWrite": true,
@@ -133,6 +154,11 @@
         "todayColor":"#51bfff",
         "shadowBoxColor":"#71b8e0",
         "tome":true,
-        "drm":true
+        "drm":true,
+        "boardRolling":false,
+        "host":"http://mobile.ace-group.co.kr",
+        "dark":false,
+        "boardwrite":false,
+        "alpha":true
     }
 }

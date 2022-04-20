@@ -2,7 +2,14 @@
   <div class="cal_menu" :class="{ on: this.calmenu }" @click="Close">
     <div class="cal_inner">
       <div class="info_tit">
-        <span class="cal_img01"></span>
+        <span class="cal_img01">
+          <img
+            v-if="GetMyInfo.photo !== undefined"
+            :src="GetMyInfo.photo"
+            alt=""
+            @error="$event.target.src = '../../mobile/img/img03.png'"
+          />
+        </span>
         <dl>
           <dt>{{ GetMyInfo.info.name }} {{ GetMyInfo.info.position }}</dt>
           <dd>{{ GetMyInfo.info.dept }}</dd>
@@ -16,13 +23,17 @@
         <li class="cal_type">
           <ul>
             <li class="month">
-              <router-link :to="{ name: 'calmonth' }">{{lang.month}}</router-link>
+              <router-link :to="{ name: 'calmonth' }">{{
+                lang.month
+              }}</router-link>
             </li>
             <li class="week">
-              <router-link :to="{ name: 'calweek' }">{{lang.week}}</router-link>
+              <router-link :to="{ name: 'calweek' }">{{
+                lang.week
+              }}</router-link>
             </li>
             <li class="day">
-              <router-link :to="{ name: 'calday' }">{{lang.day}}</router-link>
+              <router-link :to="{ name: 'calday' }">{{ lang.day }}</router-link>
             </li>
           </ul>
         </li>

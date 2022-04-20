@@ -6,24 +6,25 @@
           ><img src="../../mobile/img/wmail_back.png" alt="" /></a
       ></em>
       <div class="rdmail_icons">
-        <span class="rd_reply fw_bold" @click="Replay('Reply')">{{
+        <span class="rd_reply fw_bold" @click="Replay('Reply')"  v-if="!(isDraft()||isTrash()||isBook())">{{
           lang.reply
         }}</span>
-        <span class="rd_relay" v-if="!isDraft()" @click="Replay('Relay')">{{
+        <span class="rd_relay" v-if="!(isDraft()||isTrash()||isBook())"  @click="Replay('Relay')">{{
           lang.fw
         }}</span>
-        <span class="rd_relay fw_bold" v-else @click="Edit()">{{
+        <span class="rd_relay fw_bold" v-if="isDraft()" @click="Edit()">{{
           lang.edit
         }}</span>
         <span class="rd_del fw_bold" @click="mailDelete">{{
           lang.delete
         }}</span>
-        <span class="rd_more"></span>
+        <span class="rd_more"  v-if="!(isDraft()||isBook())"></span>
+        
         <ul class="more_box">
           <li class="move">{{ lang.move }}</li>
-          <li @click="SpamSet" v-if="!isDraft()">{{ lang.spam }}</li>
-          <li @click="Replay('AllReply')">{{ lang.allreply }}</li>
-          <li v-if="path.includes('trash')" @click="MailRecovery">
+          <!-- <li @click="SpamSet" v-if="!isDraft()">{{ lang.spam }}</li> -->
+          <li v-if="!(isDraft()||isTrash())" @click="Replay('AllReply')">{{ lang.allreply }}</li>
+          <li v-if="isTrash()" @click="MailRecovery">
             {{ lang.recovery }}
           </li>
         </ul>
@@ -117,10 +118,12 @@
         </div>
         
         <div class="rdm_edit">
+          <!-- {{GetMailDetail.body}}{{GetMailDetail}} -->
           <Body
             id="memo_t"
             style="height:100%"
             :body="GetMailDetail.body"
+            :bodyurl="GetMailDetail.bodyurl"
             ref="Body"
             :read="true"
             did="mail"
@@ -179,7 +182,19 @@ export default {
     },
     isDraft() {
       if (this.GetfolderName) {
-        return this.GetfolderName.indexOf("draft") !== -1;
+        return this.GetfolderName.indexOf("draft") !== -1||this.GetfolderName.indexOf("auto") !== -1;
+      }
+      return false;
+    },
+    isBook() {
+      if (this.GetfolderName) {
+        return this.GetfolderName.indexOf("reservation") !== -1;
+      }
+      return false;
+    },
+    isTrash(){
+      if (this.GetfolderName) {
+        return this.GetfolderName.indexOf("trash") !== -1;
       }
       return false;
     },

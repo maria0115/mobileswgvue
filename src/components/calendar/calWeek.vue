@@ -50,6 +50,7 @@
                   <em
                     v-for="(v, i) in GetSchedule.calList.week[value].allday"
                     :key="i"
+                    @click="Detail(v)"
                   >
                     {{ v.subject }}
                   </em>

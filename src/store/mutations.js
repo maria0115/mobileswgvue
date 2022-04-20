@@ -1,13 +1,19 @@
 
 export default {
+    pushHistory(state,data){
+        state.history.push(data);
+        const set = new Set(state.history);
+
+        state.history = [...set];
+    },
     OrgInit(state) {
         state.orginit = false;
     },
     AllReply(state, data) {
         state.org = {
             pointer: "SendTo",
-            SendTo: state.mailjs.store.maildetail.sendTo,
-            CopyTo: state.mailjs.store.maildetail.copyTo,
+            SendTo: [],
+            CopyTo: state.mailjs.store.maildetail.sendTo.concat(state.mailjs.store.maildetail.copyTo),
             BlindCopyTo: []
         };
         state.org.SendTo.push(state.mailjs.store.maildetail.author);
@@ -37,7 +43,7 @@ export default {
         var recopy = copy.map(item => {
             return { point: "CopyTo", item };
         })
-        state.orgdata.join(recopy);
+        state.orgdata = state.orgdata.concat(recopy);
     },
     SetBack(state, value) {
         state.back.isBacked = value;
@@ -112,7 +118,7 @@ export default {
         var result = state.orgdata.findIndex((item1, idx) => {
             return (item1.item.notesId == item.item.notesId && item1.item.id == item.item.id) && item1.point == item.point;
         });
-
+        
         if (result == -1) {
             state.orgdata.push(item);
         }

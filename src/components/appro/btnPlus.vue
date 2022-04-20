@@ -5,8 +5,8 @@
       <li class="top">
         <a>{{ commonl.up }}</a>
       </li>
-      <li v-for="(value, name) in menu" :key="name" @click="BtnClick(name)">
-        <a>{{ value }}</a>
+      <li v-for="(value, name) in menu" :key="name"  @click="BtnClick(name)">
+        <a :class="{agree:name=='agree',reject:name=='reject'}">{{ value }}</a>
       </li>
     </ul>
   </div>
@@ -29,4 +29,5 @@ export default {
 </script>
 
 <style>
+
 </style>

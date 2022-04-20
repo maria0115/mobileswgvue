@@ -8,7 +8,9 @@ var synapEditorConfig = {
            'Heading1', 'Heading2', Heading3', Heading4', Heading5', Heading6'
      */
     'editor.defaultStyle': {
-        'Body': 'font-family: Arial, Helvetica, sans-serif; font-size: 11pt; line-height: 1.2;'
+        'Body': 'font-family: Arial, Helvetica, sans-serif; font-size: 11pt; line-height: 1.2;',
+        'Iframe':"-webkit-touch-select:none; -ms-user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);",
+        'TextRun':'line-height:0 !important'
     },
     'editor.size.width': '100%',
     'editor.size.height': '100%',
@@ -90,29 +92,26 @@ var synapEditorConfig = {
      */
 	'editor.mobile.toolbar': {
 		'main': [
-			'open', 'undo', 'redo', 'copy', 'paste', 'directInsertImage', 'directInsertTable', 'simpleLink', 'unlink',
-			'fullScreen', 'bulletList', 'numberedList', 'multiLevelList', 'align', 'increaseIndent', 'decreaseIndent',
-			'lineHeight', 'quote', 'HorizontalLine'
-		],
-		'text': [
-			'paragraphStyle', 'fontSize',
+			'fullScreen','paragraphStyle', 'fontSize',
 			'bold', 'italic', 'underline', 'strike',
 			'simpleFontColor', 'simpleFontBackgroundColor'
 		],
-		'table': [
-			'insertRowBefore', 'insertRowAfter', 'insertColBefore', 'insertColAfter',
-			'deleteRow', 'deleteCol', 'mergeCell', 'simpleFill',
-			'simpleBorderColor', 'lineThickness', 'lineStyle', 'contentsAlign', 'verticalAlign', 'deleteTable'
+        'text':[],
+        'table':[],
+        'img':[],
+        'div':[],
+        'video':[]
+	},
+    'editor.toolbar': {
+		'main': [
+			'fullScreen','paragraphStyle', 'fontSize',
+			'bold', 'italic', 'underline', 'strike',
+			'simpleFontColor', 'simpleFontBackgroundColor'
 		],
-		'div': [
-			'simpleDrawingObjectFill', 'simpleDrawingObjectBorderColor', 'drawingObjectLineThickness', 'drawingObjectLineStyle', 'deleteDiv'
-		],
-		'image': [
-			'rotateDrawingObjectLeft', 'rotateDrawingObjectRight', 'deleteImage'
-		],
-		'video': [
-			'deleteVideo'
-		]
+        'text':[],
+        'img':[],
+        'div':[],
+        'video':[]
 	},
 };
   

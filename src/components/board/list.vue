@@ -67,14 +67,14 @@
       :params="this.params"
     ></SubMenu>
     <Search @SetSearchWord="SetSearchWord"></Search>
-    <WBtn :path="path"></WBtn>
+    <WBtn :path="path" ></WBtn>
     <div class="ac_btns">
       <span class="more_plus"></span>
       <ul>
         <li class="top">
           <a>{{ commonl.up }}</a>
         </li>
-        <li>
+        <li v-if="this.Option().boardwrite">
           <!-- @click.native="SetHeader(params)" -->
           <router-link
             :to="{

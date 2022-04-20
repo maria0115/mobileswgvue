@@ -18,7 +18,8 @@
         <li>
           <em>{{lang.day}}</em>
           <div>
-            <input type="date" v-model="date" />
+            <!-- <input type="date" v-model="date" /> -->
+            <Date v-model="date"></Date>
           </div>
         </li>
         <li>

@@ -17,6 +17,7 @@
       :rmodalon="rmodalon"
       @rere="rere"
       @remodal="remodal"
+      :lang="lang"
       
     ></ReRe>
     <Org :send="send" :modalon="modalon" @ModalOff="ModalOff"></Org>

@@ -5,6 +5,9 @@ import cookie from 'vue-cookies';
 
 import Body from "@/components/common/body.vue"
 import Viewer from "@/components/common/viewer.vue"
+import Date from "@/components/common/date.vue"
+import Time from "@/components/common/time.vue"
+import { FormTagsPlugin } from "bootstrap-vue";
 export default {
     beforeDestroy() {
         clearTimeout(this.timeout);
@@ -16,7 +19,9 @@ export default {
     },
     components: {
         Body,
-        Viewer
+        Viewer,
+        Time,
+        Date
     },
     computed: {
         ...mapState("mailjs", ["from"]),
@@ -25,26 +30,54 @@ export default {
 
     },
     methods: {
-        async urlBody() {
-            this.Body = this.body;
-            if (
-                this.from === "Relay" ||
-                this.from === "AllReply" ||
-                this.from === "Reply" ||
-                this.isDraftEdit()
-            ) {
-                if (this.body && this.body.length > 0) {
-                    this.Body = await this.$store.dispatch(
-                        "mailjs/GetBody",
-                        this.GetMailDetail
-                    );
-                    return;
-                } else {
-                    this.Body = "";
-                    return;
-                }
+        getMe() {
+            setTimeout(() => {
+                var scrollentity = $(".organlist");
+                scrollentity.animate(
+                    { scrollTop: document.querySelectorAll(".meme")[0].offsetTop - 100 },
+                    0
+                );
+            }, 1);
+        },
+        addScript() {
+            let scripts = [
+                // "../../mobile/synap/synapeditor.config.js",
+                "../../mobile/synap/synapeditor.min.js",
+                //   "../../mobile/synap/plugins/shapeEditor/shapeEditor.min.js",
+                //   "../../mobile/synap/plugins/personalDataProtection/personalDataProtection.min.js",
+                //   "../../mobile/synap/plugins/characterPicker/characterPicker.min.js",
+                //   "../../mobile/synap/plugins/webAccessibilityChecker/webAccessibilityChecker.min.js",
+                //   "../../mobile/synap/plugins/tuiImageEditor/tuiImageEditor.min.js",
+                //   "../../mobile/synap/plugins/horizontalLineExtension/horizontalLineExtension.min.js",
+                //   "../../mobile/synap/plugins/quoteExtension/quoteExtension.min.js",
+                //   "../../mobile/synap/externals/formulaParser/formula-parser.min.js",
+                // "../../mobile/synap/externals/SEDocModelParser/SEDocModelParser.min.js",
+                //   "../../mobile/synap/externals/SEShapeManager/SEShapeManager.min.js",
+                // "../../mobile/synap/externals/codeMirror/codemirror.min.js",
+                // "../../mobile/synap/externals/codeMirror/xml.min.js",
+            ];
+            for (let i = 0, len = scripts.length; i < len; i++) {
+                let script = document.createElement("script");
+                script.setAttribute("type", "text/javascript");
+                script.setAttribute("src", scripts[i]);
+                script.async = true;
+                script.defer = true;
+                document.getElementsByTagName("body")[0].appendChild(script);
             }
+        },
+        async getUrlBody() {
+            if (this.Config().env == "dev") {
+                this.Body_Text = this.Option().host + this.Body_Text;
+            }
+            this.Body_Text = await this.$store.dispatch(
+                "getUrlBody",
+                this.Body_Text
+            );
+            this.$forceUpdate();
             return;
+        },
+        isOpenFiled(url) {
+            return url.toLowerCase().indexOf("openfield") !== -1 || this.bodyurl;
         },
         /*
  * path : 전송 URL
@@ -57,12 +90,12 @@ export default {
             oReq.setRequestHeader('ExtraInfo', 28473432894789238473293874329);
             oReq.send();
         },
-        IS(service){
-            if(!service){
-              return {display:"none"};
+        IS(service) {
+            if (!service) {
+                return { display: "none" };
             }
             return {};
-          },
+        },
         post_to_url(path, params, method) {
             // var xhr = new XMLHttpRequest();
             // path="/test.html";
@@ -145,6 +178,12 @@ export default {
         replaceAll(str, searchStr, replaceStr) {
             return str.split(searchStr).join(replaceStr);
         },
+        etcLogo() {
+            if (this.Config().company == "ace") {
+                return "https://gw.ace-group.co.kr/dwplibs/images/login/login_logo.png";
+            }
+            return "";
+        },
         cb(e) {
             console.log(e);
         },
@@ -154,14 +193,83 @@ export default {
         isMobile() {
             return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
         },
+        isA() {
+            // var IorA = navigator.userAgent.toLowerCase();
+
+            // if (IorA.indexOf("android") !== -1) {
+            //     return true;
+            // }
+            // return false;
+            return /android|webos|blackberry|iemobile|opera mini/i.test((navigator.userAgent || navigator.vendor || window.opera).toLowerCase());
+        },
+        isI() {
+            // var IorA = navigator.userAgent || navigator.vendor || window.opera.toLowerCase();
+
+            // if(IorA.indexOf("iphone") !== -1){
+            //     return true;
+            // }
+            // return false;
+            return /iphone|ipad|ipod/i.test((navigator.userAgent || navigator.vendor || window.opera).toLowerCase());
+        },
         isApp() {
             var device = JSON.parse(
                 localStorage.getItem(`${this.Config().packageName}deviceInformation`)
             );
-            if (device.deviceId && device.deviceId.length > 0) {
+            if (device && device.deviceId && device.deviceId.length > 0) {
                 return true;
             }
             return false;
+        },
+        strLeft(str, sKey, ContainsKey) {
+            if (!ContainsKey) ContainsKey = false;
+
+            var nIndex;
+            var sRet = "";
+
+            nIndex = str.indexOf(sKey);
+
+            if (nIndex != -1) {
+                sRet = str.substr(0, nIndex);
+                if (ContainsKey) sRet += sKey;
+            }
+            return sRet;
+        },
+        strRight(str, sKey, ContainsKey) {
+            if (!ContainsKey) ContainsKey = false;
+
+            var nIndex;
+            var sRet = "";
+
+            nIndex = str.indexOf(sKey);
+            if (nIndex != -1) {
+                if (ContainsKey) {
+                    sRet = str.substr(nIndex, str.length);
+                } else {
+                    sRet = str.substr(nIndex + sKey.length, str.length);
+                }
+            }
+            return sRet;
+        },
+        languageConverter(val, language, separator1, separator2) {
+            if (typeof val == "string") {
+                // val = ko:박광순,en:Park Gwangsun
+                var valArr = val.split(separator1); //["ko:박광순","en:Park Gwangsun"]
+                var obj = {};
+                var key, val, keyVal = "";
+                for (var langIndex = 0; langIndex < valArr.length; langIndex++) {
+                    keyVal = valArr[langIndex];  //ko:박광순
+                    key = this.strLeft(keyVal, separator2); //ko
+                    val = this.strRight(keyVal, separator2); //박광순
+                    obj[key] = val; // {"ko":"박광순","en":"Park Gwangsun"}
+                }
+            }
+            return obj[language];
+        },
+        nowLang() {
+            var device = JSON.parse(
+                localStorage.getItem(`${this.Config().packageName}deviceInformation`)
+            );
+            return device.strLocale;
         },
         generateRandomCode(n) {
             let str = "";
@@ -170,10 +278,68 @@ export default {
             }
             return str;
         },
+        setViewPort(content) {
+            var meta = document.createElement("meta");
+            meta.name = "viewport";
+            meta.content = content;
+            document.getElementsByTagName("head")[0].appendChild(meta);
+        },
+        async getSrcUrl(url) {
+            if (url.length !== 0) {
+                // params.search || 
+                if (this.Option().viewer == "origin") {
+                    return url;
+                } else if (this.Option().viewer == "synap") {
+                    // 첨부변환서버 원문보기
+                    var data = {};
+                    data.fileType = "URL";
+                    data.filePath = decodeURIComponent(url);
+                    data.fid = this.generateRandomCode(10);
+                    data.kind = "synap";
+                    data.accessCookieData = btoa(`{"LtpaToken":"${this.getToKen()}"}`);
+                    return await this.callUrl(data);
+                }
+            }
+        },
+        async callUrl(data) {
+            var result = await this.$store.dispatch("editorJsonPost", data)
+
+            if (result.key) {
+                return (result.viewUrlPath);
+            }
+        },
+        call(data) {
+            this.$store.dispatch("editorJsonPost", data).then((res) => {
+                if (res.key) {
+                    this.go(res.viewUrlPath)
+                }
+            });
+        },
+        go(url) {
+            var goto = `${window.location.origin}/mobile_index/viewer`;
+            var setToken = this.replaceAll(this.getToKen(), "+", "$SIS$");
+            if (this.isApp()) {
+                location.href = `m60call://browser?urladdress=${goto}?url=${encodeURIComponent(
+                    url
+                )}&token=${encodeURIComponent(setToken)}`;
+            } else {
+                location.href = `${goto}?url=${encodeURIComponent(
+                    url
+                )}&token=${encodeURIComponent(setToken)}`;
+            }
+        },
         OriginView(params) {
             // node 원문보기
             if (params.url.length !== 0) {
-                if (this.Option().viewer == "origin"||this.detail.isMig) {
+                // params.search || 
+                if (params.search || this.Option().viewer == "origin" || (this.detail && this.detail.isMig)) {
+                    if (params.search) {
+                        var filepath = params.url || params.openurl;
+                        params.url = decodeURIComponent(filepath + "&fullscroll=1");
+                        if (params.category !== "approval") {
+                            params.url = this.Config().originPage + params.url;
+                        }
+                    }
                     this.$router.push({
                         name: "originalPage",
                         params,
@@ -186,9 +352,36 @@ export default {
                     });
                 } else if (this.Option().viewer == "synap") {
                     // 첨부변환서버 원문보기
-                    this.$refs.viewer.$refs.editor.openDownload({ unid: params.unid, url: this.detail.openurl });
+                    if (params.search) {
+                        var data = {};
+                        data.fileType = "URL";
+
+                        var filepath = params.url || params.openurl;
+                        data.filePath = decodeURIComponent(filepath + "&fullscroll=1");
+                        // if (params.category == "approval") {
+                        if (params.category !== "approval") {
+                            params.url = this.Config().originPage + data.filePath;
+                        }
+                        // } else {
+                        //     data.filePath = data.filePath;
+                        // }
+                        data.fid = this.generateRandomCode(10);
+                        data.kind = "synap";
+                        data.accessCookieData = btoa(`{"LtpaToken":"${this.getToKen()}"}`);
+                        this.call(data);
+
+                    } else {
+                        this.$refs.viewer.$refs.editor.openDownload({ unid: params.unid, url: this.detail.openurl });
+                    }
                 }
             }
+        },
+        host() {
+            var host = "";
+            if (window.origin.indexOf("localhost") !== -1) {
+                host = this.Option().host;
+            }
+            return host;
         },
         fileImg(name) {
             var dot = this.getExtensionOfFilename(name);

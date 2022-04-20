@@ -78,6 +78,7 @@ export const store = new VueX.Store({
         },
         orgdata: [],
         listOfCategory: {},
+        history:[],
 
     },
     mutations,

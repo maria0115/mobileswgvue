@@ -31,12 +31,14 @@
               </div>
               <div>
                 <input type="date" v-model="date" />
+                <!-- <Date v-model="date"></Date> -->
                 <em v-if="this.ScheduleType == 'R'">~</em>
                 <input
                   v-if="this.ScheduleType == 'R'"
                   v-model="enddate"
                   type="date"
                 />
+                <!-- <Date v-model="enddate" v-if="this.ScheduleType == 'R'"></Date> -->
               </div>
             </div>
           </li>
@@ -288,6 +290,8 @@
             <Body
               id="memo_t"
               :body="Body_Text"
+              :bodyurl="detail.bodyurl"
+
               ref="Body"
               :read="false"
               did="calendar"
@@ -329,6 +333,10 @@ export default {
       this.EHour = end[0];
       this.EMin = end[1];
       this.Body_Text = this.detail.body;
+      // this.bodyurl = this.detail.bodyurl;
+      // if (this.Body_Text && this.isOpenFiled(this.Body_Text)) {
+      //   await this.getUrlBody();
+      // }
       this.Subject = this.detail.subject;
       this.org.SendTo = this.detail.peoples;
 
@@ -509,15 +517,6 @@ export default {
         j++;
       }
       return array;
-    },
-    fill(width, number) {
-      number = number + ""; //number를 문자열로 변환하는 작업
-      var str = "";
-      for (var i = 0; i < width - number.length; i++) {
-        str = str + "0";
-      }
-      str = str + number;
-      return str;
     },
     SendToSearch(who, keyword, value) {
       if (value.length >= 2) {

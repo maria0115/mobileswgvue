@@ -4,51 +4,54 @@
       style="padding:0.93rem;"
       :body="Body_Text"
     /> -->
-  <OpenField
-    v-if="isOpenField&&read"
-    :body="Body_Text"
-    :read="read"
-    ref="openfield"
-  />
-  <TipTap
-    v-else-if="this.Option().editor === 'tiptap'"
-    :body="Body_Text"
-    :read="read"
-    ref="tiptap"
-  />
-  <!-- <TipTap
+  <div>
+    <!-- {{this.body}} -->
+    <OpenField
+      v-if="isOpenFiled(this.body) && read"
+      :body="Body_Text"
+      :read="read"
+      ref="openfield"
+    />
+    <TipTap
+      v-else-if="this.Option().editor === 'tiptap'"
+      :body="Body_Text"
+      :read="read"
+      ref="tiptap"
+    />
+    <!-- <TipTap
       v-else-if="this.Option().editor === 'tiptap'"
       :body="Body_Text"
       :read="read"
       ref="tiptap"
     /> -->
-  <textarea
-    v-else-if="this.Option().editor === 'textarea'"
-    v-model="Body_Text"
-    ref="textarea"
-  ></textarea>
+    <textarea
+      v-else-if="this.Option().editor === 'textarea'"
+      v-model="Body_Text"
+      ref="textarea"
+    ></textarea>
 
-  <Namo
-    v-else-if="this.Option().editor === 'namo'"
-    :read="read"
-    :did="did"
-    :body="Body_Text"
-    ref="namo"
-  ></Namo>
-  <Synap
-    v-else-if="this.Option().editor === 'synap'"
-    :read="read"
-    :did="did"
-    :body="Body_Text"
-    ref="synap"
-  />
-  <Raonk
-    v-else-if="this.Option().editor === 'raonk'"
-    :read="read"
-    :did="did"
-    :body="Body_Text"
-    ref="raonk"
-  />
+    <Namo
+      v-else-if="this.Option().editor === 'namo'"
+      :read="read"
+      :did="did"
+      :body="Body_Text"
+      ref="namo"
+    ></Namo>
+    <Synap
+      v-else-if="this.Option().editor === 'synap'"
+      :read="read"
+      :did="did"
+      :body="Body_Text"
+      ref="synap"
+    />
+    <Raonk
+      v-else-if="this.Option().editor === 'raonk'"
+      :read="read"
+      :did="did"
+      :body="Body_Text"
+      ref="raonk"
+    />
+  </div>
 </template>
 
 <script>
@@ -60,25 +63,18 @@ import Synap from "@/components/editor/synapb.vue";
 import OpenField from "@/components/editor/openfield.vue";
 export default {
   async created() {
-    // var test2 = document.createElement("span"); // body에 추가할 span 태그를 추가
     this.Body_Text = this.body; // innerHTML을 사용하여 text를 html로 파싱 후 자식노드로 추가
-    // test2.innerHTML = this.body;
-    // var iframes;
-    // var here = this;
-    // $(test2).ready(function () {
-    //   iframes = $(test2).find("iframe");
-    //   // console.log(iframes)
-    //   iframes.attr('onload',null);
-    //   // console.log(test2.innerHTML)
-    //   here.Body_Text = test2.innerHTML;
-    //   // here.$forceUpdate();
-    // });
+    if (this.bodyurl&&this.body && this.isOpenFiled(this.body)&&!this.read) {
+      await this.getUrlBody();
+    }
   },
-  props: ["body", "did", "read"],
+  props: ["body", "did", "read", "bodyurl"],
   computed: {
-    isOpenField() {
-      return this.body.toLowerCase().indexOf("openfield") !== -1;
-    },
+    // isOpenField() {
+    //   return (
+    //     this.body.toLowerCase().indexOf("openfield") !== -1 || this.bodyurl
+    //   );
+    // },
   },
   components: {
     Namo,

@@ -1,6 +1,29 @@
 $(function () {
 
+    // var failMessage = function () {
+    //     return alert("복사, 붙여넣기 기능은 사용하실 수 없습니다."), false;
+    // };
+    // $('body').on('keydown', function (e) {
+    //     var keycode = function (e) {
+    //         return ('which' in e ? e.which : e.keyCode);
+    //     }(e);
+    //     ctrl_cv = (e.ctrlKey && (keycode == 86 || keycode == 67)),
+    //     shift_insert = (e.shiftKey && keycode == 45);
+    //     if (ctrl_cv || shift_insert) {
+    //         return failMessage();
+    //     }
+    // })
 
+    // $('body').on('mousedown', function (e) {
+    //     var rightClick = (e.button == 2);
+    //     if (rightClick) {
+    //         return failMessage();
+    //     }
+    // })
+
+    // $('body').on('contextmenu', function (e) {
+    //     return failMessage();
+    // })
     // $('document').on('bind', 'mobileinit', function () {
     //     
     //     $.mobile.loader.prototype.options.disabled = true;
@@ -530,5 +553,5 @@ $(function () {
         $('.add_file ul').slideToggle();
         $('.cal_add_file ul').slideToggle();
     });
-
+    
 });

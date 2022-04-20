@@ -1,5 +1,10 @@
 
 export default {
+    MAIL_DETAIL_INIT(state){
+        state.store.maildetail = {attach : [] ,
+            author : {name : '',}};
+        state.store.maildetail.unid = '';
+    },
     MailSearchOptionInit(state) {
         state.store.mailconfig.searchOption = {
             size: "14",

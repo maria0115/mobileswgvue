@@ -49,6 +49,7 @@ export default {
     agreeNreject({ state, commit, rootState }, data) {
 
         rootState.tf = true;
+        console.log(rootState.tf)
         return agreeNreject(data)
             .then((res) => {
                 rootState.tf = false;
@@ -94,6 +95,19 @@ export default {
 
             })
 
+    },
+    formSetting({ state, commit, rootState }, { type }){
+        rootState.tf = true;
+        return DocApproval(type)
+        .then((res) => {
+            rootState.tf = false;
+
+            if (res.status !== 200) {
+                return false;
+            } else {
+                return res.data;
+            }
+        })
     },
     DocApproval({ state, commit, rootState }, { type }) {
 

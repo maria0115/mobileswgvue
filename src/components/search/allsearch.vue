@@ -2,11 +2,16 @@
   <div>
     <div id="tab01">
       <div class="con01">
-        <h2>{{GetSearchLanguage.menu.person}}</h2>
+        <h2>{{ GetSearchLanguage.menu.person }}</h2>
         <ul class="clfix" v-if="this.sortdata.person !== undefined">
           <li v-for="(value, name) in this.sortdata.person.data" :key="name">
             <a>
-              <span><img :src="value.photo" @error="$event.target.src='../../mobile/img/img03.png'" alt="" /></span>
+              <span
+                ><img
+                  :src="value.photo"
+                  @error="$event.target.src = '../../mobile/img/img03.png'"
+                  alt=""
+              /></span>
               <dl>
                 <dt>
                   <em>{{ value.subject }}</em
@@ -18,20 +23,27 @@
           </li>
         </ul>
         <span class="ex_more">
-          <router-link :to="{name:'personsearch'}"
+          <router-link :to="{ name: 'personsearch' }"
             ><a
-              >{{GetSearchLanguage.menu.person}} {{GetSearchLanguage.more}}<img
+              >{{ GetSearchLanguage.menu.person }} {{ GetSearchLanguage.more
+              }}<img
                 src="../../mobile/img/more_icon.png"
                 alt="임직원 더보기" /></a
           ></router-link>
         </span>
       </div>
-      <div class="con02" v-if="this.sortdata.approval !== undefined && this.sortdata.approval.data.length!==0" >
-        <h2>{{GetSearchLanguage.menu.approval}}</h2>
+      <div
+        class="con02"
+        v-if="
+          this.sortdata.approval !== undefined &&
+          this.sortdata.approval.data.length !== 0
+        "
+      >
+        <h2>{{ GetSearchLanguage.menu.approval }}</h2>
         <ul v-if="this.sortdata.approval !== undefined">
           <li v-for="(value, name) in this.sortdata.approval.data" :key="name">
-            <a @click="openView(value)">
-            <!-- <a :href="setUrl(value.originalurl)"> -->
+            <a @click="openView(value, 'approval')">
+              <!-- <a :href="setUrl(value.originalurl)"> -->
               <h3>{{ value.subject }}</h3>
               <div class="clfix">
                 <em>{{ setWord(value.author) }}</em>
@@ -44,12 +56,18 @@
           </li>
         </ul>
       </div>
-      <div class="con02" v-if="this.sortdata.board !== undefined && this.sortdata.board.data.length!==0">
-        <h2>{{GetSearchLanguage.menu.board}}</h2>
+      <div
+        class="con02"
+        v-if="
+          this.sortdata.board !== undefined &&
+          this.sortdata.board.data.length !== 0
+        "
+      >
+        <h2>{{ GetSearchLanguage.menu.board }}</h2>
         <ul v-if="this.sortdata.board !== undefined">
           <li v-for="(value, name) in this.sortdata.board.data" :key="name">
-            <a @click="openView(value)">
-            <!-- <a :href="setUrl(value.originalurl)"> -->
+            <a @click="openView(value, 'board')">
+              <!-- <a :href="setUrl(value.originalurl)"> -->
               <h3>{{ value.subject }}</h3>
               <div class="clfix">
                 <em>{{ setWord(value.author) }}</em>
@@ -68,14 +86,14 @@
 </template>
 
 <script>
-import { mapState,mapGetters } from "vuex";
+import { mapState, mapGetters } from "vuex";
 import config from "../../config/search.json";
 import config2 from "../../config/config.json";
 
 export default {
   computed: {
-    ...mapState([ "langa",]),
-    ...mapState("searchjs",["sortdata"]),
+    ...mapState(["langa"]),
+    ...mapState("searchjs", ["sortdata"]),
     ...mapGetters(["GetSearchLanguage"]),
     // image 파일을 가지고 있는 url 반환
     url() {
@@ -85,17 +103,15 @@ export default {
     lang() {
       return config.lang;
     },
-
   },
   data() {
     return {
-      path:""
+      path: "",
     };
   },
-  created() {
-  },
+  created() {},
   methods: {
-    setUrl(url){
+    setUrl(url) {
       return config2.originPage + url;
     },
     // utc time to local time, transformat
@@ -123,14 +139,17 @@ export default {
       }
       return word;
     },
-    openView(value){
-      if(value.originalurl !== ""){ 
-        this.$router.push({
-            name: "originalPage",
-            params: { url: value.originalurl},
-          });
+    openView(value, category) {
+      if (value.originalurl !== "") {
+        this.OriginView({
+          url: value.originalurl,
+          category,
+          name: value.subject,
+          unid: value.unid,
+          search: true,
+        });
       }
-      // if(value.originalurl !== ""){ 
+      // if(value.originalurl !== ""){
       //   this.$refs.viewer.goOriginView({url:value.originalurl, name:value.subject});
       // }
     },

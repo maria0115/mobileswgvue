@@ -1,37 +1,46 @@
 <template>
   <div class="m_calendar">
     <strong desc="일정">{{ portlet.title }}</strong>
+
     <div class="clfix">
       <span class="d_day">
         <em>{{ changeDate().yearmonth }}</em>
         <b>{{ changeDate().day }}</b>
       </span>
-      <div class="ri_info">
-        <div v-for="(value, name) in sliceDate()" :key="name">
-          <div v-if="value.allDay" class="all_cal">
-            <a @click="Detail(value)">
-              <em>{{lang.allday}}</em>
-              <p>[{{ value.category }}]{{ value.subject }}</p>
-            </a>
+
+      <VueSlickCarousel
+        class="ScheduleCarousel"
+        v-bind="settings"
+        v-if="sliceDate().length > 0"
+      >
+        <div class="ri_info" v-for="(value, name) in sliceDate()" :key="name">
+          <div>
+            <div v-if="value.allDay" class="all_cal">
+              <a @click="Detail(value)">
+                <em>{{ lang.allday }}</em>
+                <p>[{{ value.category }}]{{ value.subject }}</p>
+              </a>
+            </div>
           </div>
+          <ul class="c_list" v-if="!value.allDay">
+            <li :class="[{ red: name === 0 }]">
+              <a v-if="!value.allDay" @click="Detail(value)">
+                <em>{{ value.time }}</em>
+                <p>{{ value.subject }}</p>
+              </a>
+            </li>
+          </ul>
         </div>
-        <ul class="c_list" v-if="sliceDate().length > 0">
-          <li
-            :class="[{ red: name === 0 }]"
-            v-for="(value, name) in sliceDate()"
-            :key="name"
-          >
-            <a v-if="!value.allDay" @click="Detail(value)">
-              <em>{{ value.time }}</em>
-              <p>{{ value.subject }}</p>
-            </a>
+      </VueSlickCarousel>
+      <div class="ri_info" v-if="sliceDate().length == 0">
+        <ul class="c_list">
+          <li>
+            <p>{{ lang.result }}</p>
           </li>
-        </ul>
-        <ul class="c_list" v-else>
-          <li><p>{{lang.result}}</p></li>
         </ul>
       </div>
     </div>
+
     <span class="m_more"
       ><router-link :to="{ name: 'schedule' }"></router-link
     ></span>
@@ -39,9 +48,16 @@
 </template>
 
 <script>
+import VueSlickCarousel from "vue-slick-carousel";
+import cjson from "@/config/cal.json"
 import { mapGetters } from "vuex";
 export default {
-  created(){
+  created() {
+    this.$store.dispatch("mainjs/GetSchedule", {
+      scheduletype: "recent",
+      category: "my",
+    });
+
     this.lang = this.GetMainLanguage.main;
   },
   props: ["portlet"],
@@ -49,38 +65,47 @@ export default {
     return {
       yearmonth: "",
       day: "",
+      settings: {
+        slidesToShow: 1,
+        arrows: false,
+        dots: true,
+        touchMove: true,
+      },
     };
   },
+  components: { VueSlickCarousel },
   computed: {
     ...mapGetters("mainjs", ["GetMain"]),
-    ...mapGetters( ["GetMainLanguage"]),
+    ...mapGetters(["GetMainLanguage"]),
   },
   methods: {
     // 오늘의 모든 일정을 노드에서 가져온 후의 현재 시간 이후의 데이터를 색출
     sliceDate() {
       var moment = require("moment");
+      let today = moment().format("YYYY-MM-DD");
+
       // 오늘의 모든 일정
       const date = this.GetMain.scheduletype.recent.my.data;
       var result = [];
       for (var i = 0; i < date.length; i++) {
-        // 지금시간보다 일정의 끝나는 시간이 늦을경우 출력
+        var end = date[i].enddate + "T" + date[i].endtime;
+        var start = date[i].startdate + "T" + date[i].starttime;
+          // && parseInt(moment(end).format("HHmmss")) >
+          //   parseInt(moment().format("HHmmss"))
         if (
-          parseInt(
-            moment(date[i].startdate + "T" + date[i].endtime).format("HHmmss")
-          ) > parseInt(moment().format("HHmmss"))
+          today == moment(start).format("YYYY-MM-DD") 
         ) {
-          var time = `${moment(
-            date[i].startdate + "T" + date[i].starttime
-          ).format("HH:mm")}~${moment(
-            date[i].startdate + "T" + date[i].endtime
-          ).format("HH:mm")}`;
+          var time = `${moment(start).format("HH:mm")}~${moment(end).format(
+            "HH:mm"
+          )}`;
           date[i].time = time;
           result.push(date[i]);
-          if (result.length === this.GetMain.scheduletype.recent.my.size) {
+          if(result.length>cjson.size){
             break;
           }
         }
       }
+
       return result;
     },
     // 오늘의 년월, 일
@@ -114,4 +139,27 @@ export default {
 </script>
 
 <style>
+.ScheduleCarousel .slick-dots {
+  text-align: center;
+  font-size: 0;
+  margin-top: 1.56rem;
+}
+.ScheduleCarousel .slick-dots li {
+  display: inline-block;
+  width: 0.56rem;
+  height: 0.56rem;
+  border-radius: 50%;
+  background: #dadadd;
+}
+.ScheduleCarousel .slick-dots li.slick-active {
+  background: var(--main-bg-color);
+}
+.ScheduleCarousel .slick-dots li + li {
+  margin-left: 0.31rem;
+}
+.ScheduleCarousel .slick-dots li button {
+  font-size: 0;
+  border: 0;
+  outline: 0;
+}
 </style>

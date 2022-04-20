@@ -1,24 +1,59 @@
 <template>
-  <div>
+  <div @click="Close">
     <BackHeader desc="결재양식함에서 지정" :title="title"></BackHeader>
     <div class="a_contents05">
       <form @submit.prevent>
         <ul>
-          <li class="app_tit">
-            <strong>{{ lang.title }}</strong>
-            <div>
-              <input
-                type="text"
-                palceholder="1일 연차 신청"
-                v-model="Subject"
-              />
-            </div>
-          </li>
+          
           <li class="proposer">
             <strong>{{ lang.author }}</strong>
             <div>
               {{ GetMyInfo.info.name }} {{ GetMyInfo.info.position }} /
               {{ GetMyInfo.info.dept }}
+            </div>
+          </li>
+          <!-- <li class="proposer">
+            <strong> 주관부서 </strong>
+            <div>{{ formSetting.sReceiveOrgName_NM }}</div>
+          </li> -->
+          <li class="cf_w_att cf_w_att2">
+            <strong
+              ><span>{{lang.receiver}}</span></strong
+            >
+            <div>
+              <ul class="list_add clfix">
+                <li
+                  class="add_obj"
+                  v-for="(value, index) in org.CopyTo"
+                  :key="index"
+                >
+                  {{ value.shortname }}
+                  <div class="del_add">
+                    <dl>
+                      <dt>{{ value.name }} / {{ value.department }}</dt>
+                      <dd>{{ value.email }}</dd>
+                    </dl>
+                    <span @click="MailOrgDataDelete(value, 'CopyTo')"
+                      >{{lang.remove}}</span
+                    >
+                  </div>
+                </li>
+              </ul>
+              <span class="organ" @click="workOn('CopyTo')"></span>
+            </div>
+          </li>
+          <li class="division">
+            <strong>{{lang.companyselection}}</strong>
+            <div>
+              <select v-model="pselCompany">
+                <option
+                  v-for="(value, index) in selCompany"
+                  :key="index"
+                  :value="index"
+                >
+                  {{ value }}
+                </option>
+              </select>
             </div>
           </li>
           <li class="approver">
@@ -36,12 +71,12 @@
                 @click="orgClick('SendTo', 'sAppList1')"
                 >{{ lang.line }}</span
               >
-              <span
-                v-if="thisform == 'K-SIS_Form661m'"
+              <!-- v-if="thisform == 'K-SIS_Form661m'" -->
+              <!-- <span
                 class="app_pointer"
                 @click="orgClick('CopyTo', 'sAppList2')"
                 >{{ lang.dept1 }}</span
-              >
+              > -->
             </div>
             <div class="add_search" :class="{ active: this.sendtosearch }">
               <ul>
@@ -77,6 +112,7 @@
                   <li
                     v-for="(value, index) in appPath"
                     @click="Pointer(index)"
+                    :class="{active:pointer==index}"
                     :key="index"
                   >
                     <em>{{ index + 1 }}</em
@@ -188,15 +224,135 @@
             <strong>일수</strong>
             <div><input type="text" v-model="daycount" />일</div>
           </li> -->
-          <li class="reason">
-            <strong>{{ lang.comment }}</strong>
+          <li class="app_tit">
+            <strong>{{ lang.title }}</strong>
             <div>
-              <textarea v-model="TmpsComment"></textarea>
+              <input
+                type="text"
+                palceholder="1일 연차 신청"
+                v-model="Subject"
+              />
+            </div>
+          </li>
+          <li class="app_tit">
+            <strong>{{lang.addoption}}</strong>
+            <div>
+              <input type="text" v-model="AddOpinion" />
+            </div>
+          </li>
+          <li class="division">
+            <strong>{{lang.attendanceC}}</strong>
+            <div>
+              <select v-model="pdivision">
+                <option
+                  v-for="(value, index) in division"
+                  :key="index"
+                  :value="index"
+                >
+                  {{ languageConverter(value, nowLang(), ",", ":") }}
+                </option>
+              </select>
             </div>
           </li>
           <li class="reason">
-            <strong>{{ lang.body }}</strong>
-            <textarea v-model="Body_Text"></textarea>
+            <strong>{{ lang.comment }}</strong>
+            <div>
+              <textarea v-model="reason"></textarea>
+            </div>
+          </li>
+          <li class="date date2">
+            <strong>{{lang.term}}</strong>
+            <div>
+              <div>
+                <!-- <input type="date" v-model="ReqFrom" /> -->
+                <Date v-model="ReqFrom"></Date>
+                <select v-model="StartTime" id="start-date">
+                  <option
+                    v-for="(value, index) in range(1, 24)"
+                    :key="index"
+                    :value="fill(2, value)"
+                  >
+                    {{ fill(2, value) }}
+                  </option>
+                </select>
+                <select name="date-start2" id="start-date2" v-model="EndTime">
+                  <option
+                    v-for="(value, index) in range(0, 5)"
+                    :key="index"
+                    :value="endfill(2, value)"
+                  >
+                    {{ endfill(2, value) }}
+                  </option>
+                </select>
+              </div>
+              <div>
+                <!-- <input type="date" v-model="to" /> -->
+                <Date v-model="to"></Date>
+                <select v-model="StartTime_1" id="end-date">
+                  <option
+                    v-for="(value, index) in range(1, 24)"
+                    :key="index"
+                    :value="fill(2, value)"
+                  >
+                    {{ fill(2, value) }}
+                  </option>
+                </select>
+                <select name="date-end2" id="end-date2" v-model="EndTime_1">
+                  <option
+                    v-for="(value, index) in range(0, 5)"
+                    :key="index"
+                    :value="endfill(2, value)"
+                  >
+                    {{ endfill(2, value) }}
+                  </option>
+                </select>
+              </div>
+            </div>
+          </li>
+          <li class="cf_w_att cf_w_att2">
+            <strong
+              ><span>{{lang.attendance}}<br />{{lang.target}}</span></strong
+            >
+            <div>
+              <ul class="list_add clfix">
+                <li
+                  class="add_obj"
+                  v-for="(value, index) in org.SendTo"
+                  :key="index"
+                >
+                  {{ value.shortname }}
+                  <div class="del_add">
+                    <dl>
+                      <dt>{{ value.name }} / {{ value.department }}</dt>
+                      <dd>{{ value.email }}</dd>
+                    </dl>
+                    <span @click="MailOrgDataDelete(value, 'SendTo')"
+                      >{{lang.remove}}</span
+                    >
+                  </div>
+                </li>
+              </ul>
+              <span class="organ" @click="workOn('SendTo')"></span>
+            </div>
+          </li>
+          <li class="reason reason2">
+            <strong><span>{{lang.overwork}}</span></strong>
+            <div>
+              <textarea v-model="plan"></textarea>
+              <div>※{{lang.description}}</div>
+            </div>
+          </li>
+          <li class="app_tit">
+            <strong>{{lang.localreason}}</strong>
+            <div>
+              <input type="text" v-model="cause" />
+            </div>
+          </li>
+          <li class="reason">
+            <strong>{{lang.opinion}}</strong>
+            <div>
+              <textarea v-model="TmpsComment"></textarea>
+            </div>
           </li>
           <li class="file_add">
             <strong>{{ lang.attach }}</strong>
@@ -234,7 +390,9 @@
       @AddItem="AddItem"
       @ModalOff="ModalOff"
       @DelPickItem="DelItem"
+      ref="orgapp"
     ></Org>
+    <WorkOrg :modalon="workmodalon" :isapp="true" @ModalOff="WorkModalOff"></WorkOrg>
   </div>
 </template>
 
@@ -244,6 +402,7 @@ import BtnPlus from "./btnPlus.vue";
 import SubMenu from "./menu.vue";
 import { mapState, mapGetters } from "vuex";
 import Org from "../../View/OrgAppro.vue";
+import WorkOrg from "../../View/Org.vue";
 export default {
   created() {
     const language = this.GetAppL.appwrite;
@@ -260,34 +419,50 @@ export default {
     this.params.isedit =
       this.params.isedit && Object.keys(this.detail).length > 0;
 
-    if (this.params.isedit) {
-      const info = this.detail.approvalInfo;
-      this.currentidx = info.findIndex((item) => item.approval);
-      this.appPath = this.detail.appList.slice(1);
-      this.file = this.detail.attachInfo;
-      this.Subject = this.detail.subject;
-      this.Body_Text = this.detail.body;
-      this.morePlus = { raise: language.morePlus.raise };
-    }
-
-    const date = new Date();
-    this.startdate = date;
-    this.enddate = date;
+    const moment = require("moment");
+    var today = moment().format("YYYY-MM-DD");
+    this.startdate = today;
+    this.enddate = today;
+    this.ReqFrom = today;
+    this.to = today;
     this.title = this.params.formtitle;
 
     this.thisform = this.params.form;
   },
-  mounted() {
+  async mounted() {
     this.fileinit = this.$refs.file.files;
+    // if (!this.params.isedit) {
+    var result = await this.$store.dispatch("approjs/formSetting", {
+      type: "formOption",
+    });
+    this.formSetting = result;
+    // }
+    this.Init();
   },
   components: {
     BackHeader,
     SubMenu,
     BtnPlus,
     Org,
+    WorkOrg,
   },
   data() {
     return {
+      workmodalon: false,
+      StartTime: "07",
+      StartTime_1: "07",
+      EndTime: "00",
+      EndTime_1: "00",
+      ReqFrom: "",
+      to: "",
+      reason: "",
+      plan: "",
+      cause: "",
+      AddOpinion: "",
+      pselCompany: "",
+      selCompany: { 2000: "ACE Technologies" },
+      division: { C6: "ko:교육; en:Very High; zh:Customer Response" },
+      pdivision: "",
       currentidx: -1,
       thisform: "",
       appPath: [],
@@ -304,7 +479,6 @@ export default {
       Detach: [],
       addAttach: [],
       onCategory: "year",
-      file: [],
       Subject: "",
       Body_Text: "",
       TmpsComment: "",
@@ -314,7 +488,18 @@ export default {
       startdate: null,
       enddate: null,
       pDocPeriod: 1,
-      pDocPermission: "H0",
+      pDocPermission: "H1",
+      formSetting: {
+        sReceiveArr: [],
+        sReceiveOrgName: "",
+        sReceiveOrgName_NM: "",
+        selCompany: {},
+        division: {},
+        default: {
+          selCompany: "",
+          division: "",
+        },
+      },
     };
   },
   computed: {
@@ -325,9 +510,129 @@ export default {
     ...mapState("approjs", ["detail"]),
   },
   methods: {
+    Close(e) {
+      var LayerPopup = $(".approute");
+      if (LayerPopup.has(e.target).length === 0) {
+        this.pointer=-1;
+      }
+    },
+    ThisCategory(menu) {
+      if (this.categorys) {
+        return this.categorys[this.menuOfCategoryIdx(menu)];
+      }
+      return [];
+    },
+    menuOfCategoryIdx(menu) {
+      if (this.categorys) {
+        return this.categorys.findIndex(function (item, idx) {
+          return item.category == menu;
+        });
+      }
+      return -1;
+    },
+    Init() {
+      this.selCompany = this.formSetting.selCompany || {};
+      this.pselCompany = this.formSetting.default.selCompany || "";
+      this.division = this.formSetting.division || {};
+      this.pdivision = this.formSetting.default.division || "";
+      if (this.params.isedit) {
+        // const info = this.detail.approvalInfo;
+        // this.currentidx = info.findIndex((item) => item.approval);
+        this.appPath = this.detail.appList;
+        this.file = this.detail.attachInfo;
+        this.Subject = this.detail.subject;
+        this.Body_Text = this.detail.body;
+        this.pselCompany = this.detail.selCompany;
+        this.pDocPermission = this.detail.DocPermission;
+        this.pdivision = this.detail.division;
+        this.cause = this.detail.cause;
+        this.plan = this.detail.plan;
+        this.reason = this.detail.reason;
+        this.AddOpinion = this.detail.AddOpinion;
+        const moment = require("moment");
+        this.ReqFrom = moment(this.detail.ReqFrom).format("YYYY-MM-DD");
+        this.to = moment(this.detail.to).format("YYYY-MM-DD");
+        this.StartTime = this.detail.StartTime;
+        this.EndTime = this.detail.EndTime;
+        this.StartTime_1 = this.detail.StartTime_1;
+        this.EndTime_1 = this.detail.EndTime_1;
+        // for (var i = 0; i < this.detail.Org_id.length; i++) {
+        //   this.$store.commit("OrgData", this.detail.Org_id[i]);
+        // }
+      }
+      this.$store.commit("OrgPointer", "CopyTo");
+      this.appDept = "sAppList2";
+
+      // var arr = this.formSetting.Org_id || [];
+      // for (var i = 0; i < arr.length; i++) {
+      //   this.appPath.push({
+      //     appadd: "AP",
+      //     appDept: "sAppList2",
+      //     approvalInfo: arr[i],
+      //   });
+      // }
+      // this.appPath = this.duplicateRemove(this.appPath);
+    },
+    duplicateRemove(data) {
+      var here = this;
+      return data.filter(function (item1, idx1) {
+        return (
+          data.findIndex(function (item2, idx) {
+            return (
+              (item1.approvalInfo.notesId == item2.approvalInfo.notesId ||
+                item1.approvalInfo.id == item2.approvalInfo.id ||
+                item1.approvalInfo.scheduleId ==
+                  item2.approvalInfo.scheduleId) &&
+              item1.appDept == item2.appDept
+            );
+          }) == idx1 && item1.approvalInfo.id !== here.GetMyInfo.master.id
+        );
+      });
+    },
+    MailOrgDataDelete(data, pointer) {
+      this.$store.commit("OrgDataDelete", { data, pointer });
+    },
+    workOn(pointor) {
+      this.workmodalon = true;
+      this.$store.commit("OrgPointer", pointor);
+    },
+    WorkModalOff() {
+      this.workmodalon = false;
+    },
+    range(min, max) {
+      var array = [],
+        j = 0;
+      for (var i = min; i <= max; i++) {
+        array[j] = i;
+        j++;
+      }
+      return array;
+    },
+    endfill(width, number) {
+      number = number + ""; //number를 문자열로 변환하는 작업
+      var str = "";
+      for (var i = 0; i < width - number.length; i++) {
+        str = "0" + str;
+      }
+      str = number + str;
+      return str;
+    },
+    test(){
+      return this.org.CopyTo.map((item) => item.name).join(";");
+    },
     Send(e) {
       if (!(this.Subject.length > 0)) {
         alert(this.lang.alert.subject);
+        return;
+      }
+
+      if (!(this.reason.length > 0)) {
+        alert(this.lang.alert.reason);
+        return;
+      }
+      
+      if (this.org.SendTo.length==0){
+        alert(this.lang.alert.target);
         return;
       }
       let formData = new FormData();
@@ -341,23 +646,17 @@ export default {
         for (var i = 0; i < this.addAttach.length; i++) {
           formData.append("attach", this.addAttach[i]);
         }
-        var Detachstr = "";
-        for (var i = 0; i < this.Detach.length; i++) {
-          if (i == this.Detach.length - 1) {
-            Detachstr += this.Detach[i].name;
-          } else {
-            Detachstr += this.Detach[i].name + ";";
-          }
-        }
+        var Detachstr = this.Detach.map((item) => item.name).join(";");
+
         formData.append("Detach", Detachstr);
         formData.append("openurl", this.detail.openurl);
       } else {
         for (var i = 0; i < this.file.length; i++) {
           formData.append("attach", this.file[i]);
         }
-        AprTcount1++;
-        sAppList1 += this.GetMyInfo.approvalInfo + ";";
       }
+      AprTcount1++;
+      sAppList1 += this.GetMyInfo.approvalInfo + ";";
       for (var i = 0; i < this.appPath.length; i++) {
         if (this.appPath[i].appDept == "sAppList1") {
           AprTcount1++;
@@ -372,14 +671,11 @@ export default {
         return;
       }
 
-      if (
-        this.thisform == "K-SIS_Form661m" &&
-        AprTcount2 < 1 &&
-        e !== "draft"
-      ) {
-        alert(this.lang.alert.dept);
-        return;
-      }
+      // this.thisform == "K-SIS_Form661m" &&
+      // if (AprTcount2 < 1 && e !== "draft") {
+      //   alert(this.lang.alert.dept);
+      //   return;
+      // }
 
       formData.append("approvalType", e);
       formData.append("formCode", this.thisform);
@@ -391,18 +687,60 @@ export default {
         sAppList2,
         "---------",
         AprTcount1,
-        AprTcount2
+        AprTcount2,
+        "----------",
+        this.appPath
       );
       formData.append("sAppList1", sAppList1);
       formData.append("sAppList2", sAppList2);
       formData.append("AprTcount1", AprTcount1);
       formData.append("AprTcount2", AprTcount2);
       formData.append("subject", this.Subject);
-      formData.append("body", this.editor.getHTML());
+      formData.append("body", this.Body_Text);
       formData.append("TmpsComment", this.TmpsComment);
 
       formData.append("DocPeriod", this.pDocPeriod);
+      formData.append("DocPeriod_Nm", this.DocPeriod[this.pDocPeriod]);
+      formData.append(
+        "DocPermission_Nm",
+        this.DocPermission[this.pDocPermission]
+      );
       formData.append("DocPermission", this.pDocPermission);
+
+      // 근태승인신청서
+      formData.append("selCompany", this.pselCompany);
+      formData.append("selCompany_Nm", this.selCompany[this.pselCompany]);
+      formData.append("AddOpinion", this.AddOpinion);
+      formData.append("division", this.pdivision);
+      formData.append("division_Nm", this.division[this.pdivision]);
+      formData.append("reason", this.reason);
+      formData.append("plan", this.plan);
+      formData.append("cause", this.cause);
+      formData.append("ReqFrom", this.ReqFrom);
+      formData.append("StartTime", this.StartTime);
+      formData.append("EndTime", this.EndTime);
+      formData.append("to", this.to);
+      formData.append("StartTime_1", this.StartTime_1);
+      formData.append("EndTime_1", this.EndTime_1);
+      formData.append("sReceiveOrgName", this.formSetting.sReceiveOrgName);
+      formData.append(
+        "sReceiveOrgName_NM",
+        this.formSetting.sReceiveOrgName_NM
+      );
+
+      var joint_owner = this.org.CopyTo.map((item) => item.id).join(";");
+      var joint_ownerFull = this.org.CopyTo.map((item) => item.approvalInfo).join(";");
+      formData.append("joint_owner", joint_owner);
+      formData.append("joint_ownerFull", joint_ownerFull);
+
+      var person = "";
+      for (var o = 0; o < this.org.SendTo.length; o++) {
+        var or = this.org.SendTo[o];
+        person = person + `${or.mycode}/${or.name}/${or.department}\r\n`;
+      }
+      formData.append("person", person);
+      // return;
+
       this.$store
         .dispatch("approjs/AppWrite", { data: formData, type })
         .then((res) => {
@@ -410,7 +748,26 @@ export default {
             // if(e=="raise"){
             this.params.type = "";
             // this.SetHeader(this.params);
-            this.$router.go(-1);
+            this.categorys = this.GetCategory[this.params.top];
+            var ingidx = this.menuOfCategoryIdx("approving");
+            if (ingidx == -1) {
+              this.$router.go(-2);
+            } else {
+              var apping = this.categorys[ingidx];
+              this.$router.push({
+                name: "appapproving",
+                query: {
+                  data: JSON.stringify({
+                    type: apping.type || apping.category,
+                    lnbid: apping.lnbid,
+                    top: this.params.top,
+                    title: apping.title,
+                  }),
+                },
+              });
+            }
+            // this.$router.go(-1);
+            this.$store.commit("OrgDataInit");
 
             // }else if(e=="draft"){
             // this.$router.push({name:'appdraft',query:{data:JSON.stringify(this.params)}})
@@ -610,11 +967,9 @@ export default {
       //   this.appPath.length
       // );
       this.appPath = [];
+      this.$store.commit("OrgDataInit");
 
       // }
-    },
-    addApprover() {
-      // console.log(autosearchorg.)
     },
   },
 };

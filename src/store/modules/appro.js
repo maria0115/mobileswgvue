@@ -19,6 +19,7 @@ export default {
     approval: config.approval,
     detail:{},
     category:[],
+    searchoption:{},
     
   },
   getters: {

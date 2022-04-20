@@ -61,7 +61,8 @@
           <div>
             <div>
               <div v-for="(value, index) in orgdata" :key="index">
-                <select v-model="value.point" @change="dupRemove">
+                <div v-if="org.pointer==value.point">
+                <select v-if="ismail" v-model="value.point" @change="dupRemove">
                   <option value="SendTo">{{ lang.receive }}</option>
                   <option value="CopyTo">{{ lang.cc }}</option>
                   <option value="BlindCopyTo">{{ lang.bcc }}</option>
@@ -72,6 +73,7 @@
                     >&lt;{{ value.item.email }}&gt;</em
                   ></span
                 >
+                </div>
                 <em class="list_close" @click="OrgDataDel(value, index)"></em>
               </div>
             </div>
@@ -87,6 +89,7 @@
             <org-item
               :item="value"
               :modalAutoOrg="modalAutoOrg"
+              :modalon="modalon"
               @OpenFolder="OpenFolder"
               :createdOrg="createdOrg"
               @SetcreatedOrg="SetcreatedOrg"
@@ -128,6 +131,8 @@ export default {
         return [];
       },
     },
+    ismail: Boolean,
+    isapp: Boolean,
   },
   components: {
     OrgItem,
@@ -138,11 +143,11 @@ export default {
         this.$store.commit("OrgDataAdd", item);
       }
     },
-    // modalon(newval){
-    //   if(newval){
-        
-    //   }
-    // },
+    modalon(newval) {
+      if (newval) {
+        this.SetcreatedOrg();
+      }
+    },
   },
   computed: {
     ...mapState(["autosearchorg", "org", "orgdata"]),
@@ -197,6 +202,7 @@ export default {
     },
     SetcreatedOrg() {
       // this.createdOrg = true;
+      this.modalAutoOrg++;
     },
     Close(e) {
       var LayerPopup = $(".add_search");
@@ -231,7 +237,9 @@ export default {
         });
       } else if (item.mycode) {
         result = this.orgdata.findIndex((item1, idx) => {
-          return item1.item.mycode == item.mycode && item1.point == this.org.pointer;
+          return (
+            item1.item.mycode == item.mycode && item1.point == this.org.pointer
+          );
         });
       }
       if (result == -1) {

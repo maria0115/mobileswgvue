@@ -7,7 +7,7 @@
         </h2>
         <div>
           <span class="e_edit" @click="editClick"></span>
-          <span class="sub_search"></span>
+          <span class="sub_search" v-if="mailSearchPath.includes(path)"></span>
         </div>
         <span class="sub_ham"></span>
         <div class="re_search"></div>

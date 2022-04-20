@@ -19,11 +19,14 @@
             <span>{{ this.daysSort[this.theDayOfWeek] }}</span>
             <b>{{ this.today }}</b>
           </div>
-          <div
-            v-for="(value, index) in GetSchedule.calList.day.allday"
-            :key="index"
-          >
-            <p v-if="value.allDay">{{ value.subject }}</p>
+          <div>
+            <p
+              v-for="(value, index) in GetSchedule.calList.day.allday"
+              @click="Detail(value)"
+              :key="index"
+            >
+              <template v-if="value.allDay">{{ value.subject }}</template>
+            </p>
           </div>
         </div>
         <div class="time_area">
@@ -136,7 +139,7 @@ export default {
   methods: {
     SetStyle(value) {
       var per = 100 / value.width;
-      var left = 100 / (value.width - value.left) - per;
+      var left = (value.width - value.left-1)*per;
       return this.timeStyle(value) + `width: ${per}%;left: ${left}%;`;
     },
     Write(time) {

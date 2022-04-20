@@ -77,8 +77,12 @@
             v-if="path() == 'approve' || path() == 'approving'"
           >
             <!--10월 13일 추가됨 -->
-            <input type="date" v-model="startDate" /><b>~</b
-            ><input v-model="endDate" type="date" />
+            <!-- <input type="date" v-model="startDate" /> -->
+            <Date v-model="startDate"></Date>
+            <b>~</b
+            >
+            <!-- <input v-model="endDate" type="date" /> -->
+            <Date v-model="endDate"></Date>
           </div>
         </div>
       </div>
@@ -117,15 +121,6 @@ export default {
       if (LayerPopup.has(e.target).length === 0) {
         $(".search_con").removeClass("active");
       }
-    },
-    fill(width, number) {
-      number = number + ""; //number를 문자열로 변환하는 작업
-      var str = "";
-      for (var i = 0; i < width - number.length; i++) {
-        str = str + "0";
-      }
-      str = str + number;
-      return str;
     },
     Init() {
       const date = new Date();

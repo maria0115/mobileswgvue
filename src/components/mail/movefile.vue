@@ -1,5 +1,5 @@
 <template>
-  <div class="move_file">
+  <div class="move_file" @click="Close">
     <div class="move_bg"></div>
     <ul class="f_list">
       <li>
@@ -61,6 +61,12 @@ export default {
     },
   },
   methods: {
+    Close(e) {
+      var LayerPopup = $(".move_file");
+      if (LayerPopup.has(e.target).length === 0) {
+        $(".move_file").removeClass("active");
+      }
+    },
     async moveFolder(folderId, path) {
       const result = await this.$store.dispatch("mailjs/MailMove", {
         folderId,

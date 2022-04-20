@@ -67,6 +67,7 @@
               style="height: 100%;width:100%"
               id="memo_t"
               :body="this.detail.body"
+              :bodyurl="detail.bodyurl"
               ref="Body"
               :read="true"
               did="calendar"

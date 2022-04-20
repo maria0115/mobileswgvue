@@ -47,6 +47,7 @@ export default {
       } else {
         this.customFolder = this.item.mycode;
         this.$store.commit("mailjs/MailCustomFolderTitle", this.item.nodetitle.ko);
+        this.$store.commit("mailjs/MailSearchOptionInit");
         this.$router.push({
           name: "custom",
           params: { folderId: this.item.mycode },

@@ -50,17 +50,20 @@
             <form @submit.prevent>
               <strong>{{ GetSearchLanguage.filter.select }}</strong>
               <p>
-                <input
+                <Date v-model="gte" @change="Datesearch('gte', gte, 'custom')"></Date>
+                <!-- <input
                   type="date"
                   class="on"
-                  @change="Datesearch('gte', $event.target.value, 'custom')"
-                />
+                  @change="Datesearch('gte', gte, 'custom')"
+                /> -->
                 -
-                <input
+                <Date v-model="lt" @change="Datesearch('lt', lt, 'custom')"></Date>
+
+                <!-- <input
                   type="date"
                   placeholder="2021.03.31"
-                  @change="Datesearch('lt', $event.target.value, 'custom')"
-                />
+                  @change="Datesearch('lt', lt, 'custom')"
+                /> -->
               </p>
             </form>
           </li>
@@ -89,7 +92,7 @@ export default {
     Footer
   },
   beforeDestroy(){
-    this.$store.commit("searchjs/WordReset");
+    // this.$store.commit("searchjs/WordReset");
   },
   computed: {
     ...mapState("searchjs",[
@@ -114,6 +117,8 @@ export default {
   data() {
     return {
       oncategory: "allsearch",
+      gte:"",
+      lt:""
     };
   },
   mounted() {

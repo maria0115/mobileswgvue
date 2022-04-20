@@ -1,5 +1,5 @@
 import {
-    MailDetail, FollowupSet, MailAutoSave, MailDelay, MailWrite,GetBody,
+    MailDetail, FollowupSet, MailAutoSave, MailDelay, MailWrite, GetBody,
     MailRealDelete,
     FollowUpInfo,
     MailSearch,
@@ -21,17 +21,17 @@ import {
 } from '../../../api/index';
 import router from '../../../router/index';
 export default {
-    GetBody({ state,rootState  }, data){
+    GetBody({ state, rootState }, data) {
         return GetBody(data)
-        .then((res) => {
-            if (res.status !== 200) {
-                return false;
-            } else {
-                return res.data;
-            }
-        })
+            .then((res) => {
+                if (res.status !== 200) {
+                    return false;
+                } else {
+                    return res.data;
+                }
+            })
     },
-    MailRecovery({ state,rootState  }, ) {
+    MailRecovery({ state, rootState },) {
         var checkedNames = state.mail.checkBtn.checkedNames;
         if (checkedNames.length > 0) {
             var unid = "";
@@ -78,10 +78,10 @@ export default {
             })
     },
     async FollowUpInfo({ state, rootState, commit }, unid) {
-        rootState.tf = true;
+        // rootState.tf = true;
         return await FollowUpInfo(unid)
             .then((res) => {
-                rootState.tf = false;
+                // rootState.tf = false;
 
                 if (res.status !== 200) {
                     return false;
@@ -334,8 +334,11 @@ export default {
 
     },
     async MailDetail({ state, rootState, commit }, { unid, type }) {
+        // commit('MAIL_DETAIL_INIT');
+        rootState.tf = true;
         return await MailDetail(unid, type)
             .then(response => {
+                rootState.tf = false;
 
                 if (response.status !== 200) {
 
@@ -603,6 +606,7 @@ export default {
     // },
     // maildetail data
     GetMailDetail({ commit, state, rootState }, { mailtype, folderId }) {
+        console.log(mailtype, folderId)
         state.mail.data[mailtype].page = 0;
         state.mail.data[mailtype].data = [];
         var data = state.mail.data[mailtype];

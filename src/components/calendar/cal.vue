@@ -30,6 +30,7 @@
           <tr v-for="(date, idx) in dates" :key="idx">
             <td v-for="(day, secondIdx) in date" :key="secondIdx">
               <a
+                :style="TopHeight"
                 ref="open"
                 @click.stop="
                   Detail(
@@ -72,10 +73,12 @@
                 >
                 <span
                   @click.stop="oneDetail(value.data)"
-                  v-for="(value, index) in isAllday(
-                    day,
-                    dates.length - 1 === idx && nextMonthStart > day,
-                    idx === 0 && day >= lastMonthStart
+                  v-for="(value, index) in alphaSize(
+                    isAllday(
+                      day,
+                      dates.length - 1 === idx && nextMonthStart > day,
+                      idx === 0 && day >= lastMonthStart
+                    )
                   )"
                   :style="Style(value)"
                   :key="index"
@@ -84,6 +87,32 @@
                     { time_day: !value.data.allDay },
                   ]"
                   >{{ value.data.subject }}</span
+                >
+                <span
+                  v-if="
+                    Option().alpha &&
+                    isAllday(
+                      day,
+                      dates.length - 1 === idx && nextMonthStart > day,
+                      idx === 0 && day >= lastMonthStart
+                    ).length > Config().alphaSize
+                  "
+                  @click.stop="
+                    Detail(
+                      day,
+                      dates.length - 1 === idx && nextMonthStart > day,
+                      idx === 0 && day >= lastMonthStart,
+                      secondIdx
+                    )
+                  "
+                  class="time_day"
+                  >+{{
+                    isAllday(
+                      day,
+                      dates.length - 1 === idx && nextMonthStart > day,
+                      idx === 0 && day >= lastMonthStart
+                    ).length - Config().alphaSize
+                  }}</span
                 >
               </a>
             </td>
@@ -128,12 +157,22 @@ export default {
       lastMonth: 0,
       lastYear: 0,
       islist: false,
+      toprem: 2.187,
     };
   },
   mixins: [nowTime],
 
   computed: {
     ...mapGetters("calendarjs", ["GetSchedule"]),
+    TopHeight() {
+      var style = "";
+      if (this.Option().alpha) {
+        style = `height:${
+          ((this.Config().alphaSize + 1) * 20) / 16 + this.toprem
+        }rem`;
+      }
+      return style;
+    },
   },
   methods: {
     isAllday(day, next, last) {
@@ -191,12 +230,18 @@ export default {
 
       return callist;
     },
+    alphaSize(data) {
+      if (this.Option().alpha) {
+        data = data.slice(0, this.Config().alphaSize);
+      }
+      return data;
+    },
     isHoliday(day) {
       var data = {};
       const holiday = this.GetSchedule.holiday;
       for (var i = 0; i < holiday.length; i++) {
         var harr = holiday[i].startdate.split("-");
-        if (harr[harr.length-1] == day) {
+        if (harr[harr.length - 1] == day) {
           data.boo = true;
           data.name = holiday[i].subject;
           return data;

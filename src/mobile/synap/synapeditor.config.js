@@ -1,5 +1,5 @@
 var synapEditorConfig = {
-	"editor.license": "/mobile/synap/license.json",
+    "editor.license": "/mobile/synap/license.json",
     /**
      * 에디터에서 사용할 기본 스타일을 설정합니다.
      * 예제의 Element들의 속성만 지정이 가능하며, cssText 형태로 작성
@@ -8,7 +8,9 @@ var synapEditorConfig = {
            'Heading1', 'Heading2', Heading3', Heading4', Heading5', Heading6'
      */
     'editor.defaultStyle': {
-        'Body': 'font-family: Arial, Helvetica, sans-serif; font-size: 11pt; line-height: 1.2;'
+        'Body': 'font-family: Arial, Helvetica, sans-serif; font-size: 11pt; line-height: 1.2;',
+        'Iframe': "-webkit-touch-select:none; -ms-user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);",
+        'TextRun':'line-height:0 !important;'
     },
     'editor.size.width': '100%',
     'editor.size.height': '100%',
@@ -58,47 +60,44 @@ var synapEditorConfig = {
         'peelOffDiv': false,
         'alertDuplicateId': true,
         'checkPreWrap': false
-    },	
-	'editor.menu.show': false,
-	/**
-	* 에디터 툴바 버튼(드롭다운)의 크기를 설정합니다.
-	* 최소값은 22 입니다. (단위 px)
-	*/
-	 'editor.ui.button.size': null,
-	/**
-	* 에디터 툴바 버튼(드롭다운)의 아이콘 크기를 설정합니다.
-	* 최소값은 16 입니다. (단위 px)
-	*/
-	'editor.ui.button.icon.size': null,
-	'editor.contentFilter.allowScript': false,
-	/**
+    },
+    'editor.menu.show': false,
+    /**
+    * 에디터 툴바 버튼(드롭다운)의 크기를 설정합니다.
+    * 최소값은 22 입니다. (단위 px)
+    */
+    'editor.ui.button.size': null,
+    /**
+    * 에디터 툴바 버튼(드롭다운)의 아이콘 크기를 설정합니다.
+    * 최소값은 16 입니다. (단위 px)
+    */
+    'editor.ui.button.icon.size': null,
+    'editor.contentFilter.allowScript': false,
+    /**
      * 모바일용 툴바를 설정합니다.
      */
-	'editor.mobile.toolbar': {
-		'main': [
-			'open', 'undo', 'redo', 'copy', 'paste', 'directInsertImage', 'directInsertTable', 'simpleLink', 'unlink',
-			'fullScreen', 'bulletList', 'numberedList', 'multiLevelList', 'align', 'increaseIndent', 'decreaseIndent',
-			'lineHeight', 'quote', 'HorizontalLine'
-		],
-		'text': [
-			'paragraphStyle', 'fontSize',
-			'bold', 'italic', 'underline', 'strike',
-			'simpleFontColor', 'simpleFontBackgroundColor'
-		],
-		'table': [
-			'insertRowBefore', 'insertRowAfter', 'insertColBefore', 'insertColAfter',
-			'deleteRow', 'deleteCol', 'mergeCell', 'simpleFill',
-			'simpleBorderColor', 'lineThickness', 'lineStyle', 'contentsAlign', 'verticalAlign', 'deleteTable'
-		],
-		'div': [
-			'simpleDrawingObjectFill', 'simpleDrawingObjectBorderColor', 'drawingObjectLineThickness', 'drawingObjectLineStyle', 'deleteDiv'
-		],
-		'image': [
-			'rotateDrawingObjectLeft', 'rotateDrawingObjectRight', 'deleteImage'
-		],
-		'video': [
-			'deleteVideo'
-		]
-	},
+    'editor.mobile.toolbar': {
+        'main': [
+            'fullScreen', 'paragraphStyle', 'fontSize',
+            'bold', 'italic', 'underline', 'strike',
+            'simpleFontColor', 'simpleFontBackgroundColor'
+        ],
+        'text': [],
+        'table': [],
+        'img': [],
+        'div': [],
+        'video': []
+    },
+    'editor.toolbar': {
+        'main': [
+            'fullScreen', 'paragraphStyle', 'fontSize',
+            'bold', 'italic', 'underline', 'strike',
+            'simpleFontColor', 'simpleFontBackgroundColor'
+        ],
+        'text': [],
+        'img': [],
+        'div': [],
+        'video': []
+    },
 };
-  
+

@@ -68,7 +68,7 @@ export default {
                             var endtime2 = time2.enddate.split('-').join("") + time2.endtime.split(':').join("");
                             let st2 = parseInt(starttime2);
                             let et2 = parseInt(endtime2);
-                            if (st1 >= st2 && st1 <= et2 || et1 >= st2 && et1 <= et2 || st2 >= st1 && st2 <= et1 || et2 >= st1 && et2 <= et1) {
+                            if (st1 >= st2 && st1 < et2 || et1 > st2 && et1 <= et2 || st2 >= st1 && st2 < et1 || et2 > st1 && et2 <= et1) {
                                 time2.left = rank;
                                 rank++;
                             } 

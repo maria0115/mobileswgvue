@@ -2,13 +2,13 @@
   <div class="rere_modal" :class="{ active: rmodalon }">
     <!--8월 12일 추가됨 반복예약-->
     <div class="rere_con">
-      <strong>{{ lang.repsetting }}</strong>
-      <p>{{ lang.whenrep }}</p>
+      <strong>{{ clang.repsetting }}</strong>
+      <p>{{ clang.whenrep }}</p>
       <ul>
         <li>
           <select id="rere_box" v-model="RepeatUnit">
             <option
-              v-for="(value, name) in lang.unit"
+              v-for="(value, name) in clang.unit"
               :key="name"
               :value="name"
             >
@@ -24,9 +24,9 @@
               name="sel01"
               id="sel01"
             >
-              <option value="매일 반복" selected>{{ lang.repp.day }}</option>
+              <option value="매일 반복" selected>{{ clang.repp.day }}</option>
               <option :value="fill(2, num)" v-for="num in 31" :key="num">
-                {{ num }}{{ lang.repp.eachday }}
+                {{ num }}{{ clang.repp.eachday }}
               </option>
             </select>
             <select
@@ -34,9 +34,9 @@
               v-model="RepeatInterval"
               id="sel02_1"
             >
-              <option value="매주 반복" selected>{{ lang.repp.week }}</option>
+              <option value="매주 반복" selected>{{ clang.repp.week }}</option>
               <option :value="fill(2, num)" v-for="num in 8" :key="num">
-                {{ num }}{{ lang.repp.eachweek }}
+                {{ num }}{{ clang.repp.eachweek }}
               </option>
             </select>
             <select
@@ -45,10 +45,10 @@
               id="sel03_1"
             >
               <option value="매월 반복" selected>
-                {{ lang.repp.month }}
+                {{ clang.repp.month }}
               </option>
               <option :value="fill(2, num)" v-for="num in 12" :key="num">
-                {{ num }}{{ lang.repp.eachmonth }}
+                {{ num }}{{ clang.repp.eachmonth }}
               </option>
             </select>
             <select
@@ -56,9 +56,9 @@
               v-if="RepeatUnit == 'Y'"
               id="sel05_1"
             >
-              <option value="매년 반복" selected>{{ lang.repp.year }}</option>
+              <option value="매년 반복" selected>{{ clang.repp.year }}</option>
               <option :value="fill(2, num)" v-for="num in 10" :key="num">
-                {{ num }}{{ lang.repp.eachyear }}
+                {{ num }}{{ clang.repp.eachyear }}
               </option>
             </select>
           </div>
@@ -76,7 +76,7 @@
                 v-for="(value, index) in daysSort"
                 :key="index"
               >
-                {{ value }}{{ lang.yuil }}
+                {{ value }}{{ clang.yuil }}
               </option>
             </select>
             <select
@@ -85,7 +85,7 @@
               v-if="RepeatUnit == 'MD'"
             >
               <option :value="fill(2, num)" v-for="num in 31" :key="num">
-                {{ num }}{{ lang.day }}
+                {{ num }}{{ clang.day }}
               </option>
             </select>
             <select
@@ -94,34 +94,35 @@
               v-if="RepeatUnit == 'MP'"
             >
               <option v-for="(v, i) in this.Closs()" :value="v.index" :key="i">
-                {{ v.str }}{{ lang.yuil }}
+                {{ v.str }}{{ clang.yuil }}
               </option>
             </select>
           </div>
         </li>
       </ul>
-      <p>{{ lang.reppeiod }}</p>
+      <p>{{ clang.reppeiod }}</p>
       <ul class="inp_wrap">
         <li class="clfix term">
           <select id="selectbox" v-model="RepeatHow">
-            <option value="U" selected>{{ lang.end }}</option>
-            <option value="F">{{ lang.period }}</option>
+            <option value="U" selected>{{ clang.end }}</option>
+            <option value="F">{{ clang.period }}</option>
           </select>
         </li>
-        <li class="clfix date_inp">
-          <input type="date" v-model="RepeatUntil" v-if="RepeatHow == 'U'" />
-          <div class="clfix" :class="{ active: RepeatHow == 'F' }">
+        <li class="clfix date_inp" >
+          <!-- <input type="date" v-model="RepeatUntil" v-if="RepeatHow == 'U'" /> -->
+          <Date v-model="RepeatUntil" v-if="RepeatHow == 'U'" ></Date>
+          <div class="clfix" v-else :class="{ active: RepeatHow == 'F' }">
             <span><input type="text" v-model="RepeatFor" /></span>
             <select v-model="RepeatForUnit">
-              <option value="D">{{ lang.day }}</option>
-              <option value="W">{{ lang.week }}</option>
-              <option value="M">{{ lang.month }}</option>
-              <option value="Y">{{ lang.year }}</option>
+              <option value="D">{{ clang.day }}</option>
+              <option value="W">{{ clang.week }}</option>
+              <option value="M">{{ clang.month }}</option>
+              <option value="Y">{{ clang.year }}</option>
             </select>
           </div>
         </li>
       </ul>
-      <span class="time_mo_btn" @click="rClick('rere')">{{ lang.check }}</span>
+      <span class="time_mo_btn" @click="rClick('rere')">{{ clang.check }}</span>
       <span class="modal_close rereclose" @click="RBtnremove"></span>
     </div>
   </div>
@@ -131,8 +132,13 @@
 export default {
   created() {
     var moment = require("moment");
+// var language = this.lang;
+    // this.category = language.category;
+    console.log(this.lang)
+    this.daysSort = this.lang.daysSort.split(",");
+    this.weekSort = this.lang.weekSort.split(",");
 
-    this.lang = this.GetScheduleL.write;
+    this.clang = this.GetScheduleL.write;
     this.RepeatStartDate = moment().utc().format("YYYYMMDDTHHmmss");
     this.RepeatUntil = moment().format("YYYY-MM-DD");
   },
@@ -151,8 +157,25 @@ export default {
   },
   props: {
     rmodalon: Boolean,
+    lang: Object,
   },
   methods: {
+    Closs() {
+      // daysSort: ["일", "월", "화", "수", "목", "금", "토"],
+      // weekSort
+      var result = [];
+      for (var i = 0; i < this.weekSort.length; i++) {
+        for (var j = 0; j < this.daysSort.length; j++) {
+          var str = `${this.weekSort[i]} ${this.daysSort[j]}`;
+          var index = `${i + 1}.${j}`;
+          var data = {};
+          data.str = str;
+          data.index = index;
+          result.push(data);
+        }
+      }
+      return result;
+    },
     RBtnremove() {
       this.$emit("remodal", false);
     },

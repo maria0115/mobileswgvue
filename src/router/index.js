@@ -111,22 +111,24 @@ const router = new Router({
       path: '/mobile_index',
       name: 'root',
       component: Common,
+      beforeEnter: (to, from, next) => {
+        store.dispatch("GetLanguage", { app: "main" });
+        store.dispatch("GetLanguage", { app: "common" });
+        next();
+      },
       children: [
         {
           path: 'main',
           component: Main,
           name: 'main',
           beforeEnter: (to, from, next) => {
+        // store.dispatch("GetLanguage", { app: "main" });
 
-            store.dispatch("mainjs/GetMyInfo");
             store.dispatch("CategoryList", "");
-            store.dispatch("GetLanguage", { app: "main" })
+            store.dispatch("mainjs/GetMyInfo")
+            store.dispatch("configjs/setMode")
               .then((res) => {
-                console.log("setMode")
-                store.dispatch("configjs/setMode")
-                  .then((res) => {
-                    next();
-                  })
+                next();
               })
           },
           // redirect: '/myicon',
@@ -153,13 +155,10 @@ const router = new Router({
               component: my,
               name: "My",
               beforeEnter: (to, from, next) => {
-                var moment = require("moment");
-                var today = moment().format("YYYY-MM-DD");
-                // store.dispatch("mainjs/GetSchedule", { scheduletype: "recent", category: "my" });
-                // store.dispatch("bookjs/MyreservationList", today);
+                
                 // store.dispatch("mainjs/GetBoard", { boardtype: "notice", category: "my" });
                 // // store.dispatch("mainjs/GetBoard", { boardtype: "recent", category: "my" });
-                store.dispatch("mainjs/GetApproval", { approvaltype: "approving", category: "my" });
+                store.dispatch("mainjs/GetApproval", { approvaltype: "approve", category: "my" });
                 store.dispatch("mainjs/GetMail", { mailtype: "inbox_detail", category: "my" });
                 next();
 
@@ -215,7 +214,8 @@ const router = new Router({
             {
               path: 'schedule',
               name: 'mainschedule',
-              redirect: '../schedule_more'
+              component: () => import('@/components/main/schedule.vue'),
+              // redirect: '../schedule_more'
             }
           ]
 
@@ -497,18 +497,17 @@ const router = new Router({
               path: 'custom/:folderId',
               name: 'custom',
               component: InboxDetail,
-              beforeEnter: (to, from, next) => {
-                store.dispatch("mailjs/GetMailDetail", { mailtype: "custom", folderId: to.params.folderId }).then(() => {
-                  next();
-                })
-              },
+              // beforeEnter: (to, from, next) => {
+              //   store.dispatch("mailjs/GetMailDetail", { mailtype: "custom", folderId: to.params.folderId }).then(() => {
+              //     next();
+              //   })
+              // },
             },
             {
               path: 'read_mail',
               name: 'ReadMail',
               component: ReadMail,
               beforeEnter: (to, from, next) => {
-                console.log(from)
                 if (to.params.unid) {
                   store.dispatch("mailjs/MailDetail", { unid: to.params.unid, type: from.name })
                     .then(() => {
@@ -532,7 +531,7 @@ const router = new Router({
                 // .then((r) =>{
                 if (store.state.mailjs.from == "Reply") {
                   store.commit("OrgData", store.state.mailjs.store.maildetail.author);
-                  
+
                 } else if (store.state.mailjs.from == "AllReply"
                   || (to.query.isEdit
                     && store.state.mailjs.store.folderName.indexOf("draft") !== -1)) {
@@ -1002,6 +1001,20 @@ const router = new Router({
 
             },
             {
+              name: 'news',
+              path: 'news',
+              component: BoardList,
+              beforeEnter: (to, from, next) => {
+                store.commit("boardjs/BoardWritePath", "news");
+
+                store.dispatch("boardjs/GetBoardList", { type: "news" });
+                // .then(() => {
+                next();
+                // })
+              },
+
+            },
+            {
               path: 'read',
               name: 'boardread',
               component: BoardRead,
@@ -1105,7 +1118,7 @@ var domain = window.location.hostname.substring(
   firstDot == -1 ? 0 : firstDot + 1
 );
 router.beforeEach((to, from, next) => {
-  if(to.query.token){
+  if (to.query.token) {
     setRawCookie("LtpaToken", decodeURIComponent(to.query.token).split("$SIS$").join("+"), { domain });
     next();
     return;

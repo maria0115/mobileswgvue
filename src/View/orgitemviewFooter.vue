@@ -7,6 +7,7 @@
       { last_deps: lastClass },
       { o_depth02: !lastClass },
       { active: this.clicked },
+      { meme: this.me },
     ]"
   >
     <div @click="onCard">
@@ -41,7 +42,7 @@ import { mapState, mapGetters } from "vuex";
 export default {
   name: "OrgItem",
   async created() {
-    if(this.modalon){
+    if (this.modalon) {
       this.Setting();
     }
   },
@@ -58,6 +59,7 @@ export default {
       click: false,
       clicked: false,
       set: false,
+      me: false,
     };
   },
   computed: {
@@ -128,16 +130,18 @@ export default {
       // var pathidx = full.findIndex((item) => {
       //   return item == this.item.mycode;
       this.children = await this.$store.dispatch("Org", this.item);
-      var full = this.GetMyInfo.info.fullOrgCode;
-      if (full[full.length - 1] == this.item.mycode) {
-        var meidx = this.children.findIndex((item) => {
-          return item.notesId == this.GetMyInfo.info.notesid;
-        });
-        if (meidx !== -1) {
-          this.$store.commit("mainjs/MyInfoMaster", this.children[meidx]);
-        }
+      // if (!this.GetMyInfo.master) {
+      //   var full = this.GetMyInfo.info.fullOrgCode;
+      //   if (full[full.length - 1] == this.item.mycode) {
+      var meidx = this.children.findIndex((item) => {
+        return item.notesId == this.GetMyInfo.info.notesid;
+      });
+      if (meidx !== -1) {
+        this.me = true;
+        this.getMe();
       }
     },
+    
     onCard() {
       if (this.item.kinds == "Person") {
         this.$emit("OpenCard", this.item);
@@ -146,7 +150,7 @@ export default {
     },
     Or_bg() {
       if (this.item.kinds == "Person") {
-        this.clicked = true;
+        // this.clicked = true;
       }
     },
   },

@@ -5,6 +5,7 @@ export default {
     // main의 info
     GetMyInfo({ commit, rootState }) {
         rootState.tf = true;
+        console.log("GetMyInfoaction")
         return MyInfo()
             .then(response => {
                 rootState.tf = false;

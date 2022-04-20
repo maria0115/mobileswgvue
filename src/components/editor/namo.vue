@@ -40,9 +40,10 @@ export default {
   },
   methods: {
     fReadIframeContent() {},
-    receiveMsgFromChild(e) {
+    async receiveMsgFromChild(e) {
       if (e.data === "NamoCrossEditor") {
-        this.$refs.namo.contentWindow.crosseditor.SetBodyValue(this.editorData);
+        
+        this.$refs.namo.contentWindow.crosseditor.SetBodyValue(this.body);
         if (this.read) {
           this.$refs.namo.contentWindow.crosseditor.SetReadonly(true);
         }

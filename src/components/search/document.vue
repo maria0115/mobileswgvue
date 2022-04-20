@@ -12,6 +12,7 @@
                   category: value.category,
                   name: value.subject,
                   unid:value.unid,
+                  search:true,
                 })
               "
             >

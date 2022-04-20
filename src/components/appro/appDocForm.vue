@@ -30,7 +30,7 @@ export default {
     const language = this.GetAppL.docForm;
     this.formCode = language.formCode;
     this.checkbox = [language.checkbox];
-    this.morePlus = language.morePlus;
+    this.morePlus = {};
     this.title = language.title;
     this.params = JSON.parse(this.$route.query.data);
 

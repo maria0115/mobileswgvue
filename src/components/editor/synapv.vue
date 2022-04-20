@@ -1,10 +1,14 @@
 <template>
   <ul v-if="attach" :class="className">
-    <li v-for="(value, index) in attaInfo"
-      :key="index" class="active">
-      <div :class="{vip_sib:vip}" @click="openDownload(value)">
+    <li v-for="(value, index) in attaInfo" :key="index" class="active">
+      <div
+        :class="{ vip_sib: GetMyInfo.info.vip }"
+        @click="openDownload(value)"
+      >
         <span
-          ><img :src="`../../mobile/img/icon_${fileImg(value.name)}.png`" alt=""
+          ><img
+            :src="`../../mobile/img/icon_${fileImg(value.name)}.png`"
+            alt=""
         /></span>
         <div>
           <!-- <a :href="value.url" download> -->
@@ -13,7 +17,10 @@
           <!-- </a> -->
         </div>
       </div>
-      <span :class="{vip:vip}" @click="go(value.url || value.openurl)"></span>
+      <span
+        :class="{ vip: GetMyInfo.info.vip }"
+        @click="openDownload(value, true)"
+      ></span>
     </li>
   </ul>
   <div v-else></div>
@@ -22,11 +29,14 @@
 <script>
 // 여긴 뷰어
 import { jsonPost } from "@/api/editor.js";
-
+import { mapGetters } from "vuex";
 export default {
-  props: ["attaInfo", "attach", "className", "unid","vip"],
+  props: ["attaInfo", "attach", "className", "unid", "vip"],
+  computed: {
+    ...mapGetters("mainjs", ["GetMyInfo"]),
+  },
   methods: {
-    async openDownload(value) {
+    async openDownload(value, vip) {
       // url = window.location.origin + url;
       // location.href = "https://gwmobile.krb.co.kr"+url
       value.unid = this.unid;
@@ -43,8 +53,14 @@ export default {
         value.url = filepath;
         value.kind = "drm";
         var result = await this.drmDec(value);
+
+        if (!(result.status == 200 && result.data.decpath)) {
+          alert("복호화 실패 조치예정 중");
+          return;
+        }
+
         if (result.data.code == "1000") {
-          data.filePath = result.data.decpath;
+          data.filePath = decodeURIComponent(result.data.decpath);
         } else if (result.data.code == "1100") {
           alert("복호화 실패 조치예정 중");
           return;
@@ -55,6 +71,11 @@ export default {
           alert("복호화 실패 조치예정 중");
           return;
         }
+        if (vip) {
+          this.go(decodeURIComponent(result.data.decpath));
+          return;
+        }
+        data.attach = true;
       }
       data.fid = this.generateRandomCode(10);
       data.kind = "synap";
@@ -64,30 +85,15 @@ export default {
       data.accessCookieData = btoa(`{"LtpaToken":"${this.getToKen()}"}`);
       this.call(data);
     },
-    call(data) {
-      this.$store.dispatch("editorJsonPost", data).then((res) => {
-        if (res.key) {
-          this.go(res.viewUrlPath)
-        }
-      });
-    },
-    go(url) {
-      var goto = `${window.location.origin}/mobile_index/viewer`;
-      var setToken = this.replaceAll(this.getToKen(), "+", "$SIS$");
-      if (this.isApp()) {
-        location.href = `m60call://browser?urladdress=${goto}?url=${encodeURIComponent(
-          url
-        )}&token=${encodeURIComponent(setToken)}`;
-      } else {
-        location.href = `${goto}?url=${encodeURIComponent(
-          url
-        )}&token=${encodeURIComponent(setToken)}`;
-      }
-    },
+
     drmDec(data) {
-      return jsonPost(data).then((res) => {
-        return res;
-      });
+      return jsonPost(data)
+        .then((res) => {
+          return res;
+        })
+        .catch((e) => {
+          return false;
+        });
     },
   },
 };

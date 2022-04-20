@@ -2,7 +2,15 @@
   <div class="mail_sub" @click="Close">
     <div class="mail_inner">
       <div class="info_tit">
-        <span class="mail_img01"></span>
+        <span class="mail_img01"
+          ><em>
+            <img
+              v-if="GetMyInfo.photo !== undefined"
+              :src="GetMyInfo.photo"
+              alt=""
+              @error="$event.target.src = '/mobile/img/img03.png'"
+            /> </em
+        ></span>
         <dl>
           <dt>
             {{ this.GetMyInfo.info.name }} {{ this.GetMyInfo.info.position }}
@@ -18,45 +26,45 @@
       </div>
       <div class="mail_box_list01">
         <div>
-          <em>{{lang.mailbox}}</em>
+          <em>{{ lang.mailbox }}</em>
           <ul class="list_menu">
             <li>
               <h3>
-                <router-link :to="{ name: 'mail_unread' }">{{
+                <a @click="folderGo({ name: 'mail_unread' })">{{
                   GetMailLanguage.title.mail_unread
-                }}</router-link>
+                }}</a>
               </h3>
             </li>
             <li>
               <h3>
-                <router-link :to="{ name: 'inbox_detail' }">{{
+                <a @click="folderGo({ name: 'inbox_detail' })">{{
                   GetMailLanguage.title.inbox_detail
-                }}</router-link>
+                }}</a>
                 <em @click="depthDown($event, $parent)" class="down_m"></em>
               </h3>
               <ul class="depth02">
-                <router-link :to="{ name: 'mail_inner' }"
+                <a @click="folderGo({ name: 'mail_inner' })"
                   ><li>
                     <a>{{ GetMailLanguage.title.mail_inner }}</a>
-                  </li></router-link
+                  </li></a
                 >
-                <router-link :to="{ name: 'mail_outer' }"
+                <a @click="folderGo({ name: 'mail_outer' })"
                   ><li>
                     <a>{{ GetMailLanguage.title.mail_outer }}</a>
-                  </li></router-link
+                  </li></a
                 >
-                <router-link :to="{ name: 'mail_attach' }"
+                <a @click="folderGo({ name: 'mail_attach' })"
                   ><li>
                     <a>{{ GetMailLanguage.title.mail_attach }}</a>
-                  </li></router-link
+                  </li></a
                 >
               </ul>
             </li>
             <li>
               <h3>
-                <router-link :to="{ name: 'sent_detail' }">{{
+                <a @click="folderGo({ name: 'sent_detail' })">{{
                   GetMailLanguage.title.sent_detail
-                }}</router-link>
+                }}</a>
               </h3>
               <ul class="depth02">
                 <li><a></a></li>
@@ -64,44 +72,44 @@
             </li>
             <li>
               <h3>
-                <router-link :to="{ name: 'mail_draft' }">{{
+                <a @click="folderGo({ name: 'mail_draft' })">{{
                   GetMailLanguage.title.mail_save
-                }}</router-link>
+                }}</a>
                 <em @click="depthDown($event, $parent)" class="down_m"></em>
               </h3>
               <ul class="depth02">
-                <router-link :to="{ name: 'mail_draft' }"
+                <a @click="folderGo({ name: 'mail_draft' })"
                   ><li>
                     <a>{{ GetMailLanguage.title.mail_draft }}</a>
-                  </li></router-link
+                  </li></a
                 >
-                <router-link :to="{ name: 'mail_autoSave' }"
+                <a @click="folderGo({ name: 'mail_autoSave' })"
                   ><li>
                     <a>{{ GetMailLanguage.title.mail_autoSave }}</a>
-                  </li></router-link
+                  </li></a
                 >
               </ul>
             </li>
             <li>
               <h3>
-                <router-link :to="{ name: 'mail_reservation' }">{{
+                <a @click="folderGo({ name: 'mail_reservation' })">{{
                   GetMailLanguage.title.mail_reservation
-                }}</router-link>
+                }}</a>
                 <em @click="depthDown($event, $parent)" class="down_m"></em>
               </h3>
               <ul class="depth02">
                 <li>
-                  <router-link :to="{ name: 'mail_reservation' }">{{
+                  <a @click="folderGo({ name: 'mail_reservation' })">{{
                     GetMailLanguage.title.mail_reservation
-                  }}</router-link>
+                  }}</a>
                 </li>
               </ul>
             </li>
             <li>
-              <router-link :to="{ name: 'mail_my' }"
+              <a @click="folderGo({ name: 'mail_my' })"
                 ><h3>
                   <a>{{ GetMailLanguage.title.mail_my }}</a>
-                </h3></router-link
+                </h3></a
               >
               <em @click="depthDown($event, $parent)" class="down_m"></em>
               <ul class="depth02">
@@ -109,18 +117,18 @@
               </ul>
             </li>
             <li>
-              <router-link :to="{ name: 'mail_followup' }"
+              <a @click="folderGo({ name: 'mail_followup' })"
                 ><h3>
                   <a>{{ GetMailLanguage.title.mail_importance }}</a>
-                </h3></router-link
+                </h3></a
               >
               <em @click="depthDown($event, $parent)" class="down_m"></em>
             </li>
             <li>
-              <router-link :to="{ name: 'mail_trash' }"
+              <a @click="folderGo({ name: 'mail_trash' })"
                 ><h3>
                   <a>{{ GetMailLanguage.title.mail_trash }}</a>
-                </h3></router-link
+                </h3></a
               ><em @click="depthDown($event, $parent)" class="down_m"></em>
               <ul class="depth02">
                 <li><a></a></li>
@@ -133,9 +141,9 @@
           <ul class="list_menu">
             <li>
               <h3>
-                <a @click="depthDown($event, $parent)" class="down_more"
-                  >{{lang.basic}}</a
-                >
+                <a @click="depthDown($event, $parent)" class="down_more">{{
+                  lang.basic
+                }}</a>
               </h3>
               <ul class="depth02">
                 <span
@@ -161,7 +169,7 @@
 import { mapState, mapGetters } from "vuex";
 import TreeItem from "../../View/TreeView.vue";
 export default {
-  created(){
+  created() {
     this.lang = this.GetMailLanguage.folder;
   },
   components: {
@@ -183,10 +191,14 @@ export default {
     },
   },
   methods: {
+    folderGo(value){
+      this.$router.push(value);
+      this.$store.commit("mailjs/MailSearchOptionInit");
+    },
     Close(e) {
       var LayerPopup = $(".mail_sub");
       if (LayerPopup.has(e.target).length === 0) {
-        $('.mail_sub').removeClass('active');
+        $(".mail_sub").removeClass("active");
       }
     },
     makeFolder: function (item) {

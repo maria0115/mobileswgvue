@@ -43,7 +43,8 @@
         <li class="cal_date">
           <strong>{{ lang.date }}</strong>
           <div>
-            <input type="date" :disabled="this.GetEdit" v-model="date" />
+            <!-- <input type="date" :disabled="this.GetEdit" v-model="date" /> -->
+            <Date v-model="date" :disabled="this.GetEdit"></Date>
           </div>
         </li>
         <li v-if="!this.GetEdit" class="repeat_s">
@@ -61,8 +62,11 @@
         <li v-if="!(onCategory == 1 || onCategory == 2)" class="cal_time">
           <strong>{{ lang.time }}</strong>
           <div>
-            <input type="time" value="15:00" v-model="startTime" /><b>~</b
-            ><input type="time" value="16:00" v-model="endTime" />
+            <!-- <input type="time" value="15:00" v-model="startTime" /> -->
+            <Time v-model="startTime" :startTime="startTime"></Time>
+            <b>~</b>
+            <!-- <input type="time" value="16:00" v-model="endTime" /> -->
+            <Time v-model="endTime" :endTime="startTime"></Time>
           </div>
         </li>
         <li v-if="onCategory == 3" class="cal_att">
@@ -302,6 +306,7 @@
             <Body
               id="memo_t"
               :body="Body_Text"
+              :bodyurl="editData.bodyurl"
               ref="Body"
               :read="false"
               did="calendar"
@@ -315,13 +320,13 @@
 
 <script>
 import { mapState, mapGetters } from "vuex";
-
+import moment from "moment";
 export default {
   props: {
     rereclick: Boolean,
     lang: Object,
   },
-  created() {
+  async created() {
     var language = this.lang;
     this.category = language.category;
     this.daysSort = language.daysSort.split(",");
@@ -333,7 +338,15 @@ export default {
       this.editData =
         this.GetSchedule.calDetail[this.GetSaveSchedule.detail.where];
 
+      // this.Body = this.editData.body;
+      // if (this.Body && this.isOpenFiled(this.Body)) {
+      //   await this.getUrlBody();
+      // }
       this.Body_Text = this.editData.body;
+      // this.bodyurl = this.editData.bodyurl;
+      // if (this.Body_Text && this.isOpenFiled(this.Body_Text)) {
+      //   await this.getUrlBody();
+      // }
       this.date = this.editData.startdate;
       this.onCategory = this.editData.categoryVal;
       this.place = this.editData.place;
@@ -379,6 +392,17 @@ export default {
     // RepeatStartDate: "20210817T150000",
     //   RepeatHow: "U",
     //   RepeatUntil: "20210831",
+  },
+  watch: {
+    startTime: function () {
+      if (moment(`2000-01-01 ${this.startTime}:00`).format("HH") == "23") {
+        this.endTime = `${moment(`2000-01-01 23:59:00`).format("HH:mm")}`;
+      } else {
+        this.endTime = `${moment(`2000-01-01 ${this.startTime}:00`)
+          .add(1, "hour")
+          .format("HH:mm")}`;
+      }
+    },
   },
   mounted() {
     this.fileinit = this.$refs.file.files;

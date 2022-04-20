@@ -22,11 +22,14 @@
       <div class="con_body_top">
         <span>{{ calData.subject }}</span>
         <em v-if="Option().inotes"
-          ><b class="cate">{{ calData.category }}</b>
-          /
-          <b class="open">{{ calData.secret }}</b></em
+          ><b class="cate">{{ calData.category }}</b>  &nbsp;
+          <b class="open" v-if="calData.dispAuthor">
+          {{calData.dispAuthor}}</b>
+          <b class="open" v-else>{{ calData.secret }}</b></em
         ><em v-else>
-          {{ calData.category }}
+          <b class="cate">{{ calData.category }}</b>  &nbsp;
+          <b class="open" v-if="calData.dispAuthor">
+          {{calData.dispAuthor}}</b>
         </em>
       </div>
       <ul class="rd_list">
@@ -78,12 +81,13 @@
           ></Viewer>
         </li>
       </ul>
-      <div class="rdm_edit" >
+      <div class="rdm_edit">
         <Body
           class="cal_info"
           style="height: 100%"
           id="memo_t"
           :body="GetSchedule.calDetail[GetSaveSchedule.detail.where].body"
+          :bodyurl="GetSchedule.calDetail[GetSaveSchedule.detail.where].bodyurl"
           ref="Body"
           :read="true"
           did="calendar"

@@ -30,7 +30,7 @@
               ></em
             > -->
                 <span
-                 @click="MailDetail(item.unid, item.folderName)"
+                  @click="MailDetail(item.unid, item.folderName)"
                   class="basic_img"
                   v-if="item.sender"
                   :class="[{ on: mail.checkBtn.photoon }]"
@@ -82,8 +82,7 @@
                         >{{ lang.cc }}</em
                       >
                     </div>
-                    <span>{{ transTime(item.created)
-                    }}</span>
+                    <span>{{ transTime(item.created) }}</span>
                   </dt>
                   <dd>
                     <b :class="[{ impor_icon: item.importance }]"></b
@@ -211,8 +210,10 @@ export default {
         window.scrollY ||
         window.pageYOffset
     );
+    if (!to.path.includes("mail_more")) {
+      this.$store.commit("mailjs/MailSearchOptionInit");
+    }
 
-    this.$store.commit("mailjs/MailSearchOptionInit");
     this.$store.commit("mailjs/Back");
     next();
   },
@@ -222,12 +223,8 @@ export default {
     this.commonl = this.GetCommonL;
 
     this.page = 0;
-    // this.infiniteId += 1;
-    if (this.path === "custom") {
-      this.$store.dispatch("mailjs/GetMailDetail", {
-        mailtype: "custom",
-        folderId: this.$route.params.folderId,
-      });
+    if(this.path=="custom"){
+      await this.$store.dispatch("mailjs/GetMailDetail", { mailtype: "custom", folderId: this.$route.params.folderId });
     }
     if (this.back.isBacked) {
       var option = {};
@@ -259,6 +256,10 @@ export default {
       scrollentity.animate({ scrollTop: this.back.top }, 500);
     }
     this.$store.commit("SetBack", false);
+    console.log("created")
+  },
+  activated(){
+    console.log("activated")
   },
   mounted() {
     if ("ontouchstart" in document.documentElement !== true) {
@@ -271,8 +272,13 @@ export default {
       var result = await MailSearch(option);
       result = result.data.data;
       if (result) {
-        this.mail.data[this.path].data.data =
-          this.mail.data[this.path].data.data.concat(result);
+        if (option.page == 0) {
+          this.mail.data[this.path].data.data = result;
+        } else {
+          this.mail.data[this.path].data.data =
+            this.mail.data[this.path].data.data.concat(result);
+        }
+        this.infiniteId += 1;
       }
       return;
     },
@@ -280,18 +286,23 @@ export default {
       var result = await Mail(option);
       result = result.data.data;
       if (result) {
-        this.mail.data[this.path].data.data =
-          this.mail.data[this.path].data.data.concat(result);
+        if (option.page == 0) {
+          this.mail.data[this.path].data.data = result;
+        } else {
+          this.mail.data[this.path].data.data =
+            this.mail.data[this.path].data.data.concat(result);
+        }
+        this.infiniteId += 1;
       }
       return;
     },
     async Refresh() {
       this.$store.commit("mailjs/MailSearchOptionInit");
-      this.mail.data[this.path].data.data = [];
-      this.GetMail[this.path].page = 0;
-      var option = {};
+      // this.mail.data[this.path].data.data = [];
+      var option = this.GetMail[this.path];
+
+      option.page = 0;
       if (this.mailSearchPath.includes(this.path)) {
-        option = this.GetMail[this.path];
         option.mailtype = this.path;
 
         option.searchType = this.path;
@@ -299,10 +310,11 @@ export default {
 
         option.searchword = this.GetMailConfig.searchOption.searchword;
         option.size = this.GetConfig.listcount;
+
         await this.initMailSearch(option);
       } else {
-        option = this.GetMail[this.path];
         option.size = this.GetConfig.listcount;
+
         await this.initMail(option);
       }
       this.infiniteInit();
@@ -312,7 +324,7 @@ export default {
     },
     MailDetail(unid, folderName) {
       if (!this.mail.checkBtn.editclicked) {
-        this.$store.commit("mailjs/MailDetailFolder", folderName);
+        this.$store.commit("mailjs/MailDetailFolder", this.path);
         this.$router.push({ name: "ReadMail", params: { unid } });
       }
     },
@@ -343,6 +355,14 @@ export default {
     // 스크롤 페이징
     infiniteHandler($state) {
       if (!this.back.isBacked) {
+        if (
+          this.GetMail[this.path].page == 0 &&
+          this.mail.data[this.path].data.data &&
+          this.mail.data[this.path].data.data.length == 0
+        ) {
+          $state.complete();
+        }
+
         this.GetMail[this.path].page = String(
           parseInt(this.GetMail[this.path].page) + 1
         );

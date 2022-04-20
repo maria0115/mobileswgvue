@@ -17,7 +17,7 @@
             src="../../mobile/img/m_edit_icon01.png"
             alt=""
           /><em>{{ checknames.length }}</em
-          >개
+          >
         </h2>
         <div>
           <span class="all_btn" @click="allBtn()"></span>

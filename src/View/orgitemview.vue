@@ -7,6 +7,7 @@
       { last_deps: lastClass },
       { o_depth02: !lastClass },
       { active: isSelect },
+      { meme: this.me },
     ]"
   >
     <div>
@@ -16,8 +17,7 @@
         <!-- <em v-if="this.item.kinds == 'Person'" class="tel">{{
           item.office
         }}</em> -->
-        </span
-      >
+      </span>
     </div>
     <!-- v-if="isFolder" -->
     <!-- :style="{ display: this.isBlock }" -->
@@ -28,6 +28,7 @@
         :item="child"
         @OpenFolder="OpenFolder"
         :modalAutoOrg="modalAutoOrg"
+        :modalon="modalon"
         :createdOrg="createdOrg"
         @setModalOff="ModalOff"
         @OrgDataAdd="OrgDataAdd"
@@ -41,35 +42,15 @@ import { mapState, mapGetters } from "vuex";
 export default {
   name: "OrgItem",
   async created() {
-    var full = this.GetMyInfo.info.fullOrgCode;
-    if(full){
-      var pathidx = full.findIndex((item) => {
-        return item == this.item.mycode;
-      });
-      if (pathidx !== -1) {
-        this.GetChildren();
-        this.OpenFolder();
-      }
-
-    }
-    // item이 person이아니고 department면 무조건
-    // child 뽑기
-    if (this.createdOrg) {
-      this.GetChildren();
-      var auto = this.autosearchorg[this.org.pointer];
-      var result = auto.findIndex(
-        (element) => element.shortname === this.item.shortname
-      );
-      if (result !== -1) {
-        this.$emit("OpenFolder");
-        this.clicked = true;
-      }
+    if (this.modalon) {
+      this.Setting();
     }
   },
   props: {
     item: Object,
     modalAutoOrg: Number,
     createdOrg: Boolean,
+    modalon: Boolean,
   },
   data: function () {
     return {
@@ -77,6 +58,7 @@ export default {
       children: [],
       click: false,
       clicked: false,
+      me: false,
     };
   },
   computed: {
@@ -124,28 +106,62 @@ export default {
       //   return true;
       // }
       // }
-        return false;
+      return false;
     },
   },
   watch: {
+    async modalAutoOrg() {
+      if (this.modalon) {
+        this.Setting();
+      }
+    },
     // async modalAutoOrg() {
-      // if (this.item.kinds == "Department" && this.children.length === 0) {
-      //   this.GetChildren();
-      //   this.$emit("SetcreatedOrg");
-      // }
-      // var auto = this.autosearchorg[this.org.pointer];
-      // var result = auto.findIndex(
-      //   (element) => element.shortname === this.item.shortname
-      // );
-      // if (result !== -1) {
-      //   this.$emit("OpenFolder");
-      //   this.clicked = true;
-      // }
+    // if (this.item.kinds == "Department" && this.children.length === 0) {
+    //   this.GetChildren();
+    //   this.$emit("SetcreatedOrg");
+    // }
+    // var auto = this.autosearchorg[this.org.pointer];
+    // var result = auto.findIndex(
+    //   (element) => element.shortname === this.item.shortname
+    // );
+    // if (result !== -1) {
+    //   this.$emit("OpenFolder");
+    //   this.clicked = true;
+    // }
     // },
   },
   methods: {
-    OrgDataAdd(item){
-      this.$emit("OrgDataAdd",item);
+    Setting() {
+      var full = this.GetMyInfo.info.fullOrgCode;
+      if (full) {
+        var pathidx = full.findIndex((item) => {
+          return item == this.item.mycode;
+        });
+        if (
+          this.item.kinds == "Department" &&
+          this.children.length === 0 &&
+          pathidx !== -1
+        ) {
+          this.GetChildren();
+          this.OpenFolder();
+        }
+      }
+      // item이 person이아니고 department면 무조건
+      // child 뽑기
+      if (this.createdOrg) {
+        this.GetChildren();
+        var auto = this.autosearchorg[this.org.pointer];
+        var result = auto.findIndex(
+          (element) => element.shortname === this.item.shortname
+        );
+        if (result !== -1) {
+          this.$emit("OpenFolder");
+          this.clicked = true;
+        }
+      }
+    },
+    OrgDataAdd(item) {
+      this.$emit("OrgDataAdd", item);
     },
     OrgDataDelete() {
       this.$store.commit("OrgDataDelete", {
@@ -165,13 +181,20 @@ export default {
     },
     async GetChildren() {
       this.children = await this.$store.dispatch("Org", this.item);
+      var meidx = this.children.findIndex((item) => {
+        return item.notesId == this.GetMyInfo.info.notesid;
+      });
+      if (meidx !== -1) {
+        this.me = true;
+        this.getMe();
+      }
     },
     ModalOff() {
       this.$emit("setModalOff");
     },
     MailOrgData() {
       // if(this.item.kinds=="Person"){
-        this.$emit("OrgDataAdd",this.item);
+      this.$emit("OrgDataAdd", this.item);
       // }
       // if (!this.clicked) {
       //   this.clicked = true;
@@ -193,7 +216,7 @@ export default {
     },
     Or_bg() {
       if (this.item.kinds == "Person") {
-        this.clicked = true;
+        // this.clicked = true;
       }
     },
   },

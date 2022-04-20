@@ -2,7 +2,14 @@
   <div class="cal_menu" :class="{ on: this.calmenu }" @click="Close">
     <div class="cal_inner">
       <div class="info_tit">
-        <span class="cal_img01"></span>
+        <span class="cal_img01">
+          <img
+            v-if="GetMyInfo.photo !== undefined"
+            :src="GetMyInfo.photo"
+            alt=""
+            @error="$event.target.src = '../../mobile/img/img03.png'"
+          />
+        </span>
         <dl>
           <dt>{{ GetMyInfo.info.name }} {{ GetMyInfo.info.position }}</dt>
           <dd>{{ GetMyInfo.info.dept }}</dd>

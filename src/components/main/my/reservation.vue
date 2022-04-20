@@ -6,8 +6,13 @@
         <em>{{ changeDate().yearmonth }}</em>
         <b>{{ changeDate().day }}</b>
       </span>
-      <div class="ri_info">
-        <!-- <div v-for="(value, name) in sliceDate()" :key="name">
+      <VueSlickCarousel
+        class="ScheduleCarousel"
+        v-bind="settings"
+        v-if="sliceDate().length > 0"
+      >
+        <div class="ri_info" v-for="(value, name) in sliceDate()" :key="name">
+          <!-- <div v-for="(value, name) in sliceDate()" :key="name">
           <div v-if="value.allDay" class="all_cal">
             <a @click="Detail(value)">
               <em>종일 일정</em>
@@ -15,20 +20,24 @@
             </a>
           </div>
         </div> -->
-        <ul class="c_list" v-if="sliceDate().length > 0">
-          <li
-            :class="[{ red: name === 0 }]"
-            v-for="(value, name) in sliceDate()"
-            :key="name"
-          >
-            <a @click="Detail(value)">
-              <em>{{ value.time }}</em>
-              <p>[{{ value.roomName }}] {{ value.subject }}</p>
-            </a>
-          </li>
-        </ul>
-        <ul class="c_list" v-else>
+          <ul class="c_list" v-if="sliceDate().length > 0">
+            <li :class="[{ red: name === 0 }]">
+              <a @click="Detail(value)">
+                <em>{{ value.time }}</em>
+                <p>[{{ value.roomName }}] {{ value.subject }}</p>
+              </a>
+            </li>
+          </ul>
+          <!-- <ul class="c_list" v-else>
           <li><p>{{lang.result}}</p></li>
+        </ul> -->
+        </div>
+      </VueSlickCarousel>
+      <div class="ri_info" v-if="sliceDate().length == 0">
+        <ul class="c_list">
+          <li>
+            <p>{{ lang.result }}</p>
+          </li>
         </ul>
       </div>
     </div>
@@ -39,23 +48,35 @@
 </template>
 
 <script>
+import VueSlickCarousel from "vue-slick-carousel";
+
 import { mapGetters, mapState } from "vuex";
 export default {
   created() {
+    var moment = require("moment");
+    var today = moment().format("YYYY-MM-DD");
+    this.$store.dispatch("bookjs/MyreservationList", today);
     this.lang = this.GetMainLanguage.main;
-
   },
+  components: { VueSlickCarousel },
+
   props: ["portlet"],
   data() {
     return {
       yearmonth: "",
       day: "",
+      settings: {
+        slidesToShow: 1,
+        arrows: false,
+        dots: true,
+        touchMove: true,
+      },
     };
   },
   computed: {
     ...mapGetters("mainjs", ["GetMain"]),
     ...mapState("bookjs", ["MyreservationList"]),
-    ...mapGetters(["GetMainLanguage"])
+    ...mapGetters(["GetMainLanguage"]),
   },
   methods: {
     sliceDate() {
