@@ -1,5 +1,5 @@
 import {
-    MailDetail, FollowupSet, MailAutoSave, MailDelay, MailWrite, GetBody,
+    MailDetail, FollowupSet, MailAutoSave, MailDelay, MailWrite, GetBody,GetMail,
     MailRealDelete,
     FollowUpInfo,
     MailSearch,
@@ -333,8 +333,17 @@ export default {
             })
 
     },
+    GetMail({ state, rootState, commit }, data){
+        GetMail(data).then((res) => {
+            if (res.status == 200) {
+              commit("GetSend", res.data);
+            }
+          });
+    },
     async MailDetail({ state, rootState, commit }, { unid, type }) {
         // commit('MAIL_DETAIL_INIT');
+        // unid=${unid}&mailType=${mailtype}
+        
         rootState.tf = true;
         return await MailDetail(unid, type)
             .then(response => {

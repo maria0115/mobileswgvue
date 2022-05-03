@@ -4,7 +4,7 @@
       desc="결재할 문서"
       :title="`${this.params.title} ${title}`"
     ></BackHeader>
-    <div class="a_contents02">
+    <div class="a_contents02" v-if="this.Config.company == 'ace'">
       <div>
         <div class="line01">
           <em>{{ this.detail.category }}</em>
@@ -104,6 +104,44 @@
       <BtnPlus :menu="morePlus" @BtnClick="BtnClick"></BtnPlus>
       <Viewer className="" :attach="false" ref="viewer"></Viewer>
     </div>
+    <div v-else class="a_contents02">
+      <div>
+        <ul class="line02">
+          <li></li>
+          <li class="app_file" v-if="this.detail.attachInfo.length > 0">
+            <h3 :class="{ active: attActive }">
+              <a @click="isOpenAtt"
+                >{{ lang.attach }}
+                <em>({{ this.detail.attachInfo.length }})</em></a
+              >
+            </h3>
+            <div :class="{ active: attActive }">
+              <Viewer
+                className=""
+                :attaInfo="this.detail.attachInfo"
+                :attach="true"
+                :unid="this.detail.unid"
+              ></Viewer>
+            </div>
+          </li>
+        </ul>
+        <div class="line03" v-if="isI()">
+          <span @click="goOrigin" class="origi_btn">{{ GetCommonL.zoom }}</span>
+        </div>
+      </div>
+      <iframe
+        :src="url"
+        style="
+        width: 100%;
+        height: calc(100vh)!important
+        overflow: hidden;
+        border: 0px;
+        pointer-events: none;
+      "
+      ></iframe>
+      <BtnPlus :menu="morePlus" @BtnClick="BtnClick"></BtnPlus>
+      <Viewer className="" :attach="false" ref="viewer"></Viewer>
+    </div>
     <Comment
       :nowBtn="this.morePlus[this.nowBtn]"
       :isOpen="agreeNreject"
@@ -129,21 +167,34 @@ export default {
     var more = language.morePlus;
     this.morePlus.agree = more.agree;
     this.morePlus.reject = more.reject;
-    this.morePlus.view = more.view;
+    if (this.Config().company !== "ace") {
+      this.morePlus.view = more.view;
+    }
     this.title = language.title;
     this.params = JSON.parse(this.$route.query.data);
+
+    if (this.Config().company == "ace") {
+      this.aceOrigin();
+    }
     // this.params = this.GetHeader.menu;
     if (!this.detail.agreeBtn) {
       // this.morePlus = { view: "원문 보기",deleteItem: "삭제", };
-      this.morePlus = { view: more.view };
+      if (this.Config().company !== "ace") {
+        this.morePlus.view = more.view;
+      }
     }
+
     if (this.detail.status == "mutualing") {
       this.morePlus = {
         agree: more.mutualing.agree,
         reject: more.mutualing.reject,
-        view: more.view,
       };
+
+      if (this.Config().company !== "ace") {
+        this.morePlus.view = more.view;
+      }
     }
+
     if (this.detail.isEditBtn) {
       this.morePlus.edit = more.edit;
     }
@@ -183,7 +234,7 @@ export default {
   },
   data() {
     return {
-      morePlus: { agree: "승인", reject: "반려", view: "원문 보기" },
+      morePlus: {},
       title: "보기",
       appActive: false,
       attActive: false,
@@ -194,6 +245,20 @@ export default {
     };
   },
   methods: {
+    aceOrigin() {
+      if (this.url.length == 0) {
+        this.getSrcUrl(
+          this.Config().originPage + this.detail.openurl + "&fullscroll=1"
+        ).then((res) => {
+          this.url = res;
+        });
+      }
+      // this.url =
+      //   this.host() +
+      //   this.Config().originPage +
+      //   this.detail.openurl +
+      //   "&fullscroll=1";
+    },
     setOrigin() {
       if (this.url.length == 0) {
         this.getSrcUrl(
@@ -263,16 +328,16 @@ export default {
     },
     AgreeNReject(comment) {
       // if (confirm("제출 하시겠습니까") == true) {
-        let formData = new FormData();
-        formData.append("openurl", this.detail.openurl);
-        formData.append("comment", comment);
-        formData.append("approve", this.nowBtn);
+      let formData = new FormData();
+      formData.append("openurl", this.detail.openurl);
+      formData.append("comment", comment);
+      formData.append("approve", this.nowBtn);
 
-        this.$store.dispatch("approjs/agreeNreject", formData).then((res) => {
-          if (res) {
-            this.$router.go(-1);
-          }
-        });
+      this.$store.dispatch("approjs/agreeNreject", formData).then((res) => {
+        if (res) {
+          this.$router.go(-1);
+        }
+      });
       // } else {
       //   return;
       // }

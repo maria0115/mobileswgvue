@@ -11,7 +11,7 @@
         <a @click="moveFolder('$trash', 'mail_trash')">{{lang.trash}}</a>
       </li>
       <li :class="{ drop_menu: isFolder > 0 }">
-        <a @click="toggle">{{lang.folder}}</a>
+        <a ><em @click="toggle"></em><span @click="MailMove()">{{lang.folder}}</span></a>
         <ul class="f_depth02" :style="{ display: this.isBlock }">
           <div
             class="drop_menu"
@@ -61,6 +61,11 @@ export default {
     },
   },
   methods: {
+    MailMove(){
+      if (this.isFolder > 0) {
+        this.isOpen = !this.isOpen;
+      }
+    },
     Close(e) {
       var LayerPopup = $(".move_file");
       if (LayerPopup.has(e.target).length === 0) {

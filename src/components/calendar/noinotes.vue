@@ -291,7 +291,7 @@
           <div>
             <ul v-if="this.file.length > 0" class="file_list">
               <li v-for="(value, index) in this.file" :key="index">
-                {{ value.name
+                {{ value.name.normalize('NFC')
                 }}<span class="att_del" @click="FileDel(value)"></span>
               </li>
             </ul>
@@ -346,10 +346,6 @@ export default {
       this.EHour = end[0];
       this.EMin = end[1];
       this.Body_Text = this.detail.body;
-      // this.bodyurl = this.detail.bodyurl;
-      // if (this.Body_Text && this.isOpenFiled(this.Body_Text)) {
-      //   await this.getUrlBody();
-      // }
       this.Subject = this.detail.subject;
       this.org.SendTo = JSON.parse(JSON.stringify(this.detail.sendToInfo));
       var senddata = this.org.SendTo.map((item) => {

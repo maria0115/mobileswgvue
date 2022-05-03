@@ -107,7 +107,7 @@
             <div>
               <ul class="file_list">
                 <li v-for="(value, index) in this.file" :key="index">
-                  {{ value.name
+                  {{ value.name.normalize('NFC')
                   }}<span @click="FileDel(value)" class="att_del"></span>
                 </li>
               </ul>
@@ -151,14 +151,7 @@ export default {
 
     if (this.GetStoreBoard.edit) {
       this.file = this.GetStoreBoard.detail.attach;
-      // this.Body = this.GetStoreBoard.detail.body;
       this.Body_Text = this.GetStoreBoard.detail.body;
-      // this.bodyurl = this.GetStoreBoard.detail.bodyurl;
-
-      // if (this.Body_Text && this.isOpenFiled(this.Body_Text)) {
-      //   await this.getUrlBody();
-      // }
-      // await this.getUrlBody();
       this.Subject = this.GetStoreBoard.detail.subject;
       this.GetStoreBoard.detail.isAllowReply
         ? (this.isAllowReply = "1")

@@ -22,10 +22,12 @@
               </dt>
               <dd class="mar30">
                 <span
-                  >{{ GetMainLanguage.myinfo.mail }}
+                  >
+                  {{ GetMainLanguage.myinfo.mail }}
                   <router-link :to="{ name: 'mailfirst' }"
                     ><b>{{ GetMyInfo.mailCount }}</b></router-link
-                  ></span
+                  >
+                  </span
                 >
                 <span
                   >{{ GetMainLanguage.myinfo.approval }}
@@ -467,4 +469,14 @@ export default {
   -o-transition: width 0s;
   transition: width 0s;
 }
+
+#my_tab > div.my_info > div > dl > dd > span{
+  font-size: .87rem;
+    color: #fff;
+    line-height: 1;
+}
+/* #my_tab .mar30 span{display:inline-block;width:calc((100% - 0.93rem) / 2); margin-left:0 !important;}
+#my_tab .mar30 span:nth-child(2n){margin-left:0.93rem !important;}
+#my_tab .mar30 span:nth-child(n+3){margin-top:0.312rem !important;} */
+
 </style>

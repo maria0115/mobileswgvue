@@ -63,4 +63,6 @@ export default {
 @import "./mobile/css/style.css";
 @import "./mobile/css/slick.css";
 @import "./mobile/css/font.css";
+/* @import "./mobile/dist/css/timepicker.min.css"; */
+/* @import "./mobile/dist/css/jquery.ui.timepicker.css"; */
 </style>

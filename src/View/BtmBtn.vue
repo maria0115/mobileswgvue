@@ -6,7 +6,7 @@
         <a>{{ commonl.up }}</a>
       </li>
       <li @click="BtnClick('write')">
-        <a>{{ commonl.write }}</a>
+        <a class="agree">{{ commonl.write }}</a>
       </li>
     </ul>
   </div>

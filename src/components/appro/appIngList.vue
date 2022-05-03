@@ -27,7 +27,7 @@
                   }}</em>
                 </span>
                 <div class="s_text" @click="Read(value)">
-                  <em>{{ value.category }}</em>
+                  <em>{{ brReplace(value.category) }}</em>
                   <strong>{{ value.subject }}</strong>
                   <p>
                     {{ value.approvalinfo[0].author }}

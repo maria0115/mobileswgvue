@@ -188,7 +188,7 @@
               </select>
             </div>
           </li> -->
-          <li class="division">
+          <!-- <li class="division">
             <strong>{{ lang.sharerange }}</strong>
             <div>
               <select v-model="pDocPermission">
@@ -200,6 +200,12 @@
                   {{ value }}
                 </option>
               </select>
+            </div>
+          </li> -->
+          <li class="proposer">
+            <strong>{{ lang.sharerange }}</strong>
+            <div>
+              {{ this.DocPermission[this.pDocPermission]}}
             </div>
           </li>
           <li class="division">
@@ -370,7 +376,7 @@
               </div>
               <ul v-if="this.file.length > 0" class="file_list">
                 <li v-for="(value, index) in this.file" :key="index">
-                  {{ value.name
+                  {{ value.name.normalize('NFC')
                   }}<span class="att_del" @click="FileDel(value)"></span>
                 </li>
               </ul>
@@ -412,6 +418,7 @@ export default {
     this.category = language.category;
     this.DocPeriod = language.DocPeriod;
     this.DocPermission = language.DocPermission;
+    console.log(this.DocPermission)
     this.pathDivision = language.pathDivision;
     this.lang = language;
     this.params = JSON.parse(this.$route.query.data);
@@ -488,7 +495,7 @@ export default {
       startdate: null,
       enddate: null,
       pDocPeriod: 1,
-      pDocPermission: "H1",
+      pDocPermission: "H0",
       formSetting: {
         sReceiveArr: [],
         sReceiveOrgName: "",
@@ -543,7 +550,8 @@ export default {
         this.Subject = this.detail.subject;
         this.Body_Text = this.detail.body;
         this.pselCompany = this.detail.selCompany;
-        this.pDocPermission = this.detail.DocPermission;
+        // this.pDocPermission = this.detail.DocPermission;
+        this.pDocPermission = "H0";
         this.pdivision = this.detail.division;
         this.cause = this.detail.cause;
         this.plan = this.detail.plan;
@@ -767,7 +775,7 @@ export default {
               });
             }
             // this.$router.go(-1);
-            this.$store.commit("OrgDataInit");
+            // this.$store.commit("OrgDataInit");
 
             // }else if(e=="draft"){
             // this.$router.push({name:'appdraft',query:{data:JSON.stringify(this.params)}})

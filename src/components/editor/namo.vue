@@ -42,7 +42,28 @@ export default {
     fReadIframeContent() {},
     async receiveMsgFromChild(e) {
       if (e.data === "NamoCrossEditor") {
-        
+        $("input").each(function () {
+          const mobileRegex = [/iPhone/i, /iPad/i, /iPod/i];
+
+          var isI = mobileRegex.some((mobile) =>
+            window.navigator.userAgent.match(mobile)
+          );
+
+          $("body").on("focus", "input", function () {
+            if (isI) {
+              $(".btm_btn").css("position", "absolute");
+              $(".cal_w_header").css("position", "absolute");
+            }
+          });
+
+          $("body").on("blur", "input", function () {
+            if (isI) {
+              $(".btm_btn").css("position", "fixed");
+              $(".cal_w_header").css("position", "fixed");
+            }
+          });
+        });
+
         this.$refs.namo.contentWindow.crosseditor.SetBodyValue(this.body);
         if (this.read) {
           this.$refs.namo.contentWindow.crosseditor.SetReadonly(true);

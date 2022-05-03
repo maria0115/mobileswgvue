@@ -1,8 +1,8 @@
 <template>
-  <div class="impor_mail">
+  <div class="impor_mail" :class="{active:isClick}">
     <!--7월 29일 추가됨 -->
     <div class="impor_con">
-      <strong>{{lang.title}}</strong>
+      <strong>{{ lang.title }}</strong>
       <p>
         <span
           ><em
@@ -11,19 +11,19 @@
             @click="followUse"
             :class="{ active: this.use }"
           ></em
-          >{{lang.subtitle}}</span
+          >{{ lang.subtitle }}</span
         >
       </p>
       <ul>
         <li>
-          <em>{{lang.day}}</em>
+          <em>{{ lang.day }}</em>
           <div>
             <!-- <input type="date" v-model="date" /> -->
             <Date v-model="date"></Date>
           </div>
         </li>
         <li>
-          <em>{{lang.time}}</em>
+          <em>{{ lang.time }}</em>
           <div>
             <select name="" id="" v-model="STime">
               <option
@@ -47,16 +47,19 @@
           </div>
         </li>
         <li>
-          <em>{{lang.body}}</em>
+          <em>{{ lang.body }}</em>
           <div><textarea v-model="body"></textarea></div>
           <!-- <editor-content
           :editor="editor"
         /> -->
         </li>
       </ul>
-      <div>{{lang}}
-        <span class="impor_mo_btn" @click="followSet">{{lang.success}}</span>
-        <span class="modal_cancel" @click="followCancle">{{lang.cancle}}</span>
+      <div>
+        {{ lang }}
+        <span class="impor_mo_btn" @click="followSet">{{ lang.success }}</span>
+        <span class="modal_cancel" @click="followCancle">{{
+          lang.cancle
+        }}</span>
       </div>
     </div>
   </div>
@@ -68,13 +71,14 @@ import { mapState, mapGetters } from "vuex";
 export default {
   props: {
     unid: String,
+    isClick:Boolean,
   },
   created() {
     this.lang = this.GetMailLanguage.followup;
     var moment = require("moment");
     var localTime = moment.utc().toDate();
     this.date = moment(localTime).format("YYYY-MM-DD");
-
+    this.setTime();
     // this.editor = new Editor({
     //   content: "",
     // });
@@ -85,7 +89,7 @@ export default {
   computed: {
     ...mapState("mailjs", ["TimeOption"]),
     ...mapGetters("mailjs", ["GetMail"]),
-    ...mapGetters( ["GetMailLanguage"]),
+    ...mapGetters(["GetMailLanguage"]),
   },
   data() {
     return {
@@ -95,7 +99,7 @@ export default {
       SMin: "50",
       use: false,
       date: "",
-      body:"",
+      body: "",
     };
   },
   // beforeDestroy() {
@@ -106,8 +110,8 @@ export default {
   watch: {
     async unid() {
       // this.editor.destroy();
-        // this.unid = unid;
-        // console.log(this.unid)
+      // this.unid = unid;
+      // console.log(this.unid)
       var result = await this.$store.dispatch("mailjs/FollowUpInfo", this.unid);
       if (result) {
         if (this.GetMail.followUpInfo.use) {
@@ -125,8 +129,7 @@ export default {
           var moment = require("moment");
           var localTime = moment.utc().toDate();
           this.date = moment(localTime).format("YYYY-MM-DD");
-          this.STime = "05";
-          this.SMin = "50";
+          this.setTime();
           this.use = false;
           this.body = "";
           // this.editor = new Editor({
@@ -137,26 +140,38 @@ export default {
     },
   },
   methods: {
+    setTime() {
+      var moment = require("moment");
+      var nowmin = moment().format("mm");
+      var upmin = parseInt(nowmin.split("")[0]) + 1 + "0";
+      var cha = upmin - nowmin;
+      this.STime = moment().add(cha, "m").format("HH");
+      this.SMin = moment().add(cha, "m").format("mm");
+    },
     followCancle() {
       // if (this.editor) {
       //   this.editor.destroy();
       // }
+      this.$emit("isnClick");
     },
     async followSet() {
       // if (this.editor) {
+        
         var data = {};
-        if (this.date) {
-          data.use = this.use;
-          data.date = this.date;
-          data.unid = this.unid;
-          data.time = `${this.STime}:${this.SMin}:00`;
-          // data.body = this.editor.getHTML();
-          data.body = this.body;
+      if (this.date) {
+        this.$emit("isnClick");
+        data.use = this.use;
+        data.date = this.date;
+        data.unid = this.unid;
+        data.time = `${this.STime}:${this.SMin}:00`;
+        // data.body = this.editor.getHTML();
+        data.body = this.body;
 
-          await this.$store.dispatch("mailjs/FollowupSet", data);
-          this.$router.push(this.$router.currentRoute);
-        }
-        // this.editor.destroy();
+        await this.$store.dispatch("mailjs/FollowupSet", data);
+        this.$router.push(this.$router.currentRoute);
+      }
+
+      // this.editor.destroy();
       // }
     },
     followUse() {

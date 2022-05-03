@@ -24,7 +24,7 @@
       <form @submit.prevent>
         <ul class="wm_top">
           <li class="clfix">
-            <strong>{{ lang.to }} <em class="re_more"></em></strong>
+            <strong>{{ lang.to }}<em class="re_more"></em> </strong>
             <div class="todiv div_list">
               <ul class="list_add clfix">
                 <li
@@ -292,7 +292,7 @@
                       alt=""
                   /></span>
                   <div>
-                    <p>{{ value.name }}</p>
+                    <p>{{ value.name.normalize('NFC') }}</p>
                     <em v-if="from === ''">({{ value.size }})</em>
                     <em v-else>({{ value.size }})</em>
                     <span class="file_del" @click="FileDel(value)"></span>
@@ -408,6 +408,10 @@ export default {
       this.Subject = this.GetMailDetail.forwardMail.subject;
       this.Body_Text += `${this.GetMailDetail.forwardMail.body}<br><br><br>${this.Body}`;
     } else if (this.from === "Reply" || this.from === "AllReply") {
+      if (this.from === "AllReply") {
+        this.$store.commit("AllReply");
+      }
+
       this.Subject = this.GetMailDetail.replyMail.subject;
       this.Body_Text += `${this.GetMailDetail.replyMail.body}<br><br><br>${this.Body}`;
     } else if (this.isDraftEdit()) {
@@ -500,6 +504,7 @@ export default {
       if (this.Config().env == "dev") {
         this.Body = this.Option().host + this.Body;
       }
+      console.log(this.Body,"this.Body");
       this.Body = await this.$store.dispatch("getUrlBody", this.Body);
 
       return;
@@ -670,7 +675,7 @@ export default {
         if (menu === "send") {
           this.$store.dispatch("mailjs/MailWrite", formData).then((res) => {
             if (res) {
-              this.$store.commit("OrgDataInit");
+              // this.$store.commit("OrgDataInit");
               this.$router.push({ name: "sent_detail" });
             }
           });
@@ -688,7 +693,7 @@ export default {
             })
             .then((res) => {
               if (res) {
-                this.$store.commit("OrgDataInit");
+                // this.$store.commit("OrgDataInit");
                 this.$router.push({ name: "mail_draft" });
               }
             });
@@ -716,7 +721,7 @@ export default {
 
             this.$store.dispatch("mailjs/MailWrite", formData).then((res) => {
               if (res) {
-                this.$store.commit("OrgDataInit");
+                // this.$store.commit("OrgDataInit");
                 this.$router.push({ name: "sent_detail" });
               }
             });
@@ -740,7 +745,7 @@ export default {
             })
             .then((res) => {
               if (res) {
-                this.$store.commit("OrgDataInit");
+                // this.$store.commit("OrgDataInit");
                 this.$router.push({ name: "mail_draft" });
               }
             });

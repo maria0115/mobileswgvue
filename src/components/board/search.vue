@@ -61,7 +61,7 @@ export default {
   },
   methods: {
     Close(e) {
-      var LayerPopup = $(".search_con");
+      var LayerPopup = $(".sc_top");
       if (LayerPopup.has(e.target).length === 0) {
         $(".search_con").removeClass("active");
       }

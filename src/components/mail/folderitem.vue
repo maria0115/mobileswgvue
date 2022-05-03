@@ -1,6 +1,9 @@
 <template>
   <li :class="{ drop_menu: this.isFolder > 0 }">
-    <a @click="toggle" :class="{ on: this.isOpen }">{{ item.nodetitle.ko }}</a>
+    <a :class="{ on: this.isOpen }"
+      ><em @click="toggle"></em
+      ><span @click="MailMove">{{ item.nodetitle.ko }}</span></a
+    >
     <ul v-if="isFolder" :style="{ display: this.isBlock }">
       <folder-item
         v-for="(child, index) in item.children"
@@ -41,25 +44,27 @@ export default {
     },
   },
   methods: {
+    async MailMove() {
+      const result = await this.$store.dispatch("mailjs/MailMove", {
+        viewname: this.item.nodetitle.ko,
+        folderId: this.item.mycode,
+      });
+
+      if (result) {
+        this.$store.commit(
+          "mailjs/MailCustomFolderTitle",
+          this.item.nodetitle.ko
+        );
+        this.$router.replace({
+          name: "custom",
+          params: { folderId: this.item.mycode },
+        });
+      }
+    },
     async toggle() {
+      console.log(this.item);
       if (this.isFolder > 0) {
         this.isOpen = !this.isOpen;
-      } else {
-        const result = await this.$store.dispatch("mailjs/MailMove", {
-          viewname: this.item.nodetitle.ko,
-          folderId: this.item.mycode,
-        });
-
-        if (result) {
-          this.$store.commit(
-            "mailjs/MailCustomFolderTitle",
-            this.item.nodetitle.ko
-          );
-          this.$router.replace({
-            name: "custom",
-            params: { folderId: this.item.mycode },
-          });
-        }
       }
     },
     makeFolder: function () {

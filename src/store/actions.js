@@ -1,10 +1,11 @@
 import {
-    getUrlBody,OrgAutoSearch, GetLanguage, Login, InitOrg, Org, CategoryList, ListOfCategory, DocView, Logout
+    getUrlBody, OrgAutoSearch, GetLanguage, Login, InitOrg, Org, CategoryList, ListOfCategory, DocView, Logout
 } from '../api/index.js';
-import {jsonPost} from '@/api/editor';
+import { jsonPost } from '@/api/editor';
 import { setRawCookie, removeCookie } from 'tiny-cookie';
 import cookie from 'vue-cookies';
 import config from '../config/config.json';
+// import cheerio from 'cheerio';
 
 var firstDot = window.location.hostname.indexOf(".");
 
@@ -12,24 +13,36 @@ var domain = window.location.hostname.substring(
     firstDot == -1 ? 0 : firstDot + 1
 );
 export default {
-    getUrlBody({ state, commit },url){
+    getUrlBody({ state, commit }, url) {
         state.tf = true;
         return getUrlBody(url)
-        .then((res) => {
-            state.tf = false;
-            if (res.status == 200) {
-                return res.data;
-            }else{
-                return false;
-            }
-        })
+            .then((res) => {
+                state.tf = false;
+                if (res.status == 200) {
+
+                    const cheerio = require('cheerio');
+                    const $ = cheerio.load(res.data);
+                    $("img[src='/icons/medoc.gif']").each(function(i, elem) {
+                       $(elem).parent().parent().parent().parent().parent().parent().remove();
+                    })
+
+                    // $('h2.title').text('Hello there!');
+                    // $('h2').addClass('welcome');
+
+                    var data = $.html();
+
+                    return data;
+                } else {
+                    return false;
+                }
+            })
     },
-    editorJsonPost({ state, commit },data){
+    editorJsonPost({ state, commit }, data) {
         return jsonPost(data)
-        .then((res) => {
-            res.status !== 200?res = false:res=res.data;
-            return res;
-        })
+            .then((res) => {
+                res.status !== 200 ? res = false : res = res.data;
+                return res;
+            })
     },
     SetHeader({ dispatch, commit }, data) {
 
@@ -86,10 +99,10 @@ export default {
         const idSave = localStorage.getItem("idSave");
         const autoLogin = localStorage.getItem("autoLogin");
     },
-    
+
     login({ state, commit }, credentials) {
 
-        if(credentials.lang){
+        if (credentials.lang) {
             setRawCookie('language', credentials.lang, { domain });
         }
         state.tf = true;
@@ -111,9 +124,9 @@ export default {
                         //     
 
                         // }else{
-                            
+
                         setRawCookie(key, res.data.cookies[key], { domain });
-                        
+
 
                         // }
 
@@ -148,7 +161,7 @@ export default {
                 } else {
 
                     commit("AutoSearchOrg", { data: res.data, menu: data });
-                    
+
                     return res.data;
 
                 }

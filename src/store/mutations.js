@@ -1,6 +1,6 @@
 
 export default {
-    pushHistory(state,data){
+    pushHistory(state, data) {
         state.history.push(data);
         const set = new Set(state.history);
 
@@ -17,8 +17,13 @@ export default {
             BlindCopyTo: []
         };
         state.org.SendTo.push(state.mailjs.store.maildetail.author);
-        state.org['SendTo'] = state.org['SendTo'].filter((element) => element.id !== state.mailjs.mail.data.myinfo.id);
-        state.org['CopyTo'] = state.org['CopyTo'].filter((element) => element.id !== state.mailjs.mail.data.myinfo.id);
+        state.org['SendTo'] = state.org['SendTo'].filter((element) => {
+            return element.id !== state.mailjs.mail.data.myinfo.id && element.email !== state.mailjs.mail.data.myinfo.email
+        });
+        state.org['CopyTo'] = state.org['CopyTo'].filter((element) => {
+            return element.id !== state.mailjs.mail.data.myinfo.id && element.email !== state.mailjs.mail.data.myinfo.email
+
+        });
 
         var send = state.org['SendTo'];
         var copy = state.org['CopyTo'];
@@ -35,6 +40,7 @@ export default {
         });
 
         state.org['SendTo'] = send;
+
         var resend = send.map(item => {
             return { point: "SendTo", item };
         })
@@ -43,6 +49,7 @@ export default {
         var recopy = copy.map(item => {
             return { point: "CopyTo", item };
         })
+        console.log(state.org,"state.org");
         state.orgdata = state.orgdata.concat(recopy);
     },
     SetBack(state, value) {
@@ -118,7 +125,7 @@ export default {
         var result = state.orgdata.findIndex((item1, idx) => {
             return (item1.item.notesId == item.item.notesId && item1.item.id == item.item.id) && item1.point == item.point;
         });
-        
+
         if (result == -1) {
             state.orgdata.push(item);
         }

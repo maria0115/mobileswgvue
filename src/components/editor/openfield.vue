@@ -1,10 +1,5 @@
 <template>
-  <iframe
-    :src="body"
-    id="iid"
-    :style="isPoint()"
-    ref="openfield"
-  ></iframe>
+  <iframe :src="body" id="iid" :style="isPoint()" ref="openfield"></iframe>
 </template>
 
 <script>
@@ -22,8 +17,9 @@ export default {
     if (this.$route.query.data) {
       this.params = JSON.parse(this.$route.query.data);
     }
-
-    this.isClick = this.params && this.params.type == "news" && this.isA();
+    // this.params.type == "news";
+    this.isClick = this.Config().company == "ace" && this.isA();
+    // this.$route.path.indexOf("read_mail") !== -1) &&
 
     this.timeout = setTimeout(() => {
       clearInterval(this.interval);
@@ -71,14 +67,24 @@ export default {
           if (link.length > 0) {
             clearInterval(check.link);
             for (var i = 0; i < link.length; i++) {
-              // var url = "m60call://browser?urladdress="+link[i].getAttribute("href");
-              var url = link[i].getAttribute("href");
+              var returnhref = link[i].getAttribute("href");
+              var href = "";
+              if (returnhref.indexOf("javascript") !== -1) {
+                href = returnhref;
+                // returnhref=returnhref.split("javascript:window.open('")[1];
+                // returnhref = returnhref.split("')")[0];
+              } else {
+                var url = "m60call://browser?urladdress=" + returnhref;
+                // var url = link[i].getAttribute("href");
 
-              var goto = `${window.location.origin}/mobile_index/viewer`;
-              var setToken = this.replaceAll(this.getToKen(), "+", "$SIS$");
-              var href = `${goto}?url=${encodeURIComponent(
-                url
-              )}&token=${encodeURIComponent(setToken)}`;
+                var goto = `${window.location.origin}/mobile_index/viewer`;
+                var setToken = this.replaceAll(this.getToKen(), "+", "$SIS$");
+                href = `${goto}?url=${encodeURIComponent(
+                  url
+                )}&token=${encodeURIComponent(setToken)}`;
+              }
+
+              // var href = encodeURIComponent(url);
 
               link[i].setAttribute("href", href);
               link[i].setAttribute("target", "_parent");

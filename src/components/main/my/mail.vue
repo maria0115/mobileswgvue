@@ -24,8 +24,7 @@
                   >{{ lang.cc }}</em
                 >
               </div>
-              <span>{{ transTime(value.created)
-              }}</span>
+              <span>{{ transTime(value.created) }}</span>
             </dt>
             <!-- 7월 5일 div태그 추가됨 -->
             <dd>
@@ -35,7 +34,7 @@
             <!-- 7월 05일 중요메일 느낌표 태그 추가됨-->
           </dl>
           <div class="impor">
-            <p @click="followUp(value.unid)">
+            <p @click="followUp(value)">
               <span
                 class="star"
                 :class="{ active: value.followup }"
@@ -48,7 +47,11 @@
         </a>
       </li>
     </ul>
-    <FollowUp :unid="clickedUnid"></FollowUp>
+    <FollowUp
+      :isClick="isfollclick"
+      @isnClick="isnClick"
+      :unid="clickedUnid"
+    ></FollowUp>
     <router-link :to="{ name: 'mail' }"
       ><span class="m_more"><a></a></span
     ></router-link>
@@ -57,9 +60,14 @@
 
 <script>
 import { mapState, mapGetters } from "vuex";
-import FollowUp from "../../../components/mail/folloup.vue";
+import FollowUp from "@/components/mail/folloup.vue";
 export default {
   created() {
+    this.$store.dispatch("mainjs/GetMail", {
+      mailtype: "inbox_detail",
+      category: "my",
+    });
+
     this.lang = this.GetMailLanguage.list;
   },
   props: ["portlet"],
@@ -69,6 +77,7 @@ export default {
       clickedUnid: "",
       body: "",
       unid: "",
+      isfollclick: false,
     };
   },
   computed: {
@@ -121,8 +130,20 @@ export default {
       localTime = moment(localTime).format("YYYY.MM.DD HH:mm");
       return localTime;
     },
-    followUp(unid) {
-      this.clickedUnid = unid;
+    followUp(value) {
+      this.clickedUnid = value.unid;
+      if (this.Config().company == "ace") {
+        this.folSet(value);
+        this.$store.dispatch("mainjs/GetMail", {
+          mailtype: "inbox_detail",
+          category: "my",
+        });
+      } else {
+        this.isfollclick = true;
+      }
+    },
+    isnClick() {
+      this.isfollclick = false;
     },
   },
 };

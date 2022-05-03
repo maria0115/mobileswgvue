@@ -174,7 +174,13 @@ let NowTime = {
             if (arg) {
                 var moment = require("moment");
                 var d = `${this.year}-${this.month}-${this.today}`;
-                var red = moment(d,"YYYY-MM-DD").add(arg, "months");
+                var type = "months";
+                if(this.$route.name == "calday"){
+                    type = "d";
+                }else if(this.$route.name == "calweek"){
+                    type = "w";
+                }
+                var red = moment(d,"YYYY-MM-DD").add(arg, type);
 
                 this.month = red.format("MM");
                 this.year = red.format("YYYY");

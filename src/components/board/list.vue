@@ -30,8 +30,8 @@
         <ul class="board_list">
           <li v-for="(value, index) in lists" :key="index">
             <a @click="Read(value)">
+              <!-- <img src="../../mobile/img/img01.png" alt=""> -->
               <span class="basic_img on" v-if="value.author">
-                <!-- <img src="../../mobile/img/img01.png" alt=""> -->
                 <em class="no_img" :style="randomColor()"
                   ><b>{{ value.author.split("")[0] }}</b></em
                 >
@@ -47,7 +47,9 @@
                 </dt>
                 <dd>
                   {{ value.author }}<span>{{ transTime(value.created) }}</span
-                  ><em class="like" v-if="options.isUseLike">{{ value.likecnt }}</em>
+                  ><em class="like" v-if="options.isUseLike">{{
+                    value.likecnt
+                  }}</em>
                 </dd>
               </dl>
               <span :class="{ clip: value.attach }"></span>
@@ -67,7 +69,7 @@
       :params="this.params"
     ></SubMenu>
     <Search @SetSearchWord="SetSearchWord"></Search>
-    <WBtn :path="path" ></WBtn>
+    <WBtn :path="path"></WBtn>
     <div class="ac_btns">
       <span class="more_plus"></span>
       <ul>
@@ -77,6 +79,7 @@
         <li v-if="this.Option().boardwrite">
           <!-- @click.native="SetHeader(params)" -->
           <router-link
+            class="agree"
             :to="{
               name: 'boardwrite',
               query: { data: JSON.stringify(params) },
@@ -167,7 +170,7 @@ export default {
   },
   computed: {
     ...mapState("mainjs", ["main"]),
-    ...mapGetters("boardjs", ["GetBoard","options"]),
+    ...mapGetters("boardjs", ["GetBoard", "options"]),
     ...mapGetters("configjs", ["GetConfig"]),
     ...mapGetters(["GetCategory", "GetHeader"]),
     ...mapState(["listOfCategory", "back"]),

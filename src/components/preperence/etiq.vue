@@ -16,7 +16,8 @@
                   v-on:input="setConfig($event, 'starttime')"
                 /> -->
                 <!-- :input="setConfig(start, 'starttime')" -->
-                <Time id="et01" v-model="start" :input="setConfig(start, 'starttime')"></Time>
+                <Time v-if="!isA()" id="et01" v-model="start" :input="setConfig(start, 'starttime')"></Time>
+                <ATime v-else id="et01" v-model="start" :input="setConfig(start, 'starttime')"></ATime>
               </li>
               <li>
                 <label for="et02">{{this.GetAllim.endtime}}</label>
@@ -27,7 +28,8 @@
                   :value="GetConfig.etiquette.endtime"
                   v-on:input="setConfig($event, 'endtime')"
                 /> -->
-                <Time id="et02" v-model="end" :input="setConfig(end, 'endtime')" ></Time>
+                <Time v-if="!isA()" id="et02" v-model="end" :input="setConfig(end, 'endtime')" ></Time>
+                <ATime v-else id="et02" v-model="end" :input="setConfig(end, 'endtime')" ></ATime>
               </li>
             </ul>
           </li>

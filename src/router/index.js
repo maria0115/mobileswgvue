@@ -122,8 +122,7 @@ const router = new Router({
           component: Main,
           name: 'main',
           beforeEnter: (to, from, next) => {
-        // store.dispatch("GetLanguage", { app: "main" });
-
+            // store.dispatch("GetLanguage", { app: "main" });
             store.dispatch("CategoryList", "");
             store.dispatch("mainjs/GetMyInfo")
             store.dispatch("configjs/setMode")
@@ -155,11 +154,11 @@ const router = new Router({
               component: my,
               name: "My",
               beforeEnter: (to, from, next) => {
-                
+
                 // store.dispatch("mainjs/GetBoard", { boardtype: "notice", category: "my" });
                 // // store.dispatch("mainjs/GetBoard", { boardtype: "recent", category: "my" });
-                store.dispatch("mainjs/GetApproval", { approvaltype: "approve", category: "my" });
-                store.dispatch("mainjs/GetMail", { mailtype: "inbox_detail", category: "my" });
+
+
                 next();
 
               },
@@ -526,9 +525,6 @@ const router = new Router({
               component: WriteMail,
               name: 'WriteMail',
               beforeEnter: (to, from, next) => {
-                // store.commit("MailOrgDataInit")
-
-                // .then((r) =>{
                 if (store.state.mailjs.from == "Reply") {
                   store.commit("OrgData", store.state.mailjs.store.maildetail.author);
 
@@ -541,7 +537,6 @@ const router = new Router({
                     })
                 }
 
-                // })
 
                 var data = {};
                 data.menu = "mail";

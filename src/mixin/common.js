@@ -7,6 +7,7 @@ import Body from "@/components/common/body.vue"
 import Viewer from "@/components/common/viewer.vue"
 import Date from "@/components/common/date.vue"
 import Time from "@/components/common/time.vue"
+import ATime from "@/components/common/Atime.vue"
 import { FormTagsPlugin } from "bootstrap-vue";
 export default {
     beforeDestroy() {
@@ -21,7 +22,8 @@ export default {
         Body,
         Viewer,
         Time,
-        Date
+        Date,
+        ATime
     },
     computed: {
         ...mapState("mailjs", ["from"]),
@@ -174,6 +176,12 @@ export default {
             // xhr.setRequestHeader("Content-Type", "multipart/form-data");
             // xhr.open('post', path, true);
             // xhr.send(form);
+        },
+        getLanguage(app) {
+            this.$store.dispatch("GetLanguage", { app });
+        },
+        brReplace(value) {
+            return this.replaceAll(value, "<br>", " ");
         },
         replaceAll(str, searchStr, replaceStr) {
             return str.split(searchStr).join(replaceStr);
@@ -452,6 +460,19 @@ export default {
             }
             str = str + number;
             return str;
+        },
+        folSet(value) {
+            var data = {};
+            this.$emit("isnClick");
+            data.use = !value.followup;
+            data.date = "2000-00-00";
+            data.unid = value.unid;
+            data.time = `00:00:00`;
+            // data.body = this.editor.getHTML();
+            data.body = "";
+
+            this.$store.dispatch("mailjs/FollowupSet", data);
+
         },
     }
 }

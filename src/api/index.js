@@ -1,5 +1,16 @@
 import axios from 'axios';
 // /api/approval?type=edit
+// 메일 디테일
+function GetMail(data) {
+    var query = Object.entries(data).map(e => e.join('=')).join('&');
+    return axios({
+        method: 'get',
+        url: `/api/mail?${query}`,
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+}
 // 초기 조직도
 function getUrlBody(url) {
     return axios({
@@ -521,6 +532,7 @@ function MailDetail(unid,mailtype) {
         }
     })
 }
+
 // 메일 팔로우업 설정
 function FollowupSet(data) {
     return axios({
@@ -955,5 +967,6 @@ export {
     MyreservationList,
     LogDelete,
     GetBody,
-    getUrlBody
+    getUrlBody,
+    GetMail
 }

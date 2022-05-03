@@ -46,9 +46,6 @@ export default {
     };
   },
   methods: {
-    getLanguage(app) {
-      this.$store.dispatch("GetLanguage", { app });
-    },
     async getMaster() {
       if (this.GetMyInfo.info.fullOrgCode) {
         var full = this.GetMyInfo.info.fullOrgCode;

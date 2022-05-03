@@ -1,84 +1,117 @@
 <template>
-<div class="main_tab">
+  <div class="main_tab">
+    <div id="mail_tab">
+      <div class="re_mail">
+        <strong desc="받은 메일">{{ GetMainLanguage.portlet.receive }}</strong>
+        <ul>
+          <li
+            :class="{ new: value.unread }"
+            v-for="(value, name) in main.data.mailtype.inbox_detail.more.data
+              .data"
+            :key="name"
+          >
+            <a
+              ><dl @click="MailDetail(value.unid)">
+                <dt>
+                  {{ value.sender }}
+                  <div>
+                    <em
+                      class="rece"
+                      v-if="value.tostuff !== undefined"
+                      :class="{ on: value.tostuff.receive }"
+                      >{{ lang.reception }}</em
+                    ><em
+                      class="refer"
+                      v-if="value.tostuff !== undefined"
+                      :class="{ on: value.tostuff.ref }"
+                      >{{ lang.copyto }}</em
+                    >
+                  </div>
+                  <span>{{ transTime(value.created) }}</span>
+                </dt>
+                <!-- 7월 5일 div태그 추가됨 -->
+                <dd>
+                  <b :class="{ impor_icon: value.importance }"></b
+                  >{{ value.subject }}
+                </dd>
+                <!-- 7월 05일 중요메일 느낌표 태그 추가됨-->
+              </dl>
+              <div class="impor">
+                <p>
+                  <span
+                    @click="followUp(value)"
+                    class="star"
+                    :class="{ active: value.followup }"
+                  ></span>
+                </p>
+                <span :class="[{ clip: haveClip(value.attach) }]"></span></div
+            ></a>
+          </li>
+        </ul>
+        <router-link :to="{ name: 'mail' }"
+          ><span class="m_more"><a></a></span
+        ></router-link>
+      </div>
+      <!-- <div class="se_mail"> -->
+      <div class="re_mail">
+        <strong desc="보낸 메일">{{ GetMainLanguage.portlet.send }}</strong>
+        <ul>
+          <!-- <li
+            @click="MailDetail(value.unid)"
+            v-for="(value, name) in main.data.mailtype.sent_main.more.data"
+            :key="name"
+          >
+            <a>{{ value.subject }}</a>
+            
+          </li> -->
 
-  <div id="mail_tab">
-    <div class="re_mail">
-      <strong desc="받은 메일">{{ GetMainLanguage.portlet.receive }}</strong>
-      <ul>
-        <li
-          :class="{ new: value.unread }"
-          v-for="(value, name) in main.data.mailtype.inbox_detail.more.data
-            .data"
-          :key="name"
-        >
-          <a
-            ><dl @click="MailDetail(value.unid)">
-              <dt>
-                {{ value.sender }}
-                <div>
-                  <em
-                    class="rece"
-                    v-if="value.tostuff !== undefined"
-                    :class="{ on: value.tostuff.receive }"
-                    >{{lang.reception}}</em
-                  ><em
-                    class="refer"
-                    v-if="value.tostuff !== undefined"
-                    :class="{ on: value.tostuff.ref }"
-                    >{{lang.copyto}}</em
-                  >
-                </div>
-                <span>{{ transTime(value.created) }}</span>
-              </dt>
-              <!-- 7월 5일 div태그 추가됨 -->
-              <dd>
-                <b :class="{ impor_icon: value.importance }"></b
-                >{{ value.subject }}
-              </dd>
-              <!-- 7월 05일 중요메일 느낌표 태그 추가됨-->
-            </dl>
-            <div class="impor">
-              <p>
-                <span
-                 @click="followUp(value.unid)"
-                  class="star"
-                  :class="{ active: value.followup }"
-                ></span>
-              </p>
-              <span :class="[{ clip: haveClip(value.attach) }]"></span></div
-          ></a>
-        </li>
-      </ul>
-      <router-link :to="{ name: 'mail' }"
-        ><span class="m_more"><a></a></span
-      ></router-link>
-    </div>
-    <div class="se_mail">
-      <strong desc="보낸 메일">{{ GetMainLanguage.portlet.send }}</strong>
-      <ul>
-        <li
-          @click="MailDetail(value.unid)"
-          v-for="(value, name) in main.data.mailtype.sent_main.more.data"
-          :key="name"
-        >
-          <a>{{ value.subject }}</a>
-        </li>
-      </ul>
-      <FollowUp :unid="clickedUnid"></FollowUp>
-      <router-link :to="{ name: 'sent_detail' }"
-        ><span class="m_more"><a></a></span
-      ></router-link>
+          <li
+            v-for="(value, name) in main.data.mailtype.sent_main.more.data"
+            :key="name"
+          >
+            <a
+              ><dl @click="MailDetail(value.unid)">
+                <dt>
+                  <span>{{ transTime(value.created) }}</span>
+                </dt>
+                <!-- 7월 5일 div태그 추가됨 -->
+                <dd>
+                  <b :class="{ impor_icon: value.importance }"></b
+                  >{{ value.subject }}
+                </dd>
+                <!-- 7월 05일 중요메일 느낌표 태그 추가됨-->
+              </dl>
+              <div class="impor">
+                <!-- <p>
+                  <span
+                    @click="followUp(value)"
+                    class="star"
+                    :class="{ active: value.followup }"
+                  ></span>
+                </p> -->
+                <span style="margin-top:0 !important" :class="[{ clip: haveClip(value.attach) }]"></span></div
+            ></a>
+          </li>
+        </ul>
+        <FollowUp
+          :isClick="isfollclick"
+          @isnClick="isnClick"
+          :unid="clickedUnid"
+        ></FollowUp>
+        <router-link :to="{ name: 'sent_detail' }"
+          ><span class="m_more"><a></a></span
+        ></router-link>
+      </div>
     </div>
   </div>
-</div>
 </template>
 
 <script>
 import { mapState, mapGetters } from "vuex";
-import FollowUp from "../../components/mail/folloup.vue";
+import FollowUp from "@/components/mail/folloup.vue";
 export default {
   components: {
-    FollowUp
+    FollowUp,
   },
   data() {
     return {
@@ -86,6 +119,7 @@ export default {
       clickedUnid: "",
       body: "",
       unid: "",
+      isfollclick: false,
     };
   },
   computed: {
@@ -99,11 +133,8 @@ export default {
     this.lang = this.GetMainLanguage.main;
     this.params = JSON.parse(this.$route.query.data);
     // this.params = this.GetHeader.menu;
-
   },
-  mounted(){
-    
-  },
+  mounted() {},
   methods: {
     MailDetail(unid) {
       this.$router.push({ name: "ReadMail", params: { unid } });
@@ -146,10 +177,27 @@ export default {
       localTime = moment(localTime).format("YYYY.MM.DD HH:mm");
       return localTime;
     },
-    followUp(unid) {
-      this.clickedUnid = unid;
+    followUp(value) {
+      console.log(value);
+      this.clickedUnid = value.unid;
+      if (this.Config().company == "ace") {
+        this.folSet(value);
+        this.$store.dispatch("mainjs/GetMail", {
+          mailtype: "inbox_detail",
+          category: "more",
+        });
+        this.$store.dispatch("mainjs/GetMail", {
+          mailtype: "sent_main",
+          category: "more",
+        });
+      } else {
+        this.isfollclick = true;
+      }
     },
-    
+    isnClick() {
+      this.isfollclick = false;
+    },
+
     SetHeader(data) {
       this.$store.dispatch("SetHeader", data);
     },

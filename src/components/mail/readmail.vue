@@ -6,24 +6,35 @@
           ><img src="../../mobile/img/wmail_back.png" alt="" /></a
       ></em>
       <div class="rdmail_icons">
-        <span class="rd_reply fw_bold" @click="Replay('Reply')"  v-if="!(isDraft()||isTrash()||isBook())">{{
-          lang.reply
-        }}</span>
-        <span class="rd_relay" v-if="!(isDraft()||isTrash()||isBook())"  @click="Replay('Relay')">{{
-          lang.fw
-        }}</span>
+        <span
+          class="rd_reply fw_bold"
+          @click="Replay('Reply')"
+          v-if="!(isDraft() || isTrash() || isBook())"
+          >{{ lang.reply }}</span
+        >
+        <span
+          class="rd_relay"
+          v-if="!(isDraft() || isTrash() || isBook())"
+          @click="Replay('Relay')"
+          >{{ lang.fw }}</span
+        >
         <span class="rd_relay fw_bold" v-if="isDraft()" @click="Edit()">{{
           lang.edit
         }}</span>
-        <span class="rd_del fw_bold" @click="mailDelete">{{
-          lang.delete
-        }}</span>
-        <span class="rd_more"  v-if="!(isDraft()||isBook())"></span>
-        
+        <span
+          class="rd_del fw_bold"
+          style="margin-right: 0.3rem"
+          @click="mailDelete"
+          >{{ lang.delete }}</span
+        >
+        <span class="rd_more" v-if="!(isDraft() || isBook())"></span>
+
         <ul class="more_box">
           <li class="move">{{ lang.move }}</li>
           <!-- <li @click="SpamSet" v-if="!isDraft()">{{ lang.spam }}</li> -->
-          <li v-if="!(isDraft()||isTrash())" @click="Replay('AllReply')">{{ lang.allreply }}</li>
+          <li v-if="!(isDraft() || isTrash())" @click="Replay('AllReply')">
+            {{ lang.allreply }}
+          </li>
           <li v-if="isTrash()" @click="MailRecovery">
             {{ lang.recovery }}
           </li>
@@ -93,14 +104,19 @@
               </div>
             </li> -->
           </ul>
-          <span
+          <!-- <span
             class="star"
-            @click="followUp(GetMailDetail.unid)"
+            v-if="!isBook()"
+            @click="followUp(GetMailDetail)"
             :class="{ active: this.GetMail.followUpInfo.use }"
-          ></span>
-          <FollowUp :unid="clickedUnid"></FollowUp>
+          ></span> -->
+          <!-- <FollowUp
+            :isClick="isfollclick"
+            @isnClick="isnClick"
+            :unid="clickedUnid"
+          ></FollowUp> -->
         </div>
-        <div class="add_file clfix"  v-if="GetMailDetail.attach.length>0">
+        <div class="add_file clfix" v-if="GetMailDetail.attach.length > 0">
           <strong>{{ lang.attach }}<em class="file_more"></em></strong>
           <Viewer
             className=""
@@ -113,15 +129,21 @@
           안녕하세요. 디자인 팀 안지영 입니다. 2021년 사내업무 및 유지 보수 내역
           보내드립니다. 감사합니다.
         </div> -->
-        <div style="font-size: .93rem;color: #999;">
-          <strong>본문 내의 링크 기능은 스미싱등 보안 상의 이유로 제공 하지 않습니다.</strong>
+        <div
+          style="font-size: 0.93rem; color: #999"
+          v-if="Config().company == 'kiturami'"
+        >
+          <strong
+            >본문 내의 링크 기능은 스미싱등 보안 상의 이유로 제공 하지
+            않습니다.</strong
+          >
         </div>
-        
+
         <div class="rdm_edit">
           <!-- {{GetMailDetail.body}}{{GetMailDetail}} -->
           <Body
             id="memo_t"
-            style="height:100%"
+            style="height: 100%"
             :body="GetMailDetail.body"
             :bodyurl="GetMailDetail.bodyurl"
             ref="Body"
@@ -149,6 +171,7 @@ export default {
     return {
       clickedUnid: "",
       body: "",
+      isfollclick: false,
     };
   },
   computed: {
@@ -167,6 +190,12 @@ export default {
     this.lang = this.GetMailLanguage.read;
     this.$store.dispatch("mailjs/FollowUpInfo", this.GetMailDetail.unid);
     this.$store.commit("mailjs/checkedNamesPush", this.GetMailDetail.unid);
+    var data = {};
+    data.type = "getsendto";
+    data.mailtype = this.GetMailDetail.type;
+    data.unid = this.GetMailDetail.unid;
+
+    this.$store.dispatch("mailjs/GetMail",data);
   },
   methods: {
     downloadFile(value) {
@@ -182,7 +211,10 @@ export default {
     },
     isDraft() {
       if (this.GetfolderName) {
-        return this.GetfolderName.indexOf("draft") !== -1||this.GetfolderName.indexOf("auto") !== -1;
+        return (
+          this.GetfolderName.indexOf("draft") !== -1 ||
+          this.GetfolderName.indexOf("auto") !== -1
+        );
       }
       return false;
     },
@@ -192,7 +224,7 @@ export default {
       }
       return false;
     },
-    isTrash(){
+    isTrash() {
       if (this.GetfolderName) {
         return this.GetfolderName.indexOf("trash") !== -1;
       }
@@ -201,16 +233,25 @@ export default {
     Edit() {
       this.$router.push({ name: "WriteMail", query: { isEdit: true } });
     },
-    followUp(unid) {
-      this.clickedUnid = unid;
+    followUp(value) {
+      this.clickedUnid = value.unid;
+      if (this.Config().company == "ace") {
+        value.followup = !value.followup;
+        this.folSet(value);
+        this.$store.dispatch("mailjs/FollowUpInfo", this.GetMailDetail.unid);
+      } else {
+        this.isfollclick = true;
+      }
+    },
+    isnClick() {
+      this.isfollclick = false;
     },
     // 기본이미지 랜덤 색
     randomColor() {
       const color = ["#bcbbdd", "#bbcbdd", "#bbddd7", "#d0d0d0"];
       return `background: ${color[Math.floor(Math.random() * 4)]}`;
     },
-    
-    
+
     Replay(value) {
       this.$store.commit("mailjs/From", value);
       this.$router.push({ name: "WriteMail" });

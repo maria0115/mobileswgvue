@@ -1,8 +1,10 @@
 
 export default {
-    MAIL_DETAIL_INIT(state){
-        state.store.maildetail = {attach : [] ,
-            author : {name : '',}};
+    MAIL_DETAIL_INIT(state) {
+        state.store.maildetail = {
+            attach: [],
+            author: { name: '', }
+        };
         state.store.maildetail.unid = '';
     },
     MailSearchOptionInit(state) {
@@ -32,7 +34,6 @@ export default {
 
     },
     AllReply(state, data) {
-        
         state.mailorg = {
             pointer: "SendTo",
             SendTo: state.store.maildetail.sendTo,
@@ -56,7 +57,7 @@ export default {
                 return item1.id == item2.id
             }) == idx1;
         });
-        
+
         state.mailorg['SendTo'] = send;
         state.mailorg['CopyTo'] = copy;
 
@@ -68,16 +69,21 @@ export default {
         state.store.mailconfig.view[what] = unid;
     },
     MailDetailFolder(state, folderName) {
-        
+
         state.store.folderName = folderName;
     },
-    MailDetailUnid(state, {unid,type}) {
-        
+    MailDetailUnid(state, { unid, type }) {
+
         state.store.maildetail.unid = unid;
         state.store.maildetail.type = type;
     },
+    GetSend(state, data) {
+        for (var key in data) {
+            state.store.maildetail[key] = data[key];
+        }
+    },
     MailDetailData(state, data) {
-        
+
         var unid = state.store.maildetail.unid;
         state.store.maildetail = data;
         state.store.maildetail.unid = unid;
@@ -179,6 +185,6 @@ export default {
         state.mail.data[mailtype].data = res;
         // 
     },
-    
-    
+
+
 }

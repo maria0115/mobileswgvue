@@ -96,7 +96,7 @@
                         item.followup !== undefined && path !== 'mail_trash'
                       "
                       class="star"
-                      @click="followUp(item.unid)"
+                      @click="followUp(item)"
                       :class="{ active: item.followup }"
                       alt=""
                     >
@@ -120,7 +120,7 @@
       </form>
     </div>
     <!-- 여기 -->
-    <FollowUp :unid="clickedUnid"></FollowUp>
+    <FollowUp :isClick="isfollclick" @isnClick="isnClick" :unid="clickedUnid"></FollowUp>
     <div class="ac_btns">
       <span class="more_plus"></span>
       <ul>
@@ -128,7 +128,7 @@
           <a class="top">{{ commonl.up }}</a>
         </li>
         <li>
-          <router-link :to="{ name: 'WriteMail' }">{{
+          <router-link :to="{ name: 'WriteMail' }" class="agree">{{
             lang.morePlus.write
           }}</router-link>
         </li>
@@ -181,6 +181,7 @@ export default {
       unid: "",
       clickedUnid: "",
       lists: [],
+      isfollclick:false,
     };
   },
   computed: {
@@ -236,16 +237,17 @@ export default {
       option.searchfield = this.GetMailConfig.searchOption.searchfield;
 
       option.searchword = this.GetMailConfig.searchOption.searchword;
-      option.size = this.GetConfig.listcount;
-      for (var i = 0; i < this.back.page; i++) {
-        this.page++;
+      option.size = this.GetConfig.listcount*(this.back.page+1);
+      // for (var i = 0; i < this.back.page; i++) {
+        // this.page++;
         option.page = this.page;
         if (this.mailSearchPath.includes(this.path)) {
           await this.initMailSearch(option);
         } else {
           await this.initMail(option);
         }
-      }
+        this.page = this.back.page;
+      // }
       this.infiniteId++;
       this.$forceUpdate();
       // window.scroll({ top: this.back.top, behavior: "smooth" });
@@ -253,7 +255,7 @@ export default {
       if (navigator.userAgent.match(/(iPod|iPhone|iPad)/)) {
         scrollentity = $("html");
       }
-      scrollentity.animate({ scrollTop: this.back.top }, 500);
+      scrollentity.animate({ scrollTop: this.back.top }, 0);
     }
     this.$store.commit("SetBack", false);
     console.log("created")
@@ -270,28 +272,31 @@ export default {
   methods: {
     async initMailSearch(option) {
       var result = await MailSearch(option);
-      result = result.data.data;
-      if (result) {
+      result = result.data;
+      if (result.data) {
         if (option.page == 0) {
-          this.mail.data[this.path].data.data = result;
+          this.mail.data[this.path].data.data = result.data;
         } else {
           this.mail.data[this.path].data.data =
-            this.mail.data[this.path].data.data.concat(result);
+            this.mail.data[this.path].data.data.concat(result.data);
         }
+        this.mail.data[this.path].data.total = result.total;
+
         this.infiniteId += 1;
       }
       return;
     },
     async initMail(option) {
       var result = await Mail(option);
-      result = result.data.data;
-      if (result) {
+      result = result.data;
+      if (result.data) {
         if (option.page == 0) {
-          this.mail.data[this.path].data.data = result;
+          this.mail.data[this.path].data.data = result.data;
         } else {
           this.mail.data[this.path].data.data =
-            this.mail.data[this.path].data.data.concat(result);
+            this.mail.data[this.path].data.data.concat(result.data);
         }
+        this.mail.data[this.path].data.total = result.total;
         this.infiniteId += 1;
       }
       return;
@@ -319,8 +324,18 @@ export default {
       }
       this.infiniteInit();
     },
-    followUp(unid) {
-      this.clickedUnid = unid;
+    followUp(value) {
+      this.clickedUnid = value.unid;
+      if (this.Config().company == "ace") {
+        this.folSet(value);
+        value.followup = !value.followup;
+        // this.$forceUpdate();
+      } else {
+        this.isfollclick = true;
+      }
+    },
+    isnClick(){
+      this.isfollclick=false;
     },
     MailDetail(unid, folderName) {
       if (!this.mail.checkBtn.editclicked) {
@@ -345,7 +360,9 @@ export default {
           type: this.path,
         });
       }
+
       this.$store.commit("mailjs/mailDelete", { type: this.path });
+      this.$store.commit("mailjs/checkedNamesRemove");
     },
     remove(item) {
       this.mail.data[this.path].data.data = this.mail.data[

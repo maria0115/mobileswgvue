@@ -29,6 +29,47 @@ $(function () {
     //     $.mobile.loader.prototype.options.disabled = true;
     // });
 
+    $("body").on("keypress", ".mx-input", function (e) {
+        $("input").blur();
+    });
+    $("body").on("click", ".mx-input", function (e) {
+        $("input").blur();
+    });
+
+    $("input").each(function () {
+
+        const mobileRegex = [
+            /iPhone/i,
+            /iPad/i,
+            /iPod/i,
+        ]
+
+        var isI = mobileRegex.some(mobile => window.navigator.userAgent.match(mobile))
+
+        $('body').on('focus', 'input', function () {
+            if (isI) {
+                $(".btm_btn").css("position", "absolute");
+                // $(".search_con").css("position", "absolute");
+                // $(".sc_top").css("position", "absolute");
+                // $(".sub_header").css("position", "absolute");
+                $(".cal_w_header").css("position", "absolute");
+            }
+        });
+
+        $('body').on('blur', 'input', function () {
+            if (isI) {
+                $(".btm_btn").css("position", "fixed");
+                // $(".search_con").css("position", "fixed");
+                // $(".sc_top").css("position", "fixed");
+                // $(".sub_header").css("position", "fixed");
+                $(".cal_w_header").css("position", "fixed");
+
+            }
+        });
+
+
+    });
+
 
     //  라디오버튼 클릭시 이벤트 발생 //
     $('body').on('click', 'input:radio[name=radio]', function () {
@@ -192,10 +233,10 @@ $(function () {
         $('.basic_img').addClass('on');
         $('.more_box').removeClass('on');
     });
-    $('body').on('click','.color_chart h3',function(){
+    $('body').on('click', '.color_chart h3', function () {
         $(this).siblings('ul').fadeToggle();
     });
-    $('body').on('load','#bodyIFrame',function(){
+    $('body').on('load', '#bodyIFrame', function () {
         console.log("iframe 로드 됏다")
         $('#bodyIFrame').off("load.fReadIframeContent");
     });
@@ -420,16 +461,16 @@ $(function () {
     // $('body').on('click','.impor_con .edit_check', function() {
     //     $(this).toggleClass('active');
     // });
-    $('body').on('click', '.star', function () {
-        // $(this).parent('p').parent('div').siblings('.impor_mail').addClass('active');
-        $('.impor_mail').addClass('active');
-    });
-    $('body').on('click', '.modal_cancel', function () {
-        $('.impor_mail').removeClass('active');
-    });
-    $('body').on('click', '.impor_mo_btn', function () {
-        $('.impor_mail').removeClass('active');
-    });
+    // $('body').on('click', '.star', function () {
+    //     // $(this).parent('p').parent('div').siblings('.impor_mail').addClass('active');
+    //     $('.impor_mail').addClass('active');
+    // });
+    // $('body').on('click', '.modal_cancel', function () {
+    //     $('.impor_mail').removeClass('active');
+    // });
+    // $('body').on('click', '.impor_mo_btn', function () {
+    //     $('.impor_mail').removeClass('active');
+    // });
     $('body').on('click', '.sc_check', function () {
         $('.sc_btm').find('.sc_check').removeClass('active');
         $('.sc_btm').find('.all_sc_check').removeClass('active');
@@ -548,10 +589,10 @@ $(function () {
     });/*27일 추가됨*/
 
     // 22.02.15 추가
-    $('body').on('click','.file_more',function(){
+    $('body').on('click', '.file_more', function () {
         $(this).toggleClass('active');
         $('.add_file ul').slideToggle();
         $('.cal_add_file ul').slideToggle();
     });
-    
+
 });

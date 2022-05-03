@@ -86,7 +86,7 @@
         <ul>
           <li class="top"><a>{{GetCommonL.up}}</a></li>
           <li @click="Write('')">
-            <a>{{ lang.title }}</a>
+            <a class="agree">{{ lang.title }}</a>
           </li>
         </ul>
       </div>

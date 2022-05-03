@@ -18,7 +18,9 @@
         }}</span>
       </div>
     </div>
-    <div class="m_contents08 srl">
+    <div class="m_contents08 srl" 
+      style="top: 0 !important;"
+    >
       <div class="con_body_top">
         <span>{{ calData.subject }}</span>
         <em v-if="Option().inotes"

@@ -31,9 +31,9 @@
           <!-- <span class="spam_btn" @click="SpamSet"></span> -->
           <span class="edit_more"></span>
           <ul class="more_box">
-            <li @click="ReadFlag">{{ GetMailLanguage.option.readsign }}</li>
+            <li @click="ReadFlag" v-if="!path.includes('trash')">{{ GetMailLanguage.option.readsign }}</li>
             <li class="move">{{ GetMailLanguage.option.move }}</li>
-            <li @click="Relay">{{ GetMailLanguage.option.receive }}</li>
+            <li @click="Relay" v-if="!path.includes('trash')">{{ GetMailLanguage.option.receive }}</li>
             <li v-if="path.includes('trash')" @click="MailRecovery">
               {{ lang.MailRecovery }}
             </li>
@@ -41,7 +41,7 @@
         </div>
       </div>
     </div>
-    <div class="search_con">
+    <div class="search_con" @click="Close">
       <div>
         <div class="sc_top">
           <span class="back_btn"></span>
@@ -141,6 +141,12 @@ export default {
     next();
   },
   methods: {
+    Close(e) {
+      var LayerPopup = $(".sc_top");
+      if (LayerPopup.has(e.target).length === 0) {
+        $(".search_con").removeClass("active");
+      }
+    },
     Relay() {
       if (this.mail.checkBtn.checkedNames.length > 0) {
         var item = this.mail.checkBtn.checkedNames[0];

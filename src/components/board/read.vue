@@ -6,12 +6,17 @@
           ><img src="../../mobile/img/wmail_back.png" alt="" /></a
         >{{ params.title }}
       </h2>
-      <div v-if="(GetStoreBoard.detail.isWriter || GetStoreBoard.detail.isAdmin)&&Option().boardwrite">
+      <div
+        v-if="
+          (GetStoreBoard.detail.isWriter || GetStoreBoard.detail.isAdmin) &&
+          Option().boardwrite
+        "
+      >
         <span class="edit fw_bold" @click="Edit">{{ lang.modify }}</span>
         <span class="del fw_bold" @click="DeleteBoard">{{ lang.remove }}</span>
       </div>
     </div>
-    <div class="m_contents04">
+    <div class="m_contents04" v-if="Config().company !== 'ace'">
       <div class="nt_top">
         <h3 class="noti_tit">{{ GetStoreBoard.detail.subject }}</h3>
         <div class="clfix">
@@ -61,7 +66,7 @@
       <div class="rdm_edit">
         <Body
           id="noti_con"
-          style="height:100%"
+          style="height: 100%"
           :body="GetStoreBoard.detail.body"
           :bodyurl="GetStoreBoard.detail.bodyurl"
           ref="Body"
@@ -152,6 +157,32 @@
             </div>
           </div>
         </div>
+      </div>
+    </div>
+    <div v-else class="m_contents04">
+      <div
+        class="add_file nt_file clfix"
+        v-if="GetStoreBoard.detail.attach.length > 0"
+      >
+        <strong>{{ lang.attach }}<em class="file_more"></em></strong>
+        <Viewer
+          className=""
+          :attaInfo="GetStoreBoard.detail.attach"
+          :attach="true"
+          :unid="GetStoreBoard.detail.unid"
+        ></Viewer>
+      </div>
+      <div class="rdm_edit" style="height: calc(100vh)!important">
+        <Body
+          id="noti_con"
+          style="height: calc(100vh)!important"
+          
+          :body="GetStoreBoard.detail.body"
+          :bodyurl="GetStoreBoard.detail.bodyurl"
+          ref="Body"
+          :read="true"
+          did="board"
+        />
       </div>
     </div>
   </div>
@@ -399,5 +430,7 @@ export default {
 .ProseMirror {
   border: 0;
 }
-.rdm_edit{height:calc(100vh - 13.437rem);}
+.rdm_edit {
+  height: calc(100vh - 13.437rem);
+}
 </style>

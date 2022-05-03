@@ -79,8 +79,7 @@
             <!--10월 13일 추가됨 -->
             <!-- <input type="date" v-model="startDate" /> -->
             <Date v-model="startDate"></Date>
-            <b>~</b
-            >
+            <b>~</b>
             <!-- <input v-model="endDate" type="date" /> -->
             <Date v-model="endDate"></Date>
           </div>
@@ -117,7 +116,7 @@ export default {
   },
   methods: {
     Close(e) {
-      var LayerPopup = $(".search_con");
+      var LayerPopup = $(".sc_top");
       if (LayerPopup.has(e.target).length === 0) {
         $(".search_con").removeClass("active");
       }

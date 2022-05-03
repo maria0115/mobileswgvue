@@ -1,8 +1,8 @@
 <template>
   <li>
-    <h4 @click="toggle"  :class="{on:isOpen}">
-      <a>{{ item.nodetitle.ko }}
-        <em class="down_m" v-if="item.children.length"></em>
+    <h4   :class="{on:isOpen}">
+      <a><div @click="go">{{ item.nodetitle.ko }}</div>
+        <em @click="toggle" class="down_m" v-if="item.children.length"></em>
       </a>
     </h4>
     <ul v-if="isFolder" :style="{ display: this.isBlock }">
@@ -44,15 +44,16 @@ export default {
     toggle: function () {
       if (this.isFolder > 0) {
         this.isOpen = !this.isOpen;
-      } else {
-        this.customFolder = this.item.mycode;
+      } 
+    },
+    go(){
+      this.customFolder = this.item.mycode;
         this.$store.commit("mailjs/MailCustomFolderTitle", this.item.nodetitle.ko);
         this.$store.commit("mailjs/MailSearchOptionInit");
         this.$router.push({
           name: "custom",
           params: { folderId: this.item.mycode },
         });
-      }
     },
     makeFolder: function () {
       if (!this.isFolder) {

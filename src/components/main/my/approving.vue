@@ -102,6 +102,7 @@ import VueSlickCarousel from "vue-slick-carousel";
 import { mapState, mapGetters } from "vuex";
 export default {
   async created() {
+    this.$store.dispatch("mainjs/GetApproval", { approvaltype: "approve", category: "my" });
     this.params = this.portlet;
     var categorys = await this.$store.dispatch(
       "CategoryList",

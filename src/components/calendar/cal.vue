@@ -13,6 +13,7 @@
       class="m_contents08"
       @touchstart="Start($event)"
       @touchmove="Move($event)"
+      style="top: 0 !important;"
     >
       <table>
         <thead>

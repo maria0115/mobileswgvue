@@ -63,10 +63,32 @@
           <strong>{{ lang.time }}</strong>
           <div>
             <!-- <input type="time" value="15:00" v-model="startTime" /> -->
-            <Time v-model="startTime" :startTime="startTime"></Time>
+            <Time
+              v-if="!isA()"
+              style="height: 2.43rem"
+              v-model="startTime"
+              :startTime="startTime"
+            ></Time>
+            <ATime
+              v-else
+              style="height: 2.43rem"
+              v-model="startTime"
+              :startTime="startTime"
+            ></ATime>
             <b>~</b>
             <!-- <input type="time" value="16:00" v-model="endTime" /> -->
-            <Time v-model="endTime" :endTime="startTime"></Time>
+            <Time
+              v-if="!isA()"
+              style="height: 2.43rem"
+              v-model="endTime"
+              :endTime="startTime"
+            ></Time>
+            <ATime
+              v-else
+              style="height: 2.43rem"
+              v-model="endTime"
+              :endTime="startTime"
+            ></ATime>
           </div>
         </li>
         <li v-if="onCategory == 3" class="cal_att">
@@ -295,7 +317,7 @@
           <div>
             <ul v-if="this.file.length > 0" class="file_list">
               <li v-for="(value, index) in this.file" :key="index">
-                {{ value.name
+                {{ value.name.normalize('NFC')
                 }}<span class="att_del" @click="FileDel(value)"></span>
               </li>
             </ul>
@@ -337,16 +359,7 @@ export default {
     if (this.GetEdit) {
       this.editData =
         this.GetSchedule.calDetail[this.GetSaveSchedule.detail.where];
-
-      // this.Body = this.editData.body;
-      // if (this.Body && this.isOpenFiled(this.Body)) {
-      //   await this.getUrlBody();
-      // }
       this.Body_Text = this.editData.body;
-      // this.bodyurl = this.editData.bodyurl;
-      // if (this.Body_Text && this.isOpenFiled(this.Body_Text)) {
-      //   await this.getUrlBody();
-      // }
       this.date = this.editData.startdate;
       this.onCategory = this.editData.categoryVal;
       this.place = this.editData.place;
@@ -371,12 +384,15 @@ export default {
       this.file = this.editData.attachInfo;
     } else {
       var moment = require("moment");
-      var dates = new Date();
-      var hour = dates.getHours();
-      var minute = dates.getMinutes();
-      this.startTime = `${this.fill(2, hour)}:${this.fill(2, minute)}`;
+      var nowmin = moment().format("mm");
+      var upmin = parseInt(nowmin.split("")[0]) + 1 + "0";
+      var cha = upmin - nowmin;
+      this.startTime = moment().add(cha, "m").format("HH:mm");
+      this.endTime = moment().add(cha, "m").add(1, "h").format("HH:mm");
 
-      this.endTime = `${this.fill(2, hour + 1)}:${this.fill(2, minute)}`;
+      // this.startTime = `${this.fill(2, hour)}:${this.fill(2, minute)}`;
+
+      // this.endTime = `${this.fill(2, hour + 1)}:${this.fill(2, minute)}`;
       this.date = moment().format("YYYY-MM-DD");
       this.RepeatStartDate = moment().utc().format("YYYYMMDDTHHmmss");
       this.RepeatUntil = moment().format("YYYYMMDD");
@@ -552,6 +568,10 @@ export default {
       return str;
     },
     Send() {
+      if(this.Subject.length===0){
+        alert(this.GetCommonL.comment.subject);
+        return;
+      }
       var formData = new FormData();
       formData.append("subject", this.Subject);
       var SendTo = "";

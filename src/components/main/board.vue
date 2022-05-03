@@ -70,7 +70,7 @@ export default {
     this.categories = res;
     for (var i = 0; i < res.length; i++) {
       res[i].page = 0;
-      res[i].size = 5;
+      res[i].size = 10;
       res[i].category = "board";
       res[i].type = this.params.type;
       var resp = await this.$store.dispatch("ListOfCategory", res[i]);

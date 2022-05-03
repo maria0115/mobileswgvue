@@ -28,7 +28,7 @@
                 >
               </span>
               <div class="s_text" @click="Read(item)">
-                <em>{{ item.category }}</em>
+                <em>{{ brReplace(item.category) }}</em>
                 <strong>{{ item.subject }}</strong>
                 <p class="pd_0">
                   <em v-if="item.author"
@@ -166,6 +166,7 @@ export default {
     };
   },
   methods: {
+    
     Refresh() {
       this.appInit();
       return this.$store

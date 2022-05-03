@@ -2,11 +2,7 @@
   <div class="wrap btm_b">
     <div class="main_wrap">
       <h1 class="main_logo">
-        <img
-          :src="Logo()"
-          @error="$event.target.src = etcLogo()"
-          alt="로고"
-        />
+        <img :src="Logo()" @error="$event.target.src = etcLogo()" alt="로고" />
       </h1>
       <div class="login_input">
         <input type="text" placeholder="id" v-model="id" />
@@ -24,14 +20,14 @@
       <p class="login_check">
         <span class="check_lf" @click="toggleidSave">
           <b :class="{ active: this.idSave }"></b>
-          <em>아이디저장</em>
+          <em>Save ID</em>
         </span>
         <span class="check_ri" @click="toggleautoLogin">
           <b :class="{ active: this.autoLogin }"></b>
-          <em>자동로그인</em>
+          <em>Auto Login</em>
         </span>
       </p>
-      <button @click="login">로그인</button>
+      <button @click="login">Login</button>
     </div>
   </div>
 </template>
@@ -111,6 +107,8 @@ export default {
       return config.company;
     },
     login() {
+      this.$store.commit("mailjs/MailSearchOptionInit");
+
       this.query.strLocale = this.language.toLowerCase();
 
       localStorage.setItem(
@@ -128,7 +126,54 @@ export default {
       this.$store.dispatch("login", data).then((res) => {
         if (res.success) {
           this.setConfig();
-          this.$router.push({ name: "home" });
+          if (this.$route.query.type == "mail" || this.$route.query.type == "approval") {
+            var langarr = [
+              "search",
+              "main",
+              "config",
+              "approval",
+              "board",
+              "reservation",
+              "mailconfig",
+              "schedule",
+              "common",
+            ];
+            for (var item of langarr) {
+              this.getLanguage(item);
+            }
+            this.$store.dispatch("GetLanguage", { app: "common" });
+            this.$store.dispatch("GetLanguage", { app: "mail" });
+            this.$store.dispatch("configjs/setMode");
+            this.$store.dispatch("mainjs/GetMyInfo");
+
+            this.$store.dispatch("CategoryList", "").then((res) => {
+              this.categorys = res;
+              if (this.query.type == "mail") {
+                this.$router.push({ name: "inbox_detail" });
+              } else {
+                var app = this.ThisCategory("approval");
+                this.$store.dispatch("CategoryList", app.lnbid).then((res) => {
+                  this.categorys = res;
+                  var approve = this.ThisCategory("approve");
+                  if (approve) {
+                    this.$router.push({
+                      name: "appapprove",
+                      query: {
+                        data: JSON.stringify({
+                          title: approve.title,
+                          type: approve.category,
+                          top: app.lnbid,
+                          lnbid: approve.lnbid,
+                        }),
+                      },
+                    });
+                  }
+                });
+              }
+            });
+          } else {
+            this.$router.push({ name: "home" });
+          }
         } else {
           if (res.alert) {
             // alert("로그인 실패, reason = > " + res.message);
@@ -167,6 +212,20 @@ export default {
         menu: "login",
         value: this.autoLogin,
       });
+    },
+    menuOfCategoryIdx(menu) {
+      if (this.categorys) {
+        return this.categorys.findIndex(function (item, idx) {
+          return item.category == menu;
+        });
+      }
+      return -1;
+    },
+    ThisCategory(menu) {
+      if (this.categorys) {
+        return this.categorys[this.menuOfCategoryIdx(menu)];
+      }
+      return [];
     },
   },
 };

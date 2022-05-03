@@ -165,7 +165,7 @@ export default {
   },
   beforeDestroy() {
     this.$store.commit("mailjs/From", "");
-    this.$store.commit("OrgDataInit");
+    // this.$store.commit("OrgDataInit");
     this.$store.commit("InitOrgData");
 
     // this.$store.commit("OrgDataInit");

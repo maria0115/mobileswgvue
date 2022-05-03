@@ -138,8 +138,10 @@ textarea,input{font-family: 'Apple SD Gothic','Nanum Gothic', sans-serif;}
 .eti_menu li > ul li{position:relative;height:2.81rem;/*line-height:2.81rem;*/background:#fff;padding:0.875rem 1rem 0;}
 .eti_menu li > ul li + li:after{position:absolute;top:0;left:50%;transform:translateX(-50%);width:calc(100% - 2rem);height:0.06rem;content:"";background:#f6f6f6;}
 .eti_menu li > ul li label{/*float:left;line-height:2.81rem;*/display:inline-flex;font-size:1rem;color:#000;font-weight:600;}
-.eti_menu li > ul li .mx-datepicker{position:absolute;top:50%;right:10px;height:2.25rem;width:7.1rem;transform:translateY(-50%);outline:none;background:none;border:0;font-size:1rem;color:var(--main-bg-color);font-weight:600;}
+.eti_menu li > ul li .clickme{position:absolute;top:50%;right:10px;height:2.25rem;width:7.1rem;transform:translateY(-50%);outline:none;background:none;border:0;font-size:1rem;color:var(--main-bg-color);font-weight:600;text-align:right;padding:0 0.937rem;}
+.eti_menu li > ul li .mx-datepicker{float:right;width:120px !important;margin-top:-0.437rem;}
 .eti_menu li > ul li .mx-datepicker .mx-input{height:100%;}
+
 /* 환경설정 문서 수 */
 .contents05{padding-top:1.06rem;}
 .num_menu li > ul li{position:relative;height:2.81rem;/*line-height:2.81rem*/;background:#fff;padding:0.875rem 1rem 0;}
@@ -317,7 +319,9 @@ textarea,input{font-family: 'Apple SD Gothic','Nanum Gothic', sans-serif;}
 .lst_option.active{display:block;box-shadow:0 3px 3px rgb(0 0 0 / 30%);}
 .lst_option li span.active{color:#000;font-weight:600;}
 .lst_option li p{float:left;width:75%;font-size:1rem;color:#000;}
-.lst_option li p .inputdate{width:45% !important;height:1.87rem;appearance:none;border:0.06rem solid #e8e8e8;outline:none;padding-left:2.06rem;background:url(/mobile/img/data_off.png)left 0.5rem center no-repeat;background-size:0.93rem 0.93rem;font-size:0.87rem;color:#939598;}
+/* .lst_option li p .inputdate{width:45% !important;height:1.87rem;appearance:none;border:0.06rem solid #e8e8e8;outline:none;padding-left:2.06rem;background:url(/mobile/img/data_off.png)left 0.5rem center no-repeat;background-size:0.93rem 0.93rem;font-size:0.87rem;color:#939598;} */
+.lst_option li p .inputdate{width:45% !important;height:1.87rem;font-size:0.87rem;color:#939598;}
+
 .lst_option li p .inputdate.on{color:#000;font-weight:600;background:url(/mobile/img/data_on.png)left 0.5rem center no-repeat;background-size:0.93rem 0.93rem;border-color:#000;}
 .lst_option li p .inputdate::placeholder{font-size:0.87rem;color:#939598;font-weight:900;}
 .lst_option li p .inputdate.on::placeholder{color:#000;}
@@ -518,7 +522,7 @@ textarea,input{font-family: 'Apple SD Gothic','Nanum Gothic', sans-serif;}
 .info_in > dl span b{color:#ff743c;}
 .info_in > dl span + span{margin-left:0.93rem;} 
 .mar15 .info_in{padding:0 1rem;}
-.mar15 .mar30 span + span{margin-left:0.75rem;}
+.mar15 .mar30 span + span{margin-left:0.35rem;}
 
 .m_mail{margin-top:0.62rem;background:#fff;padding:0.93rem 1.25rem;box-shadow:0 0 0.31rem rgba(0,0,0,.05);}/*8월 23일 수정함*/
 .m_mail strong{display:block;font-size:1.25rem;color: #000;line-height:1;}
@@ -528,7 +532,7 @@ textarea,input{font-family: 'Apple SD Gothic','Nanum Gothic', sans-serif;}
 .m_mail ul li a dl dt{font-size:0.93rem;color:#444;line-height:1.2;cursor:pointer;}
 /* 22.03.08 추가 */
 .m_mail ul li a dl dt span{font-size:.81rem;color:#999;line-height:1;letter-spacing:-.06rem;float:right;margin:0.187rem 0.625rem 0 0;}
-.m_mail ul li a dl dd{margin-top:0.5rem;font-size:0.93rem;color:#444;line-height:1.2;text-overflow:ellipsis;white-space:nowrap;overflow:hidden;height:1.125rem;}
+.m_mail ul li a dl dd{margin-top:0.31rem;font-size:0.93rem;color:#444;line-height:1.2;text-overflow:ellipsis;white-space:nowrap;overflow:hidden;}
 
 
 .m_mail ul li + li{border-top:0.06rem solid #eee;}
@@ -1250,13 +1254,20 @@ app04->파일명 mob_app_ docform로 변경됨 7월 29일 전체 수정 */
 .f_list{position:absolute;bottom:0;left:0;width:100%;height:18.75rem;background:#fff;padding:1.25rem 0;overflow-y:scroll;}
 .f_list ul{padding-left:1.25rem;display:none;background:#f3f3f3;}
 .f_list > li > a{position:relative;display:block;line-height:2.5rem;font-size:1rem;color:#333;padding:0 2.25rem;white-space:nowrap;}
-.f_list > li.drop_menu > a:after{position:absolute;top:0.87rem;left:1rem;content:"";background:url(/mobile/img/arrow.svg)center no-repeat;width:0.75rem;height:0.75rem;transform:rotate(-90deg);transition:.3s ease-in-out;}
-.f_list > li.drop_menu > a.on:after{background:url(/mobile/img/arrow.svg)center no-repeat;width:0.75rem;height:0.75rem;transform:rotate(0);}
+/* .f_list > li.drop_menu > a em{position:absolute;top:0.87rem;left:1rem;content:"";background:url(/mobile/img/arrow.svg)center no-repeat;width:0.75rem;height:0.75rem;transform:rotate(-90deg);transition:.3s ease-in-out;}
+.f_list > li.drop_menu > a.on em{background:url(/mobile/img/arrow.svg)center no-repeat;width:0.75rem;height:0.75rem;transform:rotate(0);} */
+.f_list > li.drop_menu > a em{position:absolute;top:0;left:0;content:"";background:url(/mobile/img/arrow.svg)center no-repeat;width:2.5rem;height:2.5rem;transform:rotate(-90deg);transition:.3s ease-in-out;background-size:0.75rem 0.75rem;}
+.f_list > li.drop_menu > a.on em{background:url(/mobile/img/arrow.svg)center no-repeat;width:2.5rem;height:2.5rem;transform:rotate(0);background-size:0.75rem 0.75rem;}
+.f_list > li.drop_menu > a span{display:inline-block;font-size:0.87rem;color:#444;vertical-align:top;line-height:2.5rem;}
+
 .f_depth02{overflow:hidden;overflow-x:scroll;}
 .f_list ul.f_depth02{padding:0.62rem 0 0.62rem 2.5rem;}
 .f_depth02 li > a{position:relative;display:block;line-height:2.5rem;font-size:0.87rem;color:#444;padding-left:1.25rem;white-space:nowrap;}
-.f_depth02 li.drop_menu > a:after{position:absolute;top:0.87rem;left:0;content:"";background:url(/mobile/img/arrow.svg)center no-repeat;width:0.75rem;height:0.75rem;transform:rotate(-90deg);transition:.3s ease-in-out;}
-.f_depth02 li.drop_menu > a.on:after{background:url(/mobile/img/arrow.svg)center no-repeat;width:0.75rem;height:0.75rem;transform:rotate(0);}
+/* .f_depth02 li.drop_menu > a em{position:absolute;top:0.87rem;left:0;content:"";background:url(/mobile/img/arrow.svg)center no-repeat;width:0.75rem;height:0.75rem;transform:rotate(-90deg);transition:.3s ease-in-out;}
+.f_depth02 li.drop_menu > a.on em{background:url(/mobile/img/arrow.svg)center no-repeat;width:0.75rem;height:0.75rem;transform:rotate(0);} */
+.f_depth02 li.drop_menu > a em{position:absolute;top:0;left:-1.25rem;content:"";background:url(/mobile/img/arrow.svg)center no-repeat;width:2.5rem;height:2.5rem;transform:rotate(-90deg);transition:.3s ease-in-out;background-size:0.75rem 0.75rem;}
+.f_depth02 li.drop_menu > a.on em{background:url(/mobile/img/arrow.svg)center no-repeat;width:2.5rem;height:2.5rem;transform:rotate(0);background-size:0.75rem 0.75rem;}
+.f_depth02 li.drop_menu > a span{display:inline-block;font-size:0.87rem;color:#444;vertical-align:top;line-height:2.5rem;}
 
 .all_btn{width:1.12rem;height:1.12rem;background:url(/mobile/img/all_icon.png)center no-repeat;background-size:1.12rem 1.12rem;}
 .trash_btn{width:1.12rem;height:1.12rem;background:url(/mobile/img/trash_icon.png)center no-repeat;background-size:1.12rem 1.12rem;}
@@ -1394,7 +1405,7 @@ app04->파일명 mob_app_ docform로 변경됨 7월 29일 전체 수정 */
 .search_con{display:none;position:fixed;top:0;left:0;right:0;max-width:1080px;width:100%;margin:0 auto;background:rgba(0,0,0,.6);height:100%;z-index:1000;}
 .search_con.active{display:block;}
 .search_con > div{position:fixed;top:0;left:0;width:100%;z-index:11;}
-.search_con .sc_top{height:3.12rem;background:var(--main-bg-color);position:relative;padding:0 3.12rem 0 3rem;}
+.search_con .sc_top{height:3.12rem;background:var(--main-bg-color);width:100%;position:relative;padding:0 3.12rem 0 3rem;}
 /* .search_con .sc_top{position:static;top:0;left:0;right:0;width:100%;height:3.12rem;background:var(--main-bg-color);padding:0 3.12rem 0 3rem;} */
 .search_con .sc_top .back_btn{z-index:2;position:absolute;top:50%;left:0.93rem;transform:translateY(-50%);;width:0.62rem;height:1.18rem;background:url(/mobile/img/m_edit_icon01.png)center no-repeat;background-size:100% 100%;}
 .search_con .sc_top div{padding-right:1.18rem;position:relative;}/*8월 9일 추가됨*/
@@ -1408,7 +1419,7 @@ app04->파일명 mob_app_ docform로 변경됨 7월 29일 전체 수정 */
 .search_con .sc_btm p + p{margin-top:1.37rem;}
 .search_con .sc_btm p span{display:inline-block;width:calc(100% / 4);}
 .search_con .sc_btm p span:nth-child(n+5){margin-top:0.62rem;}
-.search_con .sc_btm p input{width:1.12rem;height:1.12rem;background:url(/mobile/img/sc_check.svg)center no-repeat;background-size:100% 100%;}
+.search_con .sc_btm p input{width:1.12rem;height:1.12rem;background:url(/mobile/img/sc_check.png)center no-repeat;background-size:100% 100%;}
 .search_con .sc_btm p input.active{background:url(/mobile/img/sc_check_on.png)center no-repeat;background-size:100% 100%;}
 .search_con .sc_btm p label{font-size:0.87rem;color:#333;line-height:1.12rem;vertical-align:top;margin-left:0.43rem;}
 .search_con02 .sc_btm p span{display:inline-block;width:calc(100% / 3);}
@@ -1431,7 +1442,7 @@ app04->파일명 mob_app_ docform로 변경됨 7월 29일 전체 수정 */
 .wm_top > li{position:relative;}/*8월 24일 변경됨*/
 .wm_top > li + li{border-top:0.06rem solid #f2f2f2;}/*8월 24일 추가됨*/
 .wm_top > li strong{float:left;width:6.25rem;font-size:0.93rem;color:#999;line-height:3.06rem;padding-left:1.31rem;position:relative;}
-.re_more{position:absolute;top:50%;right:-1.25rem;transform:translateY(-50%);width:3.125rem;height:100%;cursor:pointer;background:url(/mobile/img/more_refer.png)center no-repeat;background-size:0.93rem 0.56rem;transition:.2s all;cursor:pointer;}
+.re_more{border-color:#fff;position:absolute;top:50%;right:-1.25rem;transform:translateY(-50%);width:3.125rem;height:100%;cursor:pointer;background:url(/mobile/img/more_refer.png)center no-repeat;background-size:0.93rem 0.56rem;transition:.2s all;cursor:pointer;}
 .re_more.active{transform:translateY(-50%) rotate(-180deg);}
 .div_list{position:relative;float:left;width:calc(100% - 6.25rem);/*line-height:3.06rem;*/padding:0 0.31rem;}
 .list_add{min-height:2.44rem;}
@@ -1501,7 +1512,8 @@ app04->파일명 mob_app_ docform로 변경됨 7월 29일 전체 수정 */
 .time_send > span em{color:var(--obj-color);font-size:0.93rem;font-weight:600;margin-left:0.31rem;line-height:1;}
 .time_check{position:absolute;top:50%;left:1.25rem;transform:translateY(-50%);border:0.06rem solid #e6e6e6;width:1.37rem;height:1.37rem;border-radius:50%;overflow:hidden;}
 .time_check.active{border:0;background:url(/mobile/img/pick_ch.png)center no-repeat;background-size:1.37rem 1.37rem;}
-.mail_edit{line-height:0;height:calc(100vh - 350px);}
+.mail_edit{line-height:0;height:calc(100vh - 20rem);}
+/* .mail_edit{line-height:0;height:calc(100vh - 350px);} */
 .mail_edit textarea{font-size:0.93rem;color:#444;width:100%;height:21.87rem;resize:none;border:0;outline:none;padding:1.31rem;line-height:1.37rem;}
 /* .mail_edit #mail_wri{font-size:0.93rem;color:#444;width:100%;height:21.87rem;resize:none;border:0;outline:none;padding:1.31rem;line-height:1.37rem;}/* 8월 5일 예은주임님 추가*/
 
@@ -1628,9 +1640,13 @@ app04->파일명 mob_app_ docform로 변경됨 7월 29일 전체 수정 */
 .rd_top{position:relative;}
 .mail_tit{font-size:1.12rem;color:#000;line-height:1.2;padding:1.25rem 2.5rem 0 1.25rem;}
 .rd_top > div{position:relative;font-size:0;padding:1.25rem 2.5rem 0.62rem 1.25rem;}
-.rd_top .per_img{position:static;top:auto;left:auto;transform:translateY(0);display:block;}
+/* .rd_top .per_img{position:static;top:auto;left:auto;transform:translateY(0);display:block;}
 .rd_top dl{position:absolute;top:50%;left:4.37rem;transform:translateY(-50%);padding-top:0.62rem;}/*8월 9일 수정*/
-.rd_top dl dt{font-size:0.87rem;color:#333;line-height:1;font-weight:600;}
+/* .rd_top dl dt{font-size:0.87rem;color:#333;line-height:1;font-weight:600;} */ 
+.rd_top .per_img{top:1.25rem;display:block;transform:translateY(0);}
+.rd_top dl{margin-left:4.37rem;}/*8월 9일 수정*/
+.rd_top dl dt{font-size:0.87rem;color:#333;line-height:1.2;font-weight:600;}
+
 .rd_top dl dd{font-size:0.75rem;color:#666;line-height:1;margin-top:0.43rem;}
 .m_contents04 .add_file{padding:0 0 0 1.25rem;}
 .m_contents04 .add_file strong{display:block;font-size:0.93rem;color:#999;line-height:3.12rem;}
@@ -1786,7 +1802,7 @@ app04->파일명 mob_app_ docform로 변경됨 7월 29일 전체 수정 */
 .cal_img01 img{position:absolute;top:50%;left:50%;width:100%;height:100%;transform:translate(-50%,-50%);}
 .cal_img01 em{display:inline-block;width:2.5rem;height:2.5rem;line-height:2.5rem;text-align:center;border-radius:50%;}
 .cal_img01 em b{font-size:1.25rem;color:#fff;font-weight:400;}
-.m_contents08{width:100%;background:#fff;min-height:calc(100vh - 6.25rem);position:relative;}/*9월 29일 수정*/
+.m_contents08{top: 3.12rem;width:100%;background:#fff;min-height:calc(100vh - 6.25rem);position:relative;padding-bottom:3.125rem;}/*9월 29일 수정*/
 .srl{overflow-y:scroll;}
 .m_contents08 table{width:100%;table-layout:fixed;}
 .m_contents08 table thead tr{height:1.25rem;font-size:0.75rem;color:#fff;text-align:center;background:var(--border-color);}
@@ -1989,25 +2005,27 @@ app04->파일명 mob_app_ docform로 변경됨 7월 29일 전체 수정 */
 .cal_view li a dl dd{line-height:1;font-size:1rem;color:#333;margin-top:0.56rem;}
 
 /* 일정 쓰기 */
-.cal_w_header{background:#fff;position:relative;padding:0 1.25rem;height:3.12rem;border-top:0.06rem solid #ccc;}
+.cal_w_header{left: 0;right: 0;width: 100%;z-index: 99;background:#fff;position:fixed;padding:0 1.25rem;height:3.12rem;border-bottom:0.06rem solid #ccc;}
 .cal_w_header h2{line-height:3.12rem;font-size:1.12rem;color:#000;}
 .cal_w_header h2 img{width:0.62rem;height:1.18rem;vertical-align:-0.12rem;margin-right:1.25rem;}
 .cal_w_header > div{position:absolute;top:50%;right:1.31rem;transform:translateY(-50%);font-size:0;}
 .cal_w_header > div span + span{margin-left:1.56rem;}
 .cal_w_header > div span a{font-size:0.93rem;color:#444;line-height:1;}
 /* .m_contents08{height:calc(100vh - 5.62rem);background:#fff;} */
-.wc_top{border-top:0.06rem solid #e6e6e6;}
+/* .wc_top{border-top:0.06rem solid #e6e6e6;} */
 .wc_top > li{font-size:0;}
-.wc_top > li + li{border-top:0.06rem solid #f2f2f2;}
+.wc_top > li + li{border-top:0.06rem solid #ccc;}
 .wc_top > li > strong{display:inline-block;line-height:3.06rem;padding-left:0.93rem;width:5.62rem;font-size:0.93rem;color:#333;vertical-align:top;}
-.wc_top > li > div{display:inline-block;padding:0.31rem 0.31rem 0.31rem 0;width:calc(100% - 5.62rem);vertical-align:top;}
+.wc_top > li > div{display:inline-block;padding:0.31rem 0.31rem 0.31rem 0;width:calc(100% - 5.62rem);vertical-align:top;font-size:16px;}
 .wc_top > li div input[type="text"]{display:block;height:2.43rem;width:100%;line-height:2.43rem;outline:none;border:0;font-size:0.93rem;color:#444;padding-left:0.31rem;}
 .wc_top > li div select{height:2.43rem;width:9.06rem;appearance:none;border:0.06rem solid #e6e6e6;padding:0 2.37rem 0 0.75rem;outline:none;background:url(/mobile/img/cal_icon02.png)right center no-repeat;background-size:2.43rem 2.43rem;}
 .wc_top > li div .inputdate {font-size:0.87rem;color:#444;width:9.06rem !important;height:2.43rem;background:url(/mobile/img/wm_date_icon.png)right 0.62rem center no-repeat !important;background-size:1.06rem 1rem !important;padding-left:0.31rem;outline:none;border:0.06rem solid #e6e6e6;}
 .wc_top > li div .inputdate  .mx-input{height:100% !important;}
-.wc_top > li div b{display:inline-block;font-size:0.87rem;color:#444;margin:0 0.25rem;}
+/* .wc_top > li div b{display:inline-block;font-size:0.87rem;color:#444;margin:0 0.25rem;} */
+.wc_top > li div b{float:left;font-size:0.87rem;color:#444;margin:0 0.25rem;line-height:2.43rem;}
+
 /* .wc_top > li div .inputtime .mx-input{border: 0.06rem solid #e6e6e6 !important;} */
-.wc_top > li div .inputtime {width:7.5rem;height:100%;border:0.06rem solid #e6e6e6;padding-left:0.31rem;outline:none;background:url(/mobile/img/cal_icon02.png)right center no-repeat;background-size:2.43rem 2.43rem;}
+.wc_top > li div .inputtime {width:45%;height:100%;border:0.06rem solid #e6e6e6;padding-left:0.31rem;outline:none;background:url(/mobile/img/cal_icon02.png)right center no-repeat;background-size:2.43rem 2.43rem;}
 .wc_top > li div .inputtime .mx-input{box-shadow:none ;}
 .cal_title div{position:relative;padding-right:2.5rem;}
 .cal_category div div{padding:0;display:inline-block;position:relative;}
@@ -2025,7 +2043,7 @@ li.cal_att .add_search.active{display:block;}
 li.new_addr textarea{height:2.5rem;border:0;font-size:0.93rem;color:#444;line-height:1.4;min-width:5rem;width:0;outline:none;margin-top:-0.31rem;padding-top:0.62rem;} */
 li.new_addr textarea{height:1.81rem;border:0;font-size:0.93rem;color:#444;line-height:1.2;width:auto;outline:none;margin-top:-0.31rem;padding-top:0.62rem;}
 
-li.cal_memo{height:15rem;}
+/* li.cal_memo{height:15rem;} */
 li.cal_memo div{width:100%;padding:0;display:block;height:calc(100% - 3rem);}
 li.cal_memo div #memo_t{width:100%;height:100%;font-size:0.93rem;color:#444;line-height:1.4;}
 .c_organ{position:absolute;top:0.81rem;right:0.62rem;font-size:0.75rem;color:#999;padding:0 0.62rem;height:1.5rem;border-radius:0.75rem;border:0.06rem solid #ccc;line-height:1.37rem;}
@@ -2137,7 +2155,8 @@ li.att_file .att_del{display:inline-block;vertical-align:-0.06rem;width:0.62rem;
 .noti .edit_header div{right:1.25rem;}
 .board_list li{padding:0.93rem 0.75rem !important;height:auto !important;cursor:pointer;}
 .board_list li a{display:block;height:100%;overflow:hidden;}
-.board_list li a dl dt{font-size:0.93rem;color:#000;text-overflow:ellipsis;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;line-height:1.6;height:3.2em;word-break:break-all;}
+/* .board_list li a dl dt{font-size:0.93rem;color:#000;text-overflow:ellipsis;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;line-height:1.6;height:3.2em;word-break:break-all;} */
+.board_list li a dl dt{font-size:0.93rem;color:#000;text-overflow:ellipsis;overflow:hidden;white-space:nowrap;}
 .board_list li a dl dt .bul_tit{display:inline-block;font-size:0.81rem;color:var(--main-bg-color);border:0.06rem solid var(--main-bg-color);padding:0.18rem 0.37rem;width:auto;height:auto;margin-right:0.5rem;line-height:1;vertical-align:0.06rem;}
 .board_list .new{display:inline-block;position:relative;vertical-align:-0.12rem;margin-right:0.31rem;width:0.93rem;height:0.93rem;border-radius:50%;overflow:hidden;}
 .board_list .new:after{position:absolute;top:0;left:0;width:0.93rem;height:0.93rem;border-radius:50%;background:#ff743c;content:"N";text-align:center;line-height:0.93rem;color:#fff;font-size:0.5rem;font-weight:600;}
@@ -3388,7 +3407,8 @@ li.cf_w_memo #memo_t{width:100%;height:100%;font-size:0.93rem;color:#444;line-he
   .infinite-loading-container{border-top:0.06rem solid #e6e6e6;}
   .rdm_edit{border-top:0.06rem solid #f2f2f2;}
   .att_file{border-top:0.06rem solid #f2f2f2;}
-  li.cal_memo{height:calc(100vh - 31.25rem);}
+  /* li.cal_memo{height:calc(100vh - 31.25rem);} */
+  li.cal_memo{height:calc(100% - 25rem) !important;}
   li.cal_memo div{height:100%;}
 
   @media screen and (orientation:landscape) {
